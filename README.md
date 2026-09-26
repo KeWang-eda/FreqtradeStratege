@@ -1,0 +1,2 @@
+# FreqtradeStratege
+FreqtradeStratege
