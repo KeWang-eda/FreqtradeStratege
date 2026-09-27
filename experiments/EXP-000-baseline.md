@@ -26,6 +26,7 @@
 - 配置 JSON 解析：通过。
 - 隔离 userdir 的 `freqtrade list-strategies`：通过，`VtechCryptoFreqAILeverageL2` 为 `OK`。
 - 完整真实回测：尚未运行。
+- 历史结果复用：禁止。基础策略/杠杆/公共模块与 `experience10` 的 SHA256 不完全一致，历史长窗口结果不能直接作为当前分支晋级证据。
 - 晋级状态：未晋级，不能合并 `main`。
 
 ## 晋级条件
