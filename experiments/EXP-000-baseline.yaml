@@ -22,7 +22,13 @@ verification:
   py_compile: passed
   json_parse: passed
   isolated_strategy_load: passed
-  real_backtest: pending
+  real_backtest: smoke_passed_not_promotion_evidence
+  smoke_timerange: 20240701-20240801
+  smoke_trades: 275
+  smoke_profit_abs_usdt: 29.637
+  smoke_wallet_sharpe: 4.67
+  smoke_wallet_calmar: 130.79
+  smoke_max_relative_drawdown: 0.1459
 promotion:
   decision: pending
   product: null
