@@ -10,6 +10,8 @@
   - https://www.freqtrade.io/en/stable/strategy-customization/#enter-tag
   - https://www.freqtrade.io/en/stable/strategy-customization/#can-short
 """
+from typing import Any
+
 import numpy as np
 from pandas import DataFrame
 
@@ -22,7 +24,7 @@ class VtechCryptoShort(VtechCrypto):
     can_short = True
 
     def populate_indicators(self, dataframe: DataFrame,
-                            metadata: dict) -> DataFrame:
+                            metadata: dict[str, Any]) -> DataFrame:
         """复用多头原始指标，并构造完全镜像的空头强度."""
         dataframe = super().populate_indicators(dataframe, metadata)
         recent_returns = dataframe['close'].pct_change()
@@ -41,7 +43,7 @@ class VtechCryptoShort(VtechCrypto):
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame,
-                             metadata: dict) -> DataFrame:
+                             metadata: dict[str, Any]) -> DataFrame:
         """入场：负动量达到门槛，且价格位于 MA20 下方."""
         dataframe['enter_long'] = 0
         dataframe['enter_short'] = 0
@@ -54,7 +56,7 @@ class VtechCryptoShort(VtechCrypto):
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame,
-                            metadata: dict) -> DataFrame:
+                            metadata: dict[str, Any]) -> DataFrame:
         """出场：空头负动量强度相对长窗口发生衰减."""
         dataframe['exit_long'] = 0
         dataframe['exit_short'] = 0

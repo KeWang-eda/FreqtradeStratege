@@ -6,6 +6,8 @@
   - https://www.freqtrade.io/en/stable/strategy-customization/#entry-signal-rules
   - https://www.freqtrade.io/en/stable/strategy-customization/#exit-signal-rules
 """
+from typing import Any
+
 from pandas import DataFrame
 
 from VtechCryptoShort import VtechCryptoShort
@@ -17,7 +19,7 @@ class VtechCryptoLongShort(VtechCryptoShort):
     can_short = True
 
     def populate_entry_trend(self, dataframe: DataFrame,
-                             metadata: dict) -> DataFrame:
+                             metadata: dict[str, Any]) -> DataFrame:
         """分别按趋势方向生成多头和空头入场信号."""
         dataframe['enter_long'] = 0
         dataframe['enter_short'] = 0
@@ -36,7 +38,7 @@ class VtechCryptoLongShort(VtechCryptoShort):
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame,
-                            metadata: dict) -> DataFrame:
+                            metadata: dict[str, Any]) -> DataFrame:
         """分别按各自方向的动量衰减信号退出."""
         dataframe['exit_long'] = 0
         dataframe['exit_short'] = 0

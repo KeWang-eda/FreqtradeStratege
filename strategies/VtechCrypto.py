@@ -22,16 +22,14 @@ N 分钟映射(全部指标在主表 N 分钟 K 线上直算, 无跨周期数据
   - https://www.freqtrade.io/en/stable/strategy-customization/
   - https://www.freqtrade.io/en/stable/backtesting/
 """
-import logging
+from typing import Any
 
 import numpy as np
+
 from pandas import DataFrame
 from util import weighted_log_regression
 
 from freqtrade.strategy import IStrategy
-
-
-logger = logging.getLogger(__name__)
 
 
 class VtechCrypto(IStrategy):
@@ -77,7 +75,7 @@ class VtechCrypto(IStrategy):
         return self.LEVERAGE
 
     def populate_indicators(self, dataframe: DataFrame,
-                            metadata: dict) -> DataFrame:
+                            metadata: dict[str, Any]) -> DataFrame:
         """全部指标基于主表(N 分钟 K 线)直算, 每根新 bar 更新.
 
         无跨周期数据源/shift/merge/ffill; 入场/出场信号由 freqtrade
@@ -122,7 +120,7 @@ class VtechCrypto(IStrategy):
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame,
-                             metadata: dict) -> DataFrame:
+                             metadata: dict[str, Any]) -> DataFrame:
         """入场: 动量打分达阈值 + 价格在 MA20 上方(趋势过滤)."""
         dataframe.loc[
             (dataframe['mom_score'] >= self.MOMENTUM_MIN_SCORE)
@@ -133,7 +131,7 @@ class VtechCrypto(IStrategy):
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame,
-                            metadata: dict) -> DataFrame:
+                            metadata: dict[str, Any]) -> DataFrame:
         """出场: 动量衰减(score_now < score_prev x 0.8)."""
         dataframe.loc[
             (dataframe['mom_score_prev'] > 0)
