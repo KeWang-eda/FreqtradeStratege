@@ -1,0 +1,36 @@
+id: EXP-000
+name: l2-freqai-control-baseline
+status: running
+branch: experiment/EXP-000-baseline
+parent_commit: 753f5ce
+source_record: /home/wangke/note/Vtech多空与FreqAI调优记录.md
+strategy: VtechCryptoFreqAILeverageL2
+config: configs/freqai/EXP-000-baseline.json
+parameter_file: configs/freqai/EXP-000-baseline.params.json
+freqai_identifier: vtech-adverse-1h-decay60-colsample70-minchild16-f
+protocol:
+  timeframe: 1h
+  train_period_days: 365
+  backtest_period_days: 30
+  fit_live_predictions_candles: 600
+  max_open_trades: 3
+  leverage: 2
+  stake_amount: 20
+  fee: 0.0005
+  pair_count: 15
+verification:
+  py_compile: passed
+  json_parse: passed
+  isolated_strategy_load: passed
+  real_backtest: pending
+promotion:
+  decision: pending
+  product: null
+  max_relative_drawdown: null
+  parent_product: null
+artifacts:
+  raw_data: not tracked
+  logs: not tracked
+  sqlite: not tracked
+  backtest_zip: not tracked
+  models: not tracked in this migration step
