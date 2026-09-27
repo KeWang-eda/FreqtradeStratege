@@ -9,6 +9,7 @@
   "timeframe": "1h",
   "dry_run": true,
   "dry_run_wallet": 100,
+  "datadir": "user_data/data",
   "fee": 0.0005,
   "cancel_open_orders_on_exit": true,
   "unfilledtimeout": {
