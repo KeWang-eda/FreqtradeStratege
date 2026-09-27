@@ -5,7 +5,7 @@
 - 来源：`/home/wangke/project/freqtrade/user_data/strategies`
 - 主记录：`/home/wangke/note/Vtech多空与FreqAI调优记录.md`
 - 目标策略：`VtechCryptoFreqAILeverageL2`
-- 状态：`running`
+- 状态：`promoted baseline`
 
 ## 迁移范围
 
@@ -25,9 +25,9 @@
 - Python 编译：通过。
 - 配置 JSON 解析：通过。
 - 隔离 userdir 的 `freqtrade list-strategies`：通过，`VtechCryptoFreqAILeverageL2` 为 `OK`。
-- 完整真实回测：尚未运行。
+- 完整真实回测：通过（786 天，6713 笔，932.55997 USDT）。
 - 历史结果复用：禁止。基础策略/杠杆/公共模块与 `experience10` 的 SHA256 不完全一致，历史长窗口结果不能直接作为当前分支晋级证据。
-- 晋级状态：未晋级，不能合并 `main`。
+- 晋级状态：已完成首次基线登记，等待合并 `main`。
 
 ## 晋级条件
 

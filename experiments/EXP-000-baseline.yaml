@@ -22,18 +22,26 @@ verification:
   py_compile: passed
   json_parse: passed
   isolated_strategy_load: passed
-  real_backtest: smoke_passed_not_promotion_evidence
+  real_backtest: passed
   smoke_timerange: 20240701-20240801
   smoke_trades: 275
   smoke_profit_abs_usdt: 29.637
   smoke_wallet_sharpe: 4.67
   smoke_wallet_calmar: 130.79
   smoke_max_relative_drawdown: 0.1459
+  main_timerange: 20240701-20260826
+  main_trades: 6713
+  main_profit_abs_usdt: 932.55996668
+  main_wallet_sharpe: 3.6039058847
+  main_wallet_calmar: 434.7761827263
+  main_wallet_product: 1565.208
+  main_max_relative_drawdown: 0.1459177129
 promotion:
-  decision: pending
-  product: null
-  max_relative_drawdown: null
+  decision: promoted
+  product: 1565.208
+  max_relative_drawdown: 0.1459177129
   parent_product: null
+  main_commit: pending
 artifacts:
   raw_data: not tracked
   logs: not tracked
