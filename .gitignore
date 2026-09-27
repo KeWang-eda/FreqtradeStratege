@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# IDE and editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Secrets
+.env
+.env.*
+!.env.example
+config-private*.json
+secrets/
+*.pem
+*.key
+
+# Freqtrade runtime data
+user_data/data/
+user_data/logs/
+user_data/*.sqlite
+user_data/*.sqlite-journal
+user_data/backtest_results/
+user_data/hyperopt_results/
+user_data/grid_results/
+user_data/models/
+user_data/notebooks/
+
+# FreqAI generated caches
+**/backtesting_predictions/
+**/historic_predictions*.pkl
+
+# Generated results and local archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.log
+*.meta.json
+*.bak
+.tmp/
+reports/generated/
+
+# Keep source, sanitized configs, reports and approved experiment metadata tracked.
