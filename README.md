@@ -16,33 +16,31 @@ Calmar × Sharpe
 | 项目 | 状态 |
 |---|---|
 | 主分支 | `main` |
-| 当前正式基线 | EXP-000：VtechCryptoFreqAILeverageL2 |
-| 当前正式收益 | +932.56%（786 天钱包回测） |
-| 当前正式模型 | 本地路径见 `收益报告.md`，不上传 GitHub |
+| 当前正式父策略 | EXP-184：VtechCryptoFreqAIRiskL20TimeEfficiency36Enabled |
+| 当前正式模型 | `vtech-exp184-time36-enabled-main-volume`（本地路径见 `experiments/EXP-184-parent.md`） |
 | 当前正式部署 | 尚未部署远端 |
 | 晋级门槛 | `Calmar × Sharpe` 严格高于父策略，且最大回撤 `<30%` |
 
-历史记录和当前仓库主线必须分开。
+EXP-000 保留为仓库首次 L=2 FreqAI 迁移基线；当前调优记录明确的正式生产父版本为 EXP-184。
 README 中没有登记为 `main` 基线的结果，都不能当作当前正式收益。
 
 ## 收益总览
 
-### 当前正式基线收益
+### 当前正式父策略迁移证据
 
 | 项目 | 数值 |
 |---|---:|
-| 版本 | EXP-000 / VtechCryptoFreqAILeverageL2 |
-| 回测区间 | 2024-07-01~2026-08-26（786天） |
-| 结算收益 | +932.55997 USDT |
-| 收益率 | +932.56% |
-| Wallet Sharpe | 3.603906 |
-| Wallet Calmar | 434.776183 |
-| Wallet Sharpe × Calmar | 1565.208 |
-| Wallet 最大相对回撤 | 14.5918% |
-| 交易数 | 6713 |
-| 状态 | 首个基线，已晋级 main |
+| 版本 | EXP-184 / VtechCryptoFreqAIRiskL20TimeEfficiency36Enabled |
+| 主窗口口径 | control184long，2022-07-03~2026-09-01 |
+| 交易数 | 34624 |
+| 收益 USDT | 30,307,186.25 |
+| Wallet Sharpe | 6.107000 |
+| Wallet Calmar | 15,964,166.0 |
+| Wallet Sharpe × Calmar | 97,493,162 |
+| Wallet 最大相对回撤 | 19.4681% |
+| 状态 | 正式生产父策略迁移，模型仅本地 |
 
-完整 21 项指标和口径说明见 [收益报告.md](收益报告.md)。
+以上为 `experience61/OOS-190-REPORT.md` 中的 control184long 历史证据；本仓库已另外完成 3 天真实 smoke，但不把 smoke 当成长期收益复现。完整迁移报告见 [EXP-184-parent.md](experiments/EXP-184-parent.md)。
 
 以下结果来自既有 Vtech 调优记录，仅作为迁移前的历史参考，不代表当前仓库 `main`，也不代表已经晋级。
 
