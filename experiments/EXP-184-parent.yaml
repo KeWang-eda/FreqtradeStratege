@@ -1,6 +1,6 @@
 id: EXP-184
 name: formal-production-parent-migration
-status: verified_candidate
+status: promoted
 branch: experiment/EXP-184-formal-parent
 source_record: /home/wangke/note/Vtech多空与FreqAI调优记录.md
 source_experience: /home/wangke/project/freqtrade/user_data/experiences/experience61
@@ -56,7 +56,7 @@ historical_evidence:
 promotion:
   decision: promoted_as_historical_formal_parent
   reason: Current production parent explicitly remains Experiment 184 in experience61; this is a repository migration, not a new variable experiment.
-  main_commit: pending
+  main_commit: e32bc44adc950499b4f9c127edfb9d440e71f146
 artifacts:
   model_delivery: local_only
   model_size_bytes: 18525184

@@ -1,5 +1,7 @@
 # EXP-184：正式生产父策略迁移报告
 
+- 状态：`promoted`，已合并 `main`
+- 主合并提交：`e32bc44adc950499b4f9c127edfb9d440e71f146`
 - 策略：`VtechCryptoFreqAIRiskL20TimeEfficiency36Enabled`
 - 分支：`experiment/EXP-184-formal-parent`
 - 原始迁移提交：`be37a3d exp(EXP-184): import formal parent strategy chain`

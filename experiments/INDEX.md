@@ -7,7 +7,7 @@
 
 | 顺序 | 实验节点 | 主线变化 | 证据来源 | 状态 |
 |---:|---|---|---|---|
-| 0 | EXP-184 | 迁移当前调优记录明确的正式生产父策略与完整 FreqAI 继承链 | `experiments/EXP-184-parent.md`、`experience61/OOS-190-REPORT.md` | 待合并 main |
+| 0 | EXP-184 | 迁移当前调优记录明确的正式生产父策略与完整 FreqAI 继承链 | `experiments/EXP-184-parent.md`、`experience61/OOS-190-REPORT.md` | 已晋级 main |
 | 1 | EXP-000 | Vtech 1h 多空基线迁移 + L2 FreqAI 控制基线登记 | `experiments/EXP-000-baseline.md`、`收益报告.md` | 历史仓库基线 |
 | 2 | EXP-001 | 动量衰减阈值固化为 0.60 | 主记录 §十四、§十五 | 已压缩纳入 EXP-000，不重复建分支 |
 | 3 | EXP-002 | FreqAI adverse-risk 动态仓位生产控制链 | 主记录 §八、§二十至二十一及 experience57 | 已压缩纳入 EXP-000，不重复建分支 |
