@@ -5,6 +5,10 @@ callback time and is not added to the FreqAI feature/target set.
 """
 
 from datetime import datetime
+from typing import Any
+
+import numpy as np
+import pandas as pd
 
 from VtechCryptoFreqAIRiskL20RecentDropPenaltyActivated import (
     VtechCryptoFreqAIRiskL20RecentDropPenaltyP050,
@@ -20,12 +24,12 @@ class _DynamicROIBase(VtechCryptoFreqAIRiskL20RecentDropPenaltyP050):
     def custom_roi(
         self,
         pair: str,
-        trade,
+        trade: Any,
         current_time: datetime,
         trade_duration: int,
         entry_tag: str | None,
         side: str,
-        **kwargs,
+        **kwargs: Any,
     ) -> float | None:
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         if dataframe is None or len(dataframe) < self.ATR_PERIOD + 2:
@@ -33,10 +37,10 @@ class _DynamicROIBase(VtechCryptoFreqAIRiskL20RecentDropPenaltyP050):
         # Keep one extra completed candle so the first TR includes its
         # previous close. The last row is the still-forming candle.
         candle = dataframe.iloc[:-1].tail(self.ATR_PERIOD + 1)
-        if not __import__("numpy").isfinite(candle[["high", "low", "close"]].to_numpy()).all():
+        if not np.isfinite(candle[["high", "low", "close"]].to_numpy()).all():
             return None
         previous_close = candle["close"].shift(1)
-        true_range = __import__("pandas").concat(
+        true_range = pd.concat(
             [
                 candle["high"] - candle["low"],
                 (candle["high"] - previous_close).abs(),
@@ -46,9 +50,9 @@ class _DynamicROIBase(VtechCryptoFreqAIRiskL20RecentDropPenaltyP050):
         ).max(axis=1)
         true_range = true_range.iloc[1:]
         last_close = float(candle["close"].iloc[-1])
-        if last_close <= 0.0 or not __import__("numpy").isfinite(last_close):
+        if last_close <= 0.0 or not np.isfinite(last_close):
             return None
-        if true_range.isna().any() or not __import__("numpy").isfinite(true_range).all():
+        if true_range.isna().any() or not np.isfinite(true_range).all():
             return None
         atr_ratio = float(true_range.mean() / last_close)
         # custom_roi is evaluated in leveraged profit space; convert the

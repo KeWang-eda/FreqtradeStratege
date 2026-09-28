@@ -50,7 +50,7 @@
       "timeout": 120000,
       "enableRateLimit": true,
       "aiohttp_trust_env": true,
-      "httpsProxy": "socks5://127.0.0.1:7890"
+      "httpsProxy": "http://127.0.0.1:7890"
     },
     "pair_whitelist": [
       "BTC/USDT:USDT",
@@ -91,7 +91,7 @@
     "save_backtest_models": false,
     "live_retrain_hours": 720,
     "fit_live_predictions_candles": 600,
-    "identifier": "vtech-exp184-control-longwindow",
+    "identifier": "vtech-exp184-time36-enabled-main-volume",
     "feature_parameters": {
       "include_timeframes": [
         "1h"
@@ -121,7 +121,7 @@
       "max_depth": 3,
       "learning_rate": 0.03,
       "subsample": 0.85,
-      "colsample_bytree": 0.7,
+      "colsample_bytree": 0.70,
       "min_child_weight": 16,
       "reg_alpha": 0.1,
       "reg_lambda": 2.0,
@@ -132,5 +132,5 @@
       "random_state": 42
     }
   },
-  "logfile": "user_data/logs/exp184-control-longwindow.log"
+  "logfile": "user_data/logs/exp184-production.log"
 }
