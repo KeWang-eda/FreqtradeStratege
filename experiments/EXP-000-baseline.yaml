@@ -41,7 +41,7 @@ promotion:
   product: 1565.208
   max_relative_drawdown: 0.1459177129
   parent_product: null
-  main_commit: pending
+  main_commit: 571de2d
 artifacts:
   raw_data: not tracked
   logs: not tracked

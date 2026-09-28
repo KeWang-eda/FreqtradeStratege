@@ -7,7 +7,7 @@
 
 | 顺序 | 实验节点 | 主线变化 | 证据来源 | 状态 |
 |---:|---|---|---|---|
-| 0 | EXP-000 | Vtech 1h 多空基线迁移 + L2 FreqAI 控制基线登记 | `experiments/EXP-000-baseline.md`、`收益报告.md` | 已验证，待合并 main |
+| 0 | EXP-000 | Vtech 1h 多空基线迁移 + L2 FreqAI 控制基线登记 | `experiments/EXP-000-baseline.md`、`收益报告.md` | 已晋级 main |
 | 1 | EXP-001 | 动量衰减阈值固化为 0.60 | 主记录 §十四、§十五 | 已有晋级证据 |
 | 2 | EXP-002 | FreqAI adverse-risk 动态仓位生产控制链 | 主记录 §八、§二十至二十一及 experience57 | 待统一复核 |
 | 3 | EXP-003 | 最大持仓从 5 固定为 3 | 主记录 §三十八 | 已有双窗口晋级证据 |

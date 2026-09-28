@@ -27,7 +27,7 @@
 - 隔离 userdir 的 `freqtrade list-strategies`：通过，`VtechCryptoFreqAILeverageL2` 为 `OK`。
 - 完整真实回测：通过（786 天，6713 笔，932.55997 USDT）。
 - 历史结果复用：禁止。基础策略/杠杆/公共模块与 `experience10` 的 SHA256 不完全一致，历史长窗口结果不能直接作为当前分支晋级证据。
-- 晋级状态：已完成首次基线登记，等待合并 `main`。
+- 晋级状态：已晋级并进入 `main`，tag 为 `promoted/EXP-000`。
 
 ## 晋级条件
 
