@@ -18,7 +18,7 @@ Calmar × Sharpe
 | 主分支 | `main` |
 | 当前正式基线 | EXP-000：VtechCryptoFreqAILeverageL2 |
 | 当前正式收益 | +932.56%（786 天钱包回测） |
-| 当前正式模型 | `vtech-adverse-1h-decay60-colsample70-minchild16-f` |
+| 当前正式模型 | 本地路径见 `收益报告.md`，不上传 GitHub |
 | 当前正式部署 | 尚未部署远端 |
 | 晋级门槛 | `Calmar × Sharpe` 严格高于父策略，且最大回撤 `<30%` |
 

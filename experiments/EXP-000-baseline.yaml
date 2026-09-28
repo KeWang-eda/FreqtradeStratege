@@ -1,6 +1,6 @@
 id: EXP-000
 name: l2-freqai-control-baseline
-status: running
+status: promoted
 branch: experiment/EXP-000-baseline
 parent_commit: 753f5ce
 source_record: /home/wangke/note/Vtech多空与FreqAI调优记录.md
@@ -43,8 +43,16 @@ promotion:
   parent_product: null
   main_commit: 571de2d
 artifacts:
+  model_delivery: local_only
+  model_path: /home/wangke/project/freqtrade/user_data/models/vtech-adverse-1h-decay60-colsample70-minchild16-f
+  model_identifier: vtech-adverse-1h-decay60-colsample70-minchild16-f
+  model_size_bytes: 2754270087
+  model_file_count: 2942
+  git_tracked: false
+  remote_copy_required: true
+  metadata_absolute_path_files: 421
   raw_data: not tracked
   logs: not tracked
   sqlite: not tracked
   backtest_zip: not tracked
-  models: not tracked in this migration step
+  models: local_only
