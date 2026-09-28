@@ -1,0 +1,17 @@
+{
+  "experiment": "EXP-000",
+  "kind": "smoke",
+  "strategy": "VtechCryptoFreqAILeverageL2",
+  "commit": "7d6236a",
+  "timerange": "20240701-20240801",
+  "data_source": "experience10/user_data/data",
+  "trades": 275,
+  "profit_abs_usdt": 29.637,
+  "profit_pct": 29.64,
+  "wallet_sharpe": 4.67,
+  "wallet_calmar": 130.79,
+  "max_relative_drawdown": 0.1459,
+  "max_absolute_drawdown_usdt": 20.36,
+  "win_rate": 0.524,
+  "status": "smoke_passed_not_promotion_evidence"
+}
