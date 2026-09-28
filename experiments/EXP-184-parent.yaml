@@ -1,0 +1,70 @@
+id: EXP-184
+name: formal-production-parent-migration
+status: verified_candidate
+branch: experiment/EXP-184-formal-parent
+source_record: /home/wangke/note/Vtech多空与FreqAI调优记录.md
+source_experience: /home/wangke/project/freqtrade/user_data/experiences/experience61
+strategy: VtechCryptoFreqAIRiskL20TimeEfficiency36Enabled
+config:
+  production: configs/freqai/EXP-184-production.json
+  control_longwindow: configs/freqai/EXP-184-control-longwindow.json
+freqai:
+  production_identifier: vtech-exp184-time36-enabled-main-volume
+  control_identifier: vtech-exp184-control-longwindow
+  model_class: XGBoostRegressorES
+  model_path: /home/wangke/project/freqtrade/user_data/models/vtech-exp184-time36-enabled-main-volume
+protocol:
+  timeframe: 1h
+  train_period_days: 365
+  backtest_period_days: 30
+  label_period_candles: 8
+  include_shifted_candles: 2
+  max_open_trades: 3
+  leverage: 20
+  fee: 0.0005
+  pair_count: 15
+  stale_hours: 36
+  stale_profit: 0.002
+migration:
+  raw_import_commit: be37a3d
+  refactor_commit: ced545f
+  strategy_source_sha256_verified: true
+  behavior_parameters_changed: false
+verification:
+  py_compile: passed
+  json_parse: passed
+  isolated_strategy_load: passed
+  freqai_model_resolution: passed
+  real_smoke: passed
+  smoke_timerange: 20260920-20260924
+  smoke_pairs: 3
+  smoke_trades: 4
+  smoke_profit_abs_usdt: -0.140
+  smoke_closed_trade_sharpe: -3.29
+  smoke_closed_trade_calmar: -270.84
+  smoke_max_relative_drawdown: 0.0033
+  smoke_is_promotion_evidence: false
+historical_evidence:
+  report: /home/wangke/project/freqtrade/user_data/experiences/experience61/OOS-190-REPORT.md
+  parent_control_zip: /home/wangke/project/freqtrade/user_data/experiences/experience61/control184long/user_data/backtest_results/backtest-result-2026-09-17_18-05-03.zip
+  timerange: 20220701-20260901
+  wallet_sharpe: 6.107000
+  wallet_calmar: 15964166.0
+  wallet_product: 97493162
+  max_relative_drawdown: 0.194681
+  trade_count: 34624
+promotion:
+  decision: promoted_as_historical_formal_parent
+  reason: Current production parent explicitly remains Experiment 184 in experience61; this is a repository migration, not a new variable experiment.
+  main_commit: pending
+artifacts:
+  model_delivery: local_only
+  model_size_bytes: 18525184
+  model_file_count: 1531
+  metadata_file_count: 765
+  git_tracked: false
+  remote_copy_required: true
+  raw_data: not tracked
+  logs: not tracked
+  sqlite: not tracked
+  backtest_zip: not tracked
