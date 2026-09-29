@@ -262,11 +262,13 @@ def build_vtech_model_features(
     }
     raw_momentum = result["raw_mom_score"]
     raw_momentum_previous = result["raw_mom_score_prev"]
-    result[momentum_columns["raw_mom_score"]] = raw_momentum
-    result[momentum_columns["raw_mom_score_prev"]] = raw_momentum_previous
-    result[momentum_columns["mom_score"]] = result["mom_score"]
-    result[momentum_columns["mom_score_prev"]] = result["mom_score_prev"]
-    result[momentum_columns["short_mom_score"]] = result["short_mom_score"]
+    stable_raw_momentum = _compress_signed_score(raw_momentum)
+    stable_raw_momentum_previous = _compress_signed_score(raw_momentum_previous)
+    result[momentum_columns["raw_mom_score"]] = stable_raw_momentum
+    result[momentum_columns["raw_mom_score_prev"]] = stable_raw_momentum_previous
+    result[momentum_columns["mom_score"]] = _compress_signed_score(result["mom_score"])
+    result[momentum_columns["mom_score_prev"]] = _compress_signed_score(result["mom_score_prev"])
+    result[momentum_columns["short_mom_score"]] = _compress_signed_score(result["short_mom_score"])
     result[momentum_columns["ma20"]] = result["ma20"]
 
     if include_technical_candidates:
