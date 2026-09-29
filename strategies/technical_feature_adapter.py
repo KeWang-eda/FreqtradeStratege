@@ -11,7 +11,6 @@ Upstream project:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable
 
 import pandas as pd
 from pandas import DataFrame, Series

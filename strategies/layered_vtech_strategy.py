@@ -34,7 +34,7 @@ class LayeredVtechStrategy(IStrategy):
     max_open_trades = 3
     FRAMEWORK_VERSION = "0.1.0-skeleton"
     DATA_SNAPSHOT_VERSION = "local-feather-v1"
-    FEATURE_VERSION = "technical-v1-causal"
+    FEATURE_VERSION = "vtech-base72-plus-momentum6-plus-technical11-v1"
     LABEL_VERSION = "adverse-risk-v1"
     MODEL_IDENTIFIER = "layered-vtech-skeleton"
     DEFAULT_LEVERAGE = 2.0
