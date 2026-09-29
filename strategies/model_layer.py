@@ -184,6 +184,57 @@ class XGBoostRiskModel:
         self._model.save_model(path)
 
 
+def calculate_oos_prediction_diagnostics(
+    prediction_frame: DataFrame,
+    prediction_column: str = "prediction",
+    target_column: str = "target",
+) -> DataFrame:
+    """Summarize OOS prediction quality by pair, direction, and year.
+
+    ``prediction_frame`` must contain ``timestamp``, ``pair``, ``direction``,
+    prediction, and target columns. This function does not select a threshold.
+    """
+    required_columns = {
+        "timestamp",
+        "pair",
+        "direction",
+        prediction_column,
+        target_column,
+    }
+    missing_columns = required_columns.difference(prediction_frame.columns)
+    if missing_columns:
+        raise ValueError(f"missing diagnostics columns: {sorted(missing_columns)}")
+
+    frame = prediction_frame.copy()
+    frame["timestamp"] = pd.to_datetime(frame["timestamp"], utc=True)
+    frame["year"] = frame["timestamp"].dt.year
+    rows: list[dict[str, float | int | str]] = []
+    grouping_columns = ["year", "pair", "direction"]
+    for group_values, group_frame in frame.groupby(grouping_columns, dropna=False):
+        valid = group_frame[[prediction_column, target_column]].dropna()
+        if len(valid) < 2:
+            spearman = float("nan")
+        else:
+            spearman = float(
+                valid[prediction_column].rank().corr(valid[target_column].rank())
+            )
+        rows.append(
+            {
+                "year": int(group_values[0]),
+                "pair": str(group_values[1]),
+                "direction": int(group_values[2]),
+                "sample_count": int(len(valid)),
+                "mae": float(
+                    (valid[prediction_column] - valid[target_column]).abs().mean()
+                ),
+                "spearman": spearman,
+            }
+        )
+    return DataFrame(rows).sort_values(
+        ["year", "pair", "direction"]
+    ).reset_index(drop=True)
+
+
 def validate_risk_prediction(prediction: RiskPrediction) -> None:
     """Validate model output before selection or sizing."""
     require_timezone_aware(prediction.timestamp, "RiskPrediction.timestamp")
