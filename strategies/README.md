@@ -20,6 +20,7 @@ portfolio_layer.py
 risk_layer.py
 execution_layer.py
 validation_layer.py
+technical_feature_adapter.py
 strategy_layer_pipeline.py
 ```
 
