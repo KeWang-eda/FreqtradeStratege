@@ -28,7 +28,8 @@ class LayeredVtechStrategy(IStrategy):
     timeframe = "1h"
     can_short = True
     process_only_new_candles = True
-    startup_candle_count = 200
+    # Recursive analysis is stable at 999 candles; 200 showed warmup drift.
+    startup_candle_count = 999
     minimal_roi = {}
     stoploss = -0.15
     trailing_stop = False
