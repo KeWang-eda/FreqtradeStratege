@@ -32,6 +32,11 @@ class LayeredVtechStrategy(IStrategy):
     trailing_stop = False
     use_exit_signal = True
     max_open_trades = 3
+    FRAMEWORK_VERSION = "0.1.0-skeleton"
+    DATA_SNAPSHOT_VERSION = "local-feather-v1"
+    FEATURE_VERSION = "technical-v1-causal"
+    LABEL_VERSION = "adverse-risk-v1"
+    MODEL_IDENTIFIER = "layered-vtech-skeleton"
     DEFAULT_LEVERAGE = 2.0
     RISK_BUDGET = 0.02
     LIQUIDATION_BUFFER = 0.05
