@@ -60,6 +60,7 @@ The framework integrates [freqtrade/technical](https://github.com/freqtrade/tech
 | Feature version | `technical-v1-causal` |
 | Dependency pin | `requirements-framework.txt` (`technical==1.7.0`) |
 | Documented boundary | [docs/技术特征适配.md](docs/技术特征适配.md) |
+| Data pool boundary | [docs/数据池适配.md](docs/数据池适配.md) |
 | First candidate groups | Volatility, regime, momentum, trend, volume |
 | Excluded | `chikou_span` (negative shift), deprecated `zema`, blind multi-timeframe merge |
 
