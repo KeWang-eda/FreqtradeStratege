@@ -63,6 +63,7 @@ The framework integrates [freqtrade/technical](https://github.com/freqtrade/tech
 | Data pool boundary | [docs/数据池适配.md](docs/数据池适配.md) |
 | Label boundary | [docs/标签层.md](docs/标签层.md) |
 | Model boundary | [docs/模型层.md](docs/模型层.md) |
+| Selection boundary | [docs/选股层.md](docs/选股层.md) |
 | First candidate groups | Volatility, regime, momentum, trend, volume |
 | Excluded | `chikou_span` (negative shift), deprecated `zema`, blind multi-timeframe merge |
 
