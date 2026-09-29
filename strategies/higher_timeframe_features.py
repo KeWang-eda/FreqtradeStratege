@@ -70,6 +70,41 @@ def build_causal_higher_timeframe_features(
     return result
 
 
+def build_causal_mark_basis_features(
+    futures_frame: DataFrame,
+    mark_frame: DataFrame,
+    prefix: str = "mark_basis",
+) -> DataFrame:
+    """Merge closed mark/futures basis into futures candles without lookahead."""
+    required = {"date", "close"}
+    for name, frame in (("futures_frame", futures_frame), ("mark_frame", mark_frame)):
+        missing = required.difference(frame.columns)
+        if missing:
+            raise ValueError(f"{name} missing columns: {sorted(missing)}")
+
+    futures = futures_frame.copy()
+    mark = mark_frame.copy()
+    futures["date"] = pd.to_datetime(futures["date"], utc=True).dt.as_unit("ns")
+    mark["date"] = pd.to_datetime(mark["date"], utc=True).dt.as_unit("ns")
+    futures = futures.sort_values("date").reset_index(drop=True)
+    mark = mark.sort_values("date").reset_index(drop=True)
+    reference = futures[["date", "close"]].rename(columns={"close": "futures_close"})
+    mark = mark.merge(reference, on="date", how="left")
+    mark[f"{prefix}_value"] = mark["close"] / mark["futures_close"] - 1.0
+    mark["available_at"] = mark["date"] + pd.Timedelta(hours=1)
+    context = mark[["available_at", f"{prefix}_value"]].dropna().drop_duplicates(
+        "available_at", keep="last"
+    )
+    return pd.merge_asof(
+        futures,
+        context.sort_values("available_at"),
+        left_on="date",
+        right_on="available_at",
+        direction="backward",
+    ).drop(columns=["available_at"])
+
+
+
 def validate_higher_timeframe_alignment(
     merged_frame: DataFrame,
     base_timestamp: object,
