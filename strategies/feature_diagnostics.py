@@ -60,3 +60,34 @@ def calculate_cross_sectional_rank_ic(
     return DataFrame(rows).sort_values("rank_ic_mean", ascending=False).reset_index(
         drop=True
     )
+
+
+def calculate_time_split_rank_ic(
+    panel: DataFrame,
+    feature_columns: Sequence[str],
+    target_column: str,
+    split_timestamp: object,
+    minimum_assets: int = 5,
+) -> DataFrame:
+    """Compare Rank IC before and after a fixed time split."""
+    early_panel = panel.loc[panel["timestamp"] < split_timestamp]
+    late_panel = panel.loc[panel["timestamp"] >= split_timestamp]
+    early = calculate_cross_sectional_rank_ic(
+        early_panel, feature_columns, target_column, minimum_assets
+    ).rename(
+        columns={
+            "rank_ic_mean": "early_rank_ic_mean",
+            "rank_ic_positive_fraction": "early_positive_fraction",
+            "timestamp_count": "early_timestamp_count",
+        }
+    )
+    late = calculate_cross_sectional_rank_ic(
+        late_panel, feature_columns, target_column, minimum_assets
+    ).rename(
+        columns={
+            "rank_ic_mean": "late_rank_ic_mean",
+            "rank_ic_positive_fraction": "late_positive_fraction",
+            "timestamp_count": "late_timestamp_count",
+        }
+    )
+    return early.merge(late, on="feature", how="outer")
