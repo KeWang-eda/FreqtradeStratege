@@ -241,6 +241,9 @@ def evaluate_promotion_gate(
     elif candidate_metrics.max_relative_drawdown >= drawdown_limit:
         decision = "rejected"
         reason = "candidate maximum relative drawdown exceeds the gate"
+    elif candidate_metrics.total_return <= 0:
+        decision = "rejected"
+        reason = "candidate wallet return is not positive"
     elif candidate_metrics.product <= parent_metrics.product:
         decision = "rejected"
         reason = "candidate wallet Sharpe × Calmar is not above parent"
