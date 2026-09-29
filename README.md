@@ -2,7 +2,7 @@
 
 A clean-room framework for a Freqtrade futures strategy with independently testable layers for data pools, causal features, labels, risk models, cross-sectional selection, portfolio leverage, execution, and validation.
 
-> Status: architecture skeleton only. The strategy emits no entries until the layer adapters are implemented and validated.
+> Status: the causal-feature control is wired into the Freqtrade entry point and has been backtested. The model-driven cross-sectional pipeline is not promoted.
 
 ## Scope
 

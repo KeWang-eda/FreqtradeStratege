@@ -7,10 +7,10 @@ This branch starts a new strategy framework. Historical EXP-000 and EXP-184 reco
 | Item | Value |
 |---|---|
 | Branch | `refactor/layered-v1` |
-| Framework version | `0.1.0-skeleton` |
+| Framework version | `0.1.0-control` |
 | Strategy entry point | `strategies/layered_vtech_strategy.py` |
-| Current status | Architecture only; no performance claim |
-| Promotion status | Not eligible |
+| Current status | Causal-feature control integrated and backtested; model-driven pipeline not promoted |
+| Promotion status | Rejected for current control: main-window maximum relative drawdown exceeded 30% |
 
 ## First planned experiments
 
