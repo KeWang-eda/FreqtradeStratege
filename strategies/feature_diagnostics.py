@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Sequence
 
+import numpy as np
 import pandas as pd
 from pandas import DataFrame
 
@@ -91,3 +92,62 @@ def calculate_time_split_rank_ic(
         }
     )
     return early.merge(late, on="feature", how="outer")
+
+
+def find_correlated_feature_clusters(
+    panel: DataFrame,
+    feature_columns: Sequence[str],
+    absolute_correlation_threshold: float = 0.90,
+) -> tuple[DataFrame, DataFrame]:
+    """Return strong feature pairs and connected correlation clusters."""
+    if not 0 < absolute_correlation_threshold <= 1:
+        raise ValueError("absolute_correlation_threshold must be in (0, 1]")
+    correlation = panel[list(feature_columns)].corr(method="spearman").abs()
+    upper = correlation.where(
+        np.triu(np.ones(correlation.shape, dtype=bool), k=1)
+    )
+    pair_rows = [
+        {
+            "feature_left": left,
+            "feature_right": right,
+            "absolute_spearman": float(value),
+        }
+        for (left, right), value in upper.stack().items()
+        if value >= absolute_correlation_threshold
+    ]
+    pair_frame = DataFrame(
+        pair_rows,
+        columns=["feature_left", "feature_right", "absolute_spearman"],
+    )
+    if not pair_frame.empty:
+        pair_frame = pair_frame.sort_values(
+            "absolute_spearman", ascending=False
+        ).reset_index(drop=True)
+
+    parent = {feature: feature for feature in feature_columns}
+
+    def find(feature: str) -> str:
+        while parent[feature] != feature:
+            parent[feature] = parent[parent[feature]]
+            feature = parent[feature]
+        return feature
+
+    def union(left: str, right: str) -> None:
+        left_root = find(left)
+        right_root = find(right)
+        if left_root != right_root:
+            parent[right_root] = left_root
+
+    for row in pair_rows:
+        union(row["feature_left"], row["feature_right"])
+
+    cluster_rows = [
+        {"feature": feature, "cluster_root": find(feature)}
+        for feature in feature_columns
+    ]
+    cluster_frame = DataFrame(cluster_rows)
+    cluster_sizes = cluster_frame["cluster_root"].value_counts()
+    cluster_frame["cluster_size"] = cluster_frame["cluster_root"].map(cluster_sizes)
+    return pair_frame, cluster_frame.sort_values(
+        ["cluster_size", "cluster_root", "feature"], ascending=[False, True, True]
+    ).reset_index(drop=True)
