@@ -21,6 +21,7 @@ risk_layer.py
 execution_layer.py
 validation_layer.py
 technical_feature_adapter.py
+feature_diagnostics.py
 strategy_layer_pipeline.py
 ```
 
