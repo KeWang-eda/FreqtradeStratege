@@ -98,6 +98,7 @@ class RiskDecision:
 
     timestamp: datetime
     pair: str
+    side: str
     allowed: bool
     approved_leverage: float
     approved_stake: float

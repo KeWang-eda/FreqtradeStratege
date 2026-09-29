@@ -37,6 +37,7 @@ def apply_position_risk_limits(
         return RiskDecision(
             timestamp=position_target.timestamp,
             pair=position_target.pair,
+            side=position_target.side,
             allowed=False,
             approved_leverage=exchange_max_leverage,
             approved_stake=0.0,
@@ -47,6 +48,7 @@ def apply_position_risk_limits(
         return RiskDecision(
             timestamp=position_target.timestamp,
             pair=position_target.pair,
+            side=position_target.side,
             allowed=False,
             approved_leverage=position_target.leverage,
             approved_stake=0.0,
@@ -61,6 +63,7 @@ def apply_position_risk_limits(
         return RiskDecision(
             timestamp=position_target.timestamp,
             pair=position_target.pair,
+            side=position_target.side,
             allowed=False,
             approved_leverage=position_target.leverage,
             approved_stake=0.0,
@@ -70,6 +73,7 @@ def apply_position_risk_limits(
     return RiskDecision(
         timestamp=position_target.timestamp,
         pair=position_target.pair,
+        side=position_target.side,
         allowed=True,
         approved_leverage=position_target.leverage,
         approved_stake=approved_stake,
@@ -81,6 +85,8 @@ def apply_position_risk_limits(
 def validate_risk_decision(decision: RiskDecision) -> None:
     """Validate risk decision fields."""
     require_timezone_aware(decision.timestamp, "RiskDecision.timestamp")
+    if decision.side not in {"long", "short"}:
+        raise ValueError("risk decision side must be long or short")
     if decision.approved_leverage < 1:
         raise ValueError("approved_leverage must be at least 1")
     if decision.approved_stake < 0:
