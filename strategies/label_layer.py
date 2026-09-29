@@ -69,8 +69,17 @@ def build_adverse_risk_labels(
     future_high = dataframe["high"].shift(-configuration.horizon_bars).rolling(
         configuration.horizon_bars
     ).max()
+    future_mean = dataframe["close"].shift(-configuration.horizon_bars).rolling(
+        configuration.horizon_bars
+    ).mean()
     long_adverse = (1.0 - future_low / dataframe["close"]).clip(lower=0.0)
     short_adverse = (future_high / dataframe["close"] - 1.0).clip(lower=0.0)
+    result["directional_return"] = direction_values * (
+        future_mean / dataframe["close"] - 1.0
+    )
+    result["directional_return"] = result["directional_return"].where(
+        direction_values != 0.0
+    )
     result["adverse_move"] = np.where(
         direction_values > 0, long_adverse, short_adverse
     )
@@ -78,6 +87,11 @@ def build_adverse_risk_labels(
     result["adverse_risk"] = configuration.leverage * (
         result["adverse_move"] * configuration.risk_penalty
         + 2.0 * configuration.fee_rate
+    )
+    result["utility"] = configuration.leverage * (
+        result["directional_return"]
+        - configuration.risk_penalty * result["adverse_move"]
+        - 2.0 * configuration.fee_rate
     )
     result["stop_event"] = (result["adverse_risk"] >= 0.15).astype("float64")
     result.loc[result["adverse_move"].isna(), "stop_event"] = np.nan
@@ -91,8 +105,10 @@ def validate_training_labels(label_frame: DataFrame) -> None:
         "timestamp",
         "label_end",
         "direction",
+        "directional_return",
         "adverse_move",
         "adverse_risk",
+        "utility",
         "stop_event",
         "label_version",
     }

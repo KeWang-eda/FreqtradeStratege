@@ -64,7 +64,7 @@ def calculate_wallet_metrics(
     wallet_sharpe = (
         float(daily_returns.mean() / volatility * sqrt(periods_per_year))
         if volatility > 0
-        else float("nan")
+        else 0.0
     )
     running_high = equity.cummax()
     drawdowns = equity / running_high - 1.0
@@ -78,7 +78,7 @@ def calculate_wallet_metrics(
     wallet_calmar = (
         annualized_return / max_relative_drawdown
         if max_relative_drawdown > 0
-        else float("nan")
+        else 0.0
     )
     metrics = WalletMetrics(
         total_return=total_return,

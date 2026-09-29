@@ -22,7 +22,7 @@ class ModelTrainingConfig:
     test_size: float = 0.2
     early_stopping_rounds: int = 50
     model_parameters: dict[str, Any] | None = None
-
+    prediction_floor: float | None = 0.0
 
 @dataclass(frozen=True, slots=True)
 class ModelFitReport:
@@ -156,7 +156,9 @@ class XGBoostRiskModel:
         if missing_columns:
             raise ValueError(f"missing prediction features: {sorted(missing_columns)}")
         values = self._model.predict(features.loc[:, self._feature_columns])
-        return Series(np.maximum(values, 0.0), index=features.index, dtype="float64")
+        if self.training_config.prediction_floor is not None:
+            values = np.maximum(values, self.training_config.prediction_floor)
+        return Series(values, index=features.index, dtype="float64")
 
     def predict_risk(
         self, feature_frame: DataFrame, timestamp: datetime, pair: str
