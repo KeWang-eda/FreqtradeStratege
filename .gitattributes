@@ -1,0 +1,7 @@
+# Keep text files stable across platforms.
+* text=auto
+*.md text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.py text eol=lf
+*.sh text eol=lf

@@ -1,0 +1,51 @@
+{
+  "strategy": "LayeredVtechStrategy",
+  "timeframe": "1h",
+  "trading_mode": "futures",
+  "margin_mode": "isolated",
+  "stake_currency": "USDT",
+  "stake_amount": 20,
+  "dry_run": true,
+  "dry_run_wallet": 100,
+  "max_open_trades": 3,
+  "fee": 0.0005,
+  "liquidation_buffer": 0.05,
+  "exchange": {
+    "name": "binance",
+    "key": "",
+    "secret": "",
+    "pair_whitelist": [
+      "BTC/USDT:USDT"
+    ],
+    "pair_blacklist": []
+  },
+  "pairlists": [
+    {
+      "method": "StaticPairList"
+    }
+  ],
+  "freqai": {
+    "enabled": false,
+    "identifier": "layered-vtech-skeleton",
+    "train_period_days": 365,
+    "backtest_period_days": 30,
+    "feature_parameters": {
+      "include_timeframes": [
+        "1h"
+      ],
+      "include_corr_pairlist": [],
+      "label_period_candles": 8,
+      "include_shifted_candles": 2,
+      "indicator_periods_candles": [
+        8,
+        20,
+        48
+      ]
+    },
+    "data_split_parameters": {
+      "test_size": 0.2,
+      "shuffle": false,
+      "random_state": 42
+    }
+  }
+}

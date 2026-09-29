@@ -1,175 +1,132 @@
-# FreqtradeStratege
+# Layered Vtech strategy framework
 
-Vtech / Freqtrade 策略迭代仓库。
+A clean-room framework for a Freqtrade futures strategy with independently testable layers for data pools, causal features, labels, risk models, cross-sectional selection, portfolio leverage, execution, and validation.
 
-本仓库的核心目标不是只记录最高收益，而是在统一口径下持续提高：
+> Status: architecture skeleton only. The strategy emits no entries until the layer adapters are implemented and validated.
+
+## Scope
+
+This branch is a complete structural rewrite. It does not preserve or load the previous Vtech strategy classes. Previous strategy code and experiment records remain in Git history and on the historical `main` branch.
+
+## Architecture
 
 ```text
-Calmar × Sharpe
+data_pool_layer
+    -> feature_layer
+    -> label_layer / model_layer
+    -> selection_layer
+    -> portfolio_layer
+    -> risk_layer
+    -> execution_layer
+    -> validation_layer
 ```
 
-同时要求最大回撤严格小于 30%。
-每次迭代必须从当前 `main` 的最优策略出发，只做控制变量实验。
+The same layer can be validated independently, but promotion always requires a combined parent-versus-candidate backtest.
 
-## 当前仓库状态
-
-| 项目 | 状态 |
-|---|---|
-| 主分支 | `main` |
-| 当前正式父策略 | EXP-184：VtechCryptoFreqAIRiskL20TimeEfficiency36Enabled |
-| 当前正式模型 | `vtech-exp184-time36-enabled-main-volume`（本地路径见 `experiments/EXP-184-parent.md`） |
-| 当前正式部署 | 尚未部署远端 |
-| 晋级门槛 | `Calmar × Sharpe` 严格高于父策略，且最大回撤 `<30%` |
-
-EXP-000 保留为仓库首次 L=2 FreqAI 迁移基线；当前调优记录明确的正式生产父版本为 EXP-184。
-README 中没有登记为 `main` 基线的结果，都不能当作当前正式收益。
-
-## 收益总览
-
-### 当前正式父策略迁移证据
-
-| 项目 | 数值 |
-|---|---:|
-| 版本 | EXP-184 / VtechCryptoFreqAIRiskL20TimeEfficiency36Enabled |
-| 主窗口口径 | control184long，2022-07-03~2026-09-01 |
-| 交易数 | 34624 |
-| 收益 USDT | 30,307,186.25 |
-| Wallet Sharpe | 6.107000 |
-| Wallet Calmar | 15,964,166.0 |
-| Wallet Sharpe × Calmar | 97,493,162 |
-| Wallet 最大相对回撤 | 19.4681% |
-| 状态 | 正式生产父策略迁移，模型仅本地 |
-
-以上为 `experience61/OOS-190-REPORT.md` 中的 control184long 历史证据；本仓库已另外完成 3 天真实 smoke，但不把 smoke 当成长期收益复现。完整迁移报告见 [EXP-184-parent.md](experiments/EXP-184-parent.md)。
-
-以下结果来自既有 Vtech 调优记录，仅作为迁移前的历史参考，不代表当前仓库 `main`，也不代表已经晋级。
-
-| 版本或实验 | 类型 | 区间 | 收益 | Sharpe | Calmar | Calmar × Sharpe | 最大回撤 | 状态 |
-|---|---|---|---:|---:|---:|---:|---:|---|
-| Vtech 多空 1h 基线 | 回测 | 2026-01-01~2026-08-27 | +1536.36% | 3.15 | 309.26 | 973.42 | 42.06% | 未晋级，回撤超限 |
-| FreqAI v1 | 保留段回测 | 2026-01-01~2026-08-27 | +769.17% | 2.97 | 164.84 | 489.75 | 40.24% | 未晋级 |
-| FreqAI v2 风险仓位 | 保留段回测 | 2026-01-01~2026-08-27 | +1271.23% | 3.19 | 278.29 | 886.63 | 38.53% | 未晋级，回撤超限 |
-| Vtech 多空 12h | 高周期研究 | 2026-01-01~2026-08-27 | +2077.43% | 4.0426 | 574.1789 | 2321.17 | 28.93% | 跨阶段不稳，未晋级 |
-
-这些高收益结果不能直接继承为新基线。
-重新建立仓库基线时，必须按同一数据、配置、模型和指标脚本复核。
-
-### 模拟盘参考
-
-以下是外部 Vtech 模拟盘总控记录中的样本，不属于本仓库 `main` 的正式收益：
-
-| 项目 | 数值 |
-|---|---:|
-| 统计时间 | 2026-09-24 |
-| 总交易 | 30 |
-| 已平仓 / 持仓 | 27 / 3 |
-| 已平仓盈亏 | +13.8181 USDT |
-| 盈利笔数 | 21 |
-| 多头 / 空头 | 11 / 19 |
-| ROI 退出 | 19 |
-| 信号退出 | 8 |
-| 止损退出 | 0 |
-| ERROR / Traceback / 429 | 0 / 0 / 0 |
-| 晋级状态 | 样本不足，不晋级 |
-
-模拟盘必须继续累积样本，并同时记录账户净值曲线、资金费、手续费、未实现盈亏、最大回撤和数据新鲜度。
-只有已平仓盈亏不能代表完整的模拟盘收益。
-
-## 每次迭代必须登记的收益
-
-每个实验都要同时记录以下几类结果；没有结果就写 `N/A`，不能猜：
-
-1. 训练段回测收益：只用于开发，不用于最终晋级。
-2. 验证段回测收益：用于选择候选参数或候选逻辑。
-3. 样本外保留段收益：用于正式晋级判断。
-4. 父策略控制组收益：必须与候选使用完全相同的口径。
-5. 候选策略收益：必须记录相对父策略的变化。
-6. BTC 或指定基准收益：用于计算超额收益。
-7. 模拟盘收益：记录已平仓、未实现和账户净值三种口径。
-8. 离线部署运行收益：只有部署的 Git 提交、模型和配置一致时才登记。
-
-## 固定收益报告 21 项
-
-正式回测和正式模拟盘报告按以下顺序记录：
-
-| 序号 | 指标 | 数值 |
-|---:|---|---:|
-| 1 | 策略收益 | N/A |
-| 2 | 策略年化收益 | N/A |
-| 3 | 超额收益 | N/A |
-| 4 | 基准收益 | N/A |
-| 5 | 阿尔法 | N/A |
-| 6 | 贝塔 | N/A |
-| 7 | 夏普比率 | N/A |
-| 8 | 胜率 | N/A |
-| 9 | 盈亏比 | N/A |
-| 10 | 最大回撤 | N/A |
-| 11 | 索提诺比率 | N/A |
-| 12 | 日均超额收益 | N/A |
-| 13 | 超额收益最大回撤 | N/A |
-| 14 | 超额收益夏普比率 | N/A |
-| 15 | 日胜率 | N/A |
-| 16 | 盈利次数 | N/A |
-| 17 | 亏损次数 | N/A |
-| 18 | 信息比率 | N/A |
-| 19 | 策略波动率 | N/A |
-| 20 | 基准波动率 | N/A |
-| 21 | 最大回撤区间 | N/A |
-
-收益、年化、夏普、Calmar 和最大回撤必须注明计算口径。
-本项目默认以每日钱包余额曲线作为正式晋级口径，交易明细口径只做辅助诊断。
-
-## 仓库结构
+## Repository layout
 
 ```text
 FreqtradeStratege/
 ├── README.md
+├── .gitattributes
 ├── .gitignore
+├── configs/
+│   ├── README.md
+│   └── freqai/layered-vtech.example.json
 ├── docs/
 │   ├── GIT仓库管理.md
-│   ├── 实验记录模板.md
+│   ├── 策略框架.md
 │   ├── 晋级门槛.md
-│   ├── 部署说明.md
+│   ├── 实验记录模板.md
 │   └── 收益报告模板.md
-├── strategies/
-├── configs/
-├── scripts/
 ├── experiments/
-├── artifacts/model-packs/
-└── deploy/
+│   ├── INDEX.md
+│   └── README.md
+└── strategies/
+    ├── README.md
+    ├── layered_vtech_strategy.py
+    ├── strategy_layer_pipeline.py
+    └── *_layer.py
 ```
 
-- `strategies/`：策略源码、公共模块和自定义 FreqAI 模型类。
-- `configs/`：脱敏的回测、模拟盘和 FreqAI 配置。
-- `scripts/`：冒烟、回测、指标、校验和部署脚本。
-- `experiments/`：每次实验的元数据、结果摘要和结论。
-- `artifacts/model-packs/`：已批准的离线部署模型，完整包不超过 200 MiB 时可随 Git 提交。
-- `deploy/`：远端部署脚本和部署清单，不保存密钥。
+## Layer contracts
 
-## 分支规则
+| Module | Responsibility | Primary independent check |
+|---|---|---|
+| `data_pool_layer.py` | Point-in-time universe and data quality | Coverage, gaps, age, volume, minimum stake |
+| `feature_layer.py` | Causal features | Leakage audit, IC, Rank IC, stability |
+| `label_layer.py` | Future training targets | Label horizon and distribution |
+| `model_layer.py` | Risk prediction | OOS ranking, error, calibration, early stopping |
+| `selection_layer.py` | Same-timestamp candidate ranking | Precision@K, net edge, turnover |
+| `portfolio_layer.py` | Weights, leverage, risk-budget stake | Target volatility, exposure, concentration |
+| `risk_layer.py` | Approve, resize, or reject targets | Account risk, minimum stake, liquidation buffer |
+| `execution_layer.py` | Exchange-ready order intent | Fees, funding, slippage, precision |
+| `validation_layer.py` | Promotion evidence | DSR, PBO, purged validation, OOS gates |
+
+## Leverage policy
+
+The framework supports futures leverage explicitly. The initial shell uses a fixed 2x default and bounds it by the exchange limit.
 
 ```text
-main
-└── experiment/EXP-编号-变量名
+regime limit
+    -> leverage callback
+    -> risk budget
+    -> stake = equity * risk / (leverage * stop distance)
+    -> minimum stake and precision checks
+    -> liquidation buffer
+    -> order plan
 ```
 
-- `main` 只保留已经晋级的主路线和已登记基线。
-- 每个实验必须从当前 `main` 创建。
-- 每个实验只改变一个主要变量。
-- 通过门槛才合并回 `main`。
-- 未通过实验保留旁系分支，并记录淘汰原因。
+A risk prediction is not automatically a profit probability. Dynamic leverage requires time-split calibration and independent validation before it can replace the fixed default.
 
-## 快速入口
+## Development workflow
 
-- [完整收益报告](收益报告.md)
-- [Git 仓库管理](docs/GIT仓库管理.md)
-- [实验记录模板](docs/实验记录模板.md)
-- [晋级门槛](docs/晋级门槛.md)
-- [部署说明](docs/部署说明.md)
-- [收益报告模板](docs/收益报告模板.md)
+Create a branch for one layer or one experiment:
 
-## 重要提醒
+```bash
+git switch -c experiment/EXP-001-data-pool
+```
 
-回测收益不是未来收益。
-异常高收益必须检查时间区间、复利资金模型、手续费、资金费、滑点、同根 K 线成交、未来函数和模型缓存复用。
-任何无法复现、无法对账或回撤超过门槛的结果，不得晋级。
+Record the parent commit, one changed variable, data snapshot, configuration, model identity, independent metrics, combined metrics, and the final decision.
+
+Use explicit names:
+
+- Modules, functions, and variables: `lower_snake_case`.
+- Classes: `UpperCamelCase`.
+- Constants: `UPPER_SNAKE_CASE`.
+- Experiment IDs: `EXP-XXX`.
+- Branches: `experiment/EXP-XXX-name` or `fix/name`.
+
+## Local checks
+
+The skeleton can be checked without market data:
+
+```bash
+python -m compileall -q strategies
+python -m py_compile strategies/*.py
+```
+
+The current shell intentionally produces no entry signals. Do not interpret a clean compile as a profitable strategy result.
+
+## Promotion gates
+
+A candidate must pass all of the following:
+
+- Layer contract checks.
+- Causal-data and no-lookahead checks.
+- Parent and candidate use identical evaluation protocols.
+- Wallet-level metrics are finite and reproducible.
+- Independent time window confirms the result.
+- Candidate wallet `Sharpe × Calmar` is strictly greater than the parent.
+- `max_relative_drawdown < 30%`.
+- Statistical validation covers multiple testing and temporal leakage.
+
+## References
+
+- [Freqtrade strategy quickstart](https://www.freqtrade.io/en/stable/strategy-101/)
+- [Freqtrade backtesting](https://www.freqtrade.io/en/stable/backtesting/)
+- [FreqAI configuration](https://www.freqtrade.io/en/stable/freqai-configuration/)
+- [FreqAI feature engineering](https://www.freqtrade.io/en/stable/freqai-feature-engineering/)
+- [Freqtrade leverage](https://www.freqtrade.io/en/stable/leverage/)
+- [Google Python Style Guide](https://google.github.io/styleguide/pyguide)
+- [GitHub README guidance](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes)

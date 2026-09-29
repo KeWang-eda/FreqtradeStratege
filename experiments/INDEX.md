@@ -1,27 +1,29 @@
-# 实验索引
+# Experiment index
 
-本仓库只收录主线中少量已晋级的大改动。
-重复网格、失败实验、条件晋级、口径错误和未完成实验保留在原始 experience 归档中，不复制到本仓库。
+This branch starts a new strategy framework. Historical EXP-000 and EXP-184 records were intentionally removed from this refactor branch; they remain available on `main` and in Git history.
 
-## 生产主线
+## Framework baseline
 
-| 顺序 | 实验节点 | 主线变化 | 证据来源 | 状态 |
-|---:|---|---|---|---|
-| 0 | EXP-184 | 迁移当前调优记录明确的正式生产父策略与完整 FreqAI 继承链 | `experiments/EXP-184-parent.md`、`experience61/OOS-190-REPORT.md` | 已晋级 main |
-| 1 | EXP-000 | Vtech 1h 多空基线迁移 + L2 FreqAI 控制基线登记 | `experiments/EXP-000-baseline.md`、`收益报告.md` | 历史仓库基线 |
-| 2 | EXP-001 | 动量衰减阈值固化为 0.60 | 主记录 §十四、§十五 | 已压缩纳入 EXP-000，不重复建分支 |
-| 3 | EXP-002 | FreqAI adverse-risk 动态仓位生产控制链 | 主记录 §八、§二十至二十一及 experience57 | 已压缩纳入 EXP-000，不重复建分支 |
-| 4 | EXP-003 | 最大持仓从 5 固定为 3 | 主记录 §三十八 | 已压缩纳入 EXP-000，不重复建分支 |
-| 5 | EXP-004 | FreqAI 滚动预测统计 600 根 | 主记录 §四十九至五十 | 已压缩纳入 EXP-000，不重复建分支 |
-| 6 | EXP-005 | XGBoost `colsample_bytree=0.70` | 主记录 §五十九 | 已压缩纳入 EXP-000，不重复建分支 |
-| 7 | EXP-006 | XGBoost `min_child_weight=16` | 主记录 §六十 | 已压缩纳入 EXP-000，不重复建分支 |
+| Item | Value |
+|---|---|
+| Branch | `refactor/layered-v1` |
+| Framework version | `0.1.0-skeleton` |
+| Strategy entry point | `strategies/layered_vtech_strategy.py` |
+| Current status | Architecture only; no performance claim |
+| Promotion status | Not eligible |
 
-## 研究旁线
+## First planned experiments
 
-- Experiment 156 → 174 → 181 → 184：L=20 研究父链，不混入生产 L=2 `main`。
-- Experiment 190：条件晋级，早期窗口退化，不进入生产主线。
-- Experiment 205/208/214：RB010 条件候选，仍需本地 market+SLOE 完整验收，不进入 `main`。
+| Experiment | Layer | Question | Status |
+|---|---|---|---|
+| EXP-001 | Data pool | Can a point-in-time liquid universe be built without lookahead? | Proposed |
+| EXP-002 | Feature | Which causal features pass multi-window IC and cluster checks? | Proposed |
+| EXP-003 | Model | Does risk prediction improve OOS risk ranking? | Proposed |
+| EXP-004 | Selection | Does same-timestamp Top-K net edge beat the rule baseline? | Proposed |
+| EXP-005 | Portfolio | Does risk-budgeted leverage preserve account risk? | Proposed |
+| EXP-006 | Execution | Do fees, funding, slippage, and precision change the edge? | Proposed |
+| EXP-007 | Validation | Does the candidate survive purged validation and promotion gates? | Proposed |
 
-## 规则
+## Rules
 
-只有经过同口径父子对照、主窗口和独立窗口验证，并满足晋级门槛的节点，才可从本索引进入 `main`。
+Each experiment starts from the latest framework commit, changes one layer or one parameter family, and records its parent commit, data snapshot, configuration, metrics, and decision. A layer result never becomes a production result without combined validation.
