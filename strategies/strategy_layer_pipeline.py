@@ -115,6 +115,7 @@ class LayeredStrategyPipeline:
         minimum_stakes = market_input.get("minimum_stakes", {})
         maximum_stake = market_input.get("maximum_stake")
         exchange_max_leverage = float(market_input.get("exchange_max_leverage", 20.0))
+        liquidation_prices = market_input.get("liquidation_prices") or {}
         risk_decisions = tuple(
             apply_position_risk_limits(
                 target,
@@ -122,8 +123,12 @@ class LayeredStrategyPipeline:
                 maximum_stake=maximum_stake,
                 exchange_max_leverage=exchange_max_leverage,
                 liquidation_buffer=portfolio_configuration.liquidation_buffer,
-                current_price=float(current_prices[target.pair]),
-                liquidation_price=market_input.get("liquidation_prices", {}).get(target.pair),
+                current_price=(
+                    float(current_prices[target.pair])
+                    if target.pair in liquidation_prices
+                    else None
+                ),
+                liquidation_price=liquidation_prices.get(target.pair),
             )
             for target in targets
         )
