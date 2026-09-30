@@ -68,7 +68,7 @@ The framework integrates [freqtrade/technical](https://github.com/freqtrade/tech
 | Execution boundary | [docs/执行层.md](docs/执行层.md) |
 | Validation boundary | [docs/验证层.md](docs/验证层.md) |
 | First candidate groups | Volatility, regime, momentum, trend, volume |
-| Excluded | `chikou_span` (negative shift), deprecated `zema`, blind multi-timeframe merge |
+| Excluded | `chikou_span` (negative shift), deprecated `zema`, blind multi-timeframe merge, open interest without a point-in-time history |
 
 A technical indicator is a candidate input. It is not a trading rule and not evidence of alpha until it passes time-split IC, correlation-cluster, stability, and out-of-sample checks.
 
