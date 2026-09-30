@@ -71,6 +71,7 @@ The framework integrates [freqtrade/technical](https://github.com/freqtrade/tech
 | Research conclusion | [docs/研究结论.md](docs/研究结论.md) |
 | Logging standard | [docs/日志规范.md](docs/日志规范.md) |
 | Layer audit | [docs/分层审计.md](docs/分层审计.md) |
+| Composition pipeline | [docs/组合链路.md](docs/组合链路.md) |
 | First candidate groups | Volatility, regime, momentum, trend, volume |
 | Excluded | `chikou_span` (negative shift), deprecated `zema`, blind multi-timeframe merge, open interest without a point-in-time history |
 
