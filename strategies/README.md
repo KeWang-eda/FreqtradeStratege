@@ -35,4 +35,4 @@ Each module owns one contract. It must not reach into another layer's private st
 - Use complete domain names such as `calculate_risk_bounded_stake`.
 - Do not use legacy aliases, one-letter domain variables, or hidden global state.
 
-See `../docs/策略框架.md` for the full boundary and validation rules.
+See `../docs/strategy-framework.md` for the full boundary and validation rules.

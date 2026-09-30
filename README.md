@@ -34,11 +34,11 @@ FreqtradeStratege/
 │   ├── README.md
 │   └── freqai/layered-vtech.example.json
 ├── docs/
-│   ├── GIT仓库管理.md
-│   ├── 策略框架.md
-│   ├── 晋级门槛.md
-│   ├── 实验记录模板.md
-│   └── 收益报告模板.md
+│   ├── git-repository-management.md
+│   ├── strategy-framework.md
+│   ├── promotion-gates.md
+│   ├── experiment-record-template.md
+│   └── performance-report-template.md
 ├── experiments/
 │   ├── INDEX.md
 │   └── README.md
@@ -59,20 +59,20 @@ The framework integrates [freqtrade/technical](https://github.com/freqtrade/tech
 | Adapter | `strategies/technical_feature_adapter.py` |
 | Feature version | `technical-v1-causal` |
 | Dependency pin | `requirements-framework.txt` (`technical==1.7.0`) |
-| Documented boundary | [docs/技术特征适配.md](docs/技术特征适配.md) |
-| Data pool boundary | [docs/数据池适配.md](docs/数据池适配.md) |
-| Label boundary | [docs/标签层.md](docs/标签层.md) |
-| Model boundary | [docs/模型层.md](docs/模型层.md) |
-| Selection boundary | [docs/选股层.md](docs/选股层.md) |
-| Portfolio and risk boundary | [docs/组合风控层.md](docs/组合风控层.md) |
-| Execution boundary | [docs/执行层.md](docs/执行层.md) |
-| Validation boundary | [docs/验证层.md](docs/验证层.md) |
-| Parent comparison | [docs/父策略对照.md](docs/父策略对照.md) |
-| Research conclusion | [docs/研究结论.md](docs/研究结论.md) |
-| Logging standard | [docs/日志规范.md](docs/日志规范.md) |
-| Layer audit | [docs/分层审计.md](docs/分层审计.md) |
-| Composition pipeline | [docs/组合链路.md](docs/组合链路.md) |
-| Cross-sectional rank model | [docs/横截面排序模型.md](docs/横截面排序模型.md) |
+| Documented boundary | [docs/technical-feature-adapter.md](docs/technical-feature-adapter.md) |
+| Data pool boundary | [docs/data-pool-adapter.md](docs/data-pool-adapter.md) |
+| Label boundary | [docs/label-layer.md](docs/label-layer.md) |
+| Model boundary | [docs/model-layer.md](docs/model-layer.md) |
+| Selection boundary | [docs/selection-layer.md](docs/selection-layer.md) |
+| Portfolio and risk boundary | [docs/portfolio-risk-layer.md](docs/portfolio-risk-layer.md) |
+| Execution boundary | [docs/execution-layer.md](docs/execution-layer.md) |
+| Validation boundary | [docs/validation-layer.md](docs/validation-layer.md) |
+| Parent comparison | [docs/parent-strategy-comparison.md](docs/parent-strategy-comparison.md) |
+| Research conclusion | [docs/research-conclusion.md](docs/research-conclusion.md) |
+| Logging standard | [docs/logging-standard.md](docs/logging-standard.md) |
+| Layer audit | [docs/layer-audit.md](docs/layer-audit.md) |
+| Composition pipeline | [docs/composition-pipeline.md](docs/composition-pipeline.md) |
+| Cross-sectional rank model | [docs/cross-sectional-ranking-model.md](docs/cross-sectional-ranking-model.md) |
 | First candidate groups | Volatility, regime, momentum, trend, volume |
 | Excluded | `chikou_span` (negative shift), deprecated `zema`, blind multi-timeframe merge, open interest without a point-in-time history |
 
