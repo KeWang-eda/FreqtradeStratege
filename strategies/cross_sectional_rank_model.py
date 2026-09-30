@@ -30,6 +30,7 @@ class RankModelConfig:
     subsample: float = 0.85
     colsample_bytree: float = 0.70
     random_state: int = 42
+    query_columns: tuple[str, ...] = ("timestamp", "side")
 
 
 @dataclass(frozen=True, slots=True)
@@ -68,26 +69,34 @@ class CrossSectionalRankModel:
         self.fit_report: RankModelFitReport | None = None
 
     @staticmethod
-    def _prepare_query_ids(timestamps: Series) -> np.ndarray:
-        """Map sorted timestamps to contiguous query IDs."""
-        values = pd.to_datetime(timestamps, utc=True)
-        return values.factorize(sort=True)[0].astype(np.int64)
+    def _prepare_query_ids(query_keys: Series) -> np.ndarray:
+        """Map sorted query keys to contiguous query IDs."""
+        return pd.Series(query_keys.astype(str)).factorize(sort=True)[0].astype(np.int64)
 
     @log_failures("rank_model")
     def fit(self, panel: DataFrame, target_column: str) -> RankModelFitReport:
         """Fit on complete timestamp groups with chronological validation."""
-        required = {"timestamp", target_column, *self.feature_columns}
+        required = {
+            "timestamp",
+            target_column,
+            *self.feature_columns,
+            *self.config.query_columns,
+        }
         missing = required.difference(panel.columns)
         if missing:
             raise ValueError(f"rank panel missing columns: {sorted(missing)}")
         frame = panel.copy()
         frame["timestamp"] = pd.to_datetime(frame["timestamp"], utc=True)
-        frame = frame.sort_values(["timestamp", "pair" if "pair" in frame else "timestamp"])
+        sort_columns = list(dict.fromkeys([*self.config.query_columns, "pair"]))
+        frame = frame.sort_values(sort_columns)
         frame = frame.replace([np.inf, -np.inf], np.nan).dropna(
             subset=[*self.feature_columns, target_column]
         )
+        frame["__query_key__"] = frame[list(self.config.query_columns)].astype(str).agg(
+            "|".join, axis=1
+        )
         frame["__ranking_target__"] = (
-            frame.groupby("timestamp")[target_column]
+            frame.groupby(list(self.config.query_columns))[target_column]
             .rank(method="first", ascending=True)
             .astype("int64")
             - 1
@@ -99,8 +108,8 @@ class CrossSectionalRankModel:
         train_end = query_timestamps.iloc[split_index]
         train = frame[frame["timestamp"] < train_end]
         validation = frame[frame["timestamp"] >= train_end]
-        train_qid = self._prepare_query_ids(train["timestamp"])
-        validation_qid = self._prepare_query_ids(validation["timestamp"])
+        train_qid = self._prepare_query_ids(train["__query_key__"])
+        validation_qid = self._prepare_query_ids(validation["__query_key__"])
         if len(np.unique(train_qid)) < 2 or len(np.unique(validation_qid)) < 2:
             raise ValueError("ranker requires at least two query groups per split")
 
