@@ -122,6 +122,8 @@ class LayeredStrategyPipeline:
                 maximum_stake=maximum_stake,
                 exchange_max_leverage=exchange_max_leverage,
                 liquidation_buffer=portfolio_configuration.liquidation_buffer,
+                current_price=float(current_prices[target.pair]),
+                liquidation_price=market_input.get("liquidation_prices", {}).get(target.pair),
             )
             for target in targets
         )

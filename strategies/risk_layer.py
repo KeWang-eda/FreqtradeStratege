@@ -27,9 +27,77 @@ def apply_position_risk_limits(
     maximum_stake: float | None = None,
     exchange_max_leverage: float = 20.0,
     liquidation_buffer: float = 0.05,
+    current_price: float | None = None,
+    liquidation_price: float | None = None,
 ) -> RiskDecision:
     """Apply leverage, stake, and liquidation-buffer constraints."""
     require_timezone_aware(position_target.timestamp, "PositionTarget.timestamp")
+    if (current_price is None) != (liquidation_price is None):
+        raise ValueError("current_price and liquidation_price must be supplied together")
+    if current_price is not None and current_price <= 0:
+        raise ValueError("current_price must be positive")
+    if liquidation_price is not None and liquidation_price <= 0:
+        raise ValueError("liquidation_price must be positive")
+    if current_price is None:
+        log_layer_event(
+            LOGGER,
+            logging.WARNING,
+            "liquidation_distance_unverified",
+            pair=position_target.pair,
+            side=position_target.side,
+            reason="no_exchange_liquidation_price",
+        )
+    elif position_target.side == "long":
+        assert current_price is not None and liquidation_price is not None
+        liquidation_price_value = float(liquidation_price)
+        stop_price = current_price * (1.0 - position_target.stop_distance)
+        if stop_price <= liquidation_price_value:
+            log_layer_event(
+                LOGGER,
+                logging.WARNING,
+                "risk_rejected",
+                pair=position_target.pair,
+                side=position_target.side,
+                reason="stoploss_reaches_liquidation_price",
+                stop_price=stop_price,
+                liquidation_price=liquidation_price,
+            )
+            return RiskDecision(
+                timestamp=position_target.timestamp,
+                pair=position_target.pair,
+                side=position_target.side,
+                allowed=False,
+                approved_leverage=position_target.leverage,
+                approved_stake=0.0,
+                reason="stoploss reaches liquidation price",
+                liquidation_buffer=liquidation_buffer,
+            )
+    elif position_target.side == "short":
+        assert current_price is not None and liquidation_price is not None
+        liquidation_price_value = float(liquidation_price)
+        stop_price = current_price * (1.0 + position_target.stop_distance)
+        if stop_price >= liquidation_price_value:
+            log_layer_event(
+                LOGGER,
+                logging.WARNING,
+                "risk_rejected",
+                pair=position_target.pair,
+                side=position_target.side,
+                reason="stoploss_reaches_liquidation_price",
+                stop_price=stop_price,
+                liquidation_price=liquidation_price,
+            )
+            return RiskDecision(
+                timestamp=position_target.timestamp,
+                pair=position_target.pair,
+                side=position_target.side,
+                allowed=False,
+                approved_leverage=position_target.leverage,
+                approved_stake=0.0,
+                reason="stoploss reaches liquidation price",
+                liquidation_buffer=liquidation_buffer,
+            )
+
     if exchange_max_leverage < 1:
         raise ValueError("exchange_max_leverage must be at least 1")
     if liquidation_buffer < 0:
