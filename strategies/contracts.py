@@ -118,6 +118,7 @@ class OrderPlan:
     leverage: float
     expected_fee: float
     expected_slippage: float
+    expected_funding: float
     client_order_tag: str
 
 

@@ -79,11 +79,13 @@ def build_position_targets(
 
     ordered_candidates = sorted(
         candidates, key=lambda candidate: candidate.net_edge, reverse=True
-    )[: configuration.max_open_trades]
+    )
     if not ordered_candidates:
         return ()
 
-    per_position_risk = configuration.risk_budget / len(ordered_candidates)
+    # Reserve one equal risk slot per maximum trade. This guarantees that
+    # skipping a side for concentration cannot increase risk on other slots.
+    per_position_risk = configuration.risk_budget / configuration.max_open_trades
     stake_amount = calculate_risk_bounded_stake(
         account_equity,
         per_position_risk,
@@ -91,16 +93,40 @@ def build_position_targets(
         configuration.stop_distance,
     )
     target_weight = stake_amount / account_equity
+    gross_position_weight = target_weight * configuration.leverage
+    selected_candidates: list[CandidateScore] = []
+    side_exposure = {"long": 0.0, "short": 0.0}
+    for candidate in ordered_candidates:
+        if len(selected_candidates) >= configuration.max_open_trades:
+            break
+        next_exposure = side_exposure[candidate.side] + gross_position_weight
+        if next_exposure > configuration.max_side_exposure:
+            log_layer_event(
+                LOGGER,
+                logging.WARNING,
+                "portfolio_candidate_rejected",
+                pair=candidate.pair,
+                side=candidate.side,
+                reason="max_side_exposure",
+                next_exposure=next_exposure,
+                max_side_exposure=configuration.max_side_exposure,
+            )
+            continue
+        selected_candidates.append(candidate)
+        side_exposure[candidate.side] = next_exposure
+
     log_layer_event(
         LOGGER,
         logging.DEBUG,
         "portfolio_targets_built",
         candidate_count=len(candidates),
-        selected_count=len(ordered_candidates),
-        long_count=sum(candidate.side == "long" for candidate in ordered_candidates),
-        short_count=sum(candidate.side == "short" for candidate in ordered_candidates),
+        selected_count=len(selected_candidates),
+        long_count=sum(candidate.side == "long" for candidate in selected_candidates),
+        short_count=sum(candidate.side == "short" for candidate in selected_candidates),
         leverage=configuration.leverage,
-        total_stake=stake_amount * len(ordered_candidates),
+        total_stake=stake_amount * len(selected_candidates),
+        gross_long_exposure=side_exposure["long"],
+        gross_short_exposure=side_exposure["short"],
     )
     return tuple(
         PositionTarget(
@@ -112,5 +138,5 @@ def build_position_targets(
             target_weight=target_weight,
             stop_distance=configuration.stop_distance,
         )
-        for candidate in ordered_candidates
+        for candidate in selected_candidates
     )

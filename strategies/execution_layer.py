@@ -6,6 +6,7 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal, ROUND_DOWN
+from math import isfinite
 from typing import Protocol
 
 from contracts import OrderPlan, RiskDecision, require_timezone_aware
@@ -62,6 +63,8 @@ def create_order_plan(
         raise ValueError("order_type must be market or limit")
     if configuration.fee_rate < 0 or configuration.slippage_rate < 0:
         raise ValueError("execution costs must be non-negative")
+    if not isfinite(configuration.funding_rate):
+        raise ValueError("funding_rate must be finite")
     if not risk_decision.allowed:
         log_layer_event(
             LOGGER,
@@ -94,6 +97,12 @@ def create_order_plan(
         leverage=risk_decision.approved_leverage,
         expected_fee=effective_stake * risk_decision.approved_leverage * configuration.fee_rate,
         expected_slippage=effective_stake * risk_decision.approved_leverage * configuration.slippage_rate,
+        expected_funding=(
+            effective_stake
+            * risk_decision.approved_leverage
+            * configuration.funding_rate
+            * (1.0 if risk_decision.side == "long" else -1.0)
+        ),
         client_order_tag=f"layered-vtech-{risk_decision.timestamp.strftime('%Y%m%d%H%M')}",
     )
 
@@ -110,6 +119,8 @@ def validate_order_plan(order_plan: OrderPlan) -> None:
         raise ValueError("order stake or leverage is invalid")
     if order_plan.expected_fee < 0 or order_plan.expected_slippage < 0:
         raise ValueError("execution costs must be non-negative")
+    if not isfinite(order_plan.expected_funding):
+        raise ValueError("expected_funding must be finite")
     if not order_plan.client_order_tag:
         raise ValueError("client_order_tag must not be empty")
     log_layer_event(
@@ -122,4 +133,5 @@ def validate_order_plan(order_plan: OrderPlan) -> None:
         leverage=order_plan.leverage,
         expected_fee=order_plan.expected_fee,
         expected_slippage=order_plan.expected_slippage,
+        expected_funding=order_plan.expected_funding,
     )
