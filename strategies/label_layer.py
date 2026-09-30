@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from typing import Protocol
 
@@ -10,6 +11,10 @@ import pandas as pd
 from pandas import DataFrame, Series
 
 from contracts import TrainingLabel, require_timezone_aware
+from logging_config import get_layer_logger, log_failures, log_layer_event
+
+
+LOGGER = get_layer_logger("label")
 
 
 @dataclass(frozen=True, slots=True)
@@ -33,6 +38,7 @@ class LabelLayer(Protocol):
         ...
 
 
+@log_failures("label")
 def build_adverse_risk_labels(
     dataframe: DataFrame,
     direction: Series,
@@ -96,6 +102,15 @@ def build_adverse_risk_labels(
     result["stop_event"] = (result["adverse_risk"] >= 0.15).astype("float64")
     result.loc[result["adverse_move"].isna(), "stop_event"] = np.nan
     result["label_version"] = configuration.label_version
+    log_layer_event(
+        LOGGER,
+        logging.DEBUG,
+        "labels_built",
+        rows=len(result),
+        candidates=int((direction_values != 0.0).sum()),
+        horizon_bars=configuration.horizon_bars,
+        label_version=configuration.label_version,
+    )
     return result
 
 

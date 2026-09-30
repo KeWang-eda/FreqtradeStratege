@@ -2,8 +2,14 @@
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from typing import Any
+
+from logging_config import get_layer_logger, log_failures, log_layer_event
+
+
+LOGGER = get_layer_logger("pipeline")
 
 
 FRAMEWORK_VERSION = "0.1.0-skeleton"
@@ -44,9 +50,16 @@ class LayeredStrategyPipeline:
         """Store adapters by contract name."""
         self.layers = dict(layers)
 
+    @log_failures("pipeline")
     def run(self, context: StrategyRunContext, market_input: Any) -> StrategyRunResult:
         """Fail closed until all layer adapters are implemented."""
-        del context, market_input
+        log_layer_event(
+            LOGGER,
+            logging.ERROR,
+            "pipeline_not_implemented",
+            experiment_id=context.experiment_id,
+            framework_version=FRAMEWORK_VERSION,
+        )
         raise NotImplementedError(
             "The clean-room framework has no production adapters yet."
         )

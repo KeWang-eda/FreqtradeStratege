@@ -24,6 +24,7 @@
       "method": "StaticPairList"
     }
   ],
+  "logfile": "user_data/logs/layered-vtech.log",
   "freqai": {
     "enabled": false,
     "identifier": "layered-vtech-skeleton",

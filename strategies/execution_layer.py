@@ -2,12 +2,17 @@
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal, ROUND_DOWN
 from typing import Protocol
 
 from contracts import OrderPlan, RiskDecision, require_timezone_aware
+from logging_config import get_layer_logger, log_failures, log_layer_event
+
+
+LOGGER = get_layer_logger("execution")
 
 
 @dataclass(frozen=True, slots=True)
@@ -43,6 +48,7 @@ def floor_to_step(value: float, step: str) -> float:
     )
 
 
+@log_failures("execution")
 def create_order_plan(
     risk_decision: RiskDecision,
     current_price: float,
@@ -57,6 +63,14 @@ def create_order_plan(
     if configuration.fee_rate < 0 or configuration.slippage_rate < 0:
         raise ValueError("execution costs must be non-negative")
     if not risk_decision.allowed:
+        log_layer_event(
+            LOGGER,
+            logging.WARNING,
+            "order_rejected",
+            pair=risk_decision.pair,
+            side=risk_decision.side,
+            reason=risk_decision.reason,
+        )
         return None
     if risk_decision.approved_stake < configuration.minimum_stake:
         return None
@@ -84,6 +98,7 @@ def create_order_plan(
     )
 
 
+@log_failures("execution")
 def validate_order_plan(order_plan: OrderPlan) -> None:
     """Validate order identity and non-negative costs."""
     require_timezone_aware(order_plan.timestamp, "OrderPlan.timestamp")
@@ -97,3 +112,14 @@ def validate_order_plan(order_plan: OrderPlan) -> None:
         raise ValueError("execution costs must be non-negative")
     if not order_plan.client_order_tag:
         raise ValueError("client_order_tag must not be empty")
+    log_layer_event(
+        LOGGER,
+        logging.DEBUG,
+        "order_plan_validated",
+        pair=order_plan.pair,
+        side=order_plan.side,
+        stake_amount=order_plan.stake_amount,
+        leverage=order_plan.leverage,
+        expected_fee=order_plan.expected_fee,
+        expected_slippage=order_plan.expected_slippage,
+    )

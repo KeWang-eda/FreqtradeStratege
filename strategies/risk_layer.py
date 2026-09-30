@@ -2,9 +2,14 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Protocol
 
 from contracts import PositionTarget, RiskDecision, require_timezone_aware
+from logging_config import get_layer_logger, log_failures, log_layer_event
+
+
+LOGGER = get_layer_logger("risk")
 
 
 class RiskLayer(Protocol):
@@ -15,6 +20,7 @@ class RiskLayer(Protocol):
         ...
 
 
+@log_failures("risk")
 def apply_position_risk_limits(
     position_target: PositionTarget,
     minimum_stake: float | None = None,
@@ -34,6 +40,16 @@ def apply_position_risk_limits(
         raise ValueError("maximum_stake must be positive")
 
     if position_target.leverage > exchange_max_leverage:
+        log_layer_event(
+            LOGGER,
+            logging.WARNING,
+            "risk_rejected",
+            pair=position_target.pair,
+            side=position_target.side,
+            reason="leverage_exceeds_exchange_limit",
+            requested_leverage=position_target.leverage,
+            exchange_max_leverage=exchange_max_leverage,
+        )
         return RiskDecision(
             timestamp=position_target.timestamp,
             pair=position_target.pair,
@@ -45,6 +61,16 @@ def apply_position_risk_limits(
             liquidation_buffer=liquidation_buffer,
         )
     if minimum_stake is not None and position_target.stake_amount < minimum_stake:
+        log_layer_event(
+            LOGGER,
+            logging.WARNING,
+            "risk_rejected",
+            pair=position_target.pair,
+            side=position_target.side,
+            reason="stake_below_minimum",
+            stake_amount=position_target.stake_amount,
+            minimum_stake=minimum_stake,
+        )
         return RiskDecision(
             timestamp=position_target.timestamp,
             pair=position_target.pair,
@@ -60,6 +86,15 @@ def apply_position_risk_limits(
     if maximum_stake is not None:
         approved_stake = min(approved_stake, maximum_stake)
     if approved_stake <= 0:
+        log_layer_event(
+            LOGGER,
+            logging.WARNING,
+            "risk_rejected",
+            pair=position_target.pair,
+            side=position_target.side,
+            reason="approved_stake_not_positive",
+            approved_stake=approved_stake,
+        )
         return RiskDecision(
             timestamp=position_target.timestamp,
             pair=position_target.pair,

@@ -2,12 +2,17 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Protocol, Sequence
 
 import pandas as pd
 from pandas import DataFrame
 
 from contracts import CandidateScore
+from logging_config import get_layer_logger, log_failures, log_layer_event
+
+
+LOGGER = get_layer_logger("selection")
 
 
 class SelectionLayer(Protocol):
@@ -20,6 +25,7 @@ class SelectionLayer(Protocol):
         ...
 
 
+@log_failures("selection")
 def rank_cross_sectional_candidates(
     candidate_frame: DataFrame,
     top_k_per_side: int = 3,
@@ -73,6 +79,16 @@ def rank_cross_sectional_candidates(
     ).astype("int64")
     result["selected"] = (result["rank"] <= top_k_per_side) & (
         result["net_edge"] >= minimum_net_edge
+    )
+    log_layer_event(
+        LOGGER,
+        logging.DEBUG,
+        "candidates_ranked",
+        candidate_rows=len(result),
+        timestamp_count=int(result["timestamp"].nunique()),
+        selected_rows=int(result["selected"].sum()),
+        top_k_per_side=top_k_per_side,
+        risk_penalty=risk_penalty,
     )
     return result.sort_values(["timestamp", "side", "rank", "pair"]).reset_index(
         drop=True

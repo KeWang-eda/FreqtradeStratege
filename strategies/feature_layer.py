@@ -12,6 +12,7 @@ References:
 
 from __future__ import annotations
 
+import logging
 from typing import Any, Protocol
 
 import numpy as np
@@ -20,6 +21,10 @@ from pandas import DataFrame
 
 from contracts import FeatureFrame, require_timezone_aware
 from technical_feature_adapter import compute_technical_features
+from logging_config import get_layer_logger, log_failures, log_layer_event
+
+
+LOGGER = get_layer_logger("feature")
 
 
 BASE_VTECH_FEATURE_COUNT = 72
@@ -227,6 +232,7 @@ def _add_standard_vtech_features(dataframe: DataFrame) -> None:
     ) / volume_std.replace(0.0, np.nan)
 
 
+@log_failures("feature")
 def build_vtech_model_features(
     dataframe: DataFrame,
     include_technical_candidates: bool = True,
@@ -277,6 +283,15 @@ def build_vtech_model_features(
             if column.startswith("technical_"):
                 result[f"%-{column}"] = technical[column]
 
+    log_layer_event(
+        LOGGER,
+        logging.DEBUG,
+        "features_built",
+        rows=len(result),
+        feature_count=sum(column.startswith("%-") for column in result.columns),
+        feature_version=FEATURE_VERSION,
+        technical_candidates=include_technical_candidates,
+    )
     return result
 
 

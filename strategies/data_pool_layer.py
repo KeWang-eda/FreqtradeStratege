@@ -12,6 +12,7 @@ References:
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -20,6 +21,10 @@ from typing import Mapping, Protocol
 import pandas as pd
 
 from contracts import DataPoolSnapshot, TradableAsset, require_timezone_aware
+from logging_config import get_layer_logger, log_failures, log_layer_event
+
+
+LOGGER = get_layer_logger("data_pool")
 
 
 class DataPoolLayer(Protocol):
@@ -83,6 +88,7 @@ def _last_funding_rate(
     return float(funding_frame.iloc[-1]["open"])
 
 
+@log_failures("data_pool")
 def load_point_in_time_pool(
     config: LocalDataPoolConfig,
     decision_timestamp: datetime,
@@ -151,6 +157,14 @@ def load_point_in_time_pool(
         assets=tuple(sorted(assets, key=lambda asset: asset.pair)),
     )
     validate_data_pool_snapshot(snapshot)
+    log_layer_event(
+        LOGGER,
+        logging.INFO,
+        "data_pool_snapshot_ready",
+        timestamp=decision_timestamp,
+        asset_count=len(snapshot.assets),
+        timeframe=config.timeframe,
+    )
     return snapshot
 
 

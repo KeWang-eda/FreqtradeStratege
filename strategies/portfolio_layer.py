@@ -2,10 +2,15 @@
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from typing import Protocol, Sequence
 
 from contracts import CandidateScore, PositionTarget
+from logging_config import get_layer_logger, log_failures, log_layer_event
+
+
+LOGGER = get_layer_logger("portfolio")
 
 
 @dataclass(frozen=True, slots=True)
@@ -48,6 +53,7 @@ def calculate_risk_bounded_stake(
     return account_equity * risk_budget / (leverage * stop_distance)
 
 
+@log_failures("portfolio")
 def build_position_targets(
     candidates: Sequence[CandidateScore],
     account_equity: float,
@@ -85,6 +91,17 @@ def build_position_targets(
         configuration.stop_distance,
     )
     target_weight = stake_amount / account_equity
+    log_layer_event(
+        LOGGER,
+        logging.DEBUG,
+        "portfolio_targets_built",
+        candidate_count=len(candidates),
+        selected_count=len(ordered_candidates),
+        long_count=sum(candidate.side == "long" for candidate in ordered_candidates),
+        short_count=sum(candidate.side == "short" for candidate in ordered_candidates),
+        leverage=configuration.leverage,
+        total_stake=stake_amount * len(ordered_candidates),
+    )
     return tuple(
         PositionTarget(
             timestamp=candidate.timestamp,

@@ -1,5 +1,8 @@
 """Causal feature control entry point for the layered framework.
 
+Layer audit: this Freqtrade entry point is intentionally a control. It does
+not invoke XGBoostRiskModel or rank_cross_sectional_candidates.
+
 This control connects the completed feature and risk boundaries to Freqtrade.
 The model and same-timestamp cross-sectional ranking remain separate gates.
 
@@ -11,6 +14,7 @@ References:
 
 from __future__ import annotations
 
+import logging
 from datetime import datetime
 from typing import Any
 
@@ -19,6 +23,10 @@ from pandas import DataFrame
 from freqtrade.strategy import IStrategy
 
 from feature_layer import build_vtech_model_features
+from logging_config import get_layer_logger, log_failures, log_layer_event
+
+
+LOGGER = get_layer_logger("strategy")
 
 
 class LayeredVtechStrategy(IStrategy):
@@ -48,11 +56,12 @@ class LayeredVtechStrategy(IStrategy):
     EXECUTION_COST = 0.0015
     MINIMUM_NET_EDGE = 0.0
 
+    @log_failures("strategy")
     def populate_indicators(
         self, dataframe: DataFrame, metadata: dict[str, Any]
     ) -> DataFrame:
         """Build only causal features and pair-local execution edges."""
-        del metadata
+        pair = metadata.get("pair")
         result = build_vtech_model_features(dataframe, include_technical_candidates=True)
         risk_proxy = result["%-technical_atr_percent_14"].fillna(0.0)
         result["net_long_edge"] = (
@@ -65,13 +74,25 @@ class LayeredVtechStrategy(IStrategy):
             - self.RISK_PENALTY * risk_proxy
             - self.EXECUTION_COST
         )
+        log_layer_event(
+            LOGGER,
+            logging.INFO,
+            "strategy_indicators_ready",
+            pair=pair,
+            rows=len(result),
+            feature_version=self.FEATURE_VERSION,
+            model_identifier=self.MODEL_IDENTIFIER,
+            long_signals=int((result["net_long_edge"] >= self.MINIMUM_NET_EDGE).sum()),
+            short_signals=int((result["net_short_edge"] >= self.MINIMUM_NET_EDGE).sum()),
+        )
         return result
 
+    @log_failures("strategy")
     def populate_entry_trend(
         self, dataframe: DataFrame, metadata: dict[str, Any]
     ) -> DataFrame:
         """Enter when the causal pair-local edge clears the cost floor."""
-        del metadata
+        pair = metadata.get("pair")
         dataframe["enter_long"] = (
             (dataframe["net_long_edge"] >= self.MINIMUM_NET_EDGE)
             & (dataframe["volume"] > 0)
@@ -81,19 +102,36 @@ class LayeredVtechStrategy(IStrategy):
             & (dataframe["volume"] > 0)
         ).astype(int)
         dataframe["enter_tag"] = "causal-feature-control"
+        log_layer_event(
+            LOGGER,
+            logging.DEBUG,
+            "entry_signals_ready",
+            pair=pair,
+            long_signals=int(dataframe["enter_long"].sum()),
+            short_signals=int(dataframe["enter_short"].sum()),
+        )
         return dataframe
 
+    @log_failures("strategy")
     def populate_exit_trend(
         self, dataframe: DataFrame, metadata: dict[str, Any]
     ) -> DataFrame:
         """Exit on a confirmed opposite directional edge."""
-        del metadata
+        pair = metadata.get("pair")
         dataframe["exit_long"] = (
             dataframe["net_short_edge"] >= self.MINIMUM_NET_EDGE
         ).astype(int)
         dataframe["exit_short"] = (
             dataframe["net_long_edge"] >= self.MINIMUM_NET_EDGE
         ).astype(int)
+        log_layer_event(
+            LOGGER,
+            logging.DEBUG,
+            "exit_signals_ready",
+            pair=pair,
+            long_exits=int(dataframe["exit_long"].sum()),
+            short_exits=int(dataframe["exit_short"].sum()),
+        )
         return dataframe
 
     def leverage(

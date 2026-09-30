@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -13,6 +14,10 @@ from pandas import DataFrame, Series
 from xgboost import XGBRegressor
 
 from contracts import RiskPrediction, require_timezone_aware
+from logging_config import get_layer_logger, log_failures, log_layer_event
+
+
+LOGGER = get_layer_logger("model")
 
 
 @dataclass(frozen=True, slots=True)
@@ -70,6 +75,7 @@ class XGBoostRiskModel:
         self._feature_columns: tuple[str, ...] = ()
         self.fit_report: ModelFitReport | None = None
 
+    @log_failures("model")
     def fit(
         self,
         features: DataFrame,
@@ -146,8 +152,21 @@ class XGBoostRiskModel:
             best_iteration=best_iteration,
             best_score=best_score,
         )
+        log_layer_event(
+            LOGGER,
+            logging.INFO,
+            "model_fit_complete",
+            model_identifier=self.model_identifier,
+            pair=pair,
+            feature_count=len(columns),
+            train_samples=len(train_frame),
+            validation_samples=len(validation_frame),
+            best_iteration=best_iteration,
+            best_score=best_score,
+        )
         return self.fit_report
 
+    @log_failures("model")
     def predict(self, features: DataFrame) -> Series:
         """Predict risk using the fitted best-iteration model."""
         if self._model is None:
@@ -160,6 +179,7 @@ class XGBoostRiskModel:
             values = np.maximum(values, self.training_config.prediction_floor)
         return Series(values, index=features.index, dtype="float64")
 
+    @log_failures("model")
     def predict_risk(
         self, feature_frame: DataFrame, timestamp: datetime, pair: str
     ) -> RiskPrediction:
@@ -186,6 +206,7 @@ class XGBoostRiskModel:
         self._model.save_model(path)
 
 
+@log_failures("model")
 def calculate_oos_prediction_diagnostics(
     prediction_frame: DataFrame,
     prediction_column: str = "prediction",

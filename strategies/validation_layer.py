@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from itertools import combinations
 from math import sqrt
@@ -13,6 +14,10 @@ from pandas import DataFrame, Series
 from scipy.stats import norm
 
 from contracts import ValidationReport
+from logging_config import get_layer_logger, log_failures, log_layer_event
+
+
+LOGGER = get_layer_logger("validation")
 
 
 @dataclass(frozen=True, slots=True)
@@ -40,6 +45,7 @@ class ValidationLayer(Protocol):
         ...
 
 
+@log_failures("validation")
 def calculate_wallet_metrics(
     wallet_frame: DataFrame,
     equity_column: str = "total_quote",
@@ -224,6 +230,7 @@ def calculate_probability_of_backtest_overfitting(
     return float(overfit_count / split_count)
 
 
+@log_failures("validation")
 def evaluate_promotion_gate(
     experiment_id: str,
     parent_commit: str,
@@ -257,7 +264,7 @@ def evaluate_promotion_gate(
         decision = "promoted"
         reason = "all configured promotion gates passed"
 
-    return ValidationReport(
+    report = ValidationReport(
         experiment_id=experiment_id,
         parent_commit=parent_commit,
         candidate_commit=candidate_commit,
@@ -269,6 +276,20 @@ def evaluate_promotion_gate(
         decision=decision,
         reason=reason,
     )
+    log_layer_event(
+        LOGGER,
+        logging.INFO if decision == "promoted" else logging.WARNING,
+        "promotion_gate_evaluated",
+        experiment_id=experiment_id,
+        decision=decision,
+        reason=reason,
+        wallet_sharpe=candidate_metrics.wallet_sharpe,
+        wallet_calmar=candidate_metrics.wallet_calmar,
+        max_relative_drawdown=candidate_metrics.max_relative_drawdown,
+        dsr=deflated_sharpe_probability,
+        pbo=probability_of_backtest_overfitting,
+    )
+    return report
 
 
 def validate_report(report: ValidationReport) -> None:
