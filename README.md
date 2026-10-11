@@ -1,39 +1,35 @@
 # MyStrategy
 
-最小的 1h 下一根方向分类策略。
+4h 连续收益率回归策略：对 72 个有有效 4h futures 数据的 pair 独立训练模型，
+在当前 K 线统一比较波动率归一化预测分数，只开 abs(score) 最大的 1 个仓位。
 
 ## 逻辑
 
 ```text
-输入当前已收盘 1h K 线
-  -> 118 个模型特征（1h + 4h 两个周期，各含 2 根历史滞后）
-  -> XGBoostClassifier
-  -> 预测 3 根 1h K 线之后的收盘方向
-  -> up: 做多 / down: 做空（仅当最高类别概率 >= 0.55）
-  -> 反向预测或 1.5% 回撤后 0.5% 追踪止损平仓
+当前已收盘 4h K 线
+  -> 61 个因果模型特征
+  -> XGBoostRegressor
+  -> 预测未来 3 根 4h 收益率 / ATR 波动率归一化
+  -> prediction_return > 0.4 做多，< -0.4 做空
+  -> 所有 pair 的 abs(prediction_return / recent_vol) 横向排序
+  -> 只保留分数最高的一个 pair
+  -> 反向预测、追踪止损或硬止损退出
 ```
 
-特征分为：
-
-- 1h 与 4h 两个周期各自展开：RSI、EMA 乖离、SMA 乖离、ATR/close、相对成交量（周期 6、14、24，当前及前 2 根）；
-- 收益率、振幅、实体、成交量变化：当前及前 2 根；
-- 6 根和 24 根波动率、小时、星期几。
-
-标签（`label_period_candles: 3`）：
+标签通过 `config.json` 的 `my_experiment.label` 控制：
 
 ```text
-3 根之后 close > 当前 close -> up
-否则                       -> down
+raw     : future_return
+volnorm : future_return / (ATR(14) / close)
 ```
-
-末尾 3 根没有未来 K 线，标签为 NaN，不参与训练。
 
 ## 文件
 
-- `MyStrategy.py`：1h 下一根方向策略；
-- `config.json`：1h futures + XGBoostClassifier 配置，当前只跑 BTC；
-- `test_my_strategy.py`：下一根方向标签的最小检查；
-- `data/futures/`：已有本地 futures K 线数据，不覆盖。
+- `MyStrategy.py`：4h 回归、跨 pair 全局择优策略；
+- `config.json`：XGBoostRegressor，72 个 4h pair，1 个最大持仓；
+- `test_my_strategy.py`：阈值标签兼容性检查；
+- `RESEARCH_LOG.md`：实验与跨 pair 验证记录；
+- `data/futures/`：本地 futures K 线数据，不纳入 Git。
 
 ## 风控与最小下单额
 
