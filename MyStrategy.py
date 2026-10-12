@@ -24,7 +24,6 @@ from model_io import (
     exit_long_signal,
     exit_short_signal,
     long_signal,
-    make_next_direction_labels,
     read_prediction_return,
     set_return_target,
     short_signal,
@@ -32,7 +31,9 @@ from model_io import (
 from freqtrade.persistence import Trade
 from freqtrade.strategy import IStrategy
 
-PROBE_OUT = Path("/tmp/reg_rank_probe.jsonl")
+# 跨 pair 时间对齐审计日志（JSONL，追加写入）。
+# 仅在 config.json 的 my_experiment.probe = true 时写入，生产保持 false。
+ALIGN_AUDIT_LOG = Path(__file__).resolve().parent / "logs" / "align_audit.jsonl"
 
 
 class MyStrategy(IStrategy):
@@ -150,28 +151,12 @@ class MyStrategy(IStrategy):
         **kwargs,
     ) -> bool:
         """下单前比较所有 pair 的绝对归一化分数，只允许最强候选成交。"""
-        # ponytail: 用当前 K 线做锚点。切片由回测引擎按时刻限长，非未来函数。
-        others = [p for p in self.dp.current_whitelist() if p != pair]
-
+        # 以当前 K 线为锚点：切片由回测引擎按时刻限长，不会读到未来 K 线。
         mine = self._rank_info(pair, current_time)
         if mine is None:
             return True
-        my_date, my_score, my_dir = mine
-
-        for other in others:
-            info = self._rank_info(other, current_time)
-            if info is None:
-                continue
-            other_date, other_score, other_dir = info
-            # 全局比较：做多/做空一起按 abs(score) 排序，只留最大的那个。
-            if abs(other_score) > abs(my_score):
-                if self._exp.get("probe"):
-                    self._probe(
-                        current_time, pair, my_score, my_date,
-                        other, other_score, other_date,
-                    )
-                return False
-        return True
+        my_date, my_score, _ = mine
+        return self._find_stronger_pair(pair, my_date, my_score, current_time) is None
 
     def custom_exit(
         self,
@@ -182,33 +167,35 @@ class MyStrategy(IStrategy):
         current_profit: float,
         **kwargs,
     ):
-        """只因预测最强性变化退出，不使用止盈/止损退出。"""
-        others = [candidate for candidate in self.dp.current_whitelist() if candidate != pair]
+        """持仓不再是最强候选、或自身预测跌破阈值时退出；不使用止盈止损退出。"""
         mine = self._rank_info(pair, current_time)
-
         if mine is None:
             return "prediction_below_entry_threshold"
 
-        my_date, my_score, my_direction = mine
-        held_direction = "short" if trade.is_short else "long"
-        if my_direction != held_direction:
-            return "prediction_reversal"
+        my_date, my_score, _ = mine
+        if self._find_stronger_pair(pair, my_date, my_score, current_time) is not None:
+            return "weaker_pair_rotation"
+        return None
 
-        for other in others:
-            info = self._rank_info(other, current_time)
+    def _find_stronger_pair(self, pair: str, my_date, my_score: float, cutoff):
+        """在共同锚点上寻找绝对分数更高的 pair；没有更强的返回 None。"""
+        for other in self.dp.current_whitelist():
+            if other == pair:
+                continue
+            info = self._rank_info(other, cutoff)
             if info is None:
                 continue
-            other_date, other_score, other_direction = info
+            other_date, other_score, _ = info
             if abs(other_score) > abs(my_score):
                 if self._exp.get("probe"):
                     self._probe(
-                        current_time, pair, my_score, my_date,
+                        cutoff, pair, my_score, my_date,
                         other, other_score, other_date,
                     )
-                return "weaker_pair_rotation"
+                return other, other_score, other_date
         return None
 
-    def _rank_info(self, pair: str, cutoff=None):
+    def _rank_info(self, pair: str, cutoff=None) -> tuple | None:
         """返回 (date, 波动率归一化分数, 方向)；不可比较时返回 None。"""
         try:
             dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -234,9 +221,9 @@ class MyStrategy(IStrategy):
         if abs(prediction_return) <= self._entry_threshold:
             return None
 
-        recent_vol = dataframe["close"].pct_change().rolling(30).std().iloc[-1]
-        if pd_notna(recent_vol) and float(recent_vol) > 0:
-            score = prediction_return / float(recent_vol)
+        recent_vol = float(dataframe["close"].pct_change().rolling(30).std().iloc[-1])
+        if np.isfinite(recent_vol) and recent_vol > 0:
+            score = prediction_return / recent_vol
         else:
             score = prediction_return
 
@@ -248,7 +235,7 @@ class MyStrategy(IStrategy):
     @staticmethod
     def _probe(current_time, pair, my_score, my_date, other, other_score, other_date) -> None:
         """写入被更强 pair 拒绝的审计记录，不参与交易决策。"""
-        with PROBE_OUT.open("a", encoding="utf-8") as handle:
+        with ALIGN_AUDIT_LOG.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps({
                 "kind": "reject", "time": str(current_time), "pair": pair,
                 "my_score": my_score, "my_date": str(my_date),
@@ -260,16 +247,9 @@ class MyStrategy(IStrategy):
     @staticmethod
     def _probe_alignment(pair, last_date, rows, score) -> None:
         """写入 pair 预测时间对齐审计记录。"""
-        with PROBE_OUT.open("a", encoding="utf-8") as handle:
+        with ALIGN_AUDIT_LOG.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps({
                 "kind": "align", "pair": pair, "last_date": str(last_date),
                 "rows": rows, "score": score,
             }) + "\n")
 
-
-def pd_notna(value) -> bool:
-    """pandas 无关的 NaN 检查，避免引入额外 import。"""
-    try:
-        return bool(np.isfinite(float(value)))
-    except (TypeError, ValueError):
-        return False
