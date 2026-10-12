@@ -110,7 +110,12 @@ class MyStrategy(IStrategy):
     def feature_engineering_expand_all(
         self, dataframe: DataFrame, period: int, metadata: dict, **kwargs
     ) -> DataFrame:
-        """为每个配置周期添加 RSI、均线乖离、ATR 比率和相对成交量。"""
+        """为每个配置周期添加 RSI、均线乖离、ATR 比率、相对成交量和累计动量。
+
+        刻意保持低维：337 特征版本（含高阶矩/MAX/非流动性）实测把截面 top-1 的
+        t 值从 +2.53 打到 -0.01，特征数 337 对训练样本 641 严重过拟合。
+        低维特征集在同一窗口反而更稳。
+        """
         return add_period_expanded_features(dataframe, period)
 
     def feature_engineering_expand_basic(
