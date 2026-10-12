@@ -75,7 +75,7 @@ strategy.trailing_stop = false
 - `label=volnorm`：标签为未来收益率除以 ATR/close；
 - `features`：独立 `feature_engineering.py` 中的 technical 指标开关；
 - `entry_threshold=0.4`：volnorm 预测阈值；raw 标签时应使用另一尺度；
-- `probe`：写入 `/tmp/reg_rank_probe.jsonl`，用于审计跨 pair 时间对齐；生产应关闭。
+- `probe`：写入仓库内 `logs/align_audit.jsonl`，用于审计跨 pair 时间对齐；生产应关闭。
 
 ## Pair 池
 

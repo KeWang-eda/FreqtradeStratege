@@ -1,22 +1,7 @@
 import pandas as pd
 
 from MyStrategy import MyStrategy
-from model_io import (
-    exit_long_signal,
-    exit_short_signal,
-    make_next_direction_labels,
-)
-
-
-def test_threshold_direction_labels_and_unfinished_tail():
-    """验证兼容标签函数的上行、下行、flat 和尾部 NaN 行为。"""
-    close = pd.Series([100.0, 100.3, 99.6, 99.5])
-    labels = make_next_direction_labels(close, horizon=1, threshold=0.002)
-
-    assert labels.iloc[0] == "up"
-    assert labels.iloc[1] == "down"
-    assert labels.iloc[2] == "flat"
-    assert pd.isna(labels.iloc[3])
+from model_io import should_exit_long, should_exit_short
 
 
 class _FakeDataProvider:
@@ -73,14 +58,14 @@ def test_custom_exit_has_only_two_reasons():
     below = _make_strategy({"BTC/USDT:USDT": 0.1, "ETH/USDT:USDT": 0.2})
     assert (
         below.custom_exit("BTC/USDT:USDT", _FakeTrade(), current_time, 100.0, 0.0)
-        == "prediction_below_entry_threshold"
+        == "prediction_weakened"
     )
 
     # 存在绝对分数更高的 pair → 轮换
     rotated = _make_strategy({"BTC/USDT:USDT": 0.5, "ETH/USDT:USDT": 0.9})
     assert (
         rotated.custom_exit("BTC/USDT:USDT", _FakeTrade(), current_time, 100.0, 0.0)
-        == "weaker_pair_rotation"
+        == "rotated_to_stronger_pair"
     )
 
     # 自己是全场最强 → 继续持有
@@ -94,8 +79,32 @@ def test_custom_exit_has_only_two_reasons():
     short_rival = _make_strategy({"BTC/USDT:USDT": 0.5, "ETH/USDT:USDT": -0.9})
     assert (
         short_rival.custom_exit("BTC/USDT:USDT", _FakeTrade(), current_time, 100.0, 0.0)
-        == "weaker_pair_rotation"
+        == "rotated_to_stronger_pair"
     )
+
+
+def test_exit_trend_is_the_only_reversal_exit():
+    """populate_exit_trend 的反向离场不可删除。
+
+    custom_exit 已不含方向判断：持仓 pair 预测翻负、但场上没有更强的 pair 时，
+    custom_exit 返回 None（继续持有）。因此「预测翻负 → 退出」只能由
+    populate_exit_trend 的 exit_long 承担，删掉它就会让仓位在强烈看跌时被留住。
+    """
+    current_time = pd.Timestamp("2025-01-07", tz="UTC")
+    reversed_and_strongest = _make_strategy({"BTC/USDT:USDT": -0.8, "ETH/USDT:USDT": -0.2})
+
+    # custom_exit 此时不退出（|−0.8| > |−0.2|，无更强对手）
+    assert (
+        reversed_and_strongest.custom_exit(
+            "BTC/USDT:USDT", _FakeTrade(), current_time, 100.0, 0.0
+        )
+        is None
+    )
+
+    # 只有 exit_long 能捕获这次反向，退出动作必须依赖它
+    prediction_ready = pd.Series([True])
+    model_prediction = pd.Series([-0.8])
+    assert list(should_exit_long(model_prediction, prediction_ready)) == [True]
 
 
 def test_confirm_trade_entry_allows_only_strongest():
@@ -119,8 +128,8 @@ def test_confirm_trade_entry_allows_only_strongest():
 
 def test_prediction_reversal_exits_via_exit_signal():
     """回归门禁：预测翻负必须产生 exit_long，退出不再依赖 custom_exit。"""
-    ready = pd.Series([True, True])
-    prediction_return = pd.Series([-0.8, 0.8])
+    prediction_ready = pd.Series([True, True])
+    model_prediction = pd.Series([-0.8, 0.8])
 
-    assert list(exit_long_signal(prediction_return, ready)) == [True, False]
-    assert list(exit_short_signal(prediction_return, ready)) == [False, True]
+    assert list(should_exit_long(model_prediction, prediction_ready)) == [True, False]
+    assert list(should_exit_short(model_prediction, prediction_ready)) == [False, True]

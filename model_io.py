@@ -5,74 +5,51 @@
 
 import numpy as np
 import talib.abstract as ta
-from pandas import DataFrame, Series
+from pandas import DataFrame
 
-RETURN_LABEL = "&-s_return"
-
-
-def make_next_direction_labels(
-    close: Series, horizon: int = 1, threshold: float = 0.002
-) -> Series:
-    """保留的三分类兼容标签函数，回归主链不调用。"""
-    if horizon < 1:
-        raise ValueError("horizon must be at least 1")
-    if threshold < 0:
-        raise ValueError("threshold must be non-negative")
-    future_close = close.shift(-horizon)
-    future_return = future_close / close - 1.0
-    labels = Series(
-        np.select(
-            [future_return > threshold, future_return < -threshold],
-            ["up", "down"],
-            default="flat",
-        ),
-        index=close.index,
-        dtype="object",
-    )
-    labels.loc[future_close.isna()] = np.nan
-    return labels
+FREQAI_RETURN_TARGET = "&-s_return"
 
 
-def set_return_target(
+def set_regression_target(
     dataframe: DataFrame,
-    horizon: int,
-    label_mode: str,
+    prediction_horizon: int,
+    label_scaling_mode: str,
 ) -> DataFrame:
     """写入 FreqAI 回归标签，支持 raw 和 volnorm 两种尺度。"""
-    future_close = dataframe["close"].shift(-horizon)
+    future_close = dataframe["close"].shift(-prediction_horizon)
     future_return = future_close / dataframe["close"] - 1.0
 
-    if label_mode == "volnorm":
+    if label_scaling_mode == "volnorm":
         atr_ratio = ta.ATR(dataframe, timeperiod=14) / dataframe["close"]
-        dataframe[RETURN_LABEL] = future_return / atr_ratio.replace(0.0, np.nan)
-    elif label_mode == "raw":
-        dataframe[RETURN_LABEL] = future_return
+        dataframe[FREQAI_RETURN_TARGET] = future_return / atr_ratio.replace(0.0, np.nan)
+    elif label_scaling_mode == "raw":
+        dataframe[FREQAI_RETURN_TARGET] = future_return
     else:
-        raise ValueError(f"Unsupported regression label mode: {label_mode}")
+        raise ValueError(f"Unsupported regression label mode: {label_scaling_mode}")
 
     return dataframe
 
 
-def read_prediction_return(dataframe: DataFrame):
+def read_model_prediction(dataframe: DataFrame):
     """读取 FreqAI 输出的回归预测列。"""
-    return dataframe[RETURN_LABEL]
+    return dataframe[FREQAI_RETURN_TARGET]
 
 
-def long_signal(prediction_return, ready, threshold: float):
-    """返回做多条件。"""
-    return ready & (prediction_return > threshold)
+def should_enter_long(model_prediction, prediction_ready, entry_threshold: float):
+    """返回做多入场条件：预测收益高于入场阈值。"""
+    return prediction_ready & (model_prediction > entry_threshold)
 
 
-def short_signal(prediction_return, ready, threshold: float):
-    """返回做空条件。"""
-    return ready & (prediction_return < -threshold)
+def should_enter_short(model_prediction, prediction_ready, entry_threshold: float):
+    """返回做空入场条件：预测收益低于负的入场阈值。"""
+    return prediction_ready & (model_prediction < -entry_threshold)
 
 
-def exit_long_signal(prediction_return, ready):
-    """判断已有多仓是否应因预测转负而退出。"""
-    return ready & (prediction_return < 0)
+def should_exit_long(model_prediction, prediction_ready):
+    """返回多仓退出条件：预测转负（阈值 0，不要求超过入场阈值）。"""
+    return prediction_ready & (model_prediction < 0)
 
 
-def exit_short_signal(prediction_return, ready):
-    """判断已有空仓是否应因预测转正而退出。"""
-    return ready & (prediction_return > 0)
+def should_exit_short(model_prediction, prediction_ready):
+    """返回空仓退出条件：预测转正（阈值 0，不要求超过入场阈值）。"""
+    return prediction_ready & (model_prediction > 0)
