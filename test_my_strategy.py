@@ -4,6 +4,7 @@ from MyStrategy import make_next_direction_labels
 
 
 def test_threshold_direction_labels_and_unfinished_tail():
+    """验证兼容标签函数的上行、下行、flat 和尾部 NaN 行为。"""
     close = pd.Series([100.0, 100.3, 99.6, 99.5])
     labels = make_next_direction_labels(close, horizon=1, threshold=0.002)
 

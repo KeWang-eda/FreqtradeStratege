@@ -29,6 +29,7 @@ from model_io import (
     set_return_target,
     short_signal,
 )
+from freqtrade.persistence import Trade
 from freqtrade.strategy import IStrategy
 
 PROBE_OUT = Path("/tmp/reg_rank_probe.jsonl")
@@ -53,38 +54,41 @@ class MyStrategy(IStrategy):
         side: str,
         **kwargs,
     ) -> float:
+        """返回当前交易使用的杠杆；策略上限固定为 2 倍。"""
         return min(2.0, float(max_leverage))
 
     minimal_roi = {"0": 999.0}
-    stoploss = -0.08
+    stoploss = -1.0
     use_exit_signal = True
-    trailing_stop = True
-    trailing_stop_positive = 0.005
-    trailing_stop_positive_offset = 0.015
-    trailing_only_offset_is_reached = True
+    trailing_stop = False
 
     # ---------------- 实验配置 ----------------
     @property
     def _exp(self) -> dict:
+        """返回实验开关；来源是 config.json 的 my_experiment。"""
         return self.config.get("my_experiment", {}) or {}
 
     @property
     def _entry_threshold(self) -> float:
+        """返回回归预测入场阈值；volnorm 标签时与归一化分数同尺度。"""
         return float(self._exp.get("entry_threshold", 0.005))
 
     def feature_engineering_expand_all(
         self, dataframe: DataFrame, period: int, metadata: dict, **kwargs
     ) -> DataFrame:
+        """为每个配置周期添加 RSI、均线乖离、ATR 比率和相对成交量。"""
         return add_expanded_all_features(dataframe, period)
 
     def feature_engineering_expand_basic(
         self, dataframe: DataFrame, metadata: dict, **kwargs
     ) -> DataFrame:
+        """添加收益率、振幅、实体和成交量变化等基础价量特征。"""
         return add_basic_features(dataframe)
 
     def feature_engineering_standard(
         self, dataframe: DataFrame, metadata: dict, **kwargs
     ) -> DataFrame:
+        """添加标准波动/时间特征，并按配置启用 technical 候选指标。"""
         return add_standard_features(dataframe, self._exp.get("features", []))
 
     # ---------------- 回归标签 ----------------
@@ -98,6 +102,7 @@ class MyStrategy(IStrategy):
     def populate_indicators(
         self, dataframe: DataFrame, metadata: dict
     ) -> DataFrame:
+        """交给 FreqAI 训练/加载模型，并返回带预测列的分析数据。"""
         return self.freqai.start(dataframe, metadata, self)
 
     def populate_entry_trend(
@@ -144,23 +149,17 @@ class MyStrategy(IStrategy):
         side: str,
         **kwargs,
     ) -> bool:
-        # ponytail: 白名单靠后的 pair 索引尚未推进，取双方最小日期做共同锚点，
-        # 否则会拿当前 pair 的新 K 线去比对方的旧 K 线（非未来函数，但不公平）。
-        my_last = self._last_available_date(pair)
-        if my_last is None:
-            return True
+        """下单前比较所有 pair 的绝对归一化分数，只允许最强候选成交。"""
+        # ponytail: 用当前 K 线做锚点。切片由回测引擎按时刻限长，非未来函数。
         others = [p for p in self.dp.current_whitelist() if p != pair]
-        other_lasts = {p: self._last_available_date(p) for p in others}
-        available = [d for d in other_lasts.values() if d is not None]
-        anchor_date = min([my_last] + available) if available else my_last
 
-        mine = self._rank_info(pair, anchor_date)
+        mine = self._rank_info(pair, current_time)
         if mine is None:
             return True
         my_date, my_score, my_dir = mine
 
         for other in others:
-            info = self._rank_info(other, anchor_date)
+            info = self._rank_info(other, current_time)
             if info is None:
                 continue
             other_date, other_score, other_dir = info
@@ -174,17 +173,42 @@ class MyStrategy(IStrategy):
                 return False
         return True
 
-    def _last_available_date(self, pair: str):
-        """该 pair 当前可读到的最后一根 K 线时间；不可用返回 None。"""
-        try:
-            dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
-        except Exception:
-            return None
-        if dataframe is None or dataframe.empty or "date" not in dataframe.columns:
-            return None
-        return dataframe["date"].iloc[-1]
+    def custom_exit(
+        self,
+        pair: str,
+        trade: Trade,
+        current_time,
+        current_rate: float,
+        current_profit: float,
+        **kwargs,
+    ):
+        """只因预测最强性变化退出，不使用止盈/止损退出。"""
+        others = [candidate for candidate in self.dp.current_whitelist() if candidate != pair]
+        mine = self._rank_info(pair, current_time)
 
-    def _rank_info(self, pair: str, anchor_date=None):
+        if mine is None:
+            return "prediction_below_entry_threshold"
+
+        my_date, my_score, my_direction = mine
+        held_direction = "short" if trade.is_short else "long"
+        if my_direction != held_direction:
+            return "prediction_reversal"
+
+        for other in others:
+            info = self._rank_info(other, current_time)
+            if info is None:
+                continue
+            other_date, other_score, other_direction = info
+            if abs(other_score) > abs(my_score):
+                if self._exp.get("probe"):
+                    self._probe(
+                        current_time, pair, my_score, my_date,
+                        other, other_score, other_date,
+                    )
+                return "weaker_pair_rotation"
+        return None
+
+    def _rank_info(self, pair: str, cutoff=None):
         """返回 (date, 波动率归一化分数, 方向)；不可比较时返回 None。"""
         try:
             dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -195,8 +219,8 @@ class MyStrategy(IStrategy):
         needed = {"date", "close", "&-s_return", "do_predict"}
         if not needed.issubset(dataframe.columns):
             return None
-        if anchor_date is not None:
-            dataframe = dataframe[dataframe["date"] <= anchor_date]
+        if cutoff is not None:
+            dataframe = dataframe[dataframe["date"] <= cutoff]
             if dataframe.empty:
                 return None
 
@@ -223,6 +247,7 @@ class MyStrategy(IStrategy):
 
     @staticmethod
     def _probe(current_time, pair, my_score, my_date, other, other_score, other_date) -> None:
+        """写入被更强 pair 拒绝的审计记录，不参与交易决策。"""
         with PROBE_OUT.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps({
                 "kind": "reject", "time": str(current_time), "pair": pair,
@@ -234,6 +259,7 @@ class MyStrategy(IStrategy):
 
     @staticmethod
     def _probe_alignment(pair, last_date, rows, score) -> None:
+        """写入 pair 预测时间对齐审计记录。"""
         with PROBE_OUT.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps({
                 "kind": "align", "pair": pair, "last_date": str(last_date),

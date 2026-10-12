@@ -1,7 +1,9 @@
 {
   "$schema": "https://schema.freqtrade.io/schema.json",
+  "_comment": "Freqtrade 需要严格 JSON。以 _comment 开头的键会被 Freqtrade 忽略（已用 freqtrade 2026.7 实测通过校验），因此用它内联写审查注释。策略逻辑在 MyStrategy.py，特征输入在 feature_engineering.py，标签与预测读取在 model_io.py。",
   "trading_mode": "futures",
   "margin_mode": "isolated",
+  "_comment_position": "全局只允许一个持仓。跨 pair 择优由 MyStrategy.confirm_trade_entry 实现：比较所有 pair 的 abs(预测收益率/近30根波动率)，只允许最强候选成交。",
   "max_open_trades": 1,
   "stake_currency": "USDT",
   "stake_amount": 100,
@@ -10,11 +12,9 @@
   "dry_run": true,
   "dry_run_wallet": 1000,
   "timeframe": "4h",
-  "stoploss": -0.08,
-  "trailing_stop": true,
-  "trailing_stop_positive": 0.005,
-  "trailing_stop_positive_offset": 0.015,
-  "trailing_only_offset_is_reached": true,
+  "_comment_exit": "止盈止损已按要求移除：stoploss=-1.0 是把固定止损放到极远位置（Freqtrade 允许的边界值，不是删除订单保护开关），trailing_stop=false 关闭追踪止损，策略内 minimal_roi={\"0\":999.0} 关闭 ROI 止盈。退出只由预测反转和跨 pair 轮换触发。",
+  "stoploss": -1.0,
+  "trailing_stop": false,
   "fee": 0.0005,
   "datadir": "/home/wangke/project/MyStrategy/data",
   "dataformat_ohlcv": "feather",
@@ -33,6 +33,7 @@
     "use_order_book": true
   },
   "exchange": {
+    "_comment": "binance 合约数据源。key/secret 留空表示 dry-run 不接实盘密钥；pair_whitelist 是 72 个有有效 4h futures 数据的标的，FreqAI 会为每个 pair 独立训练模型。",
     "name": "binance",
     "key": "",
     "secret": "",
@@ -120,10 +121,12 @@
   },
   "pairlists": [
     {
+      "_comment": "静态白名单，不做动态过滤；72 个 pair 全部由 FreqAI 独立训练。",
       "method": "StaticPairList"
     }
   ],
   "order_types": {
+    "_comment": "限价进出场。stoploss 类型仍为 market，但策略已用 stoploss=-1.0 让固定止损不触发；stoploss_on_exchange=false 表示不在交易所挂止损单。",
     "entry": "limit",
     "exit": "limit",
     "stoploss": "market",
@@ -131,6 +134,7 @@
   },
   "freqaimodel": "XGBoostRegressor",
   "freqai": {
+    "_comment": "回归模型：预测未来 3 根 4h K 线的收益率，目标列 &-s_return。identifier 是模型与预测缓存命名空间，改特征/标签/模型必须换新值。label_period_candles=3 即预测未来 3 根 K 线。eval_metric 必须是 rmse，不能沿用分类的 mlogloss。",
     "enabled": true,
     "purge_old_models": 2,
     "train_period_days": 365,
@@ -174,6 +178,7 @@
     }
   },
   "my_experiment": {
+    "_comment": "策略自定义开关，由 MyStrategy._exp 读取。label=volnorm 表示标签为 未来收益率/ATR 归一化（raw 为原始收益率）；entry_threshold 是入场阈值，与标签同尺度；probe=true 会把跨 pair 对齐审计写入 /tmp/reg_rank_probe.jsonl，生产应保持 false。",
     "label": "volnorm",
     "features": [],
     "entry_threshold": 0.4,

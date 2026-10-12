@@ -69,8 +69,10 @@ def short_signal(prediction_return, ready, threshold: float):
 
 
 def exit_long_signal(prediction_return, ready):
+    """判断已有多仓是否应因预测转负而退出。"""
     return ready & (prediction_return < 0)
 
 
 def exit_short_signal(prediction_return, ready):
+    """判断已有空仓是否应因预测转正而退出。"""
     return ready & (prediction_return > 0)
