@@ -1,11 +1,14 @@
 """4h 回归策略：预测未来 3 根 4h 收益率，在全池中择优，只开 abs(分数) 最大的 1 仓。
 
+退出统一由「目标仓位 vs 当前持仓」比较得出：没有独立的反转退出分支。
+
 实验通过 config["my_experiment"] 切换标签与特征。
 
 my_experiment:
-  label: "raw" | "volnorm"
+  label: "raw" | "volnorm"（决定阈值尺度）
   features: ["laguerre", "vwmacd", "tke", "vfi", "rmi"]
-  entry_threshold: float（与标签同尺度）
+  entry_threshold: float（可省略，按 label 取默认值）
+  exit_threshold: float（可省略，按 label 取默认值；应低于 entry_threshold）
   probe: bool（记录跨 pair 时间对齐）
 """
 
@@ -21,19 +24,27 @@ from feature_engineering import (
     add_period_expanded_features,
 )
 from model_io import (
+    PoolCandidate,
+    TargetPosition,
+    build_candidate,
+    decide_position_action,
     read_model_prediction,
+    resolve_label_threshold,
+    resolve_target_position,
     set_regression_target,
     should_enter_long,
     should_enter_short,
-    should_exit_long,
-    should_exit_short,
 )
+from freqtrade.exchange import timeframe_to_prev_date
 from freqtrade.persistence import Trade
 from freqtrade.strategy import IStrategy
 
 # 跨 pair 时间对齐审计日志（JSONL，追加写入）。
 # 仅在 config.json 的 my_experiment.probe = true 时写入，生产保持 false。
 ALIGN_AUDIT_LOG = Path(__file__).resolve().parent / "logs" / "align_audit.jsonl"
+
+# 波动率归一化窗口，单位：K 线根数（4h × 30 = 5 天）。
+VOLATILITY_WINDOW_CANDLES = 30
 
 
 class MyStrategy(IStrategy):
@@ -60,6 +71,10 @@ class MyStrategy(IStrategy):
 
     minimal_roi = {"0": 999.0}
     stoploss = -1.0
+    # 必须为 True：should_exit 里整个 custom_exit 调用块都在 `if self.use_exit_signal:` 内
+    # （interface.py:1462），设为 False 会让 custom_exit 从不被调用、仓位永不轮动。
+    # 退出统一走 custom_exit：populate_exit_trend 恒输出 0，使 exit_ 恒为 False，
+    # 从而绕过 `exit_ and not enter → EXIT_SIGNAL` 这条会跳过 custom_exit 的分支。
     use_exit_signal = True
     trailing_stop = False
 
@@ -70,9 +85,27 @@ class MyStrategy(IStrategy):
         return self.config.get("my_experiment", {}) or {}
 
     @property
-    def _min_prediction_to_enter(self) -> float:
-        """返回入场所需的最小预测幅度；volnorm 标签时与归一化分数同尺度。"""
-        return float(self._experiment_config.get("entry_threshold", 0.005))
+    def _label_scaling_mode(self) -> str:
+        """返回标签尺度模式，决定阈值的量纲。"""
+        return str(self._experiment_config.get("label", "raw"))
+
+    @property
+    def _entry_threshold(self) -> float:
+        """开仓阈值：低于它的候选不参与择优。"""
+        return resolve_label_threshold(
+            self._label_scaling_mode,
+            "entry_threshold",
+            self._experiment_config.get("entry_threshold"),
+        )
+
+    @property
+    def _exit_threshold(self) -> float:
+        """持仓阈值：低于它且方向不再自洽才平仓；低于开仓阈值以减少过度交易。"""
+        return resolve_label_threshold(
+            self._label_scaling_mode,
+            "exit_threshold",
+            self._experiment_config.get("exit_threshold"),
+        )
 
     def feature_engineering_expand_all(
         self, dataframe: DataFrame, period: int, metadata: dict, **kwargs
@@ -105,7 +138,7 @@ class MyStrategy(IStrategy):
         return set_regression_target(
             dataframe,
             prediction_horizon,
-            self._experiment_config.get("label", "raw"),
+            self._label_scaling_mode,
         )
 
     def populate_indicators(
@@ -117,12 +150,12 @@ class MyStrategy(IStrategy):
     def populate_entry_trend(
         self, dataframe: DataFrame, metadata: dict
     ) -> DataFrame:
-        """预测幅度超过入场阈值才产生入场信号。"""
+        """逐 pair 产生入场资格；是否最强由 confirm_trade_entry 把关。"""
         dataframe["enter_long"] = 0
         dataframe["enter_short"] = 0
         prediction_ready = dataframe["do_predict"] == 1
         model_prediction = read_model_prediction(dataframe)
-        entry_threshold = self._min_prediction_to_enter
+        entry_threshold = self._entry_threshold
 
         long_mask = should_enter_long(model_prediction, prediction_ready, entry_threshold)
         short_mask = should_enter_short(model_prediction, prediction_ready, entry_threshold)
@@ -135,17 +168,17 @@ class MyStrategy(IStrategy):
     def populate_exit_trend(
         self, dataframe: DataFrame, metadata: dict
     ) -> DataFrame:
-        """预测反向即离场（阈值 0，不要求超过入场阈值）。"""
+        """留空：退出统一走 custom_exit 的目标仓位比较。
+
+        若这里输出 exit_long/exit_short，框架在 `exit_ and not enter` 时会走
+        EXIT_SIGNAL 而跳过 custom_exit（interface.py:1462），等于同时存在两套
+        退出逻辑，与「统一由目标仓位轮动决定退出」冲突。
+        """
         dataframe["exit_long"] = 0
         dataframe["exit_short"] = 0
-        prediction_ready = dataframe["do_predict"] == 1
-        model_prediction = read_model_prediction(dataframe)
-
-        dataframe.loc[should_exit_long(model_prediction, prediction_ready), "exit_long"] = 1
-        dataframe.loc[should_exit_short(model_prediction, prediction_ready), "exit_short"] = 1
         return dataframe
 
-    # ---------------- 跨 pair 择优（波动率归一化） ----------------
+    # ---------------- 目标仓位轮动 ----------------
     def confirm_trade_entry(
         self,
         pair: str,
@@ -158,18 +191,9 @@ class MyStrategy(IStrategy):
         side: str,
         **kwargs,
     ) -> bool:
-        """下单前比较所有 pair 的绝对归一化分数，只允许最强候选成交。"""
-        # 以当前 K 线为锚点：切片由回测引擎按时刻限长，不会读到未来 K 线。
-        current_pair_rank = self._pair_score_and_direction(pair, current_time)
-        if current_pair_rank is None:
-            return True
-        current_pair_date, current_pair_score, _ = current_pair_rank
-        return (
-            self._find_stronger_pair(
-                pair, current_pair_date, current_pair_score, current_time
-            )
-            is None
-        )
+        """只放行目标仓位本身的开仓；其余候选等目标变化后再说。"""
+        target = self._target_position(current_time)
+        return target.pair == pair and target.side == side
 
     def custom_exit(
         self,
@@ -180,43 +204,50 @@ class MyStrategy(IStrategy):
         current_profit: float,
         **kwargs,
     ):
-        """持仓不再是最强候选、或自身预测跌破阈值时退出；不使用止盈止损退出。"""
-        current_pair_rank = self._pair_score_and_direction(pair, current_time)
-        if current_pair_rank is None:
-            return "prediction_weakened"
+        """目标仓位轮动的唯一退出路径：反转、强弱、轮动共用同一段比较。"""
+        held_side = "short" if trade.is_short else "long"
+        candidates = self._pool_candidates(current_time)
+        target = resolve_target_position(candidates, self._entry_threshold)
 
-        current_pair_date, current_pair_score, _ = current_pair_rank
-        if (
-            self._find_stronger_pair(
-                pair, current_pair_date, current_pair_score, current_time
+        held_candidate = next(
+            (c for c in candidates if c.pair == pair and c.passes(self._exit_threshold)),
+            None,
+        )
+        action, reason = decide_position_action(
+            held_pair=pair,
+            held_side=held_side,
+            held_candidate=held_candidate,
+            target=target,
+            exit_threshold=self._exit_threshold,
+        )
+        return None if action == "hold" else reason
+
+    def _target_position(self, evaluation_time) -> TargetPosition:
+        """全池择优得到目标仓位。"""
+        return resolve_target_position(
+            self._pool_candidates(evaluation_time), self._entry_threshold
+        )
+
+    def _pool_candidates(self, evaluation_time) -> tuple[PoolCandidate, ...]:
+        """全池候选快照，按 K 线时间戳缓存，同一根 K 线内只算一次。"""
+        candle_timestamp = timeframe_to_prev_date(self.timeframe, evaluation_time)
+        cached = getattr(self, "_pool_cache", None)
+        if cached is not None and cached[0] == candle_timestamp:
+            return cached[1]
+
+        candidates = tuple(
+            candidate
+            for candidate in (
+                self._pair_candidate(pair, candle_timestamp)
+                for pair in self.dp.current_whitelist()
             )
-            is not None
-        ):
-            return "rotated_to_stronger_pair"
-        return None
+            if candidate is not None
+        )
+        self._pool_cache = (candle_timestamp, candidates)
+        return candidates
 
-    def _find_stronger_pair(
-        self, pair: str, current_pair_date, current_pair_score: float, evaluation_time
-    ):
-        """在共同时间锚点上寻找绝对分数更高的 pair；没有更强的返回 None。"""
-        for other_pair in self.dp.current_whitelist():
-            if other_pair == pair:
-                continue
-            candidate_rank = self._pair_score_and_direction(other_pair, evaluation_time)
-            if candidate_rank is None:
-                continue
-            other_pair_date, other_pair_score, _ = candidate_rank
-            if abs(other_pair_score) > abs(current_pair_score):
-                if self._experiment_config.get("probe"):
-                    self._record_rejection(
-                        evaluation_time, pair, current_pair_score, current_pair_date,
-                        other_pair, other_pair_score, other_pair_date,
-                    )
-                return other_pair, other_pair_score, other_pair_date
-        return None
-
-    def _pair_score_and_direction(self, pair: str, evaluation_time=None) -> tuple | None:
-        """返回 (时间戳, 波动率归一化分数, 方向)；不可比较时返回 None。"""
+    def _pair_candidate(self, pair: str, candle_timestamp) -> PoolCandidate | None:
+        """读取单个 pair 在指定 K 线上的候选；数据不足或不可用时返回 None。"""
         try:
             dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         except Exception:
@@ -226,48 +257,27 @@ class MyStrategy(IStrategy):
         required_columns = {"date", "close", "&-s_return", "do_predict"}
         if not required_columns.issubset(dataframe.columns):
             return None
-        if evaluation_time is not None:
-            dataframe = dataframe[dataframe["date"] <= evaluation_time]
-            if dataframe.empty:
-                return None
+
+        # 显式按 K 线时间戳设上界：不依赖框架切片是否已推进，避免读到未来 K 线。
+        dataframe = dataframe[dataframe["date"] <= candle_timestamp]
+        if dataframe.empty:
+            return None
 
         latest_row = dataframe.iloc[-1]
-        if latest_row["do_predict"] != 1:
-            return None
-        model_prediction = float(latest_row["&-s_return"])
-        if not np.isfinite(model_prediction):
-            return None
-        # 自己都不会入场的候选不参与比较
-        if abs(model_prediction) <= self._min_prediction_to_enter:
-            return None
-
-        recent_volatility = float(dataframe["close"].pct_change().rolling(30).std().iloc[-1])
-        if np.isfinite(recent_volatility) and recent_volatility > 0:
-            normalized_score = model_prediction / recent_volatility
-        else:
-            normalized_score = model_prediction
-
-        signal_direction = "long" if model_prediction > 0 else "short"
-        if self._experiment_config.get("probe"):
+        recent_volatility = (
+            dataframe["close"].pct_change().rolling(VOLATILITY_WINDOW_CANDLES).std().iloc[-1]
+        )
+        candidate = build_candidate(
+            pair=pair,
+            raw_prediction=latest_row["&-s_return"],
+            recent_volatility=recent_volatility,
+            prediction_ready=latest_row["do_predict"] == 1,
+        )
+        if candidate is not None and self._experiment_config.get("probe"):
             self._write_alignment_audit(
-                pair, latest_row["date"], len(dataframe), normalized_score
+                pair, latest_row["date"], len(dataframe), candidate.normalized_score
             )
-        return latest_row["date"], normalized_score, signal_direction
-
-    @staticmethod
-    def _record_rejection(
-        evaluation_time, pair, current_pair_score, current_pair_date,
-        other_pair, other_pair_score, other_pair_date,
-    ) -> None:
-        """写入被更强 pair 拒绝的审计记录，不参与交易决策。"""
-        with ALIGN_AUDIT_LOG.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps({
-                "kind": "reject", "time": str(evaluation_time), "pair": pair,
-                "my_score": current_pair_score, "my_date": str(current_pair_date),
-                "other": other_pair, "other_score": other_pair_score,
-                "other_date": str(other_pair_date),
-                "same_candle": str(current_pair_date) == str(other_pair_date),
-            }) + "\n")
+        return candidate
 
     @staticmethod
     def _write_alignment_audit(pair, last_candle_date, row_count, normalized_score) -> None:

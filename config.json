@@ -178,10 +178,11 @@
     }
   },
   "my_experiment": {
-    "_comment": "策略自定义开关，由 MyStrategy._experiment_config 读取。label=volnorm 表示标签为 未来收益率/ATR 归一化（raw 为原始收益率）；entry_threshold 是入场阈值，与标签同尺度；probe=true 会把跨 pair 对齐审计写入仓库 logs/align_audit.jsonl，生产应保持 false。",
+    "_comment": "策略自定义开关，由 MyStrategy._experiment_config 读取。label 决定阈值量纲：raw 是原始收益率（阈值 0.005 量级），volnorm 是收益率/ATR（阈值 0.4 量级）；两个阈值都省略时按 label 取默认值，给出与 label 不匹配的值会直接报错。entry_threshold 是开仓门槛，exit_threshold 是持仓门槛（应低于前者，避免幅度回落就被强平）。probe=true 会把跨 pair 对齐审计写入仓库 logs/align_audit.jsonl，生产应保持 false。",
     "label": "volnorm",
     "features": [],
     "entry_threshold": 0.4,
+    "exit_threshold": 0.2,
     "probe": false
   },
   "initial_state": "running",
