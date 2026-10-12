@@ -7,8 +7,8 @@
 
 ```text
 当前已收盘 4h K 线
-  -> 61 个因果模型特征
-  -> XGBoostRegressor
+  -> 70 个因果模型特征
+  -> MomentumRidgeRegressor（Ridge，只选 momentum/rsi 特征）
   -> 预测未来 3 根 4h 收益率 / ATR 波动率归一化
   -> prediction_return > 0.4 做多，< -0.4 做空
   -> 所有 pair 的 abs(prediction_return / recent_vol) 横向排序
@@ -26,9 +26,9 @@ volnorm : future_return / (ATR(14) / close)
 ## 文件
 
 - `MyStrategy.py`：Freqtrade 生命周期、回归目标/信号调度和跨 pair 择优；
-- `feature_engineering.py`：独立的 FreqAI `%` 特征输入层；
-- `model_io.py`：独立的 FreqAI `&-s_return` 标签、预测读取和信号条件层；
-- `config.json`：XGBoostRegressor，72 个 4h pair，1 个最大持仓；内联 `_comment` 键写审查注释（Freqtrade 忽略下划线开头的键）；
+- `feature.py`：独立的 FreqAI `%` 特征输入层；
+- `model.py`：独立的 FreqAI `&-s_return` 标签、预测读取和信号条件层；
+- `config.json`：MomentumRidgeRegressor，72 个 4h pair，1 个最大持仓；内联 `_comment` 键写审查注释（Freqtrade 忽略下划线开头的键）；
 - `config说明.md`：逐字段配置说明与止盈止损语义；
 - `test_my_strategy.py`：标签兼容性与跨 pair 择优回归测试；
 - `verify_no_lookahead.py`：截断不变性门禁（验证决策路径未使用未来数据）；

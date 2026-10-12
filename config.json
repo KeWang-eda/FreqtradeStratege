@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.freqtrade.io/schema.json",
-  "_comment": "Freqtrade 需要严格 JSON。以 _comment 开头的键会被 Freqtrade 忽略（已用 freqtrade 2026.7 实测通过校验），因此用它内联写审查注释。策略逻辑在 MyStrategy.py，特征输入在 feature_engineering.py，标签与预测读取在 model_io.py。",
+  "_comment": "Freqtrade 需要严格 JSON。以 _comment 开头的键会被 Freqtrade 忽略（已用 freqtrade 2026.7 实测通过校验），因此用它内联写审查注释。策略逻辑在 MyStrategy.py，特征输入在 feature.py，标签与预测读取在 model.py。",
   "trading_mode": "futures",
   "margin_mode": "isolated",
   "_comment_position": "全局只允许一个持仓。跨 pair 择优由 MyStrategy.confirm_trade_entry 实现：比较所有 pair 的 abs(预测收益率/近30根波动率)，只允许最强候选成交。",

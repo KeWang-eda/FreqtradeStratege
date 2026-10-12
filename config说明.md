@@ -49,9 +49,9 @@ strategy.trailing_stop = false
 
 | 字段 | 当前值 | 作用 |
 |---|---|---|
-| `freqaimodel` | `XGBoostRegressor` | 连续收益率回归模型。 |
-| `identifier` | `mystrategy-4h-regression-72pair-v1` | FreqAI 模型/预测缓存命名空间；改特征、标签、模型时必须更换。 |
-| `train_period_days` | `365` | 每个 pair 使用 365 天历史训练。 |
+| `freqaimodel` | `MomentumRidgeRegressor` | 连续收益率回归模型；只选因果 momentum/rsi 特征。 |
+| `identifier` | `mystrategy-4h-regression-72pair-ridge30-v1` | FreqAI 模型/预测缓存命名空间；改特征、标签、模型时必须更换。 |
+| `train_period_days` | `30` | 每个 pair 使用 30 天历史训练；短窗口实测时序 IC 明显优于 90/180/365 天。 |
 | `backtest_period_days` | `7` | 回测滚动训练周期。 |
 | `include_timeframes` | `["4h"]` | 只用 4h FreqAI 特征。 |
 | `label_period_candles` | `3` | 预测未来 3 根 4h K 线。 |
@@ -73,7 +73,7 @@ strategy.trailing_stop = false
 
 - `label=raw`：标签为未来收益率；
 - `label=volnorm`：标签为未来收益率除以 ATR/close；
-- `features`：独立 `feature_engineering.py` 中的 technical 指标开关；
+- `features`：独立 `feature.py` 中的 technical 指标开关；
 - `entry_threshold=0.4`：volnorm 预测阈值；raw 标签时应使用另一尺度；
 - `probe`：写入仓库内 `logs/align_audit.jsonl`，用于审计跨 pair 时间对齐；生产应关闭。
 

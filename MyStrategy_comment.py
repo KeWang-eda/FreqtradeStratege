@@ -15,7 +15,7 @@ from pathlib import Path
 import numpy as np
 from pandas import DataFrame
 
-from feature_engineering import (
+from feature import (
     add_baseline_features,
     add_basic_price_features,
     add_period_expanded_features,
@@ -29,7 +29,7 @@ from feature_engineering import (
 #   short_signal           → should_enter_short
 #   exit_long_signal       → should_exit_long
 #   exit_short_signal      → should_exit_short
-from model_io import (
+from model import (
     read_model_prediction,
     set_regression_target,
     should_enter_long,

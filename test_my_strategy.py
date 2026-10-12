@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from model_io import (
+from model import (
     build_candidate,
     decide_position_action,
     resolve_label_threshold,
@@ -163,7 +163,7 @@ def test_strategy_class_contract():
     assert MyStrategy.timeframe == "4h"
 
 
-# ---------------- model_io 标签边界 ----------------
+# ---------------- model 标签边界 ----------------
 
 def test_regression_target_rejects_bad_horizon_and_cleans_nonfinite_values():
     """标签生成拒绝非法 horizon，并把零价格产生的无穷标签清成 NaN。"""
