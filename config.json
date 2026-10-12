@@ -137,11 +137,11 @@
     "_comment": "回归模型：预测未来 3 根 4h K 线的收益率，目标列 &-s_return。当前使用 MomentumRidgeRegressor：只用因果 momentum/rsi 特征，降低 90 天小样本下的 XGBoost 过拟合。identifier 是模型与预测缓存命名空间，改特征/标签/模型必须换新值。label_period_candles=3 即预测未来 3 根 K 线。",
     "enabled": true,
     "purge_old_models": 2,
-    "train_period_days": 90,
+    "train_period_days": 30,
     "backtest_period_days": 7,
     "save_backtest_models": false,
     "live_retrain_hours": 24,
-    "identifier": "mystrategy-4h-regression-72pair-ridge90-v1",
+    "identifier": "mystrategy-4h-regression-72pair-ridge30-v1",
     "feature_parameters": {
       "include_timeframes": [
         "4h"
