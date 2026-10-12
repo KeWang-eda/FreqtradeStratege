@@ -15,7 +15,11 @@ logger = logging.getLogger(__name__)
 
 
 def add_period_expanded_features(dataframe: DataFrame, period: int) -> DataFrame:
-    """添加按 indicator_periods_candles 逐周期展开的指标特征。"""
+    """添加按 indicator_periods_candles 逐周期展开的指标特征。
+
+    含累计动量：动量是实测中唯一稳定的方向性信号（IC 约 +0.09），
+    而原特征集只有单根收益 %-return，模型无法自行构造多周期累计收益。
+    """
     close_series = dataframe["close"].replace(0.0, np.nan)
     dataframe["%-rsi-period"] = ta.RSI(dataframe, timeperiod=period)
     dataframe["%-ema-distance-period"] = (
@@ -29,6 +33,8 @@ def add_period_expanded_features(dataframe: DataFrame, period: int) -> DataFrame
         dataframe["volume"]
         / dataframe["volume"].rolling(period).mean().replace(0.0, np.nan)
     )
+    # 累计动量：过去 period 根 K 线的已实现收益（因果，只用已收盘数据）
+    dataframe["%-momentum-period"] = close_series / close_series.shift(period) - 1.0
     return dataframe
 
 

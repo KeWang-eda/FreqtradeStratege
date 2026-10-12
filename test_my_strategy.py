@@ -3,6 +3,7 @@
 决策函数不依赖 freqtrade 运行时，因此这里不需要 fake DataProvider。
 """
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -11,6 +12,7 @@ from model_io import (
     decide_position_action,
     resolve_label_threshold,
     resolve_target_position,
+    set_regression_target,
     should_enter_long,
     should_enter_short,
 )
@@ -159,6 +161,19 @@ def test_strategy_class_contract():
     assert MyStrategy.trailing_stop is False
     assert MyStrategy.can_short is True
     assert MyStrategy.timeframe == "4h"
+
+
+# ---------------- model_io 标签边界 ----------------
+
+def test_regression_target_rejects_bad_horizon_and_cleans_nonfinite_values():
+    """标签生成拒绝非法 horizon，并把零价格产生的无穷标签清成 NaN。"""
+    dataframe = pd.DataFrame({"close": [100.0, 0.0, 101.0, 102.0, 103.0]})
+    with pytest.raises(ValueError, match="prediction_horizon"):
+        set_regression_target(dataframe.copy(), 0, "raw")
+
+    target_frame = set_regression_target(dataframe.copy(), 1, "raw")
+    assert not np.isinf(target_frame["&-s_return"].to_numpy()).any()
+    assert target_frame["&-s_return"].isna().any()
 
 
 # ---------------- populate_entry_trend 的向量化条件 ----------------

@@ -32,18 +32,27 @@ def set_regression_target(
     prediction_horizon: int,
     label_scaling_mode: str,
 ) -> DataFrame:
-    """写入 FreqAI 回归标签，支持 raw 和 volnorm 两种尺度。"""
-    future_close = dataframe["close"].shift(-prediction_horizon)
-    future_return = future_close / dataframe["close"] - 1.0
+    """写入 FreqAI 回归标签，支持 raw 和 volnorm 两种尺度。
+
+    保持标签定义不变，但在训练边界清理零收盘价和无穷值，
+    避免坏 K 线把 XGBoost 训练集污染成异常样本。
+    """
+    if prediction_horizon < 1:
+        raise ValueError("prediction_horizon must be at least 1")
+
+    close_series = dataframe["close"].replace(0.0, np.nan)
+    future_close = close_series.shift(-prediction_horizon)
+    future_return = future_close / close_series - 1.0
 
     if label_scaling_mode == "volnorm":
-        atr_ratio = ta.ATR(dataframe, timeperiod=14) / dataframe["close"]
-        dataframe[FREQAI_RETURN_TARGET] = future_return / atr_ratio.replace(0.0, np.nan)
+        atr_ratio = ta.ATR(dataframe, timeperiod=14) / close_series
+        target = future_return / atr_ratio.replace(0.0, np.nan)
     elif label_scaling_mode == "raw":
-        dataframe[FREQAI_RETURN_TARGET] = future_return
+        target = future_return
     else:
         raise ValueError(f"Unsupported regression label mode: {label_scaling_mode}")
 
+    dataframe[FREQAI_RETURN_TARGET] = target.replace([np.inf, -np.inf], np.nan)
     return dataframe
 
 
