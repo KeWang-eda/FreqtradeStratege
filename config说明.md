@@ -15,7 +15,7 @@
 | `dry_run_wallet` | `1000` | 模拟钱包初始余额。 |
 | `timeframe` | `4h` | 主策略 K 线周期。 |
 | `fee` | `0.0005` | 回测单边手续费口径。 |
-| `datadir` | `/home/wangke/project/MyStrategy/data` | 本地市场数据目录；不要改成仓库相对路径。 |
+| `datadir` | `/home/wangke/project/FreqtradeStratege/data` | 本地市场数据目录；原 `MyStrategy/data` 已于 2026-10-12 被清空，数据改放仓库内。不要改成仓库相对路径。 |
 
 ## 价格与订单
 

@@ -16,7 +16,7 @@
   "stoploss": -1.0,
   "trailing_stop": false,
   "fee": 0.0005,
-  "datadir": "/home/wangke/project/MyStrategy/data",
+  "datadir": "/home/wangke/project/FreqtradeStratege/data",
   "dataformat_ohlcv": "feather",
   "cancel_open_orders_on_exit": true,
   "unfilledtimeout": {
