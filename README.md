@@ -30,8 +30,8 @@ volnorm : future_return / (ATR(14) / close)
 - `model_io.py`：独立的 FreqAI `&-s_return` 标签、预测读取和信号条件层；
 - `config.json`：XGBoostRegressor，72 个 4h pair，1 个最大持仓；内联 `_comment` 键写审查注释（Freqtrade 忽略下划线开头的键）；
 - `config说明.md`：逐字段配置说明与止盈止损语义；
-- `test_my_strategy.py`：标签兼容性检查；
-- `RESEARCH_LOG.md`：实验与跨 pair 验证记录；
+- `test_my_strategy.py`：标签兼容性与跨 pair 择优回归测试；
+- `verify_no_lookahead.py`：截断不变性门禁（验证决策路径未使用未来数据）；
 - `data/futures/`：本地 futures K 线数据，不纳入 Git。
 
 ## 风控与最小下单额

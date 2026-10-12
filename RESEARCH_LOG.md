@@ -1,1 +1,0 @@
-/home/wangke/note/RESEARCH_LOG.md
