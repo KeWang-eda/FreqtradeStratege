@@ -10,42 +10,28 @@ my_experiment:
 """
 
 import json
-import logging
 from pathlib import Path
 
 import numpy as np
-import talib.abstract as ta
-import technical.indicators as ftt
-from pandas import DataFrame, Series
+from pandas import DataFrame
 
+from feature_engineering import (
+    add_basic_features,
+    add_expanded_all_features,
+    add_standard_features,
+)
+from model_io import (
+    exit_long_signal,
+    exit_short_signal,
+    long_signal,
+    make_next_direction_labels,
+    read_prediction_return,
+    set_return_target,
+    short_signal,
+)
 from freqtrade.strategy import IStrategy
 
-logger = logging.getLogger(__name__)
-
 PROBE_OUT = Path("/tmp/reg_rank_probe.jsonl")
-
-
-def make_next_direction_labels(
-    close: Series, horizon: int = 1, threshold: float = 0.002
-) -> Series:
-    """三分类标签函数，保留以便回退；当前回归实验不调用。"""
-    if horizon < 1:
-        raise ValueError("horizon must be at least 1")
-    if threshold < 0:
-        raise ValueError("threshold must be non-negative")
-    future_close = close.shift(-horizon)
-    future_return = future_close / close - 1.0
-    labels = Series(
-        np.select(
-            [future_return > threshold, future_return < -threshold],
-            ["up", "down"],
-            default="flat",
-        ),
-        index=close.index,
-        dtype="object",
-    )
-    labels.loc[future_close.isna()] = np.nan
-    return labels
 
 
 class MyStrategy(IStrategy):
@@ -86,99 +72,28 @@ class MyStrategy(IStrategy):
     def _entry_threshold(self) -> float:
         return float(self._exp.get("entry_threshold", 0.005))
 
-    @staticmethod
-    def _ohlcv(dataframe: DataFrame) -> DataFrame:
-        """只给 technical / talib 传纯 OHLCV，避免非数值列干扰。"""
-        return dataframe[["open", "high", "low", "close", "volume"]]
-
-    # ---------------- FreqAI 特征 ----------------
     def feature_engineering_expand_all(
         self, dataframe: DataFrame, period: int, metadata: dict, **kwargs
     ) -> DataFrame:
-        close = dataframe["close"].replace(0.0, np.nan)
-        dataframe["%-rsi-period"] = ta.RSI(dataframe, timeperiod=period)
-        dataframe["%-ema-distance-period"] = ta.EMA(dataframe, timeperiod=period) / close - 1.0
-        dataframe["%-sma-distance-period"] = ta.SMA(dataframe, timeperiod=period) / close - 1.0
-        dataframe["%-atr-ratio-period"] = ta.ATR(dataframe, timeperiod=period) / close
-        dataframe["%-relative-volume-period"] = (
-            dataframe["volume"]
-            / dataframe["volume"].rolling(period).mean().replace(0.0, np.nan)
-        )
-        return dataframe
+        return add_expanded_all_features(dataframe, period)
 
     def feature_engineering_expand_basic(
         self, dataframe: DataFrame, metadata: dict, **kwargs
     ) -> DataFrame:
-        close = dataframe["close"].replace(0.0, np.nan)
-        dataframe["%-return"] = close.pct_change()
-        dataframe["%-range"] = (dataframe["high"] - dataframe["low"]) / close
-        dataframe["%-body"] = dataframe["close"] / dataframe["open"].replace(0.0, np.nan) - 1.0
-        dataframe["%-volume-change"] = dataframe["volume"].pct_change()
-        return dataframe
+        return add_basic_features(dataframe)
 
     def feature_engineering_standard(
         self, dataframe: DataFrame, metadata: dict, **kwargs
     ) -> DataFrame:
-        returns = dataframe["close"].pct_change()
-        dataframe["%-volatility-6"] = returns.rolling(6).std()
-        dataframe["%-volatility-24"] = returns.rolling(24).std()
-        dataframe["%-hour"] = dataframe["date"].dt.hour / 23.0
-        dataframe["%-day-of-week"] = dataframe["date"].dt.dayofweek / 6.0
-
-        # technical 库特征：逐个开关，单指标失败不影响其他
-        feats = set(self._exp.get("features", []) or [])
-        if feats:
-            ohlcv = self._ohlcv(dataframe)
-            if "laguerre" in feats:
-                try:
-                    dataframe["%-laguerre"] = ftt.laguerre(ohlcv)
-                except Exception as exc:  # pragma: no cover
-                    logger.warning("laguerre failed: %s", exc)
-            if "vwmacd" in feats:
-                try:
-                    vw = ftt.vwmacd(ohlcv)
-                    dataframe["%-vwmacd"] = vw["vwmacd"]
-                    dataframe["%-vwmacd-hist"] = vw["hist"]
-                except Exception as exc:  # pragma: no cover
-                    logger.warning("vwmacd failed: %s", exc)
-            if "tke" in feats:
-                try:
-                    tke, tke_ema = ftt.TKE(ohlcv)
-                    dataframe["%-tke"] = tke
-                    dataframe["%-tke-ema"] = tke_ema
-                except Exception as exc:  # pragma: no cover
-                    logger.warning("tke failed: %s", exc)
-            if "vfi" in feats:
-                try:
-                    vfi, _vfi_ma, vfi_hist = ftt.vfi(ohlcv)
-                    dataframe["%-vfi"] = vfi
-                    dataframe["%-vfi-hist"] = vfi_hist
-                except Exception as exc:  # pragma: no cover
-                    logger.warning("vfi failed: %s", exc)
-            if "rmi" in feats:
-                try:
-                    dataframe["%-rmi"] = ftt.RMI(ohlcv)
-                except Exception as exc:  # pragma: no cover
-                    logger.warning("rmi failed: %s", exc)
-
-        dataframe.replace([np.inf, -np.inf], np.nan, inplace=True)
-        return dataframe
+        return add_standard_features(dataframe, self._exp.get("features", []))
 
     # ---------------- 回归标签 ----------------
     def set_freqai_targets(
         self, dataframe: DataFrame, metadata: dict, **kwargs
     ) -> DataFrame:
-        """预测未来 3 根 4h K 线收益率；volnorm 时除以 ATR 做波动率归一化。"""
+        """写入回归标签；训练由 config 的原生 XGBoostRegressor 负责。"""
         horizon = int(self.freqai_info["feature_parameters"].get("label_period_candles", 1))
-        future_close = dataframe["close"].shift(-horizon)
-        future_return = future_close / dataframe["close"] - 1.0
-
-        if self._exp.get("label") == "volnorm":
-            atr_ratio = ta.ATR(dataframe, timeperiod=14) / dataframe["close"]
-            dataframe["&-s_return"] = future_return / atr_ratio.replace(0.0, np.nan)
-        else:
-            dataframe["&-s_return"] = future_return
-        return dataframe
+        return set_return_target(dataframe, horizon, self._exp.get("label", "raw"))
 
     def populate_indicators(
         self, dataframe: DataFrame, metadata: dict
@@ -192,11 +107,11 @@ class MyStrategy(IStrategy):
         dataframe["enter_long"] = 0
         dataframe["enter_short"] = 0
         ready = dataframe["do_predict"] == 1
-        prediction_return = dataframe["&-s_return"]
+        prediction_return = read_prediction_return(dataframe)
         threshold = self._entry_threshold
 
-        long_mask = ready & (prediction_return > threshold)
-        short_mask = ready & (prediction_return < -threshold)
+        long_mask = long_signal(prediction_return, ready, threshold)
+        short_mask = short_signal(prediction_return, ready, threshold)
         dataframe.loc[long_mask, "enter_long"] = 1
         dataframe.loc[long_mask, "enter_tag"] = "reg_up"
         dataframe.loc[short_mask, "enter_short"] = 1
@@ -210,10 +125,10 @@ class MyStrategy(IStrategy):
         dataframe["exit_long"] = 0
         dataframe["exit_short"] = 0
         ready = dataframe["do_predict"] == 1
-        prediction_return = dataframe["&-s_return"]
+        prediction_return = read_prediction_return(dataframe)
 
-        dataframe.loc[ready & (prediction_return < 0), "exit_long"] = 1
-        dataframe.loc[ready & (prediction_return > 0), "exit_short"] = 1
+        dataframe.loc[exit_long_signal(prediction_return, ready), "exit_long"] = 1
+        dataframe.loc[exit_short_signal(prediction_return, ready), "exit_short"] = 1
         return dataframe
 
     # ---------------- 跨 pair 择优（波动率归一化） ----------------
