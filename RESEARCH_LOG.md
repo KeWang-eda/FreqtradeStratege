@@ -283,3 +283,64 @@ MIN(短期输家) 2024 为正(+0.018~+0.063%)、2025 为负     ← 两年符号
 本检验给出了「尾部准确率 < 50%」这一现象的理论解释（MAX 效应），
 并确认该效应的规模在本池不足以覆盖交易成本。
 
+---
+
+## 2026-10-13 · 趋势状态特征（有依据，实验已排队）
+
+### 依据来源
+
+1. **tradingstrategies.work "The 200-Day Line: Beats Buy & Hold on Crypto,
+   Sleep-Well on Index ETFs"**（https://tradingstrategies.work/blog/the-200-day-line-tested）
+   - 110 个资产实测。原文：「on crypto it **beats Buy & Hold on return AND drawdown
+     AND Sharpe**」
+   - 原文：「On average the strategy sits **8.2 percentage points of CAGR above
+     Buy & Hold** — and not by taking on more risk, but *with a shallower drawdown
+     and a higher Sharpe at the same time*.」
+   - 原文：「In **58% of the coins** tested it beats B&H on raw return too.」
+   - 机制：「crypto bear markets are brutal and drawn-out (−70% to −90% is normal).
+     Standing in cash through those phases avoids most of the damage」
+
+2. **GitHub IsaacDodds/crypto-momentum-backtest**
+   （https://github.com/IsaacDodds/crypto-momentum-backtest）
+   - v2（加 BTC 200 日趋势过滤）对照 v1（naive 动量）：
+     ```
+     指标            v1 naive   v2 +BTC200d 过滤
+     年化收益          -7.7%      +10.8%
+     最大回撤         -89.8%      -53.8%
+     夏普(rf=4%)      -0.16       +0.14
+     ```
+   - 原文：「The regime filter cuts drawdown roughly in half.」
+   - 同时给出诚实结论：该样本上动量仍跑输等权买入持有（年化 35.6%、夏普 0.42）
+
+3. **tradingstrategies.work "Wuguan Master Crypto"**（26,000+ 次回测，含 DSR 检验）
+   （https://tradingstrategies.work/strategies/wuguan-master-crypto）
+   - 原文：「The **200-week SMA filter helped trend strategies almost universally:
+     +6 to +15 percentage points**, several times DSR-confirmed (≥0.97).」
+   - 反向证据（同样重要）：「ATR and altcoin-season filters **hurt** trend strategies
+     badly (up to −30pp)」→ 不要加 ATR/山寨季过滤器
+
+### 改动（实验变体，未提交生产）
+
+`feature.py` → `add_basic_price_features` 新增 `%-trend-distance`
+= `close / SMA(200 根 K 线) - 1`，并在模块顶部定义 `TREND_WINDOW_CANDLES = 200`。
+
+**为什么这样做是合规的**：原需求禁止更改买卖逻辑，所以不能加「BTC 在均线上才交易」
+的过滤开关。但 `add_basic_price_features` 对应 `feature_engineering_expand_basic`，
+**会被 `include_corr_pairlist` 展开**，因此 BTC/ETH 的长期趋势状态会自动成为特征——
+等于让模型自行学习「趋势状态」，而不改动任何买卖分支。
+
+**与文献的偏差（必须标注）**：文献用日线 200 日；本策略为 4h 且 `train_period_days=365`
+（2190 根），取 200 根 K 线（≈33 天）作为可实现近似。若有效，再评估放大窗口。
+
+### 自检
+
+- `py_compile` 通过；因果性自检 PASS（改动末行不影响历史行）。
+- 有效性：`%-trend-distance` 10279/10478 行有效（98%），范围 [-0.597, +2.062]。
+- 注意：该特征需 200 根历史，而 `startup_candle_count=100`，故回测起始约 100 根
+  的该特征为 NaN（FreqAI 会丢弃这些训练行）；21 个月窗口下影响可忽略。
+
+### 待测
+
+`s1-regime-q1`（2025 Q1）与 `s1-regime-full`（2024-01~2025-09）已排队，
+对照基线为已提交的 `entry_threshold=0.8`（+9.47%、回撤 -7.44%、夏普 0.758）。
+
