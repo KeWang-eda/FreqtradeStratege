@@ -734,6 +734,96 @@ Q1 上 regime4 仅差基线 1.72pp，全窗口却是 -4.51%（差 12pp），回�
 
 ---
 
+## 2026-10-13 · 模型预测专项（职责收窄后的取证）
+
+用户明确职责边界：**只负责模型输入（特征）与模型预测（model.py），其他不管**；
+并要求「只预测下一个 K 线的涨跌幅度，不需要判断强弱」「每件事都要有依据」。
+
+### 取证 1：FreqAI 的训练机制与跨币机制（官方文档原文）
+
+来源 A：https://www.freqtrade.io/en/stable/freqai-running/
+> "FreqAI will train a new model **for each pair**, for each backtesting window"
+> "During dry/live mode, FreqAI trains **each coin pair sequentially**"
+
+来源 B：https://docs.freqtrade.io/en/stable/freqai-feature-engineering/
+> "You can ask for each of the defined features to be included also for informative pairs
+> using the **`include_corr_pairlist`**. This means that the feature set will include all the
+> features from `feature_engineering_expand_*()` on all the `include_timeframes` for each of
+> the correlated pairs defined in the config"
+
+源码佐证：
+```
+freqai_interface.py:987   def train(self, unfiltered_df, pair: str, dk, **kwargs)
+data_kitchen.py:120       sub-train-{pair}_{ts}
+```
+→ FreqAI 为每个 pair 训一个模型；**跨币信息通过 `include_corr_pairlist` 注入特征**。
+
+### 取证 2：模型实际接收的训练特征（读 metadata）
+
+`models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1735689600/cb_btc_1735689600_metadata.json`：
+```
+training_features_list 长度 = 92
+  含 BTC 的: 44     含 ETH 的: 44     本币专属: 4（volatility-6 / volatility-24 / hour / day-of-week）
+labels: ['&-s_return']    labels_std: 1.23
+```
+→ 跨币特征确实进入了模型（88/92 是跨币特征），扩 `include_corr_pairlist` 会直接增加它们。
+
+### 取证 3（根因）：截面信号与时序信号**符号相反**
+
+对每个特征分别计算「截面 IC」（逐时间戳跨 72 币的秩相关，策略选股需要的能力）与
+「时序 IC」（逐币跨时间的秩相关，逐币训练能学到的能力）：
+
+```
+特征                    截面IC(跨币)   时序IC(币内)   比值    截面t   时序t
+%-volatility-24        -0.0583      +0.0125     -4.7   -24.8   +7.6   ← 符号相反
+%-volatility-6         -0.0467      +0.0262     -1.8   -22.1  +16.5   ← 符号相反
+%-atr-ratio-period     -0.0588      +0.0157     -3.8   -23.2   +9.2   ← 符号相反
+%-range                -0.0511      +0.0241     -2.1   -23.6  +14.7   ← 符号相反
+%-relative-volume      -0.0081      +0.0190     -0.4    -5.3  +10.9   ← 符号相反
+%-rsi-period           -0.0505      -0.0285      1.8   -28.0  -14.4   同号
+%-ema-distance-period  +0.0566      +0.0335      1.7   +28.8  +16.7   同号
+%-sma-distance-period  +0.0526      +0.0299      1.8   +27.0  +15.7   同号
+%-momentum-period      -0.0419      -0.0250      1.7   -21.5  -14.5   同号
+%-return               -0.0415      -0.0224      1.9   -23.6  -17.2   同号
+%-body                 -0.0415      -0.0225      1.8   -23.6  -17.3   同号
+```
+
+**5 个波动/振幅/量比类特征的截面与时序符号相反**（波动率截面负、时序正——经典的
+低波动异象 + 波动聚集）。逐币时序训练会把这些特征的系数学成**相反符号**，
+从而在截面选股上起反作用。同号特征的截面 IC 也比时序 IC 大约 1.8 倍。
+
+### 取证 4：标签 raw vs volnorm（同管线、只换标签，FreqAI 逐币 XGBoost）
+
+```
+标签        年     秩IC      t      方向准确   幅度相关    选择增益    增益t
+raw        2024  -0.0030  -0.85   50.03%   +0.1214   -0.00378   -3.56
+raw        2025  +0.0003  +0.08   50.46%   +0.0734   +0.00110   +0.80
+volnorm    2024  +0.0042  +1.39   49.97%   +0.0334   -0.00181   -1.83
+volnorm    2025  -0.0011  -0.28   50.47%   +0.0011   +0.00272   +2.14
+```
+
+（幅度相关 = 逐时间戳 `corr(|预测|, |实际收益|)` 的均值；选择增益 = `argmax|预测|`
+选中 pair 的带符号实际收益 − 全池均值）
+
+**结论：raw 标签把「幅度校准」提升 3.6~67 倍（0.1214/0.0734 vs 0.0334/0.0011），
+完全符合用户「预测涨跌幅度」的要求；但 `argmax|预测|` 的选择增益变差。**
+
+### 取证 5：为什么 raw 的 argmax 选择更差（低波动异象）
+
+`argmax|预测|` 在 raw 标签下会选「预测绝对涨幅最大」的 pair，而这些通常是
+**高波动 pair**；而高波动 pair 在截面上未来收益**更低**（`%-volatility-24` 截面 IC = −0.0583）。
+因此「按幅度选股」与「按截面收益选股」方向相反。
+
+**这是一个需要用户决策的真实权衡，不是可以两全的参数问题。**
+
+### 待验证
+
+`raw-corr4`（label=raw + corr_pairlist 扩到 BTC/ETH/BNB/SOL）：
+依据是 benchk 实测——基准币数 K=4 时 argmax 增益 +0.00103，已达全池理想 +0.00113 的 91%。
+该实验用于检验「扩跨币特征能否同时改善幅度校准与选择增益」。
+
+---
+
 ## 2026-10-13 · 严格目标仓位规格验证（全窗口复核）
 
 用户要求的极简规格：
