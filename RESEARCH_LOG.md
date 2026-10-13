@@ -59,6 +59,32 @@
    - 实测：平均回撤改善 +5.8pp、交易频率下降 42%
    - 对应本项目：回撤 -16.21% → -7.44%（改善 8.8pp），交易数下降 79%
 
+6. **MDPI *Forecasting* 8(3):40 — Multi-Timeframe Feature Engineering for Bitcoin
+   Market Prediction**（https://www.mdpi.com/2571-9394/8/3/40）
+   —— **最强证据：同为加密货币 + XGBoost，且给出完整阈值扫描表**
+   - 该论文 XGBoost 阈值扫描（2025 样本外，SL=1%/TP=2%）：
+     ```
+     τ=0.5  687 笔  命中 51.82%  单笔均 +0.18%  最大回撤 -62.40%
+     τ=0.6  454 笔  命中 58.37%  单笔均 +0.34%  最大回撤 -56.23%
+     τ=0.7  329 笔  命中 60.49%  单笔均 +0.42%  最大回撤 -46.78%
+     ```
+   - **与本项目实测完全同构**（阈值↑ → 交易数↓、命中率↑、单笔收益↑、回撤↓）：
+     ```
+     t=0.4  691 笔  最大回撤 -16.21%  夏普 0.367
+     t=0.8  145 笔  最大回撤  -7.44%  夏普 0.758
+     ```
+   - 另一条关键警告（对本项目后续多周期实验有直接约束）：
+     「A subtle **multi-timeframe look-ahead bias in higher-timeframe data alignment**
+     is identified and corrected, which inflated performance by approximately
+     **0.20 ROC-AUC points** before correction.」
+     → 做 `include_timeframes` 多周期实验时必须核验高周期对齐是否引入前视
+   - 特征重要性结论：「**4-hour Bollinger Band position and RSI** as dominant
+     predictors」→ 可作为候选特征（BB 位置 = 价格对均线的 z 分数），
+     本项目当前只有 RSI，无 BB 位置
+   - 该论文总体结论（对本项目的期望管理）：
+     「models with ROC-AUC ≈ 0.60 **cannot reliably generate economically significant
+     returns once transaction costs are accounted for**」
+
 ### 改动
 
 `config.json` → `my_experiment.entry_threshold`: `0.4` → `0.8`
