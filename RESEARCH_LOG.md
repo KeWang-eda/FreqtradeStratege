@@ -204,3 +204,56 @@ t=0.8      前 3 pair 占比  94%   → 唯一可接受
 
 `include_timeframes` 只能加**更大**的周期（`config_validation.py:345-355`）：
 4h 主周期加 1h 会直接报错，只能加 1d。
+
+---
+
+## 2026-10-13 · MAX 效应因子检验（有依据但幅度不足，未采纳）
+
+### 依据来源
+
+1. **Bali, Cakici & Whitelaw (2011) "Maxing out: Stocks as lotteries and the
+   cross-section of expected returns"**, *Journal of Financial Economics* 99(2):427-446
+   （NBER WP 14804，https://www.nber.org/papers/w14804）
+   - 原文：「a **negative and significant relation between the maximum daily return
+     over the past one month (MAX) and expected stock returns**」
+   - 原文：「Average raw and risk-adjusted return differences between stocks in the
+     lowest and highest MAX deciles **exceed 1% per month**」
+   - 原文：「extreme daily returns on the lottery-like stocks are offset to some extent
+     by lower returns on other days」
+   - 机制：投资者对「彩票型」收益的偏好导致高 MAX 股票被高估、未来收益偏低
+
+2. **Zhao, Wang & Liu (2024) "Someone like you: Lottery-like preference and the
+   cross-section of expected returns in the cryptocurrency market"**,
+   *Journal of International Financial Markets, Institutions and Money* 91
+   - 加密货币市场的同款彩票偏好 / MAX 效应（直接对应本项目标的）
+
+### 本项目的动机
+
+实测发现该池的**尾部结构是反转**：多个幅度类信号（动量/波动/振幅）在 abs-max
+口径下两年尾部方向准确率都 < 50%（44.5%~48.0%），即「|信号| 最大的那个 pair，
+其符号比随机更容易错」。MAX 效应正是这一现象的理论机制，故做因子检验。
+
+### 实测（标准截面因子测试：每时间戳按因子排序分 5 档，比较等权未来收益）
+
+```
+回看 14 根  MAX Q1-Q5 = -0.074%(2024)  -0.023%(2025)   ← 符号与文献一致
+回看 24 根  MAX Q1-Q5 = -0.082%(2024)  -0.057%(2025)   ← 符号一致
+回看 42 根  MAX Q1-Q5 = -0.054%(2024)  +0.000%(2025)   ← 不稳定
+回看  6 根  MAX Q1-Q5 = -0.003%(2024)  +0.013%(2025)   ← 可忽略
+MIN(短期输家) 2024 为正(+0.018~+0.063%)、2025 为负     ← 两年符号相反
+```
+
+### 结论：未采纳
+
+- MAX 效应在本池**方向与文献一致**（高 MAX → 未来收益偏低），且 14/24 根回看下
+  两年符号稳定。
+- 但幅度仅 **-0.05% ~ -0.08%**（3 根 K 线 = 12h 的十分位价差），
+  远低于成本线 0.10%，**单独不可交易**。
+- MIN 效应两年符号相反，无稳定结构。
+- 因此**不新增 MAX/MIN 因子、不改配置**。记录在此以免重复尝试。
+
+### 附带价值
+
+本检验给出了「尾部准确率 < 50%」这一现象的理论解释（MAX 效应），
+并确认该效应的规模在本池不足以覆盖交易成本。
+
