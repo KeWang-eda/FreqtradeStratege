@@ -25,7 +25,9 @@ from model import (
 from freqtrade.exchange import timeframe_to_prev_date
 from freqtrade.persistence import Trade
 from freqtrade.strategy import IStrategy
-from util import _latest_row_before, _load_valid_dataframe, _write_alignment_audit
+from util import (
+    CandleCache, _latest_row_and_count_before, _load_valid_dataframe, _write_alignment_audit,
+)
 
 
 class MyStrategy(IStrategy):
@@ -43,10 +45,6 @@ class MyStrategy(IStrategy):
 
     minimal_roi = {"0": 999.0}
     stoploss = -1.0
-    # 必须为 True：should_exit 里整个 custom_exit 调用块都在 `if self.use_exit_signal:` 内
-    # （interface.py:1462），设为 False 会让 custom_exit 从不被调用、仓位永不轮动。
-    # 退出统一走 custom_exit：populate_exit_trend 恒输出 0，使 exit_ 恒为 False，
-    # 从而绕过 `exit_ and not enter → EXIT_SIGNAL` 这条会跳过 custom_exit 的分支。
     use_exit_signal = True
     trailing_stop = False
 
@@ -126,18 +124,20 @@ class MyStrategy(IStrategy):
     def _pool_candidates(self, evaluation_time) -> tuple[PoolCandidate, ...]:
         """全池候选快照，按 K 线时间戳缓存（同一根 K 线内只算一次）。"""
         candle_timestamp = timeframe_to_prev_date(self.timeframe, evaluation_time)
-        cached = getattr(self, "_pool_cache", None)
-        if cached is not None and cached[0] == candle_timestamp:
-            return cached[1]
+        if getattr(self, "_pool_cache", None) is None:
+            self._pool_cache = CandleCache()
+        return self._pool_cache.get_or_compute(
+            candle_timestamp, lambda: self._compute_candidates(candle_timestamp)
+        )
 
-        candidates = tuple(
+    def _compute_candidates(self, candle_timestamp) -> tuple[PoolCandidate, ...]:
+        """扫描全池并构造候选快照（只保留有效预测）。"""
+        return tuple(
             candidate for candidate in (
                 self._pair_candidate(pair, candle_timestamp)
                 for pair in self.dp.current_whitelist()
             ) if candidate is not None
         )
-        self._pool_cache = (candle_timestamp, candidates)
-        return candidates
 
     def _pair_candidate(self, pair: str, candle_timestamp) -> PoolCandidate | None:
         """读取单 pair 预测并构造候选；无效预测（do_predict != 1 / 非有限值）返回 None。"""
@@ -145,14 +145,12 @@ class MyStrategy(IStrategy):
         if dataframe is None:
             return None
 
-        latest_row = _latest_row_before(dataframe, candle_timestamp)
+        latest_row, row_count = _latest_row_and_count_before(dataframe, candle_timestamp)
         if latest_row is None:
             return None
 
         candidate = build_candidate(pair=pair, raw_prediction=latest_row["&-s_return"],
                                     prediction_ready=latest_row["do_predict"] == 1)
         if candidate is not None and self._experiment_config.get("probe"):
-            # 审计里的 rows 是截断后的行数（与重构前一致）；只在 probe 打开时才算。
-            row_count = int((dataframe["date"] <= candle_timestamp).sum())
             _write_alignment_audit(pair, latest_row["date"], row_count, candidate.raw_prediction)
         return candidate
