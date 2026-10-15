@@ -14,7 +14,10 @@ my_experiment:
 纯工具函数（数据校验、时间切片、审计日志）在 util.py。
 """
 
-from pandas import DataFrame
+import json
+import math
+
+from pandas import DataFrame, concat
 
 from feature import add_baseline_features, add_basic_price_features, add_period_expanded_features
 from model import (
@@ -25,14 +28,13 @@ from model import (
 from freqtrade.exchange import timeframe_to_prev_date
 from freqtrade.persistence import Trade
 from freqtrade.strategy import IStrategy
-from util import (
-    CandleCache, _latest_row_and_count_before, _load_valid_dataframe, _write_alignment_audit,
-)
+from util import ALIGN_AUDIT_LOG
 
 
 class MyStrategy(IStrategy):
     """全池择优、只持 1 仓：每根 K 线取预测绝对值最大者为目标仓位，与持仓比较后调仓。"""
 
+    MAX_LIVE_SNAPSHOT_ROWS = 500
     timeframe = "4h"
     startup_candle_count = 100
     process_only_new_candles = True
@@ -79,7 +81,9 @@ class MyStrategy(IStrategy):
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """交给 FreqAI 训练/加载模型，并返回带预测列的分析数据。"""
-        return self.freqai.start(dataframe, metadata, self)
+        dataframe = self.freqai.start(dataframe, metadata, self)
+        self._remember_prediction_snapshot(metadata.get("pair"), dataframe)
+        return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """入场信号：预测为正标做多、为负标做空；不设幅度阈值，是否最强由 confirm_trade_entry 把关。"""
@@ -106,51 +110,180 @@ class MyStrategy(IStrategy):
     def confirm_trade_entry(self, pair: str, order_type: str, amount: float, rate: float,
                             time_in_force: str, current_time, entry_tag, side: str, **kwargs) -> bool:
         """开仓把关：只放行目标仓位本身（逐 pair 信号在此收敛为唯一目标）。"""
-        target = self._target_position(current_time)
+        candidates = self._pool_candidates(current_time)
+        if candidates is None:
+            return False
+        target = resolve_target_position(candidates)
         return target.pair == pair and target.side == side
 
     def custom_exit(self, pair: str, trade: Trade, current_time, current_rate: float,
                     current_profit: float, **kwargs):
         """唯一退出路径：比较当前持仓与目标仓位，决定持有/换仓/离场。"""
         held_side = "short" if trade.is_short else "long"
-        target = resolve_target_position(self._pool_candidates(current_time))
+        candidates = self._pool_candidates(current_time)
+        if candidates is None:
+            return None
+        target = resolve_target_position(candidates)
         action, reason = decide_position_action(held_pair=pair, held_side=held_side, target=target)
         return None if action == "hold" else reason
 
-    def _target_position(self, evaluation_time) -> TargetPosition:
+    def _target_position(self, evaluation_time) -> TargetPosition | None:
         """每根 K 线重算目标仓位：取全池预测绝对值最大者，符号定方向。"""
-        return resolve_target_position(self._pool_candidates(evaluation_time))
+        candidates = self._pool_candidates(evaluation_time)
+        return None if candidates is None else resolve_target_position(candidates)
 
-    def _pool_candidates(self, evaluation_time) -> tuple[PoolCandidate, ...]:
-        """全池候选快照，按 K 线时间戳缓存（同一根 K 线内只算一次）。"""
+    def _pool_candidates(self, evaluation_time) -> tuple[PoolCandidate, ...] | None:
+        """全池候选快照，按 K 线时间戳缓存（同一根 K 线内只算一次）。
+
+        不完整的实时快照返回 None 且不能缓存。这样如果某个 pair 晚一点才完成
+        同一根 K 线，后续调用仍会重新检查，而不会把暂时缺数据误当成空目标。
+        """
         candle_timestamp = timeframe_to_prev_date(self.timeframe, evaluation_time)
-        if getattr(self, "_pool_cache", None) is None:
-            self._pool_cache = CandleCache()
-        return self._pool_cache.get_or_compute(
-            candle_timestamp, lambda: self._compute_candidates(candle_timestamp)
-        )
+        if getattr(self, "_pool_cache_timestamp", None) == candle_timestamp:
+            return self._pool_cache_value
 
-    def _compute_candidates(self, candle_timestamp) -> tuple[PoolCandidate, ...]:
-        """扫描全池并构造候选快照（只保留有效预测）。"""
+        candidates = self._compute_candidates(candle_timestamp)
+        if candidates is None:
+            return None
+
+        self._pool_cache_timestamp = candle_timestamp
+        self._pool_cache_value = candidates
+        return candidates
+
+    def _compute_candidates(self, candle_timestamp) -> tuple[PoolCandidate, ...] | None:
+        """只在全池都有同一根 K 线时构造候选，否则返回不完整标记。"""
+        pairs = tuple(self.dp.current_whitelist())
+        if not pairs:
+            return None
+
+        # 先检查完整性，再构造任何候选，避免把不同时间的预测放进同一排名。
+        snapshot_rows = {
+            pair: self._snapshot_row(pair, candle_timestamp) for pair in pairs
+        }
+        if any(row is None for row in snapshot_rows.values()):
+            if self._experiment_config.get("probe"):
+                for pair, row_data in snapshot_rows.items():
+                    row, row_count = row_data or (None, 0)
+                    self._record_alignment_probe(
+                        pair=pair,
+                        candle_timestamp=candle_timestamp,
+                        last_candle_date=None if row is None else row["date"],
+                        row_count=row_count,
+                        raw_prediction=None if row is None else row["&-s_return"],
+                        complete=False,
+                    )
+            return None
+
         return tuple(
             candidate for candidate in (
                 self._pair_candidate(pair, candle_timestamp)
-                for pair in self.dp.current_whitelist()
+                for pair in pairs
             ) if candidate is not None
         )
 
     def _pair_candidate(self, pair: str, candle_timestamp) -> PoolCandidate | None:
-        """读取单 pair 预测并构造候选；无效预测（do_predict != 1 / 非有限值）返回 None。"""
-        dataframe = _load_valid_dataframe(pair, self.timeframe, self.dp)
-        if dataframe is None:
+        """从统一时间快照读取单 pair 预测；无效预测返回 None。"""
+        row_data = self._snapshot_row(pair, candle_timestamp)
+        if row_data is None:
             return None
-
-        latest_row, row_count = _latest_row_and_count_before(dataframe, candle_timestamp)
-        if latest_row is None:
-            return None
+        latest_row, row_count = row_data
 
         candidate = build_candidate(pair=pair, raw_prediction=latest_row["&-s_return"],
                                     prediction_ready=latest_row["do_predict"] == 1)
-        if candidate is not None and self._experiment_config.get("probe"):
-            _write_alignment_audit(pair, latest_row["date"], row_count, candidate.raw_prediction)
+        if self._experiment_config.get("probe"):
+            self._record_alignment_probe(
+                pair=pair,
+                candle_timestamp=candle_timestamp,
+                last_candle_date=latest_row["date"],
+                row_count=row_count,
+                raw_prediction=None if candidate is None else candidate.raw_prediction,
+                complete=True,
+            )
         return candidate
+
+    def _remember_prediction_snapshot(self, pair: str | None, dataframe: DataFrame) -> None:
+        """保存带日期的预测，避免依赖回测引擎当前 pair 的可见行。"""
+        if not pair or dataframe is None:
+            return
+        required = {"date", "&-s_return", "do_predict"}
+        if not required.issubset(dataframe.columns):
+            return
+
+        current = dataframe[["date", "&-s_return", "do_predict"]].copy()
+        current = current.dropna(subset=["date"]).sort_values("date")
+        if not self._keep_full_snapshot_history():
+            current = current.tail(self.MAX_LIVE_SNAPSHOT_ROWS)
+        previous = getattr(self, "_prediction_snapshots", {}).get(pair)
+        if previous is not None:
+            current = concat([previous, current], ignore_index=True)
+        current = current.drop_duplicates(subset=["date"], keep="last").sort_values("date")
+        if not self._keep_full_snapshot_history():
+            current = current.tail(self.MAX_LIVE_SNAPSHOT_ROWS)
+        self._prediction_snapshots = getattr(self, "_prediction_snapshots", {})
+        self._prediction_snapshots[pair] = current.reset_index(drop=True)
+
+    def _keep_full_snapshot_history(self) -> bool:
+        """回测需覆盖整个历史；实盘只保留最近窗口，避免重复合并无限增长。"""
+        runmode = self.config.get("runmode")
+        runmode_value = getattr(runmode, "value", runmode)
+        return runmode_value in {"backtest", "hyperopt"}
+
+    def _snapshot_row(self, pair: str, candle_timestamp):
+        """返回指定 candle 的精确预测行和截至该 candle 的行数。"""
+        snapshot = getattr(self, "_prediction_snapshots", {}).get(pair)
+        if snapshot is None or snapshot.empty:
+            return None
+        matched = snapshot.loc[snapshot["date"] == candle_timestamp]
+        if matched.empty:
+            return None
+        row_count = int((snapshot["date"] <= candle_timestamp).sum())
+        return matched.iloc[-1], row_count
+
+    @staticmethod
+    def _write_alignment_probe(
+        pair: str,
+        candle_timestamp,
+        last_candle_date,
+        row_count: int,
+        raw_prediction,
+        complete: bool,
+    ) -> None:
+        """写入带目标 candle 的对齐审计记录。"""
+        ALIGN_AUDIT_LOG.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            score = None if raw_prediction is None else float(raw_prediction)
+        except (TypeError, ValueError):
+            score = None
+        if score is not None and not math.isfinite(score):
+            score = None
+
+        record = {
+            "kind": "align",
+            "candle_timestamp": str(candle_timestamp),
+            "pair": pair,
+            "last_date": None if last_candle_date is None else str(last_candle_date),
+            "rows": row_count,
+            "score": score,
+            "complete": complete,
+        }
+        with ALIGN_AUDIT_LOG.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(record, default=str, allow_nan=False) + "\n")
+
+    def _record_alignment_probe(self, **kwargs) -> None:
+        """同一 candle/pair 只记录一次；状态变化时允许追加一条新记录。"""
+        if not self._experiment_config.get("probe"):
+            return
+
+        candle_timestamp = kwargs["candle_timestamp"]
+        pair = kwargs["pair"]
+        state = (
+            kwargs["complete"],
+            None if kwargs["last_candle_date"] is None else str(kwargs["last_candle_date"]),
+        )
+        if getattr(self, "_probe_candle_timestamp", None) != candle_timestamp:
+            self._probe_candle_timestamp = candle_timestamp
+            self._probe_states = {}
+        if getattr(self, "_probe_states", {}).get(pair) == state:
+            return
+        self._probe_states[pair] = state
+        self._write_alignment_probe(**kwargs)
