@@ -95,6 +95,17 @@ https://xgboost.readthedocs.io/en/stable/parameter.html
 
 结论：`colsample_bytree=0.6` 不提交代码、不修改生产配置；只保留完整 OOS 结果用于审查。
 
+### 2026-10-16 · `label_period_candles=1` 短 OOS（预测层否决）
+
+依据：FreqAI 官方参数表将 `label_period_candles` 定义为“未来多少根 K 线创建标签”；当前生产值为 `3`，本实验只改为 `1`，让模型预测下一根 4h K 线：
+https://www.freqtrade.io/en/stable/freqai-parameter-table/
+
+短筛选使用 24 个 pair、`2025-09-10` 至 `2026-01-01`，并用 horizon=1 重新从 OHLCV 计算 `volnorm` 标签。候选 identifier 为 `mystrategy-4h-regression-24pair-20261016-h1-short-v1`。预测层共 16,264 个有效点，覆盖率 99.95%；MAE 为 `0.477537`，反而高于零预测基线 `0.476207`；RMSE `0.732165` 也高于零预测基线 `0.731005`；方向准确率 `50.00%`，Pearson `0.00787`，Spearman `0.01464`。截面 Top-1 的真实标签均值为 `-0.05994`，全池均值为 `-0.03273`，选择增益 `-0.02721`。
+
+冻结交易逻辑下短窗收益为 `-0.50%`、Sharpe `-0.11`、最大回撤 `18.89%`；这点交易结果改善不能抵消预测层失败。候选未进入完整 OOS，避免用交易路径掩盖模型没有超过零预测基线的问题。
+
+结论：`label_period_candles=1` 不提交代码、不修改生产配置；生产 horizon=3 保持不变。
+
 结论：旧窗口 `noise/tf124` 的约 `180%` 收益是时期特定或过拟合现象；没有候选同时满足 OOS 预测改善和最大回撤不超过 30%，因此没有代码 commit，也没有修改生产配置。
 
 回测口径：`--fee 0`（隔离信号质量与成本），生产 `config.json` 的 `fee` 保持 `0.0005`。
