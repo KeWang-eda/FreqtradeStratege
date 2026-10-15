@@ -11,7 +11,7 @@ my_experiment:
   features: ["laguerre", "vwmacd", "tke", "vfi", "rmi"]
   probe: bool（记录跨 pair 时间对齐）
 
-纯工具函数（数据校验、时间切片、审计日志）在 util.py。
+快照存储、实验配置和对齐审计基础设施在 util.py。
 """
 
 from pandas import DataFrame
