@@ -165,6 +165,17 @@ https://xgboost.readthedocs.io/en/stable/parameter.html
 
 结论：DART 架构不提交代码、不修改生产配置；生产继续使用 XGBoostRegressorES 的 gbtree 配置。
 
+### 2026-10-16 · FreqAI `train_period_days=90` 短 OOS（预测层否决）
+
+依据：FreqAI 官方参数表允许用 `train_period_days` 控制每个滚动模型看到的历史长度；本实验固定 XGBoost、特征、标签和交易逻辑，只把生产的 365 天改为 90 天：
+https://www.freqtrade.io/en/stable/freqai-parameter-table/
+
+短窗使用 24 个 pair、`2025-09-10` 至 `2026-01-01`。每个训练窗口约 429 个样本，说明 90 天配置生效。有效预测 16,067 个，覆盖率 `98.74%`；MAE `0.891161` 高于零预测 `0.875905`，RMSE `1.341559` 高于 `1.314275`，方向准确率 `51.957%`，Pearson `-0.00026`，Spearman `0.03789`，Top-1 增益 `-0.00965`。
+
+冻结交易逻辑下短窗收益 `-20.73%`、Sharpe `-5.01`、最大回撤 `25.92%`。虽然回撤未超过 30%，预测误差和覆盖率都恶化，候选未进入完整 OOS。
+
+结论：`train_period_days=90` 不提交代码、不修改生产配置；生产训练窗保持 365 天。
+
 结论：旧窗口 `noise/tf124` 的约 `180%` 收益是时期特定或过拟合现象；没有候选同时满足 OOS 预测改善和最大回撤不超过 30%，因此没有代码 commit，也没有修改生产配置。
 
 回测口径：`--fee 0`（隔离信号质量与成本），生产 `config.json` 的 `fee` 保持 `0.0005`。
