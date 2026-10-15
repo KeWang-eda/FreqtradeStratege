@@ -224,6 +224,33 @@ https://www.freqtrade.io/en/stable/freqai-parameter-table/
 
 结论：`test_size=0.1` 不提交代码、不修改生产配置；生产保持 `test_size=0.2`。这个实验说明，缩小测试集虽然让整体误差略降，但会明显改变滚动模型的早停和 Top-1 排序，不能作为模型预测提升。
 
+### 2026-10-16 · 200 根均线趋势距离特征短 OOS（预测层否决）
+
+依据：该候选来自台账中记录的公开 200 日趋势过滤研究和开源加密动量回测：
+
+- tradingstrategies.work, *The 200-Day Line: Beats Buy & Hold on Crypto*: https://tradingstrategies.work/blog/the-200-day-line-tested
+- IsaacDodds/crypto-momentum-backtest: https://github.com/IsaacDodds/crypto-momentum-backtest
+
+文献使用 200 日均线；本项目主周期是 4h，因此只在 `/tmp/freqai-regime4-short-strategy/feature.py` 中加入因果特征 `close / SMA(200 根 4h K 线) - 1`（约 33 天），没有修改仓库 `feature.py`、模型代码、交易逻辑或持仓逻辑。FreqAI 实际训练从 136 个特征变为 142 个特征，候选 identifier 为 `mystrategy-4h-regression-24pair-20261016-regime4-short-v1`。
+
+控制变量：24 个 pair、`2025-09-10` 至 `2026-01-01`、365 天训练窗、7 天滚动重训、`label_period_candles=3`、XGBoost、手续费 0.05%。回测只使用本地市场元数据服务绕过公网接口故障，OHLCV 和 Freqtrade/FreqAI 回测仍来自项目原路径。
+
+独立预测层结果：
+
+| 指标 | 基线 | 趋势特征 | 零预测基线 |
+|---|---:|---:|---:|
+| MAE | 0.875661 | 0.875080 | 0.872803 |
+| RMSE | 1.313868 | 1.313640 | 1.309960 |
+| 方向准确率 | 50.284% | 50.049% | 不适用 |
+| Spearman | 0.018190 | 0.020500 | 不适用 |
+| Top-1 带方向真实标签均值 | -0.15830 | -0.04518 | - |
+| Top-1 选择增益 | -0.15901 | -0.03077 | - |
+| Top-1 pair 重合率 | - | 34.81% | - |
+
+冻结交易逻辑回测：基线 319 笔、收益 `-5.85%`、closed-trades Sharpe `-1.21`、最大回撤 `12.98%`；趋势特征 313 笔、收益 `+0.76%`、Sharpe `0.16`、最大回撤 `15.39%`。虽然 Top-1 负增益明显减小，预测 MAE/RMSE 仍高于零预测，方向准确率还下降，不能称为可复用的模型预测提升。
+
+结论：200 根趋势距离特征不提交代码、不进入完整 OOS、不修改生产配置。Q1 历史窗口中更高的胜率不能外推为时间外预测改善。
+
 结论：旧窗口 `noise/tf124` 的约 `180%` 收益是时期特定或过拟合现象；没有候选同时满足 OOS 预测改善和最大回撤不超过 30%，因此没有代码 commit，也没有修改生产配置。
 
 ### 训练集/测试集边界审计（2026-10-16）
