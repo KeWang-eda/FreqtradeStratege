@@ -3,6 +3,34 @@
 每次改动记录：改了什么、依据来源（论文/文档/仓库/博客）、实测数据、结论。
 原则：**先有依据再改，改完必须回测，回测结果必须与同窗口基线对照。**
 
+## 2026-10-16 · OOS model candidates (all rejected)
+
+验证口径：24 个固定 pair；2025-09-10 至 2026-10-01；FreqAI 365 天训练窗、7 天滚动重训；`label=volnorm`、`label_period_candles=3`、手续费 0.05%；只比较共同有效预测和冻结交易逻辑下的回测。生产 `config.json` 未改。
+
+依据来源：
+
+1. FreqAI 特征工程与参数表：
+   https://www.freqtrade.io/en/stable/freqai-feature-engineering/ 、
+   https://www.freqtrade.io/en/stable/freqai-parameter-table/
+2. MDPI *Forecasting* 8(3):40：多周期对齐的前视风险与 4h XGBoost 实验，
+   https://www.mdpi.com/2571-9394/8/3/40
+3. scikit-learn 周期特征示例：
+   https://scikit-learn.org/stable/auto_examples/applications/plot_cyclical_feature_engineering.html
+4. XGBoost 官方参数文档：`reg:pseudohubererror` 是鲁棒回归损失，
+   https://xgboost.readthedocs.io/en/stable/parameter.html
+
+受控结果（均未提交）：
+
+| 候选 | 预测结果（候选 vs 基线） | OOS 策略结果 | 结论 |
+|---|---|---|---|
+| Bollinger position | MAE `0.84891 -> 0.84842`，方向 `50.24% -> 50.31%` | 收益 `-32.55%`，回撤 `33.50%` | 否决；交易结果恶化 |
+| cyclical hour/weekday sin/cos | MAE `0.84891 -> 0.84799`，方向 `50.24% -> 50.68%` | 收益 `-39.02%`，回撤 `40.80%` | 否决；预测略好但 Top-1 交易恶化 |
+| 4h+1d+3d + noise 0.05 | MAE `0.84895 -> 0.85287`，方向 `50.24% -> 50.84%` | 收益 `-28.10%`，回撤 `40.33%` | 否决；绝对误差变差 |
+| 4h+12h+1d+3d | MAE `0.84895 -> 0.85283`，方向 `50.24% -> 50.27%` | 收益 `-62.28%`，回撤 `62.76%` | 否决；多周期旧窗口收益未外推 |
+| XGBoost `reg:pseudohubererror` | MAE `0.84891 -> 0.85896`，方向 `50.24% -> 50.33%` | 收益 `-23.98%`，回撤 `30.66%` | 否决；短窗改善未延续，误差变差 |
+
+结论：旧窗口 `noise/tf124` 的约 `180%` 收益是时期特定或过拟合现象；没有候选同时满足 OOS 预测改善和最大回撤不超过 30%，因此没有代码 commit，也没有修改生产配置。
+
 回测口径：`--fee 0`（隔离信号质量与成本），生产 `config.json` 的 `fee` 保持 `0.0005`。
 指标计算：`/home/wangke/project/freqtrade/scripts/calc_metrics.py`。**该脚本有两个坑，必须绕开**：
 1. `initial_capital` 默认 100，本项目钱包初值为 1000 → 不显式传入会让收益虚高 10 倍。
