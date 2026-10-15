@@ -143,6 +143,17 @@ https://www.mdpi.com/2571-9394/8/3/40
 
 结论：该特征消融不提交代码、不修改生产配置；仓库特征仍保持基线。
 
+### 2026-10-16 · MomentumRidgeRegressor 架构短 OOS（预测层否决）
+
+依据：scikit-learn 官方 Ridge 文档说明，Ridge 在平方误差中加入 L2 正则项，可作为低方差回归对照：
+https://scikit-learn.org/stable/modules/linear_model.html#ridge-regression
+
+使用项目已有 `MomentumRidgeRegressor`，保持 365 天训练窗、生产 `volnorm` horizon=3、136 个输入特征和相同短窗，只把模型换为 `Ridge(alpha=10)`，每个模型实际选用 36 个 momentum/RSI 特征。24 个 pair、`2025-09-10` 至 `2026-01-01` 的有效预测为 16,264 个，覆盖率 99.95%；MAE `0.884271` 高于零预测 `0.872472`，RMSE `1.316765` 高于 `1.309362`，方向准确率 `50.418%`，Pearson `0.03468`，Spearman `0.01899`。Top-1 方向准确率 `54.867%`，但选择增益为 `-0.00767`。
+
+冻结交易逻辑下短窗收益 `+5.56%`、Sharpe `0.88`、最大回撤 `19.23%`；预测层低于零预测基线，候选未进入完整 OOS。
+
+结论：MomentumRidgeRegressor 不提交代码、不修改生产配置；生产继续使用 XGBoostRegressorES。
+
 结论：旧窗口 `noise/tf124` 的约 `180%` 收益是时期特定或过拟合现象；没有候选同时满足 OOS 预测改善和最大回撤不超过 30%，因此没有代码 commit，也没有修改生产配置。
 
 回测口径：`--fee 0`（隔离信号质量与成本），生产 `config.json` 的 `fee` 保持 `0.0005`。
