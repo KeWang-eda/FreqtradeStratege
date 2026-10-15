@@ -106,6 +106,17 @@ https://www.freqtrade.io/en/stable/freqai-parameter-table/
 
 结论：`label_period_candles=1` 不提交代码、不修改生产配置；生产 horizon=3 保持不变。
 
+### 2026-10-16 · `label_period_candles=2` 短 OOS（预测层否决）
+
+依据同上：FreqAI 官方参数表定义 `label_period_candles` 为未来标签的 K 线数。本实验只把生产值 `3` 改成 `2`，并用 horizon=2 重新计算 `volnorm` 标签：
+https://www.freqtrade.io/en/stable/freqai-parameter-table/
+
+短窗使用 24 个 pair、`2025-09-10` 至 `2026-01-01`，有效预测 16,264 个，覆盖率 99.95%。预测 MAE `0.707170` 高于零预测基线 `0.706293`，RMSE `1.061964` 高于零预测基线 `1.060325`，方向准确率 `50.418%`，Pearson `0.01428`，Spearman `0.03061`。截面 Top-1 的真实标签均值 `-0.10753`，全池均值 `-0.06589`，选择增益 `-0.04164`。
+
+冻结交易逻辑下短窗收益却为 `+17.05%`、Sharpe `5.12`、最大回撤 `9.11%`。这说明收益改善不能替代模型预测证据；因为预测层低于零预测基线，候选未进入完整 OOS，生产 horizon=3 保持不变。
+
+结论：`label_period_candles=2` 不提交代码、不修改生产配置。
+
 结论：旧窗口 `noise/tf124` 的约 `180%` 收益是时期特定或过拟合现象；没有候选同时满足 OOS 预测改善和最大回撤不超过 30%，因此没有代码 commit，也没有修改生产配置。
 
 回测口径：`--fee 0`（隔离信号质量与成本），生产 `config.json` 的 `fee` 保持 `0.0005`。
