@@ -154,6 +154,17 @@ https://scikit-learn.org/stable/modules/linear_model.html#ridge-regression
 
 结论：MomentumRidgeRegressor 不提交代码、不修改生产配置；生产继续使用 XGBoostRegressorES。
 
+### 2026-10-16 · XGBoost DART 架构短 OOS（预测层否决）
+
+依据：XGBoost 官方参数文档支持 `booster=dart`，并定义 `rate_drop`、`skip_drop` 等 dropout 参数；本实验固定生产特征、标签、训练窗和树参数，只把 `gbtree` 改为 DART：
+https://xgboost.readthedocs.io/en/stable/parameter.html
+
+短窗使用 24 个 pair、`2025-09-10` 至 `2026-01-01`。有效预测 16,264 个、覆盖率 99.95%；MAE `0.873818` 高于零预测 `0.872472`，RMSE `1.311373` 高于 `1.309362`，方向准确率 `50.406%`，Pearson `0.01790`，Spearman `0.03201`。Top-1 选择增益为 `-0.02640`。
+
+冻结交易逻辑下短窗收益 `+2.73%`、Sharpe `0.58`、最大回撤 `9.72%`，但预测层没有超过零预测基线，候选未进入完整 OOS。
+
+结论：DART 架构不提交代码、不修改生产配置；生产继续使用 XGBoostRegressorES 的 gbtree 配置。
+
 结论：旧窗口 `noise/tf124` 的约 `180%` 收益是时期特定或过拟合现象；没有候选同时满足 OOS 预测改善和最大回撤不超过 30%，因此没有代码 commit，也没有修改生产配置。
 
 回测口径：`--fee 0`（隔离信号质量与成本），生产 `config.json` 的 `fee` 保持 `0.0005`。
