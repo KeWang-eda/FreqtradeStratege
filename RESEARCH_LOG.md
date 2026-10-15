@@ -129,6 +129,20 @@ https://lightgbm.readthedocs.io/en/latest/Parameters.html
 
 结论：LightGBM 架构不提交代码、不修改生产配置；生产继续使用 XGBoostRegressorES。
 
+### 2026-10-16 · 截面方向特征消融短 OOS（预测层否决）
+
+依据：FreqAI 官方特征工程文档要求特征工程保持因果、可复用并受参数控制；MDPI *Forecasting* 8(3):40 也强调特征选择和多周期对齐必须通过样本外检验：
+https://www.freqtrade.io/en/stable/freqai-feature-engineering/  、
+https://www.mdpi.com/2571-9394/8/3/40
+
+项目自身的截面 IC 取证显示，波动率、ATR、相对成交量、RSI、动量和振幅特征与逐币模型学到的方向多次反号。因此在 `/tmp/feature.py` 做临时消融：保留 EMA/SMA 距离、收益、实体、时间特征，移除上述反号风险特征；仓库 `feature.py` 未修改。候选真实使用 56 个特征（基线 136 个），identifier 为 `mystrategy-4h-regression-24pair-20261016-crosssectional-ablation-short2-v1`。
+
+短窗为 24 个 pair、`2025-09-10` 至 `2026-01-01`。有效预测 16,267 个、覆盖率 99.97%；MAE `0.875275` 高于零预测 `0.872381`，RMSE `1.312531` 高于 `1.309258`，方向准确率 `50.040%`，Pearson `0.00387`，Spearman `0.01718`。Top-1 选择增益为 `+0.02862`，但不能抵消整体误差高于零预测的结果。
+
+冻结交易逻辑下短窗收益 `-1.83%`、Sharpe `-0.41`、最大回撤 `14.30%`。候选未进入完整 OOS；不能仅因 Top-1 增益或交易收益较基线好，就宣称模型预测改善。
+
+结论：该特征消融不提交代码、不修改生产配置；仓库特征仍保持基线。
+
 结论：旧窗口 `noise/tf124` 的约 `180%` 收益是时期特定或过拟合现象；没有候选同时满足 OOS 预测改善和最大回撤不超过 30%，因此没有代码 commit，也没有修改生产配置。
 
 回测口径：`--fee 0`（隔离信号质量与成本），生产 `config.json` 的 `fee` 保持 `0.0005`。
