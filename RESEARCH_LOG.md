@@ -323,6 +323,33 @@ https://xgboost.readthedocs.io/en/stable/parameter.html
 
 结论：`learning_rate=0.1` 不提交代码、不进入完整 OOS、不修改生产配置；生产保持 `learning_rate=0.05`。
 
+### 2026-10-16 · FreqAI `XGBoostRFRegressor` 短 OOS（架构否决）
+
+依据：FreqAI 自带 `freqtrade/freqai/prediction_models/XGBoostRFRegressor.py` 使用 XGBoost 官方 `XGBRFRegressor` 回归器；XGBoost 官方文档将其定义为随机森林式回归架构。本实验沿用项目 2026-10-14 Q1 实验的参数：`n_estimators=100`、`max_depth=6`、`learning_rate=1.0`、`subsample=1.0`、`colsample_bynode=0.8`、`min_child_weight=1`、`reg_lambda=1.0`、`test_size=0.2`、`shuffle=false`。
+
+来源：
+
+- FreqAI 内置实现：`freqtrade/freqai/prediction_models/XGBoostRFRegressor.py`
+- XGBoost 参数文档：https://xgboost.readthedocs.io/en/stable/parameter.html
+- XGBoost RF API：https://xgboost.readthedocs.io/en/stable/python/python_api.html#xgboost.XGBRFRegressor
+
+此前 Q1（2025-01 至 2025-04、72 币）回测曾得到收益 `+12.25%`、Sharpe `4.62`、最大回撤 `7.45%`；这次使用 24 币、`2025-09-10` 至 `2026-01-01` 的独立短 OOS，交易逻辑和特征均不变。
+
+独立预测层结果：
+
+| 指标 | RF 候选 | 零预测 |
+|---|---:|---:|
+| MAE | 0.945222 | 0.872862 |
+| RMSE | 1.395211 | 1.310032 |
+| 方向准确率 | 50.697% | 不适用 |
+| Spearman | 0.018374 | 不适用 |
+| Top-1 带方向真实标签均值 | -0.09214 | - |
+| Top-1 选择增益 | -0.11182 | - |
+
+冻结交易逻辑回测为 331 笔交易、收益 `-8.84%`、closed-trades Sharpe `-1.95`、最大回撤 `14.25%`。RF 的误差显著高于零预测，Top-1 增益为负；Q1 正收益没有外推到时间外窗口。
+
+结论：`XGBoostRFRegressor` 不提交代码、不进入完整 OOS、不修改生产配置；生产继续使用带测试集早停的 `XGBoostRegressorES`。
+
 结论：旧窗口 `noise/tf124` 的约 `180%` 收益是时期特定或过拟合现象；没有候选同时满足 OOS 预测改善和最大回撤不超过 30%，因此没有代码 commit，也没有修改生产配置。
 
 ### 训练集/测试集边界审计（2026-10-16）
