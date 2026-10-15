@@ -198,6 +198,21 @@ https://www.freqtrade.io/en/stable/freqai-parameter-table/
 
 结论：旧窗口 `noise/tf124` 的约 `180%` 收益是时期特定或过拟合现象；没有候选同时满足 OOS 预测改善和最大回撤不超过 30%，因此没有代码 commit，也没有修改生产配置。
 
+### 训练集/测试集边界审计（2026-10-16）
+
+依据：FreqAI 官方参数表把 `data_split_parameters` 直接交给 scikit-learn 的 `train_test_split()`，并说明 `test_size` 是测试集比例；本项目配置明确设置 `shuffle=false`：
+
+- https://www.freqtrade.io/en/stable/freqai-parameter-table/
+- https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
+- 本地 FreqAI 源码：`freqtrade/freqai/data_kitchen.py:146-159`、`freqtrade/freqai/base_models/BaseRegressionModel.py:53-79`
+
+当前行为可以明确分成两点：
+
+1. `shuffle=false` 时，FreqAI 按样本原有时间顺序切出训练集和测试集；没有随机打乱，因此不是“训练集和测试集混在一起”的问题。
+2. `BaseRegressionModel.train()` 先用训练部分拟合特征/标签管线，再把同一管线应用到测试部分；这是正确的拟合边界。但这条通用切分没有按 `label_period_candles=3` 自动留出 purge/embargo 间隔，训练集末端标签与测试集起点相邻，仍需用时间外预测审计判断是否过拟合。
+
+因此，训练集分数好、测试集分数差时，不能只看回测收益，也不能说 FreqAI 已经完成了 purge；要同时报告训练/测试误差、滚动 OOS 误差、零预测基线和 Top-1 选择指标。后续 `test_size` 候选只允许使用独立 identifier 和相同 OOS 窗口比较，未通过预测层前不改生产配置。
+
 回测口径：`--fee 0`（隔离信号质量与成本），生产 `config.json` 的 `fee` 保持 `0.0005`。
 指标计算：`/home/wangke/project/freqtrade/scripts/calc_metrics.py`。**该脚本有两个坑，必须绕开**：
 1. `initial_capital` 默认 100，本项目钱包初值为 1000 → 不显式传入会让收益虚高 10 倍。
