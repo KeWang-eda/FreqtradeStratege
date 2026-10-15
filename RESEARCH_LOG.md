@@ -117,6 +117,18 @@ https://www.freqtrade.io/en/stable/freqai-parameter-table/
 
 结论：`label_period_candles=2` 不提交代码、不修改生产配置。
 
+### 2026-10-16 · LightGBM 回归架构短 OOS（预测层否决）
+
+依据：FreqAI 支持可配置回归模型，LightGBM 官方参数文档定义了 `objective=regression`、`num_leaves`、`learning_rate` 等回归参数：
+https://www.freqtrade.io/en/stable/freqai-parameter-table/  、
+https://lightgbm.readthedocs.io/en/latest/Parameters.html
+
+为保持控制变量，使用 24 个 pair、生产 `volnorm` 标签（horizon=3）、相同特征和 `2025-09-10` 至 `2026-01-01` 短窗；只把 `XGBoostRegressorES` 换为 FreqAI 内置 `LightGBMRegressor`，并使用干净的 LightGBM 参数配置。有效预测 16,264 个，覆盖率 99.95%；MAE `1.002960` 高于零预测 `0.872472`，RMSE `1.434321` 高于零预测 `1.309362`，方向准确率 `49.176%`，Pearson `-0.00472`，Spearman `-0.01221`。Top-1 选择增益虽为 `+0.05125`，但不能抵消整体预测误差和方向失败。
+
+冻结交易逻辑下短窗收益 `-30.95%`、Sharpe `-9.49`、最大回撤 `31.57%`，也已超过硬门槛。候选未进入完整 OOS。
+
+结论：LightGBM 架构不提交代码、不修改生产配置；生产继续使用 XGBoostRegressorES。
+
 结论：旧窗口 `noise/tf124` 的约 `180%` 收益是时期特定或过拟合现象；没有候选同时满足 OOS 预测改善和最大回撤不超过 30%，因此没有代码 commit，也没有修改生产配置。
 
 回测口径：`--fee 0`（隔离信号质量与成本），生产 `config.json` 的 `fee` 保持 `0.0005`。
