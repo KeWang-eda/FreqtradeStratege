@@ -196,6 +196,34 @@ https://www.freqtrade.io/en/stable/freqai-parameter-table/
 
 结论：`backtest_period_days=3` 不提交代码、不修改生产配置；生产重训间隔保持 7 天。该实验只说明更频繁重训在这段短窗口里没有带来可复用的预测质量提升。
 
+### 2026-10-16 · `data_split_parameters.test_size=0.1` 短 OOS（否决）
+
+依据：FreqAI 官方参数表允许把 `data_split_parameters` 传给 scikit-learn 的 `train_test_split()`，其中 `test_size` 是测试集比例；本项目继续使用 `shuffle=false`，只把测试比例从生产的 `0.2` 改为 `0.1`：
+
+- https://www.freqtrade.io/en/stable/freqai-parameter-table/
+- https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
+- FreqAI 源码：`freqtrade/freqai/data_kitchen.py:146-159`、`freqtrade/freqai/base_models/BaseRegressionModel.py:53-79`
+
+控制变量：24 个 pair、`2025-09-10` 至 `2026-01-01`、`label_period_candles=3`、136 个特征、XGBoost、`backtest_period_days=3`、手续费 0.05%、交易逻辑和持仓逻辑全部不变。候选 identifier 为 `mystrategy-4h-regression-24pair-20261016-testsize10-short-v1`。为排除公网 Binance 市场接口故障，回测使用一次性的本地市场元数据服务；价格、OHLCV、标签、FreqAI 和 Freqtrade 回测引擎仍使用项目原路径，服务不提供价格或预测数据。
+
+训练日志也证明切分比例生效：`test_size=0.2` 每窗口训练约 1749 点，`0.1` 每窗口训练约 1968 点。早停结果从基线 `best_iteration` 中位数 0、均值 3.28，变为候选中位数 1、均值 6.74；这改变了每个滚动模型的有效树数和输出排序。
+
+独立预测层（16,216 个共同有效点）：
+
+| 指标 | `test_size=0.2` | `test_size=0.1` | 零预测基线 |
+|---|---:|---:|---:|
+| MAE | 0.876157 | 0.875550 | 0.872862 |
+| RMSE | 1.315246 | 1.315123 | 1.310032 |
+| 方向准确率 | 49.932% | 50.493% | 不适用 |
+| Spearman | 0.015990 | 0.025978 | 不适用 |
+| Top-1 带方向真实标签均值 | -0.16105 | 0.00274 | - |
+| Top-1 选择增益 | -0.15127 | 0.00122 | - |
+| 两版本 Top-1 pair 重合率 | - | 15.38% | - |
+
+候选冻结交易逻辑回测为 357 笔交易、收益 `-38.08%`、closed-trades Sharpe `-8.94`、最大回撤 `40.30%`；同一本地市场元数据下的 `test_size=0.2` 基线为 338 笔、收益 `+0.96%`、Sharpe `0.19`、最大回撤 `9.86%`。候选回撤超过 30% 门槛，且预测误差仍高于零预测，不能进入完整 OOS 或生产配置。
+
+结论：`test_size=0.1` 不提交代码、不修改生产配置；生产保持 `test_size=0.2`。这个实验说明，缩小测试集虽然让整体误差略降，但会明显改变滚动模型的早停和 Top-1 排序，不能作为模型预测提升。
+
 结论：旧窗口 `noise/tf124` 的约 `180%` 收益是时期特定或过拟合现象；没有候选同时满足 OOS 预测改善和最大回撤不超过 30%，因此没有代码 commit，也没有修改生产配置。
 
 ### 训练集/测试集边界审计（2026-10-16）
