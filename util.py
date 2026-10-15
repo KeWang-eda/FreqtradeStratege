@@ -1,86 +1,136 @@
-"""纯工具层：常量、数据校验、时间切片、审计日志写入、按 K 线缓存。
-
-从 MyStrategy.py 原样搬出，函数名与行为保持不变；不含任何交易逻辑，
-不读取 config、不训练模型、不下单。
-"""
+"""Strategy infrastructure for prediction snapshots, configuration, and probes."""
 
 import json
+import math
+from dataclasses import dataclass
 from pathlib import Path
 
-# 跨 pair 时间对齐审计日志（JSONL，追加写入）。
-# 仅在 config.json 的 my_experiment.probe = true 时写入，生产保持 false。
+from pandas import DataFrame, concat
+
+# Cross-pair alignment audit log. Production keeps the probe disabled.
 ALIGN_AUDIT_LOG = Path(__file__).resolve().parent / "logs" / "align_audit.jsonl"
 
-# 构造候选前，预测 dataframe 必须齐备的列。
-REQUIRED_COLUMNS = {"date", "close", "&-s_return", "do_predict"}
+
+def is_backtest_runmode(config) -> bool:
+    """Return whether a run needs the complete historical prediction snapshot."""
+    runmode = config.get("runmode")
+    runmode_value = getattr(runmode, "value", runmode)
+    return runmode_value in {"backtest", "hyperopt"}
 
 
-class CandleCache:
-    """按 K 线时间戳缓存一个值；时间戳不变则复用，变了才重算。
+class PredictionSnapshotStore:
+    """Store dated model predictions and retrieve one exact candle per pair."""
 
-    等价于原先手工维护的元组缓存 `(candle_timestamp, value)`，
-    但把「比较时间戳 / 重算 / 回写」收进类里，调用方不再关心存储细节。
-    """
+    REQUIRED_COLUMNS = {"date", "&-s_return", "do_predict"}
 
-    def __init__(self):
-        self._timestamp = None
-        self._value = None
+    def __init__(self, max_live_rows: int, keep_full_history: bool):
+        self._max_live_rows = max_live_rows
+        self._keep_full_history = keep_full_history
+        self._snapshots: dict[str, DataFrame] = {}
 
-    def get_or_compute(self, candle_timestamp, compute):
-        """命中则返回缓存值；未命中则调用 compute() 并缓存其结果。"""
-        if self._timestamp == candle_timestamp:
-            return self._value
-        value = compute()
-        self._timestamp = candle_timestamp
-        self._value = value
-        return value
+    def remember(self, pair: str | None, dataframe: DataFrame) -> None:
+        """Merge one analyzed dataframe into a pair snapshot."""
+        if not pair or dataframe is None:
+            return
+        if not self.REQUIRED_COLUMNS.issubset(dataframe.columns):
+            return
 
+        current = dataframe[["date", "&-s_return", "do_predict"]].copy()
+        current = current.dropna(subset=["date"]).sort_values("date")
+        if not self._keep_full_history:
+            current = current.tail(self._max_live_rows)
 
-def _load_valid_dataframe(pair, timeframe, dp):
-    """读取并校验单 pair 的分析数据；不可用时返回 None。
+        previous = self._snapshots.get(pair)
+        if previous is not None:
+            current = concat([previous, current], ignore_index=True)
+        current = current.drop_duplicates(subset=["date"], keep="last").sort_values("date")
+        if not self._keep_full_history:
+            current = current.tail(self._max_live_rows)
+        self._snapshots[pair] = current.reset_index(drop=True)
 
-    等价于原先内联在 _pair_candidate 里的检查：
-    读取抛异常 / 返回 None / 空表 / 缺少 REQUIRED_COLUMNS 任一列 → None。
-    """
-    try:
-        dataframe, _ = dp.get_analyzed_dataframe(pair, timeframe)
-    except Exception:
-        return None
-    if dataframe is None or dataframe.empty:
-        return None
-    if not REQUIRED_COLUMNS.issubset(dataframe.columns):
-        return None
-    return dataframe
-
-
-def _slice_until(dataframe, candle_timestamp):
-    """按 K 线时间戳截断，返回切片后的 DataFrame（显式设上界，避免读到未来 K 线）。"""
-    return dataframe[dataframe["date"] <= candle_timestamp]
-
-
-def _latest_row_before(dataframe, candle_timestamp):
-    """按 K 线时间戳截断，返回最新一行；截断后为空返回 None。"""
-    sliced = _slice_until(dataframe, candle_timestamp)
-    if sliced.empty:
-        return None
-    return sliced.iloc[-1]
+    def get_row(self, pair: str, candle_timestamp):
+        """Return ``(row, row_count)`` for an exact candle, or ``None``."""
+        snapshot = self._snapshots.get(pair)
+        if snapshot is None or snapshot.empty:
+            return None
+        matched = snapshot.loc[snapshot["date"] == candle_timestamp]
+        if matched.empty:
+            return None
+        row_count = int((snapshot["date"] <= candle_timestamp).sum())
+        return matched.iloc[-1], row_count
 
 
-def _latest_row_and_count_before(dataframe, candle_timestamp):
-    """返回 (最新行, 截断后行数)；无数据返回 (None, 0)。
+@dataclass(frozen=True)
+class ExperimentConfig:
+    """Cached strategy experiment settings used by feature and label hooks."""
 
-    只切片一次，行数与最新行同源，避免切片与计数各算一遍。
-    """
-    sliced = _slice_until(dataframe, candle_timestamp)
-    if sliced.empty:
-        return None, 0
-    return sliced.iloc[-1], len(sliced)
+    label: str = "raw"
+    features: tuple[str, ...] = ()
+    probe: bool = False
+    label_period_candles: int = 1
+
+    @classmethod
+    def from_strategy(cls, config, freqai_info) -> "ExperimentConfig":
+        raw = config.get("my_experiment", {}) or {}
+        feature_parameters = freqai_info["feature_parameters"]
+        return cls(
+            label=str(raw.get("label", "raw")),
+            features=tuple(raw.get("features", []) or ()),
+            probe=bool(raw.get("probe", False)),
+            label_period_candles=int(feature_parameters.get("label_period_candles", 1)),
+        )
 
 
-def _write_alignment_audit(pair, last_candle_date, row_count, raw_prediction) -> None:
-    """写入 pair 预测时间对齐审计记录。"""
-    with ALIGN_AUDIT_LOG.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps({
-            "kind": "align", "pair": pair, "last_date": str(last_candle_date),
-            "rows": row_count, "score": raw_prediction,
-        }) + "\n")
+class AlignmentProbe:
+    """Write one alignment record per pair/candle state."""
+
+    def __init__(self, enabled: bool, log_path=ALIGN_AUDIT_LOG):
+        self._enabled = enabled
+        self._log_path = Path(log_path)
+        self._candle_timestamp = None
+        self._states: dict[str, tuple] = {}
+
+    def record(
+        self,
+        *,
+        pair: str,
+        candle_timestamp,
+        last_candle_date,
+        row_count: int,
+        raw_prediction,
+        complete: bool,
+    ) -> None:
+        """Record an alignment state unless the same state was already written."""
+        if not self._enabled:
+            return
+
+        state = (
+            complete,
+            None if last_candle_date is None else str(last_candle_date),
+        )
+        if self._candle_timestamp != candle_timestamp:
+            self._candle_timestamp = candle_timestamp
+            self._states = {}
+        if self._states.get(pair) == state:
+            return
+        self._states[pair] = state
+
+        try:
+            score = None if raw_prediction is None else float(raw_prediction)
+        except (TypeError, ValueError):
+            score = None
+        if score is not None and not math.isfinite(score):
+            score = None
+
+        self._log_path.parent.mkdir(parents=True, exist_ok=True)
+        record = {
+            "kind": "align",
+            "candle_timestamp": str(candle_timestamp),
+            "pair": pair,
+            "last_date": None if last_candle_date is None else str(last_candle_date),
+            "rows": row_count,
+            "score": score,
+            "complete": complete,
+        }
+        with self._log_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(record, default=str, allow_nan=False) + "\n")
