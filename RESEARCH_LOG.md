@@ -667,6 +667,40 @@ MAE 只有极小改善，RMSE、Spearman 和 Top-1 仍未超过零预测或原�
 结论：把内部验证数据用于最终 refit 没有解决时间外预测问题；候选不进入完整 OOS、不提交代码、
 不修改生产配置。
 
+### 2026-10-16 · FreqAI 标签 `MinMaxScaler` → `StandardScaler` 短 OOS（等价变换，否决）
+
+#### 依据与控制变量
+
+FreqAI 官方特征工程文档允许通过 `define_label_pipeline()` 自定义标签管线，并直接给出
+`SKLearnWrapper(StandardScaler())` 示例：
+https://www.freqtrade.io/en/stable/freqai-feature-engineering/
+
+FreqAI 当前源码 `/home/wangke/project/freqtrade/freqtrade/freqai/freqai_interface.py:589-592` 默认使用
+`MinMaxScaler(feature_range=(-1, 1))`。本实验只把标签管线替换为 sklearn `StandardScaler`，
+特征、XGBoost、标签定义、训练窗、重训频率和交易逻辑均不变。候选 identifier：
+`mystrategy-4h-regression-24pair-20261016-standardized-short-v1`。
+
+#### 结果
+
+候选 16,216 个有效预测点、覆盖率 99.95%。与无权重基线相比：
+
+| 指标 | 无权重 XGBoost | StandardScaler 标签 |
+|---|---:|---:|
+| MAE | 0.8755353312 | 0.8755353316 |
+| RMSE | 1.3133801679 | 1.3133801689 |
+| 方向准确率 | 50.296% | 50.296% |
+| Spearman | 0.018903 | 0.018903 |
+| Top-1 选择增益 | -0.158200 | -0.158200 |
+| 策略收益 | -5.85% | -5.85% |
+| Sharpe | -0.67 | -0.67 |
+| 最大回撤 | 12.98% | 12.98% |
+
+结果在数值误差范围内完全相同。原因是 `StandardScaler` 相对 `MinMaxScaler` 是训练集上的线性
+缩放；平方误差树的分裂顺序不变，预测再逆缩放后也不变。这不是新的模型信息，也没有解决零预测
+基线和 Top-1 失败问题。
+
+结论：标签缩放器替换是等价变换，不提交代码、不进入完整 OOS、不修改生产配置。
+
 回测口径：`--fee 0`（隔离信号质量与成本），生产 `config.json` 的 `fee` 保持 `0.0005`。
 指标计算：`/home/wangke/project/freqtrade/scripts/calc_metrics.py`。**该脚本有两个坑，必须绕开**：
 1. `initial_capital` 默认 100，本项目钱包初值为 1000 → 不显式传入会让收益虚高 10 倍。
