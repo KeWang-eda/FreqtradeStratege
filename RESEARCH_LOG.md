@@ -701,6 +701,37 @@ FreqAI 当前源码 `/home/wangke/project/freqtrade/freqtrade/freqai/freqai_inte
 
 结论：标签缩放器替换是等价变换，不提交代码、不进入完整 OOS、不修改生产配置。
 
+### 2026-10-16 · FreqAI 标签 `QuantileTransformer(normal)` 短 OOS（部分 MAE 改善但否决）
+
+#### 依据与控制变量
+
+FreqAI 官方特征工程文档在自定义 `define_label_pipeline()` 示例中直接展示
+`SKLearnWrapper(QuantileTransformer(output_distribution='normal'))`：
+https://www.freqtrade.io/en/stable/freqai-feature-engineering/
+
+本实验只将默认 `MinMaxScaler(-1,1)` 换成按训练窗口拟合的
+`QuantileTransformer(output_distribution='normal', random_state=42)`；特征、XGBoost、标签定义、
+训练窗、重训频率和交易逻辑均不变。候选 identifier：
+`mystrategy-4h-regression-24pair-20261016-quantile-label-short-v1`。
+
+#### 结果
+
+候选有 16,216 个有效预测点、覆盖率 99.95%，没有重复或冲突预测。
+
+| 指标 | 无权重 XGBoost | QuantileTransformer 标签 | 零预测 |
+|---|---:|---:|---:|
+| MAE | 0.875535 | **0.872726** | 0.872862 |
+| RMSE | 1.313380 | 1.310616 | **1.310032** |
+| 方向准确率 | 50.296% | 48.027% | — |
+| Spearman | 0.018903 | 0.024734 | — |
+| Top-1 选择增益 | -0.158200 | -0.128064 | — |
+| Top-1 sign 正确率 | 47.041% | 48.669% | — |
+
+MAE 只有很小改善，RMSE 仍劣于零预测，方向准确率跌破 50%，Top-1 增益仍为负。冻结交易逻辑
+回测为 323 笔交易、收益 `-17.69%`、Sharpe `-2.99`、最大回撤 `21.24%`。
+
+结论：非线性标签变换没有带来全面预测提升，候选不进入完整 OOS、不提交代码、不修改生产配置。
+
 回测口径：`--fee 0`（隔离信号质量与成本），生产 `config.json` 的 `fee` 保持 `0.0005`。
 指标计算：`/home/wangke/project/freqtrade/scripts/calc_metrics.py`。**该脚本有两个坑，必须绕开**：
 1. `initial_capital` 默认 100，本项目钱包初值为 1000 → 不显式传入会让收益虚高 10 倍。
