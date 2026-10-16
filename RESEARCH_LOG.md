@@ -629,6 +629,44 @@ https://www.nber.org/papers/w16019
 结论：`indicator_periods_candles=48` 不进入完整 OOS、不提交代码、不修改生产配置；生产保持
 `[6, 14, 24]`。
 
+### 2026-10-16 · XGBoost 内部验证后 train+validation refit 短 OOS（否决）
+
+#### 依据与实现边界
+
+XGBoost 官方 sklearn 文档说明：早停依赖显式 `eval_set`，预测会使用 `best_iteration`；文档还建议
+在验证选择完成后重新训练，并明确提醒不能让测试数据参与模型选择：
+
+- https://xgboost.readthedocs.io/en/stable/python/sklearn_estimator.html
+- https://scikit-learn.org/stable/common_pitfalls.html#data-leakage
+
+当前 FreqAI 源码 `/home/wangke/project/freqtrade/freqtrade/freqai/base_models/BaseRegressionModel.py:53-79`
+先按时间切出训练/验证，再只把训练段交给模型拟合。临时 `RefitXGBoostRegressorES` 先在这两个内部段上
+用验证段选 `best_iteration`，然后用训练+验证共 2,187 行、固定的最佳树数重训；真正 OOS 预测完全没有
+参与选树或重训。候选只存在于 `/tmp/freqai-refit-short-strategy/`，没有修改仓库模型代码或框架源码。
+
+控制变量：24 个 pair、`2025-09-10` 至 `2026-01-01`、365 天训练窗、7 天滚动重训、136 个特征、
+`volnorm` horizon=3、XGBoost 参数不变、手续费 0.05%、冻结交易逻辑。候选 identifier：
+`mystrategy-4h-regression-24pair-20261016-refit-short-v1`。
+
+#### 结果
+
+候选有 16,216 个有效预测点、覆盖率 99.95%，没有重复或冲突预测。
+
+| 指标 | 原 XGBoost | refit 候选 | 零预测 |
+|---|---:|---:|---:|
+| MAE | 0.875535 | **0.875169** | 0.872862 |
+| RMSE | 1.313380 | 1.313829 | 1.310032 |
+| 方向准确率 | 50.296% | 50.469% | — |
+| Spearman | 0.018903 | 0.018668 | — |
+| Top-1 选择增益 | -0.158200 | -0.115160 | — |
+| Top-1 sign 正确率 | 47.041% | 47.189% | — |
+
+MAE 只有极小改善，RMSE、Spearman 和 Top-1 仍未超过零预测或原模型。冻结交易逻辑回测为 326 笔、
+收益 `-18.37%`、Sharpe `-1.87`、最大回撤 `24.04%`，交易结果也恶化。
+
+结论：把内部验证数据用于最终 refit 没有解决时间外预测问题；候选不进入完整 OOS、不提交代码、
+不修改生产配置。
+
 回测口径：`--fee 0`（隔离信号质量与成本），生产 `config.json` 的 `fee` 保持 `0.0005`。
 指标计算：`/home/wangke/project/freqtrade/scripts/calc_metrics.py`。**该脚本有两个坑，必须绕开**：
 1. `initial_capital` 默认 100，本项目钱包初值为 1000 → 不显式传入会让收益虚高 10 倍。
