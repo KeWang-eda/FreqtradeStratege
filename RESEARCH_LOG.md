@@ -516,6 +516,45 @@ FreqAI 官方特征工程文档支持自定义回归标签；项目的 `model.py
 结论：本窗口的 raw 标签没有改善每币收益预测，也没有改善交易结果；不提交代码、不修改生产配置，
 生产继续使用 `label=volnorm`。
 
+### 2026-10-16 · XGBoost `reg:quantileerror` (`alpha=0.5`) 短 OOS（回撤与 Top-1 否决）
+
+#### 依据与可运行性
+
+XGBoost 官方参数文档列出 `reg:quantileerror`，说明它是 pinball/quantile loss，
+并由 `quantile_alpha` 指定目标分位数；该目标从 XGBoost 2.0.0 开始提供：
+https://xgboost.readthedocs.io/en/stable/parameter.html
+
+当前虚拟环境为 XGBoost `3.4.1`。先用小型回归数据验证了
+`XGBRegressor(objective="reg:quantileerror", quantile_alpha=0.5)` 能训练，随后才进入 FreqAI
+短 OOS。FreqAI 仍使用项目的 `XGBoostRegressorES`，只在临时配置的
+`model_training_parameters` 中加入 `objective=reg:quantileerror`、`quantile_alpha=0.5`，并把
+早停监控指标设为官方支持的 `quantile`；没有修改模型源码或框架源码。
+
+控制变量与当前短窗基线完全一致：24 个 pair、`2025-09-10` 至 `2026-01-01`、365 天训练窗、
+7 天滚动重训、136 个特征、`volnorm` horizon=3、手续费 0.05% 和冻结交易逻辑。
+候选 identifier 为 `mystrategy-4h-regression-24pair-20261016-quantile05-short-v1`。
+
+#### 独立预测层结果
+
+候选有 16,216 个共同有效预测点、覆盖率 99.95%，没有重复或冲突预测。
+
+| 指标 | 无权重 XGBoost 对照 | quantile alpha=0.5 | 零预测 |
+|---|---:|---:|---:|
+| MAE | 0.875535 | **0.873149** | 0.872862 |
+| RMSE | 1.313380 | **1.312137** | 1.310032 |
+| 方向准确率 | 50.296% | **51.986%** | — |
+| Spearman | 0.018903 | **0.039293** | — |
+| Top-1 选择增益 | -0.158200 | -0.125181 | — |
+| Top-1 sign 正确率 | 47.041% | 49.556% | — |
+
+候选的 pooled 误差、方向和时序排序相对无权重对照有改善，但 MAE/RMSE 仍略高于零预测，
+Top-1 选择增益仍明显为负。这说明分位数损失改善了平均回归拟合，却没有改善策略真正使用的
+跨 pair 极值选择。
+
+冻结交易逻辑回测为 267 笔交易、收益 `-29.58%`、Sharpe `-4.18`、最大回撤 `34.39%`，
+已超过 30% 硬门槛。候选不进入完整 OOS、不提交代码、不修改生产配置，生产继续使用普通平方误差
+XGBoost 回归目标。
+
 回测口径：`--fee 0`（隔离信号质量与成本），生产 `config.json` 的 `fee` 保持 `0.0005`。
 指标计算：`/home/wangke/project/freqtrade/scripts/calc_metrics.py`。**该脚本有两个坑，必须绕开**：
 1. `initial_capital` 默认 100，本项目钱包初值为 1000 → 不显式传入会让收益虚高 10 倍。
