@@ -555,6 +555,43 @@ Top-1 选择增益仍明显为负。这说明分位数损失改善了平均回�
 已超过 30% 硬门槛。候选不进入完整 OOS、不提交代码、不修改生产配置，生产继续使用普通平方误差
 XGBoost 回归目标。
 
+### 2026-10-16 · `include_corr_pairlist` BTC/ETH → BTC/ETH/BNB/SOL 短 OOS（否决）
+
+#### 依据与控制变量
+
+FreqAI 官方特征工程文档说明，`include_corr_pairlist` 会把相关交易对的特征加入每个交易对的
+特征集合；官方参数表和 `FreqaiExampleHybridStrategy` 都把它作为跨币信息输入方式：
+
+- https://www.freqtrade.io/en/stable/freqai-feature-engineering/
+- https://www.freqtrade.io/en/stable/freqai-parameter-table/
+- 本地模板 `/home/wangke/project/freqtrade/freqtrade/templates/FreqaiExampleHybridStrategy.py`
+
+当前生产输入只有 BTC、ETH 两个相关币。本实验只扩展为 BTC、ETH、BNB、SOL，其他配置保持不变：
+24 个 pair、`2025-09-10` 至 `2026-01-01`、365 天训练窗、7 天滚动重训、136 个基线特征、
+`volnorm` horizon=3、XGBoost 早停、手续费 0.05% 和冻结交易逻辑。候选 identifier 为
+`mystrategy-4h-regression-24pair-20261016-corr4-short-v1`。训练日志确认相关特征扩展生效，
+每个模型的特征数随 pair 可用性为 180 或 224，没有修改仓库特征代码。
+
+#### 独立预测层与交易结果
+
+候选有 16,220 个有效预测点、覆盖率 99.98%，没有重复或冲突预测。
+
+| 指标 | 无权重 BTC/ETH 对照 | corr4 候选 | 零预测 |
+|---|---:|---:|---:|
+| MAE | 0.875535 | **0.874647** | 0.872765 |
+| RMSE | 1.313380 | **1.313247** | 1.309902 |
+| 方向准确率 | 50.296% | 49.957% | — |
+| Spearman | 0.018903 | 0.020406 | — |
+| Top-1 选择增益 | -0.158200 | -0.111531 | — |
+| Top-1 sign 正确率 | 47.041% | 51.479% | — |
+
+虽然 MAE、RMSE 和 Top-1 增益相对对照略有改善，误差仍高于零预测，方向准确率低于 50%，
+Top-1 增益仍为负。冻结交易逻辑回测为 315 笔交易、收益 `-13.17%`、Sharpe `-1.75`、
+最大回撤 `22.74%`，也没有改善对照的 `-5.85%` 收益。
+
+结论：增加相关币特征在短窗口没有产生可独立复用的预测提升；候选不进入完整 OOS、不提交代码、
+不修改生产配置，生产继续使用 BTC/ETH 相关特征集合。
+
 回测口径：`--fee 0`（隔离信号质量与成本），生产 `config.json` 的 `fee` 保持 `0.0005`。
 指标计算：`/home/wangke/project/freqtrade/scripts/calc_metrics.py`。**该脚本有两个坑，必须绕开**：
 1. `initial_capital` 默认 100，本项目钱包初值为 1000 → 不显式传入会让收益虚高 10 倍。
