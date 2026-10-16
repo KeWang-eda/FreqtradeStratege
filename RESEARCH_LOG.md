@@ -367,6 +367,83 @@ https://xgboost.readthedocs.io/en/stable/parameter.html
 
 因此，训练集分数好、测试集分数差时，不能只看回测收益，也不能说 FreqAI 已经完成了 purge；要同时报告训练/测试误差、滚动 OOS 误差、零预测基线和 Top-1 选择指标。后续 `test_size` 候选只允许使用独立 identifier 和相同 OOS 窗口比较，未通过预测层前不改生产配置。
 
+### 2026-10-16 · purge gap 候选（有依据，完整 OOS 否决）
+
+#### 为什么测试
+
+FreqAI 当前把 `data_split_parameters` 直接传给 scikit-learn 的
+`train_test_split()`，并没有按 `label_period_candles` 自动留出边界间隔。
+当标签使用未来 3 根 K 线时，训练集最后几行的标签窗口会贴着测试集开始位置。
+这不是随机打乱问题，但会让边界附近的训练标签和测试区间相邻。候选模型只在训练集末尾去掉
+`label_period_candles=3` 行，其他特征、标签、XGBoost 参数、交易逻辑和数据范围保持不变。
+
+依据来源：
+
+- scikit-learn `TimeSeriesSplit(gap)` 官方文档：
+  https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html
+  （`gap` 定义为每个训练集末尾要排除的样本数。）
+- FreqAI 官方参数表：
+  https://www.freqtrade.io/en/stable/freqai-parameter-table/
+  （`data_split_parameters` 传入数据切分器。）
+- 本地 FreqAI 源码 `/home/wangke/project/freqtrade/freqtrade/freqai/data_kitchen.py:146-159`：
+  当前直接调用 `train_test_split`。
+- 本地 FreqAI 源码 `/home/wangke/project/freqtrade/freqtrade/freqai/base_models/BaseRegressionModel.py:53-79`：
+  训练管线先拟合训练集，再转换测试集；没有额外 purge。
+
+实验模型仅存在于 `/tmp/freqai-regime4-short-strategy/PurgedXGBoostRegressorES.py`，没有修改
+`feature.py`、`model.py`、`MyStrategy.py`、生产配置或 Freqtrade 框架源码。
+
+#### 短 OOS：先看预测是否改善
+
+固定 24 个币、`2025-09-10` 至 `2026-01-01`、7 天滚动重训。策略逻辑冻结，短 OOS 只用于快速筛选。
+
+| 指标 | 7 天基线 | purge gap |
+|---|---:|---:|
+| 策略收益 | -5.85% | **+5.94%** |
+| Sharpe | -1.21 | **1.14** |
+| 最大回撤 | 12.98% | 10.53% |
+| 交易数 | — | 305 |
+| MAE | 0.875661 | **0.875105** |
+| RMSE | 1.313868 | **1.313148** |
+| 方向准确率 | — | 50.333% |
+| Spearman | 0.018190 | **0.023023** |
+| Top-1 选择增益 | -0.15901 | **-0.04223** |
+
+短窗口看起来改善，但绝对误差仍略差于零预测（零预测 MAE 0.872862、RMSE 1.310032）。
+因此短 OOS 只能说明候选值得做完整时间外复核，不能证明模型已经变好。
+
+#### 完整 OOS：决定是否保留
+
+固定同一套 24 个币，`2025-09-10` 至 `2026-10-01`，每币 56 个训练窗口，共 1344 个预测文件。
+候选 identifier：`mystrategy-4h-regression-24pair-20261016-purged3-full-v1`。
+
+策略回测结果：1127 笔交易，收益 **-25.27%**，Sharpe **-1.89**，最大回撤 **32.92%**。
+最大回撤超过本项目 30% 硬门槛，所以候选否决，不进入生产。
+
+完整预测层（有效预测 55,503 条，覆盖率 99.94%）：
+
+| 指标 | 生产基线 | purge gap | 零预测 |
+|---|---:|---:|---:|
+| MAE | 0.848907 | **0.848751** | 0.844853 |
+| RMSE | 1.215420 | **1.215296** | 1.209713 |
+| 方向准确率 | — | 50.388% | — |
+| Spearman | -0.010358 | **-0.009091** | — |
+| Top-1 选择增益 | -0.03792 | **-0.03261** | — |
+| Top-1 sign 正确率 | — | 49.611% | — |
+
+在共同有效样本上，MAE 只改善 0.000156，RMSE 平方误差只改善 0.000301，方向准确率提升
+约 0.148 个百分点；但两者仍都劣于零预测，Spearman 仍为负，Top-1 选择增益仍为负。
+因此 purge gap 缓解了边界泄漏的一个可能来源，却没有解决模型在时间外预测中没有稳定信号的问题。
+
+#### 结论
+
+这次实验支持一个有限结论：当前 FreqAI 的时间切分没有自动 purge，给标签留出 3 根 K 线的间隔在方法上合理，
+且短 OOS 的预测指标和 Top-1 指标略有改善。但完整 OOS 才是保留标准；完整 OOS 的收益、Sharpe 和回撤均未达标，
+预测误差仍不如零预测，所以不能把 purge gap 说成模型提升，也不能提交到生产代码。
+
+后续所有模型候选继续使用独立时间外窗口、零预测基线和 Top-1 指标；只有在完整 OOS 同时超过零预测并满足回撤门槛时，
+才允许提交模型代码。此次提交只记录依据和否决结果。
+
 回测口径：`--fee 0`（隔离信号质量与成本），生产 `config.json` 的 `fee` 保持 `0.0005`。
 指标计算：`/home/wangke/project/freqtrade/scripts/calc_metrics.py`。**该脚本有两个坑，必须绕开**：
 1. `initial_capital` 默认 100，本项目钱包初值为 1000 → 不显式传入会让收益虚高 10 倍。
