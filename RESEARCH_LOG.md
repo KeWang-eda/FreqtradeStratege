@@ -667,6 +667,37 @@ MAE 只有极小改善，RMSE、Spearman 和 Top-1 仍未超过零预测或原�
 结论：把内部验证数据用于最终 refit 没有解决时间外预测问题；候选不进入完整 OOS、不提交代码、
 不修改生产配置。
 
+### 2026-10-16 · FreqAI `reverse_train_test_order=true` 短 OOS（预测层否决）
+
+#### 依据与控制变量
+
+FreqAI 官方参数表说明 `reverse_train_test_order` 会把较新的数据段用于训练、较旧的数据段用于
+内部测试，并特别提醒这是非传统用法：
+https://www.freqtrade.io/en/stable/freqai-parameter-table/
+
+本地源码 `/home/wangke/project/freqtrade/freqtrade/freqai/data_kitchen.py:191-204` 确认该开关只交换
+FreqAI 已切好的 train/test 数据；滚动窗口内的所有数据仍早于真正 OOS 时刻，没有读取未来价格。
+本实验只打开该开关，其他配置保持 24 个 pair、365 天训练窗、7 天重训、136 特征、`volnorm` horizon=3、
+XGBoost 和冻结交易逻辑不变。候选 identifier：
+`mystrategy-4h-regression-24pair-20261016-reverse-split-short-v1`。
+
+#### 结果
+
+候选有效预测 16,008 个、覆盖率 98.67%，没有重复或冲突预测。
+
+| 指标 | 正常切分 | reverse 候选 | 零预测 |
+|---|---:|---:|---:|
+| MAE | 0.875535 | 0.882103 | 0.876532 |
+| RMSE | 1.313380 | 1.321821 | 1.315627 |
+| 方向准确率 | 50.296% | 51.643% | — |
+| Spearman | 0.018903 | -0.002869 | — |
+| Top-1 选择增益 | -0.158200 | -0.059353 | — |
+| 策略收益 | -5.85% | -9.84% | — |
+| 最大回撤 | 12.98% | 14.96% | — |
+
+近期样本训练减少了有效预测覆盖，整体误差和排序恶化；方向准确率的小幅提高没有转化为 Top-1
+选择质量或交易收益。候选不进入完整 OOS、不提交代码、不修改生产配置。
+
 ### 2026-10-16 · FreqAI 标签 `MinMaxScaler` → `StandardScaler` 短 OOS（等价变换，否决）
 
 #### 依据与控制变量
