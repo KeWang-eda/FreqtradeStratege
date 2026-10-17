@@ -30,6 +30,16 @@ def make_run(path, prediction=1.0, profit=1.0):
     }
     with zipfile.ZipFile(path / "result.zip", "w") as archive:
         archive.writestr(
+            "result_config.json",
+            json.dumps(
+                {
+                    "freqai": {"train_period_days": 365},
+                    "exchange": {"name": "binance"},
+                    "config_files": ["config.json"],
+                }
+            ),
+        )
+        archive.writestr(
             "result.json",
             json.dumps(
                 {
@@ -287,3 +297,38 @@ def test_userdir_root_normalization_retains_relative_model_path(tmp_path):
 
 def test_boolean_is_not_numeric_equivalent():
     assert not _equivalent(True, 1) and not _equivalent(False, 0)
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["train_period", "model", "feature_order", "transport", "source_order", "missing_config"],
+)
+def test_all_exported_configuration_is_compared(tmp_path, mutation):
+    old, new = tmp_path / "old", tmp_path / "new"
+    make_run(old)
+    make_run(new)
+
+    def mutate(contents):
+        if mutation == "missing_config":
+            contents.pop("result_config.json")
+            return
+        value = json.loads(contents["result_config.json"])
+        if mutation == "train_period":
+            value["freqai"]["train_period_days"] = 1
+        elif mutation == "model":
+            value["freqaimodel"] = "different"
+        elif mutation == "feature_order":
+            value["freqai"]["feature_parameters"] = {"indicator_periods_candles": [14, 6]}
+        elif mutation == "transport":
+            value["exchange"]["ccxt_config"] = {"timeout": 123}
+        else:
+            value["config_files"] = ["configs/backtest-local.json", "config.json"]
+        contents["result_config.json"] = json.dumps(value)
+
+    edit_archive(new, mutate)
+    if mutation == "missing_config":
+        with pytest.raises(ValueError, match="exported configuration"):
+            compare_runs(old, new)
+    else:
+        report = compare_runs(old, new)
+        assert not report["passed"] and any("configuration/" in v for v in report["differences"])

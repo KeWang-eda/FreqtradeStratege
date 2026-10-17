@@ -1,0 +1,115 @@
+{
+  "created_at": "2026-10-17T12:58:44.936350+00:00",
+  "scope": "This round Phase0\u20132 text reports only; historical docs/baseline evidence untouched",
+  "raw_retention": "Original bytes retained in local private archive; never needed as a public reproducible path",
+  "files": [
+    {
+      "file": "docs/acceptance/phase0_baseline.md",
+      "raw_sha256": "b639bfcf1a2477bdc2bd12284964f6fab29582c8a79a182d983257a34231b6a2",
+      "published_sha256": "02844c6f388c819aa0d9eb6d7be1396ba7426468e18c1c93ba9573b738eece50",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase0_inventory.json",
+      "raw_sha256": "842a81cab71bca900a6a17d4e0c37464b285dbe598fed32954d99440051466ed",
+      "published_sha256": "8d58daea11fc1b6c11e863f6b25daae61f83470533e7ba82798b3b3575079dc7",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase0_pytest.log",
+      "raw_sha256": "0b6104141027f6afec4b776c067be4a4ccb4b160bed2d822636baaae76b4e7ae",
+      "published_sha256": "33c120c7079180b0eb34c22828eda1c80ccd0581b4e657b4103aeb235108f1ec",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase1_architecture_review.md",
+      "raw_sha256": "b456eb444c79e795da6e533b287eb25e99539eb8d253212410ffe0866a83a703",
+      "published_sha256": "3b077385fe94108fa753d54654a769a86efaca103f330409e68449d31bebb2e5",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase1_existing_pytest.log",
+      "raw_sha256": "d432c5e8de8db6242e7d0c55158d4a31d76d672ce92b5f19d2413549d3afcc02",
+      "published_sha256": "6d2e7944b6f82128e75aa6ded0930bf19b9208fda451dd908954f98a3648ebf6",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase1_existing_pytest.xml",
+      "raw_sha256": "aedbada5290cf1398128008ba889d7f95847ca8a7520758957963a5c588e8cb3",
+      "published_sha256": "a534267df260d18dabe8a45eb95f1090d9a40e755631baa53dc7f8d3938a172e",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase1_failed_attempt.log",
+      "raw_sha256": "c15921a66b53a396cfbee1b5739007868c5718c22dd08948d767668783c8f16d",
+      "published_sha256": "ab7ee13bb06de6af2e9808a93af675de783283c910dbc44a2cb2231719d97af4",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase1_failed_attempt.xml",
+      "raw_sha256": "71d48a1e26d28fa1e68c8fc3af34361bf5c339a02420eff01c0c0bce5ac3f5e3",
+      "published_sha256": "f26c2e9c17afa737ff5a160295e69e3d6ef73e1295f83918e183c90806248ea5",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase1_pytest.log",
+      "raw_sha256": "40c99d60cfe38b9e5f7e3da5a9b2ce046b35dcd37bb611b13f3f1fde3e927387",
+      "published_sha256": "7a955b149daf45b78ac28778c389a98a03e93a9b116366d7003d5a5034ec89a3",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase2_comparator_pytest.log",
+      "raw_sha256": "aeff5666f153b4d9384ac94805de57f54a52281e4217971332fc3030fc789de2",
+      "published_sha256": "4fd8dfcd9cb539af4151081e632ba9452d674c68e924570c98e89518d135d69b",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase2_contract_failed_attempt.log",
+      "raw_sha256": "0c04bdeb64fe9e3d1d3eda0294339a5ef10cf9a94f9a35207fafc2f12dc61cc3",
+      "published_sha256": "3679274189642199ff3f9b5d2733fe3ae139f95f232bf16c575bec8f53c58844",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase2_contract_failed_attempt.xml",
+      "raw_sha256": "6938b58c087430925fd461077b4545c8bf8f3a0093478b389a031d35778c7655",
+      "published_sha256": "3648a0bc3cfe65ce64f314033a37b80574a8c0463865d3c297cf925129b5f6ac",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase2_contract_pytest.log",
+      "raw_sha256": "0c04bdeb64fe9e3d1d3eda0294339a5ef10cf9a94f9a35207fafc2f12dc61cc3",
+      "published_sha256": "3679274189642199ff3f9b5d2733fe3ae139f95f232bf16c575bec8f53c58844",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase2_contract_pytest.xml",
+      "raw_sha256": "6938b58c087430925fd461077b4545c8bf8f3a0093478b389a031d35778c7655",
+      "published_sha256": "3648a0bc3cfe65ce64f314033a37b80574a8c0463865d3c297cf925129b5f6ac",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase2_independent_review_pytest.log",
+      "raw_sha256": "357f9903cb203fa486ef298d3fcb12ef896cdff8e2aa000cc89adb1438f13599",
+      "published_sha256": "0bac0b230205cb51d1ec22e4d30366a7608ec98139e5cae2fda75488b74f8267",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase2_native_network.json",
+      "raw_sha256": "9f1b324cffe82376c21e67cf7eaf04d148df5df7403d57c0a34e24331be9ff34",
+      "published_sha256": "3fd956f4333d418026fba4af4497c1407d7ea19a8160339c84a3ec42b7be3d9f",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase2_pytest.log",
+      "raw_sha256": "c402d6c0ee362c375c551320076528fca2e71c9a9191d7abcd28a652d1a929af",
+      "published_sha256": "3d9b488a62d93f2aefd03659745edc9581bf3ccaaa00886f326553272365f21b",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    },
+    {
+      "file": "docs/acceptance/phase2_test_matrix.md",
+      "raw_sha256": "16414f59e89395d854f4a0d4b34dc9555e447ee220bb7fe81418545cca1fbec4",
+      "published_sha256": "129fd7e11329e0c944f0e48eb4ebd6a128fea6fba850e8fe36b56da1ef2dc92c",
+      "change": "Filesystem roots only; numeric/test outcomes untouched"
+    }
+  ]
+}

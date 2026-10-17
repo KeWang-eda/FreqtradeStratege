@@ -1,6 +1,6 @@
 {
   "python": "3.13.13 | packaged by Anaconda, Inc. | (main, Apr 14 2026, 06:19:41) [GCC 14.3.0]",
-  "executable": "/home/wangke/project/freqtrade/.venv/bin/python",
+  "executable": "/PYTHON_ENV/bin/python",
   "versions": {
     "freqtrade": "2026.7",
     "ccxt": "4.5.75",

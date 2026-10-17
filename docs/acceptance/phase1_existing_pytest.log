@@ -2,7 +2,7 @@
 =================================== FAILURES ===================================
 _____ test_research_cli_dataset_training_cv_and_comparison_without_network _____
 
-tmp_path = PosixPath('/tmp/pytest-of-wangke/pytest-82/test_research_cli_dataset_trai0')
+tmp_path = PosixPath('/TEST_TMP/pytest-82/test_research_cli_dataset_trai0')
 candles =                          date        open  ...       close      volume
 0   2024-01-01 00:00:00+00:00  100.100000  ... ...  111.031280  693.560778
 239 2024-02-09 20:00:00+00:00  110.727274  ...  110.616658  699.999364
@@ -26,9 +26,9 @@ candles =                          date        open  ...       close      volume
 tests/integration/test_local_data_network.py:50: 
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-tmp_path = PosixPath('/tmp/pytest-of-wangke/pytest-82/test_research_cli_dataset_trai0')
+tmp_path = PosixPath('/TEST_TMP/pytest-82/test_research_cli_dataset_trai0')
 name = 'training'
-arguments = ['run', '-c', '/tmp/pytest-of-wangke/pytest-82/test_research_cli_dataset_trai0/research.json', '--output', '/tmp/pytest-of-wangke/pytest-82/test_research_cli_dataset_trai0/artifacts', '--experiment-id', ...]
+arguments = ['run', '-c', '/TEST_TMP/pytest-82/test_research_cli_dataset_trai0/research.json', '--output', '/TEST_TMP/pytest-82/test_research_cli_dataset_trai0/artifacts', '--experiment-id', ...]
 
     def audit_research(tmp_path, name, arguments):
         report = tmp_path / f"{name}.json"
@@ -50,15 +50,15 @@ arguments = ['run', '-c', '/tmp/pytest-of-wangke/pytest-82/test_research_cli_dat
             timeout=120,
         )
 >       assert result.returncode == 0, result.stdout + result.stderr
-E       AssertionError: /tmp/pytest-of-wangke/pytest-82/test_research_cli_dataset_trai0/artifacts/offline
+E       AssertionError: /TEST_TMP/pytest-82/test_research_cli_dataset_trai0/artifacts/offline
 E         
 E       assert 3 == 0
-E        +  where 3 = CompletedProcess(args=['/home/wangke/project/freqtrade/.venv/bin/python', '/home/wangke/project/FreqtradeStratege/tool... returncode=3, stdout='/tmp/pytest-of-wangke/pytest-82/test_research_cli_dataset_trai0/artifacts/offline\n', stderr='').returncode
+E        +  where 3 = CompletedProcess(args=['/PYTHON_ENV/bin/python', '/REPO/tool... returncode=3, stdout='/TEST_TMP/pytest-82/test_research_cli_dataset_trai0/artifacts/offline\n', stderr='').returncode
 
 tests/integration/test_local_data_network.py:35: AssertionError
 =============================== warnings summary ===============================
 tests/integration/test_offline_freqtrade.py: 56 warnings
-  /home/wangke/project/freqtrade/.venv/lib/python3.13/site-packages/joblib/numpy_pickle.py:207: DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+  /PYTHON_ENV/lib/python3.13/site-packages/joblib/numpy_pickle.py:207: DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
   As an alternative, you can create a new view using np.reshape (with copy=False if needed).
     array.shape = self.shape
 

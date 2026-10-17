@@ -2,7 +2,7 @@
 ..........                                                               [100%]
 =============================== warnings summary ===============================
 tests/integration/test_offline_freqtrade.py: 56 warnings
-  /home/wangke/project/freqtrade/.venv/lib/python3.13/site-packages/joblib/numpy_pickle.py:207: DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+  /PYTHON_ENV/lib/python3.13/site-packages/joblib/numpy_pickle.py:207: DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
   As an alternative, you can create a new view using np.reshape (with copy=False if needed).
     array.shape = self.shape
 

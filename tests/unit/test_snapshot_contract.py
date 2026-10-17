@@ -264,3 +264,16 @@ def test_json_primitive_types_do_not_coerce_to_valid_contracts(tmp_path, snapsho
         snapshot["raw_sha256"] = module.digest(snapshot["raw_response"])
     with pytest.raises(module.SnapshotError):
         module.load_snapshot(write_snapshot(tmp_path / "bad.json", snapshot), PAIRS, age)
+
+
+@pytest.mark.parametrize("field,value", [("contractSize", True), ("linear", 1), ("swap", 1)])
+def test_normalized_market_types_are_strict(tmp_path, snapshot, field, value):
+    snapshot["normalized"]["markets"][PAIRS[0]][field] = value
+    with pytest.raises(module.SnapshotError, match="Normalized rules"):
+        module.load_snapshot(write_snapshot(tmp_path / "bad.json", snapshot), PAIRS, 36500)
+
+
+def test_recorded_leverage_primitive_types_are_strict(tmp_path, snapshot):
+    snapshot["leverage_rules"]["pairs"][PAIRS[0]][0]["tier"] = True
+    with pytest.raises(module.SnapshotError, match="leverage bundle"):
+        module.load_snapshot(write_snapshot(tmp_path / "bad.json", snapshot), PAIRS, 36500)

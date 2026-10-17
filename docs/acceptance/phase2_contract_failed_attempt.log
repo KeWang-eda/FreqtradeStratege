@@ -3,7 +3,7 @@
 =================================== FAILURES ===================================
 __________________ test_all_model_metadata_is_compared[label] __________________
 
-tmp_path = PosixPath('/tmp/pytest-of-wangke/pytest-88/test_all_model_metadata_is_com1')
+tmp_path = PosixPath('/TEST_TMP/pytest-88/test_all_model_metadata_is_com1')
 mutation = 'label'
 
     @pytest.mark.parametrize(
@@ -42,7 +42,7 @@ tools/verify_freqtrade_regression.py:191: in compare_runs
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
 
-path = PosixPath('/tmp/pytest-of-wangke/pytest-88/test_all_model_metadata_is_com1/new/btc_metadata.json')
+path = PosixPath('/TEST_TMP/pytest-88/test_all_model_metadata_is_com1/new/btc_metadata.json')
 relative = PosixPath('btc_metadata.json')
 
     def _model_metadata(path: Path, relative: Path) -> dict:
@@ -70,12 +70,12 @@ relative = PosixPath('btc_metadata.json')
                 or (key == "labels_std" and any(v < 0 for v in statistics.values()))
             ):
 >               raise ValueError(f"Invalid {key}: {path}")
-E               ValueError: Invalid labels_mean: /tmp/pytest-of-wangke/pytest-88/test_all_model_metadata_is_com1/new/btc_metadata.json
+E               ValueError: Invalid labels_mean: /TEST_TMP/pytest-88/test_all_model_metadata_is_com1/new/btc_metadata.json
 
 tools/verify_freqtrade_regression.py:108: ValueError
 =============================== warnings summary ===============================
 tests/integration/test_freqtrade_regression_report.py: 570 warnings
-  /home/wangke/project/freqtrade/.venv/lib/python3.13/site-packages/joblib/numpy_pickle.py:207: DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+  /PYTHON_ENV/lib/python3.13/site-packages/joblib/numpy_pickle.py:207: DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
   As an alternative, you can create a new view using np.reshape (with copy=False if needed).
     array.shape = self.shape
 

@@ -2,6 +2,19 @@
 
 状态：**阶段门槛通过**。起点为[本轮 Phase 0](phase0_baseline.md)，不改变策略或交易参数。测试命令及原始失败记录均保留。
 
+统一阶段状态：**PASS（含后续独立复核补修）**。
+
+| 验收项 | 检查方式 | 预期 | 实际 | 证据 | 状态 |
+| --- | --- | --- | --- | --- | --- |
+| 非法快照 | 正反向真实响应合同测试 | 无默认值掩盖缺规则 | 缺/错规则、范围、版本、时间明确拒绝 | phase1_pytest.xml | PASS |
+| 模式/生命周期 | preclient spy、构造/引擎失败注入 | 仅显式回测且释放资源 | 原生校验保留、loop/client 关闭 | phase1_pytest.xml、phase2_independent_review_pytest.xml | PASS |
+| 网络边界 | Python 拒绝探针 + native netns | 无回退/不隐瞒拒绝 | 零网络真实回测，捕获拒绝仍非零 | phase1_pytest.xml、Phase 4 工件 | PASS |
+| 严格 JSON 类型 | bool/int 市场 flags 负向复现 | 不得改变原生市场过滤 | canonical digest 对照拒绝伪装 bool/number | adapter_independent_review.md、phase2_independent_review_pytest.xml | PASS |
+
+后续独立复核发现 Python dict 相等会把 `linear=1` 视为 `True`，而原生市场过滤使用 `is True`，这是实际阻断缺陷。已改为规范 JSON digest 对照 normalized、杠杆和恢复后的市场，并补四项类型负向测试。补修相关 **104 passed、0 failed、0 skipped**，包含完整原生断网回测。先期 82 项结果不是最终全量统计，最终全量以 Phase 6 为准。
+
+新增/修改文件见下表和 Phase 2；无文件删除，无策略语义修改。最低原生验收仍为 13 交易、26 订单、4 预测文件、零网络。该阶段满足 Phase 2 准入；扩大币种/历史规则真实性仍是已披露限制。
+
 ## 发现、证据与修复
 
 修复前的[可复现结果](phase1_before_fix_reproductions.json)显示：删除真实 BTC 响应中的 `PRICE_FILTER` 并重新计算解析值和哈希，旧加载器仍然接受；未知 envelope 字段也被接受。原因是 CCXT 在缺 filter 时可使用其他精度字段，单纯“重解析后相等”不能证明关键原始规则齐全。
@@ -32,7 +45,7 @@
 ## 实际测试
 
 ```bash
-PYTHONPATH=src /home/wangke/project/freqtrade/.venv/bin/python -m pytest \
+PYTHONPATH=src "$FREQTRADE_PYTHON" -m pytest \
   tests/unit/test_snapshot_contract.py \
   tests/integration/test_offline_lifecycle.py \
   tests/integration/test_network_audit_boundary.py \

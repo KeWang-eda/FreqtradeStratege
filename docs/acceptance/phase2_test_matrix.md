@@ -1,6 +1,15 @@
 # Phase 2：测试矩阵与回归比较器
 
-状态：**阶段门槛通过**。本轮全量结果 **217 passed、0 failed、0 skipped，44.71s**，见[JUnit](phase2_pytest.xml)和[日志](phase2_pytest.log)。基线 115 项来自本轮 Phase 0，新增 102 项测试，未删除旧测试或放宽容差。
+状态：**PASS（先期全量后，经独立复核补修再验）**。先期全量结果 **217 passed、0 failed、0 skipped，44.71s**，见[JUnit](phase2_pytest.xml)和[日志](phase2_pytest.log)。之后独立复核发现快照 bool/int 校验与归档配置比较两个阻断缺口，重新打开本阶段并修复；补修相关 **104 passed、0 failed、0 skipped，23.49s**，见[补修 JUnit](phase2_independent_review_pytest.xml)。最终全量统计以 Phase 6 为准，不将先期 217 项说成包含后补用例。
+
+| 验收项 | 命令/检查 | 预期 | 实际 | 证据 | 状态 |
+| --- | --- | --- | --- | --- | --- |
+| 全量及负向矩阵 | pytest 全量和补修相关集 | 实际执行、无意外 skip | 217/0/0；补修 104/0/0 | phase2_pytest.xml、phase2_independent_review_pytest.xml | PASS |
+| 严格配置对照 | 唯一 native `_config.json`，训练/模型/特征/交易所/transport 均比较 | 同结果但不同配置必须失败 | 新增六项负向用例通过 | test_freqtrade_regression_report.py、补修 JUnit | PASS |
+| 原生交易回归 | 新缓存 + netns + strace + 严格比较 | 无网络且结果一致 | 13 交易、26 订单、4 预测，配置/数值一致 | 补修真实集成用例；Phase 4 完整工件 | PASS |
+| 原生运行边界 | 核心校验和普通类实现对照 | 无全局替换 | 未修改原生类，模式拒绝先于客户端 | Phase 1 / 补修测试 | PASS |
+
+代码变更：补齐测试、比较器、严格 JSON 类型判断与不支持市场覆盖的预检；新增工件/本报告，无删除文件。满足 Phase 3 准入，未解决的数据覆盖和历史规则时点风险留待 Phase 3；实际账户/订单仍未验收。
 
 ## 矩阵
 
@@ -26,6 +35,8 @@
 
 只排除原有的两个结果字段 `backtest_run_start_ts`、`backtest_run_end_ts`，理由是进程真实执行时间不同，和历史决策无关。全部历史时间边界、交易参数、钱包/回撤/盈亏和嵌套指标仍比较。
 
+独立复核补齐 `_config.json` 后，不豁免 HTTP timeout、proxy 或整个 exchange 配置。受验离线命令加载与参考相同的 mihomo overlay，以获得相同配置；离线客户端不使用该代理，namespace 仍断网。`config_files` 仅规范化项目绝对根，保留完整相对路径和合并来源顺序。先期 `phase2_native_regression.json` 来自补修前版本，未比较归档配置，保留作历史证据，不能作为最终严格配置验收；最终证据使用 Phase 4。
+
 `metadata.data_path` **没有被删除或忽略**：先验证它与工件所属模型相对目录一致，再规范化独立 userdir 的绝对根前缀。两次重训按要求使用不同运行根目录，这个前缀必然不同；模型相对目录、模型文件名及其余 metadata 仍须一致，错误后缀会失败。该路径过去整个不在比较范围内，本次覆盖更严格，而不是为使交易差异通过而排除字段。政策也写入每份新回归 JSON。
 
 新增严格标签统计验证时，一项负向 fixture 只换了标签列表而没同步统计键，比较器直接拒绝无效模型 metadata，原测试却仅期待差异报告，因此出现 **1 failed / 75 passed**。已保留[失败日志](phase2_contract_failed_attempt.log)/[JUnit](phase2_contract_failed_attempt.xml)，并将该 fixture 改为“内部一致但与基线不同的标签”，继续验证比较器能够报告真实标签差异；没有放宽校验。
@@ -33,11 +44,11 @@
 ## 复现与本轮证据
 
 ```bash
-PYTHONPATH=src /home/wangke/project/freqtrade/.venv/bin/python -m pytest -q \
+PYTHONPATH=src "$FREQTRADE_PYTHON" -m pytest -q \
   --basetemp=/tmp/quant-phase2-final-pytest-20261017 \
   --junitxml=docs/acceptance/phase2_pytest.xml
-/home/wangke/project/freqtrade/.venv/bin/ruff check src tests tools
-/home/wangke/project/freqtrade/.venv/bin/ruff format --check src tests tools
+/PYTHON_ENV/bin/ruff check src tests tools
+/PYTHON_ENV/bin/ruff format --check src tests tools
 ```
 
 `--basetemp` 仅供可丢弃测试目录，pytest 会清理它；不得指向真实 data、models 或既有工件。

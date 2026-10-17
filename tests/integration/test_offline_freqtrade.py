@@ -156,6 +156,8 @@ def offline_command(tmp_path, snapshot):
         str(ROOT / "config.json"),
         "-c",
         str(ROOT / "configs/backtest-local.json"),
+        "-c",
+        str(ROOT / "configs/environment/freqtrade-mihomo.json"),
         "--userdir",
         str(userdir),
         "--datadir",

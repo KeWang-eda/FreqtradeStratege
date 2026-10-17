@@ -317,9 +317,9 @@ def load_snapshot(path: Path, required_pairs: list[str], max_age_days: float = 3
         raw = snapshot["raw_response"]
         if snapshot["raw_sha256"] != digest(raw):
             raise SnapshotError("Raw response SHA256 mismatch")
-        if snapshot["normalized"] != parse_response(raw, pairs):
+        if digest(snapshot["normalized"]) != digest(parse_response(raw, pairs)):
             raise SnapshotError("Normalized rules differ from genuine response parsed by CCXT")
-        if snapshot["leverage_rules"] != leverage_rules(pairs):
+        if digest(snapshot["leverage_rules"]) != digest(leverage_rules(pairs)):
             raise SnapshotError("Native leverage bundle or recorded rules changed")
         snapshot["sha256"] = claimed_hash
         return snapshot

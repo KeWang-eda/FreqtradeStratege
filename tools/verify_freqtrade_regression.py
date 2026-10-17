@@ -25,6 +25,34 @@ METRIC_EXCLUSIONS = {
 }
 
 
+def _configuration(archive: Path) -> dict:
+    with zipfile.ZipFile(archive) as handle:
+        names = [name for name in handle.namelist() if name.endswith("_config.json")]
+        if len(names) != 1:
+            raise ValueError("Native archive requires exactly one exported configuration")
+        value = _json(handle.read(names[0]))
+    if not isinstance(value, dict):
+        raise ValueError("Invalid exported configuration")
+    if "config_files" in value:
+        sources = value["config_files"]
+        if not isinstance(sources, list) or any(not isinstance(v, str) for v in sources):
+            raise ValueError("Invalid config_files provenance")
+        root = Path(__file__).resolve().parents[1]
+        normalized = []
+        for source in sources:
+            path = Path(source)
+            if path.is_absolute():
+                try:
+                    path = path.relative_to(root)
+                except ValueError as exc:
+                    raise ValueError("Config source outside checkout cannot be normalized") from exc
+            if ".." in path.parts:
+                raise ValueError("Config source must stay within checkout")
+            normalized.append(path.as_posix())
+        value["config_files"] = normalized
+    return value
+
+
 def _reject_constant(value: str):
     raise ValueError(f"Non-finite JSON number is invalid in results/model metadata: {value}")
 
@@ -152,6 +180,18 @@ def compare_runs(old: Path, new: Path) -> dict:
                 or not _equivalent(metrics["old"].get(key), metrics["new"].get(key))
             ):
                 differences.append(f"metric/{key}: differs or missing")
+    configurations = {name: _configuration(path) for name, path in archives.items()}
+    for key in configurations["old"].keys() | configurations["new"].keys():
+        if (
+            key not in configurations["old"]
+            or key not in configurations["new"]
+            or not _equivalent(
+                configurations["old"].get(key),
+                configurations["new"].get(key),
+                numeric_tolerance=False,
+            )
+        ):
+            differences.append(f"configuration/{key}: differs or missing")
     signal_counts = {}
     for kind in ("signals", "rejected", "exited"):
         left, right = _signals(archives["old"], kind), _signals(archives["new"], kind)
@@ -206,6 +246,7 @@ def compare_runs(old: Path, new: Path) -> dict:
             "excluded_result_fields": METRIC_EXCLUSIONS,
             "metadata_normalization": "Validate data_path suffix against artifact parent; normalize only independent userdir root",
             "metadata_fields": "All fields, including unknown/extra fields, are compared",
+            "configuration": "All exported fields including exchange/FreqAI; config_files only normalizes checkout root, preserving order",
             "nonfinite": "Reject non-finite JSON and frame infinities; paired frame NaN masks must match",
         },
         "archives": {
@@ -233,6 +274,7 @@ def compare_runs(old: Path, new: Path) -> dict:
                 for name, value in metrics.items()
             },
         },
+        "configuration_keys": sorted(configurations["old"]),
         "signal_counts": signal_counts,
         "prediction_files": predictions,
         "model_schemas": schemas,

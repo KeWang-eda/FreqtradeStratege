@@ -2,11 +2,21 @@
 
 状态：**通过本阶段门槛**，尚不代表后续阶段或全项目完成。
 
+统一阶段状态：**PASS**。
+
+| 验收项 | 执行命令/检查 | 预期 | 实际 | 证据 | 状态 |
+| --- | --- | --- | --- | --- | --- |
+| Git 冻结 | status、rev-parse、fetch | 无修改丢失、明确远程 | 起始干净、两端 HEAD 一致 | phase0_git_status.txt、phase0_remote_heads.txt | PASS |
+| 环境/数据/快照 | 虚拟环境 import、pandas/sha256、load_snapshot | 版本/文件逐一记录 | 72 pairs、216 文件、真实快照有效 | phase0_inventory.json | PASS |
+| 基础测试 | pytest / Ruff | 明确成功/失败/跳过 | 115/0/0，Lint/格式通过 | phase0_pytest.xml、phase0_ruff.log、phase0_format.log | PASS |
+
+代码变更：本阶段仅新增冻结工件和本报告，无策略或源代码变更，无删除文件。测试网络数在原生断网用例中为 0；该用例交易 13、订单 26、预测文件 4，与历史参考无差异。不是新联网参考验收。未解决问题和下一阶段输入列在本文末，满足 Phase 1 准入。
+
 ## 当前状态与本轮复验
 
 - 起始分支 `main`，HEAD `5ce05d6684345c56902b4af85a32d5889b92ac7b`；起始暂存、未暂存、未跟踪文件均为空，未重置或丢失用户修改。
 - 本轮 `git fetch origin main` 成功；[本地/远程 HEAD](phase0_remote_heads.txt)一致。
-- 使用 `/home/wangke/project/freqtrade/.venv/bin/python`，Python 3.13.13。shell 默认 Python 是另一个 conda 环境，所有验收明确使用上述虚拟环境。
+- 使用 `"$FREQTRADE_PYTHON"`，Python 3.13.13。shell 默认 Python 是另一个 conda 环境，所有验收明确使用上述虚拟环境。
 - 实测依赖：Freqtrade 2026.7、CCXT 4.5.75、pandas 3.0.5、NumPy 2.5.2、XGBoost 3.4.1、sklearn 1.9.0、pyarrow 25.0.1、pytest 9.1.1、Ruff 0.15.22。
 - 本轮基础测试：**115 passed，0 failed，0 skipped，34.01s**；[JUnit](phase0_pytest.xml)、[日志](phase0_pytest.log)。其中完整网络命名空间历史回测用例实际执行，未 skip。
 - 本轮 Lint：[All checks passed](phase0_ruff.log)；格式：[73 files already formatted](phase0_format.log)。
@@ -36,12 +46,12 @@ git branch --show-current
 git log -5 --oneline
 git fetch origin main
 git rev-parse HEAD origin/main
-/home/wangke/project/freqtrade/.venv/bin/python -m pip freeze
-PYTHONPATH=src /home/wangke/project/freqtrade/.venv/bin/python -m pytest -q \
+"$FREQTRADE_PYTHON" -m pip freeze
+PYTHONPATH=src "$FREQTRADE_PYTHON" -m pytest -q \
   --junitxml=docs/acceptance/phase0_pytest.xml
-/home/wangke/project/freqtrade/.venv/bin/ruff check src tests tools \
+/PYTHON_ENV/bin/ruff check src tests tools \
   MyStrategy.py feature.py model.py util.py verify_no_lookahead.py _quant_strategy_bootstrap.py
-/home/wangke/project/freqtrade/.venv/bin/ruff format --check src tests tools \
+/PYTHON_ENV/bin/ruff format --check src tests tools \
   MyStrategy.py feature.py model.py util.py verify_no_lookahead.py _quant_strategy_bootstrap.py
 ```
 
@@ -56,3 +66,5 @@ PYTHONPATH=src /home/wangke/project/freqtrade/.venv/bin/python -m pytest -q \
 5. 用户任务文本在 Phase 3 第 8 项中途截断，已请求补发；先完成已明确的工作，不推定未收到的后续验收要求。
 
 资料：本仓库[既有方案](../offline_backtest_snapshot.md)、实际安装版本的 Freqtrade `Exchange/Backtesting` 与 CCXT `parse_market/set_markets` 源码、[Python 文件同步与发布接口](https://docs.python.org/3/library/os.html#os.fsync)。后续修复均以这份基线为输入。
+
+公开副本仅脱敏本机根路径和用户名，测试数值、退出状态和数据/源码指纹未变；原始字节保留本机，原文/公开 SHA 对照见[发布清单](phase6_evidence_redaction.json)。历史 `docs/baseline/` 工件未改写。可复制命令中的 `FREQTRADE_PYTHON` 指向用户安装的 Freqtrade 虚拟环境解释器，最终操作手册给出设置方法。

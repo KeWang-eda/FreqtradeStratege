@@ -19,6 +19,7 @@ from freqtrade.exchange.binance import Binance
 from quant_strategy.execution.market_snapshot import (
     SnapshotError,
     capture_snapshot,
+    digest,
     load_snapshot,
     validate_pairs,
     versions,
@@ -149,10 +150,9 @@ class SnapshotBinance(Binance):
         # shares these markets/options with the sync client and retains validation.
         normalized = deepcopy(self._snapshot["normalized"])
         self._api_async.set_markets(normalized["markets"], normalized["currencies"])
-        if (
-            self._api_async.precisionMode != normalized["precision_mode"]
-            or dict(self._api_async.markets) != normalized["markets"]
-        ):
+        if self._api_async.precisionMode != normalized["precision_mode"] or digest(
+            dict(self._api_async.markets)
+        ) != digest(normalized["markets"]):
             raise SnapshotError("CCXT market restoration changed the recorded rules")
 
 
