@@ -1,0 +1,18 @@
+usage: offline_backtest.py backtesting [-h] --snapshot SNAPSHOT
+                                       [--snapshot-max-age-days SNAPSHOT_MAX_AGE_DAYS]
+                                       ...
+
+Historical BACKTEST only, Binance USDT isolated, StaticPairList. Snapshot
+errors never fall back to networking. Put native options after --.
+
+positional arguments:
+  arguments             -- followed by native options
+
+options:
+  -h, --help            show this help message and exit
+  --snapshot SNAPSHOT   Trusted genuine snapshot matching Freqtrade 2026.7 /
+                        CCXT 4.5.75 and every required pair
+  --snapshot-max-age-days SNAPSHOT_MAX_AGE_DAYS
+                        Positive maximum acquisition age, default 30 days.
+                        Long allowances are only for explicit frozen
+                        experiment reproduction.

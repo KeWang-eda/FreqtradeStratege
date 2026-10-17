@@ -47,8 +47,8 @@
 PYTHONPATH=src "$FREQTRADE_PYTHON" -m pytest -q \
   --basetemp=/tmp/quant-phase2-final-pytest-20261017 \
   --junitxml=docs/acceptance/phase2_pytest.xml
-/PYTHON_ENV/bin/ruff check src tests tools
-/PYTHON_ENV/bin/ruff format --check src tests tools
+"$FREQTRADE_PYTHON" -m ruff check src tests tools
+"$FREQTRADE_PYTHON" -m ruff format --check src tests tools
 ```
 
 `--basetemp` 仅供可丢弃测试目录，pytest 会清理它；不得指向真实 data、models 或既有工件。

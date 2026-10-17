@@ -1,0 +1,52 @@
+{
+  "status": "BLOCKED",
+  "executed_at": "2026-10-17T13:06:36.611152+00:00",
+  "versions": {
+    "python": "3.13.13",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.0",
+    "xgboost": "3.4.1",
+    "lightgbm": "4.7.0",
+    "TA-Lib": "0.7.1",
+    "technical": "1.7.0",
+    "freqtrade": "2026.7",
+    "pyarrow": "25.0.1",
+    "PyYAML": "6.0.3"
+  },
+  "pairs": [
+    "BTC/USDT:USDT",
+    "ETH/USDT:USDT",
+    "BNB/USDT:USDT"
+  ],
+  "timerange": "20250101-20250122",
+  "capture_attempt": 1,
+  "snapshot_captured": false,
+  "online_executed": false,
+  "offline_executed": false,
+  "regression_executed": false,
+  "error": "BLOCKED: explicit genuine market acquisition failed",
+  "publication": {
+    "raw_comparison_precedes_redaction": true,
+    "redaction_scope": "Only local filesystem roots in UTF-8 logs/JSON/ZIP config; binary signals and predictions unchanged",
+    "raw_files": "Retained only in local ephemeral workspace; never required for rerunning acceptance",
+    "hash_ledger": [
+      {
+        "file": "phase4_extension_attempt1_capture.log",
+        "raw_sha256": "148139134d06e9800eb34a2088e7b44d62e6590495e698f624baa66b35b5a892",
+        "published_sha256": "148139134d06e9800eb34a2088e7b44d62e6590495e698f624baa66b35b5a892",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_attempt1_capture_command.json",
+        "raw_sha256": "faa3744eb194cc3f22aabefef2e44be803990842ab8ffc6763442d2e52fa256d",
+        "published_sha256": "c55f2099196706c41d98b54b714da630841c83169775a314efba64bfdf119c17",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_attempt1_artifacts.tar.gz",
+        "published_sha256": "281f0c4b68cc477f25153f14077bed347897e0c0440d45d17570d0b4eae88615"
+      }
+    ]
+  }
+}

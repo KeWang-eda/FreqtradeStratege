@@ -1,0 +1,208 @@
+{
+  "status": "FAIL",
+  "executed_at": "2026-10-17T13:08:29.873368+00:00",
+  "versions": {
+    "python": "3.13.13",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.0",
+    "xgboost": "3.4.1",
+    "lightgbm": "4.7.0",
+    "TA-Lib": "0.7.1",
+    "technical": "1.7.0",
+    "freqtrade": "2026.7",
+    "pyarrow": "25.0.1",
+    "PyYAML": "6.0.3"
+  },
+  "pairs": [
+    "BTC/USDT:USDT",
+    "ETH/USDT:USDT",
+    "BNB/USDT:USDT"
+  ],
+  "timerange": "20250101-20250122",
+  "capture_attempt": 2,
+  "error": "Expanded online baseline had unexpected network syscalls",
+  "snapshot_captured": true,
+  "online_executed": true,
+  "offline_executed": false,
+  "regression_executed": false,
+  "publication": {
+    "raw_comparison_precedes_redaction": true,
+    "redaction_scope": "Only local filesystem roots in UTF-8 logs/JSON/ZIP config; binary signals and predictions unchanged",
+    "raw_files": "Retained only in local ephemeral workspace; never required for rerunning acceptance",
+    "hash_ledger": [
+      {
+        "file": "phase4_extension_attempt2_capture.log",
+        "raw_sha256": "bcc9951000c6b3857bd76ee07c552f8a1887f521645a27c0620779accc728c4e",
+        "published_sha256": "b297dd6eeb9a1fce8d27b39c2ef03631a09ff8a5b8014773e2bbf35b9784fb64",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_attempt2_capture_command.json",
+        "raw_sha256": "7d298006b8e86236e05f295bb0bcbc8a5c41373fbd27967fae9ea185774697e6",
+        "published_sha256": "c55f2099196706c41d98b54b714da630841c83169775a314efba64bfdf119c17",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_attempt2_online.log",
+        "raw_sha256": "ecccbdaebd90ca2883747467b222de7347b758585c3cd5feda6081794a0687b2",
+        "published_sha256": "5216f3ce9f657d1b1e94330f3a2fcaaa29d21f6ac8606bf26064918d302163f9",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_attempt2_online_network.json",
+        "raw_sha256": "c4747a8e58a7dad236027ffbb3347ffdc894764a34b82651abb9b383fe80286e",
+        "published_sha256": "12f4baa8979b798f0b39d9521664fe08070127c0c667dad6850948a159b68640",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_attempt2_online_network.strace",
+        "raw_sha256": "221cb31a8e55c73149560122286171849b2b804482fe405549ba1b1e7dafe093",
+        "published_sha256": "221cb31a8e55c73149560122286171849b2b804482fe405549ba1b1e7dafe093",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_attempt2_snapshot.json",
+        "raw_sha256": "b752da90fbf65a4d24c4a5eaaddf6c7c122acd799afbe1042ef2f9e6edbf86d2",
+        "published_sha256": "b752da90fbf65a4d24c4a5eaaddf6c7c122acd799afbe1042ef2f9e6edbf86d2",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_bnb_1735689600_prediction.feather",
+        "raw_sha256": "66d5bb3f22c8c92f5fc8672730f800238fb52d461ddb21163daca1095a3908fc",
+        "published_sha256": "66d5bb3f22c8c92f5fc8672730f800238fb52d461ddb21163daca1095a3908fc",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_bnb_1736294400_prediction.feather",
+        "raw_sha256": "f2d536e16f4ad96b1c08b96584de88ab219df185768e86a2afcbf393063013dd",
+        "published_sha256": "f2d536e16f4ad96b1c08b96584de88ab219df185768e86a2afcbf393063013dd",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_bnb_1736899200_prediction.feather",
+        "raw_sha256": "18dee625a1d15339cb9a6c9539ffe96cad1446f6ff9a723da3233003bd5c2d85",
+        "published_sha256": "18dee625a1d15339cb9a6c9539ffe96cad1446f6ff9a723da3233003bd5c2d85",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1735689600_prediction.feather",
+        "raw_sha256": "45b0cec00969259b71e906fdd0e2956cadafa8675ab795611114d61b6c2df614",
+        "published_sha256": "45b0cec00969259b71e906fdd0e2956cadafa8675ab795611114d61b6c2df614",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1736294400_prediction.feather",
+        "raw_sha256": "147b333f878f3b4d8196688a6eaf2ad64032d5cbe5351a52422e00ad1ec4b036",
+        "published_sha256": "147b333f878f3b4d8196688a6eaf2ad64032d5cbe5351a52422e00ad1ec4b036",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1736899200_prediction.feather",
+        "raw_sha256": "106dd25f30b264f23352078f8f6a917069d902aa8eb073d55de630032399d569",
+        "published_sha256": "106dd25f30b264f23352078f8f6a917069d902aa8eb073d55de630032399d569",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1735689600_prediction.feather",
+        "raw_sha256": "4f268f4288bdf17c109229eeac0ac2c51a7cdd79b0ee61342a7f5d81c43f5993",
+        "published_sha256": "4f268f4288bdf17c109229eeac0ac2c51a7cdd79b0ee61342a7f5d81c43f5993",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1736294400_prediction.feather",
+        "raw_sha256": "d4ef13e4ee0d8166645b9a9053e91de11b2d1a250b8e8dd2e0dab20bb376a3be",
+        "published_sha256": "d4ef13e4ee0d8166645b9a9053e91de11b2d1a250b8e8dd2e0dab20bb376a3be",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1736899200_prediction.feather",
+        "raw_sha256": "f4b3cf545cb2d7473486467a20ee2ab87f1a8114353b6efb4658524c9af65444",
+        "published_sha256": "f4b3cf545cb2d7473486467a20ee2ab87f1a8114353b6efb4658524c9af65444",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/run_params.json",
+        "raw_sha256": "917eb21fa0f256b44bc1c5056b972aba9f9c4476f586df28c8d6b6bb7609ce88",
+        "published_sha256": "917eb21fa0f256b44bc1c5056b972aba9f9c4476f586df28c8d6b6bb7609ce88",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1735689600/cb_bnb_1735689600_metadata.json",
+        "raw_sha256": "92823e8c3820eef0000313557f19faf1c0e362da618c2ea4c8bc4efe5b08c683",
+        "published_sha256": "1a396220de9c7d94eca8f5245c5f68c11dbd0f8222269a5c92f27029f04bfce1",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1736294400/cb_bnb_1736294400_metadata.json",
+        "raw_sha256": "36ac504048fd9493b33c4846ffe37e51f772a578457e12e6f1c047740bfe60ef",
+        "published_sha256": "356884fa89c5a1bba3083c5d5068eac8a634dde5e9419888d030c77949d1c7c4",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1736899200/cb_bnb_1736899200_metadata.json",
+        "raw_sha256": "d763ed26994e3f72f2111eb422c556a33b1a485cf75c53eeac36b64d026e4523",
+        "published_sha256": "57ab3678f5f0338ad070d0a863accfe65ec60a558c376b019b27f21f1c08254e",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1735689600/cb_btc_1735689600_metadata.json",
+        "raw_sha256": "a759707be0040aa2521ab7793758592249d36c9f936dc6c7c14c755ab85b031a",
+        "published_sha256": "8bbe020846e5bcbe93071083ceae9d7a7045286159ed36777278e4d3849c330c",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736294400/cb_btc_1736294400_metadata.json",
+        "raw_sha256": "6cb2ef903c84ebd4d0fc97908b46e4da1ae7659047052e4c5f18007a7b54960a",
+        "published_sha256": "4c7e5b1c432a9bedeb06d67cc1e70f31b3bc442035dda1b71ca3df87e338b708",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736899200/cb_btc_1736899200_metadata.json",
+        "raw_sha256": "dde5acee5d3e72806f051fcf0e24330bf55115938efc49b8b77c0931364ef471",
+        "published_sha256": "db1ae549a213801509844fc313981cc4ea2ad87b55affd458d16c309df261280",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1735689600/cb_eth_1735689600_metadata.json",
+        "raw_sha256": "5c97fb90a17d534d14371405a85075d596e6ed1af237a55b845359055369350d",
+        "published_sha256": "6ade7451ac20e3df3a9d4b8ed53559a72fcd4fdcd5b3616b69587bb5771a47e5",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736294400/cb_eth_1736294400_metadata.json",
+        "raw_sha256": "03f60cd7d95e36dbed233f083ade8375697435c40148df69ecdd358217915c9d",
+        "published_sha256": "e437591d084c7634108a9874500916277f7f5d1f91f56cdf095c14713aca0f6a",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736899200/cb_eth_1736899200_metadata.json",
+        "raw_sha256": "a49eee5a2b643c9c27a48a1766902e7ca096ec49c1bff1d42a78ceb8aac50456",
+        "published_sha256": "6edd441cc1bad18a8a0f4239f86a5f1a6511714ad08503ddce9e585c33014fe8",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/results/.last_result.json",
+        "raw_sha256": "de67e2dc0e3d663fb79b78236d241e930b21c5c76fe7853c9daddb28b34d5229",
+        "published_sha256": "de67e2dc0e3d663fb79b78236d241e930b21c5c76fe7853c9daddb28b34d5229",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/results/backtest-result-2026-10-17_21-08-29.meta.json",
+        "raw_sha256": "4798935f8fb3b80a8ae064eae6d4874b37ba0a8c004318779566d99a0d7ae05e",
+        "published_sha256": "4798935f8fb3b80a8ae064eae6d4874b37ba0a8c004318779566d99a0d7ae05e",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz:online/results/backtest-result-2026-10-17_21-08-29.zip",
+        "raw_sha256": "a104d1fe27f4e2bae8f2d2cbc1c7da6f00947a8ee28bf0266b1eead99a5686ae",
+        "published_sha256": "ea9c8e17cde0edd1cd10387a1288028e2115e8efd0362c336fd979b26d63f88f",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_attempt2_artifacts.tar.gz",
+        "published_sha256": "6ac4f8a202e6f0897b8d420351eeaac2e845b8df2723d791c40a9ec933328ddf"
+      }
+    ]
+  }
+}

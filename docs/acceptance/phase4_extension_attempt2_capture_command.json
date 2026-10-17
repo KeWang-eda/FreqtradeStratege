@@ -1,0 +1,14 @@
+[
+  "/PYTHON_ENV/bin/python",
+  "-m",
+  "quant_strategy.execution.offline_backtest",
+  "capture",
+  "--snapshot",
+  "/RUN/phase4_extension_snapshot.json",
+  "--pairs",
+  "BTC/USDT:USDT",
+  "ETH/USDT:USDT",
+  "BNB/USDT:USDT",
+  "--proxy",
+  "http://127.0.0.1:7890"
+]

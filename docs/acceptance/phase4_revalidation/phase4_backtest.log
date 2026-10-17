@@ -1,0 +1,385 @@
+[0]	validation_0-rmse:0.18346
+[1]	validation_0-rmse:0.18353
+[2]	validation_0-rmse:0.18345
+[3]	validation_0-rmse:0.18409
+[4]	validation_0-rmse:0.18405
+[5]	validation_0-rmse:0.18406
+[6]	validation_0-rmse:0.18400
+[7]	validation_0-rmse:0.18376
+[8]	validation_0-rmse:0.18386
+[9]	validation_0-rmse:0.18403
+[10]	validation_0-rmse:0.18390
+[11]	validation_0-rmse:0.18389
+[12]	validation_0-rmse:0.18408
+[13]	validation_0-rmse:0.18431
+[14]	validation_0-rmse:0.18424
+[15]	validation_0-rmse:0.18444
+[16]	validation_0-rmse:0.18452
+[17]	validation_0-rmse:0.18482
+[18]	validation_0-rmse:0.18541
+[19]	validation_0-rmse:0.18594
+[20]	validation_0-rmse:0.18575
+[21]	validation_0-rmse:0.18631
+[22]	validation_0-rmse:0.18645
+[23]	validation_0-rmse:0.18673
+[24]	validation_0-rmse:0.18669
+[25]	validation_0-rmse:0.18675
+[26]	validation_0-rmse:0.18726
+[27]	validation_0-rmse:0.18738
+[28]	validation_0-rmse:0.18758
+[29]	validation_0-rmse:0.18782
+[30]	validation_0-rmse:0.18791
+[31]	validation_0-rmse:0.18806
+[0]	validation_0-rmse:0.19240
+[1]	validation_0-rmse:0.19258
+[2]	validation_0-rmse:0.19291
+[3]	validation_0-rmse:0.19308
+[4]	validation_0-rmse:0.19302
+[5]	validation_0-rmse:0.19306
+[6]	validation_0-rmse:0.19326
+[7]	validation_0-rmse:0.19345
+[8]	validation_0-rmse:0.19350
+[9]	validation_0-rmse:0.19323
+[10]	validation_0-rmse:0.19333
+[11]	validation_0-rmse:0.19318
+[12]	validation_0-rmse:0.19299
+[13]	validation_0-rmse:0.19309
+[14]	validation_0-rmse:0.19317
+[15]	validation_0-rmse:0.19314
+[16]	validation_0-rmse:0.19324
+[17]	validation_0-rmse:0.19355
+[18]	validation_0-rmse:0.19348
+[19]	validation_0-rmse:0.19335
+[20]	validation_0-rmse:0.19368
+[21]	validation_0-rmse:0.19383
+[22]	validation_0-rmse:0.19393
+[23]	validation_0-rmse:0.19418
+[24]	validation_0-rmse:0.19453
+[25]	validation_0-rmse:0.19458
+[26]	validation_0-rmse:0.19460
+[27]	validation_0-rmse:0.19460
+[28]	validation_0-rmse:0.19451
+[29]	validation_0-rmse:0.19466
+[0]	validation_0-rmse:0.10301
+[1]	validation_0-rmse:0.10323
+[2]	validation_0-rmse:0.10289
+[3]	validation_0-rmse:0.10299
+[4]	validation_0-rmse:0.10307
+[5]	validation_0-rmse:0.10294
+[6]	validation_0-rmse:0.10312
+[7]	validation_0-rmse:0.10305
+[8]	validation_0-rmse:0.10315
+[9]	validation_0-rmse:0.10338
+[10]	validation_0-rmse:0.10324
+[11]	validation_0-rmse:0.10332
+[12]	validation_0-rmse:0.10328
+[13]	validation_0-rmse:0.10339
+[14]	validation_0-rmse:0.10345
+[15]	validation_0-rmse:0.10381
+[16]	validation_0-rmse:0.10401
+[17]	validation_0-rmse:0.10410
+[18]	validation_0-rmse:0.10412
+[19]	validation_0-rmse:0.10414
+[20]	validation_0-rmse:0.10411
+[21]	validation_0-rmse:0.10441
+[22]	validation_0-rmse:0.10448
+[23]	validation_0-rmse:0.10466
+[24]	validation_0-rmse:0.10480
+[25]	validation_0-rmse:0.10477
+[26]	validation_0-rmse:0.10483
+[27]	validation_0-rmse:0.10486
+[28]	validation_0-rmse:0.10499
+[29]	validation_0-rmse:0.10517
+[30]	validation_0-rmse:0.10533
+[31]	validation_0-rmse:0.10538
+[0]	validation_0-rmse:0.10889
+[1]	validation_0-rmse:0.10911
+[2]	validation_0-rmse:0.10897
+[3]	validation_0-rmse:0.10902
+[4]	validation_0-rmse:0.10904
+[5]	validation_0-rmse:0.10916
+[6]	validation_0-rmse:0.10920
+[7]	validation_0-rmse:0.10942
+[8]	validation_0-rmse:0.10941
+[9]	validation_0-rmse:0.10949
+[10]	validation_0-rmse:0.10960
+[11]	validation_0-rmse:0.10961
+[12]	validation_0-rmse:0.10962
+[13]	validation_0-rmse:0.10989
+[14]	validation_0-rmse:0.10988
+[15]	validation_0-rmse:0.10985
+[16]	validation_0-rmse:0.10994
+[17]	validation_0-rmse:0.10997
+[18]	validation_0-rmse:0.11001
+[19]	validation_0-rmse:0.11004
+[20]	validation_0-rmse:0.11036
+[21]	validation_0-rmse:0.11049
+[22]	validation_0-rmse:0.11059
+[23]	validation_0-rmse:0.11057
+[24]	validation_0-rmse:0.11060
+[25]	validation_0-rmse:0.11063
+[26]	validation_0-rmse:0.11082
+[27]	validation_0-rmse:0.11087
+[28]	validation_0-rmse:0.11114
+[29]	validation_0-rmse:0.11142
+Result for strategy MyStrategy
+                                                 BACKTESTING REPORT                                                 
+┏━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃          Pair ┃ Trades ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃   Avg Duration ┃  Win  Draw  Loss  Win% ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ ETH/USDT:USDT │      5 │        -0.45 │          -2.265 │        -0.23 │        8:48:00 │    3     0     2  60.0 │
+│ BTC/USDT:USDT │      8 │        -0.64 │          -5.464 │        -0.55 │ 1 day, 9:30:00 │    4     0     4  50.0 │
+│         TOTAL │     13 │        -0.57 │          -7.729 │        -0.77 │ 1 day, 0:00:00 │    7     0     6  53.8 │
+└───────────────┴────────┴──────────────┴─────────────────┴──────────────┴────────────────┴────────────────────────┘
+                                         LEFT OPEN TRADES REPORT                                          
+┏━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃  Pair ┃ Trades ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃ Avg Duration ┃  Win  Draw  Loss  Win% ┃
+┡━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ TOTAL │      0 │          0.0 │           0.000 │          0.0 │         0:00 │    0     0     0     0 │
+└───────┴────────┴──────────────┴─────────────────┴──────────────┴──────────────┴────────────────────────┘
+                                                 ENTER TAG STATS                                                 
+┏━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Enter Tag ┃ Entries ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃   Avg Duration ┃  Win  Draw  Loss  Win% ┃
+┡━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━┩
+│  reg_down │       1 │         2.05 │           2.026 │          0.2 │       20:00:00 │    1     0     0   100 │
+│    reg_up │      12 │        -0.78 │          -9.755 │        -0.98 │ 1 day, 0:20:00 │    6     0     6  50.0 │
+│     TOTAL │      13 │        -0.57 │          -7.729 │        -0.77 │ 1 day, 0:00:00 │    7     0     6  53.8 │
+└───────────┴─────────┴──────────────┴─────────────────┴──────────────┴────────────────┴────────────────────────┘
+                                                      EXIT REASON STATS                                                      
+┏━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃             Exit Reason ┃ Exits ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃   Avg Duration ┃  Win  Draw  Loss  Win% ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━┩
+│      no_eligible_target │     1 │         4.02 │           3.802 │         0.38 │ 1 day, 0:00:00 │    1     0     0   100 │
+│ rotate_to_stronger_pair │    12 │        -0.95 │         -11.531 │        -1.15 │ 1 day, 0:00:00 │    6     0     6  50.0 │
+│                   TOTAL │    13 │        -0.57 │          -7.729 │        -0.77 │ 1 day, 0:00:00 │    7     0     6  53.8 │
+└─────────────────────────┴───────┴──────────────┴─────────────────┴──────────────┴────────────────┴────────────────────────┘
+                                                             MIXED TAG STATS                                                              
+┏━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Enter Tag ┃             Exit Reason ┃ Trades ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃   Avg Duration ┃  Win  Draw  Loss  Win% ┃
+┡━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━┩
+│    reg_up │      no_eligible_target │      1 │         4.02 │           3.802 │         0.38 │ 1 day, 0:00:00 │    1     0     0   100 │
+│  reg_down │ rotate_to_stronger_pair │      1 │         2.05 │           2.026 │          0.2 │       20:00:00 │    1     0     0   100 │
+│    reg_up │ rotate_to_stronger_pair │     11 │        -1.22 │         -13.557 │        -1.36 │ 1 day, 0:22:00 │    5     0     6  45.5 │
+│     TOTAL │                         │     13 │        -0.57 │          -7.729 │        -0.77 │ 1 day, 0:00:00 │    7     0     6  53.8 │
+└───────────┴─────────────────────────┴────────┴──────────────┴─────────────────┴──────────────┴────────────────┴────────────────────────┘
+                                   SUMMARY METRICS                                    
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Metric                                 ┃ Value                                     ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Backtesting from                       │ 2025-01-01 00:00:00                       │
+│ Backtesting to                         │ 2025-01-15 00:00:00                       │
+│ Trading Mode                           │ Isolated Futures                          │
+│ Max open trades                        │ 1                                         │
+│                                        │                                           │
+│ Total/Daily Avg Trades                 │ 13 / 0.93                                 │
+│ Starting balance                       │ 1000 USDT                                 │
+│ Final balance                          │ 992.271 USDT                              │
+│ Absolute profit                        │ -7.729 USDT                               │
+│ Total profit %                         │ -0.77%                                    │
+│ CAGR %                                 │ -18.31%                                   │
+│ Sharpe (closed trades)                 │ -2.42                                     │
+│ Sortino (closed trades)                │ -2.45                                     │
+│ Calmar (closed trades)                 │ -55.29                                    │
+│ SQN                                    │ -0.47                                     │
+│ Mean profit p-value                    │ 0.6456                                    │
+│ Profit factor                          │ 0.67                                      │
+│ Expectancy (Ratio)                     │ -0.59 (-0.15)                             │
+│ Avg. daily profit                      │ -0.552 USDT                               │
+│ Avg. stake amount                      │ 96.903 USDT                               │
+│ Market change                          │ 0.15%                                     │
+│ Total trade volume                     │ 5032.507 USDT                             │
+│                                        │                                           │
+│ Long / Short trades                    │ 12 / 1                                    │
+│ Long / Short profit %                  │ -0.98% / 0.20%                            │
+│ Long / Short profit USDT               │ -9.755 / 2.026                            │
+│                                        │                                           │
+│ Best Pair                              │ ETH/USDT:USDT -0.23%                      │
+│ Worst Pair                             │ BTC/USDT:USDT -0.55%                      │
+│ Best trade                             │ BTC/USDT:USDT 4.62%                       │
+│ Worst trade                            │ BTC/USDT:USDT -12.67%                     │
+│ Best day                               │ 4.363 USDT                                │
+│ Worst day                              │ -11.214 USDT                              │
+│ Days win/draw/lose                     │ 5 / 5 / 5                                 │
+│ Min/Max/Avg. Duration Winners          │ 0d 04:00 / 1d 04:00 / 0d 15:26            │
+│ Min/Max/Avg. Duration Losers           │ 0d 04:00 / 3d 20:00 / 1d 10:00            │
+│ Max Consecutive Wins / Loss            │ 3 / 2                                     │
+│ Rejected Entry signals                 │ 69                                        │
+│ Entry/Exit Timeouts                    │ 0 / 0                                     │
+│                                        │                                           │
+│ Min/Max balance (closed trades)        │ 988.469 USDT / 1007.693 USDT              │
+│ Max % of account underwater            │ 1.91%                                     │
+│ Absolute drawdown                      │ 19.225 USDT (1.91%)                       │
+│ Drawdown duration                      │ 7 days 16:00:00                           │
+│ Profit at drawdown start               │ 7.693 USDT                                │
+│ Profit at drawdown end                 │ -11.531 USDT                              │
+│ Drawdown start                         │ 2025-01-06 04:00:00                       │
+│ Drawdown end                           │ 2025-01-13 20:00:00                       │
+│                                        │                                           │
+│ Wallet based Metrics                   │                                           │
+│ Min/Max balance (wallet balance)       │ 988.469 USDT / 1007.693 USDT              │
+│ Min/Max balance dates (wallet balance) │ 2025-01-14 00:00:00 / 2025-01-06 08:00:00 │
+│ Max % of account underwater (balance)  │ 1.91%                                     │
+│ Absolute drawdown (wallet balance)     │ 19.225 USDT (1.91%)                       │
+│ Drawdown duration                      │ 7 days 16:00:00                           │
+│ Profit at drawdown start               │ 7.693 USDT                                │
+│ Profit at drawdown end                 │ -11.531 USDT                              │
+│ Drawdown start                         │ 2025-01-06 08:00:00                       │
+│ Drawdown end                           │ 2025-01-14 00:00:00                       │
+│ Sharpe (daily wallet balance)          │ -4.08                                     │
+│ Sortino (daily wallet balance)         │ -3.70                                     │
+│ Calmar (daily wallet balance)          │ -88.83                                    │
+└────────────────────────────────────────┴───────────────────────────────────────────┘
+
+Backtested 2025-01-01 00:00:00 -> 2025-01-15 00:00:00 | Max open trades : 1
+                                                           STRATEGY SUMMARY                                                           
+┏━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┓
+┃   Strategy ┃ Trades ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃   Avg Duration ┃  Win  Draw  Loss  Win% ┃           Drawdown ┃
+┡━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━┩
+│ MyStrategy │     13 │        -0.57 │          -7.729 │        -0.77 │ 1 day, 0:00:00 │    7     0     6  53.8 │ 19.225 USDT  1.91% │
+└────────────┴────────┴──────────────┴─────────────────┴──────────────┴────────────────┴────────────────────────┴────────────────────┘
+2026-10-17 21:21:38,738 - freqtrade.configuration.load_config - INFO - Using config: config.json ...
+2026-10-17 21:21:38,739 - freqtrade.configuration.load_config - INFO - Using config: configs/backtest-local.json ...
+2026-10-17 21:21:38,740 - freqtrade.configuration.load_config - INFO - Using config: configs/environment/freqtrade-mihomo.json ...
+2026-10-17 21:21:38,742 - freqtrade.loggers - INFO - Enabling colorized output.
+2026-10-17 21:21:38,743 - freqtrade.loggers - INFO - Logfile configured
+2026-10-17 21:21:38,743 - freqtrade.loggers - INFO - Verbosity set to 0
+2026-10-17 21:21:38,744 - freqtrade.configuration.configuration - INFO - Using additional Strategy lookup path: /REPO
+2026-10-17 21:21:38,744 - freqtrade.configuration.configuration - INFO - Using max_open_trades: 1 ...
+2026-10-17 21:21:38,744 - freqtrade.configuration.configuration - INFO - Parameter --timerange detected: 20250101-20250115 ...
+2026-10-17 21:21:38,746 - freqtrade.configuration.configuration - INFO - Using user-data directory: /RUN/offline ...
+2026-10-17 21:21:38,747 - freqtrade.configuration.configuration - INFO - Using data directory: /REPO/data ...
+2026-10-17 21:21:38,747 - freqtrade.configuration.configuration - INFO - Using /RUN/offline/results as backtest directory ...
+2026-10-17 21:21:38,747 - freqtrade.configuration.configuration - INFO - Parameter --export detected: signals ...
+2026-10-17 21:21:38,748 - freqtrade.configuration.configuration - INFO - Parameter --cache=none detected ...
+2026-10-17 21:21:38,748 - freqtrade.configuration.configuration - INFO - Using pairs ['BTC/USDT:USDT', 'ETH/USDT:USDT']
+2026-10-17 21:21:38,749 - freqtrade.configuration.configuration - INFO - Filter trades by timerange: 20250101-20250115
+2026-10-17 21:21:38,749 - freqtrade.configuration.configuration - INFO - Using freqaimodel path: /REPO/freqaimodels
+2026-10-17 21:21:38,750 - freqtrade.exchange.check_exchange - INFO - Checking exchange...
+2026-10-17 21:21:38,757 - freqtrade.exchange.check_exchange - INFO - Exchange "binance" is officially supported by the Freqtrade development team.
+2026-10-17 21:21:38,758 - freqtrade.configuration.config_validation - INFO - Validating configuration ...
+2026-10-17 21:21:38,899 - freqtrade.exchange.exchange - INFO - Instance is running with dry_run enabled
+2026-10-17 21:21:38,899 - freqtrade.exchange.exchange - INFO - Using CCXT 4.5.75
+2026-10-17 21:21:38,913 - freqtrade.exchange.exchange - INFO - Using Exchange "Binance"
+2026-10-17 21:21:38,954 - quant_strategy.execution.offline_backtest - INFO - Offline snapshot /REPO/docs/baseline/acceptance/binance-usdt-market-snapshot.json 
+SHA256=c085efcfe8e2c3f62e39fb5e983e601fc89fd20d7c45893e0ade640092ac5bc2 acquired=2026-10-17T12:04:06.169588+00:00
+2026-10-17 21:21:39,154 - freqtrade.resolvers.iresolver - INFO - Using resolved strategy MyStrategy from '/REPO/MyStrategy.py'...
+2026-10-17 21:21:39,155 - freqtrade.strategy.hyper - INFO - Found no parameter file.
+2026-10-17 21:21:39,156 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'timeframe' with value from the configuration: 4h.
+2026-10-17 21:21:39,156 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'stoploss' with value from the configuration: -1.0.
+2026-10-17 21:21:39,157 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'trailing_stop' with value from the configuration: False.
+2026-10-17 21:21:39,157 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'order_types' with value from the configuration: {'_comment': '限价进出场。stoploss 类型仍为 
+market，但策略已用 stoploss=-1.0 让固定止损不触发；stoploss_on_exchange=false 表示不在交易所挂止损单。', 'entry': 'limit', 'exit': 'limit', 'stoploss': 'market', 'stoploss_on_exchange': False, 
+'emergency_exit': 'market'}.
+2026-10-17 21:21:39,158 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'stake_currency' with value from the configuration: USDT.
+2026-10-17 21:21:39,159 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'stake_amount' with value from the configuration: 100.
+2026-10-17 21:21:39,160 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'unfilledtimeout' with value from the configuration: {'entry': 10, 'exit': 10, 'unit': 'minutes', 
+'exit_timeout_count': 0}.
+2026-10-17 21:21:39,160 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'max_open_trades' with value from the configuration: 1.
+2026-10-17 21:21:39,161 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using minimal_roi: {'0': 999.0}
+2026-10-17 21:21:39,161 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using timeframe: 4h
+2026-10-17 21:21:39,161 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using stoploss: -1.0
+2026-10-17 21:21:39,162 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using trailing_stop: False
+2026-10-17 21:21:39,162 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using trailing_stop_positive_offset: 0.0
+2026-10-17 21:21:39,163 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using trailing_only_offset_is_reached: False
+2026-10-17 21:21:39,163 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using use_custom_stoploss: False
+2026-10-17 21:21:39,163 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using process_only_new_candles: True
+2026-10-17 21:21:39,164 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using order_types: {'_comment': '限价进出场。stoploss 类型仍为 market，但策略已用 stoploss=-1.0 
+让固定止损不触发；stoploss_on_exchange=false 表示不在交易所挂止损单。', 'entry': 'limit', 'exit': 'limit', 'stoploss': 'market', 'stoploss_on_exchange': False, 'emergency_exit': 'market'}
+2026-10-17 21:21:39,165 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using order_time_in_force: {'entry': 'GTC', 'exit': 'GTC'}
+2026-10-17 21:21:39,165 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using stake_currency: USDT
+2026-10-17 21:21:39,166 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using stake_amount: 100
+2026-10-17 21:21:39,167 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using startup_candle_count: 100
+2026-10-17 21:21:39,167 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using unfilledtimeout: {'entry': 10, 'exit': 10, 'unit': 'minutes', 'exit_timeout_count': 0}
+2026-10-17 21:21:39,168 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using use_exit_signal: True
+2026-10-17 21:21:39,168 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using exit_profit_only: False
+2026-10-17 21:21:39,169 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using ignore_roi_if_entry_signal: False
+2026-10-17 21:21:39,169 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using exit_profit_offset: 0.0
+2026-10-17 21:21:39,170 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using disable_dataframe_checks: False
+2026-10-17 21:21:39,171 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using ignore_buying_expired_candle_after: 0
+2026-10-17 21:21:39,171 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using position_adjustment_enable: False
+2026-10-17 21:21:39,172 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using max_entry_position_adjustment: -1
+2026-10-17 21:21:39,172 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using max_open_trades: 1
+2026-10-17 21:21:39,172 - freqtrade.configuration.config_validation - INFO - Validating configuration ...
+2026-10-17 21:21:39,183 - freqtrade.resolvers.iresolver - INFO - Using resolved pairlist StaticPairList from '/LOCAL_HOME/project/freqtrade/freqtrade/plugins/pairlist/StaticPairList.py'...
+2026-10-17 21:21:39,184 - freqtrade.data.dataprovider - INFO - Increasing startup_candle_count for freqai on 4h to 2290
+2026-10-17 21:21:39,257 - freqtrade.optimize.backtesting - INFO - Loading data from 2023-12-16 08:00:00 up to 2025-01-15 00:00:00 (395 days).
+2026-10-17 21:21:39,362 - freqtrade.optimize.backtesting - INFO - Dataload complete. Calculating indicators
+2026-10-17 21:21:39,363 - freqtrade.optimize.backtesting - INFO - Running backtesting for Strategy MyStrategy
+2026-10-17 21:21:39,661 - freqtrade.resolvers.iresolver - INFO - Using resolved freqaimodel XGBoostRegressorES from '/REPO/freqaimodels/XGBoostRegressorES.py'...
+2026-10-17 21:21:39,661 - freqtrade.freqai.data_drawer - INFO - Could not find existing datadrawer, starting from scratch
+2026-10-17 21:21:39,662 - freqtrade.freqai.data_drawer - INFO - Could not find existing historic_predictions, starting from scratch
+2026-10-17 21:21:39,663 - freqtrade.freqai.freqai_interface - INFO - Set fresh train queue from whitelist. Queue: ['BTC/USDT:USDT', 'ETH/USDT:USDT']
+2026-10-17 21:21:39,665 - freqtrade.freqai.freqai_interface - INFO - Training 2 timeranges
+2026-10-17 21:21:39,667 - freqtrade.freqai.freqai_interface - INFO - Training BTC/USDT:USDT, 1/2 pairs from 2024-01-02 00:00:00 to 2025-01-01 00:00:00, 1/2 trains
+2026-10-17 21:21:39,667 - freqtrade.freqai.data_kitchen - INFO - Could not find backtesting prediction file at 
+/RUN/offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1735689600_prediction.feather
+2026-10-17 21:21:39,712 - freqtrade.data.dataprovider - INFO - Increasing startup_candle_count for freqai on 4h to 2290
+2026-10-17 21:21:39,714 - freqtrade.data.dataprovider - INFO - Loading data for ETH/USDT:USDT 4h from 2023-12-16 08:00:00 to 2025-01-15 00:00:00
+2026-10-17 21:21:39,770 - freqtrade.freqai.freqai_interface - INFO - Could not find model at 
+/RUN/offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1735689600/cb_btc_1735689600
+2026-10-17 21:21:39,771 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - -------------------- Starting training BTC/USDT:USDT --------------------
+2026-10-17 21:21:39,778 - freqtrade.freqai.data_kitchen - INFO - BTC/USDT:USDT: dropped 3 training points due to NaNs in populated dataset 2190.
+2026-10-17 21:21:39,779 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - -------------------- Training on data from 2024-01-02 to 2024-12-31 --------------------
+2026-10-17 21:21:40,229 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - Training model on 92 features
+2026-10-17 21:21:40,230 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - Training model on 1749 data points
+2026-10-17 21:21:40,231 - XGBoostRegressorES - INFO - BTC/USDT:USDT: 早停已启用 rounds=30（监控测试集）
+2026-10-17 21:21:40,637 - XGBoostRegressorES - INFO - BTC/USDT:USDT: 实际训练轮数=33 best_iteration=2
+2026-10-17 21:21:40,637 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - -------------------- Done training BTC/USDT:USDT (0.87 secs) --------------------
+2026-10-17 21:21:40,856 - freqtrade.plot.plotting - INFO - Stored plot as 
+/RUN/offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1735689600/cb_btc_1735689600--s_return.html
+2026-10-17 21:21:40,857 - freqtrade.freqai.freqai_interface - INFO - Saving metadata to disk.
+2026-10-17 21:21:40,909 - freqtrade.freqai.freqai_interface - INFO - Training BTC/USDT:USDT, 1/2 pairs from 2024-01-09 00:00:00 to 2025-01-08 00:00:00, 2/2 trains
+2026-10-17 21:21:40,910 - freqtrade.freqai.data_kitchen - INFO - Could not find backtesting prediction file at 
+/RUN/offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1736294400_prediction.feather
+2026-10-17 21:21:40,917 - freqtrade.freqai.freqai_interface - INFO - Could not find model at 
+/RUN/offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736294400/cb_btc_1736294400
+2026-10-17 21:21:40,919 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - -------------------- Starting training BTC/USDT:USDT --------------------
+2026-10-17 21:21:40,924 - freqtrade.freqai.data_kitchen - INFO - BTC/USDT:USDT: dropped 3 training points due to NaNs in populated dataset 2190.
+2026-10-17 21:21:40,926 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - -------------------- Training on data from 2024-01-09 to 2025-01-07 --------------------
+2026-10-17 21:21:41,379 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - Training model on 92 features
+2026-10-17 21:21:41,379 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - Training model on 1749 data points
+2026-10-17 21:21:41,380 - XGBoostRegressorES - INFO - BTC/USDT:USDT: 早停已启用 rounds=30（监控测试集）
+2026-10-17 21:21:41,699 - XGBoostRegressorES - INFO - BTC/USDT:USDT: 实际训练轮数=31 best_iteration=0
+2026-10-17 21:21:41,700 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - -------------------- Done training BTC/USDT:USDT (0.78 secs) --------------------
+2026-10-17 21:21:41,754 - freqtrade.plot.plotting - INFO - Stored plot as 
+/RUN/offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736294400/cb_btc_1736294400--s_return.html
+2026-10-17 21:21:41,754 - freqtrade.freqai.freqai_interface - INFO - Saving metadata to disk.
+2026-10-17 21:21:41,822 - freqtrade.freqai.freqai_interface - INFO - Training 2 timeranges
+2026-10-17 21:21:41,823 - freqtrade.freqai.freqai_interface - INFO - Training ETH/USDT:USDT, 2/2 pairs from 2024-01-02 00:00:00 to 2025-01-01 00:00:00, 1/2 trains
+2026-10-17 21:21:41,824 - freqtrade.freqai.data_kitchen - INFO - Could not find backtesting prediction file at 
+/RUN/offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1735689600_prediction.feather
+2026-10-17 21:21:41,866 - freqtrade.data.dataprovider - INFO - Increasing startup_candle_count for freqai on 4h to 2290
+2026-10-17 21:21:41,867 - freqtrade.data.dataprovider - INFO - Loading data for BTC/USDT:USDT 4h from 2023-12-16 08:00:00 to 2025-01-15 00:00:00
+2026-10-17 21:21:41,935 - freqtrade.freqai.freqai_interface - INFO - Could not find model at 
+/RUN/offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1735689600/cb_eth_1735689600
+2026-10-17 21:21:41,936 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - -------------------- Starting training ETH/USDT:USDT --------------------
+2026-10-17 21:21:41,945 - freqtrade.freqai.data_kitchen - INFO - ETH/USDT:USDT: dropped 3 training points due to NaNs in populated dataset 2190.
+2026-10-17 21:21:41,946 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - -------------------- Training on data from 2024-01-02 to 2024-12-31 --------------------
+2026-10-17 21:21:42,409 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - Training model on 92 features
+2026-10-17 21:21:42,409 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - Training model on 1749 data points
+2026-10-17 21:21:42,410 - XGBoostRegressorES - INFO - ETH/USDT:USDT: 早停已启用 rounds=30（监控测试集）
+2026-10-17 21:21:42,814 - XGBoostRegressorES - INFO - ETH/USDT:USDT: 实际训练轮数=33 best_iteration=2
+2026-10-17 21:21:42,815 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - -------------------- Done training ETH/USDT:USDT (0.88 secs) --------------------
+2026-10-17 21:21:42,867 - freqtrade.plot.plotting - INFO - Stored plot as 
+/RUN/offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1735689600/cb_eth_1735689600--s_return.html
+2026-10-17 21:21:42,868 - freqtrade.freqai.freqai_interface - INFO - Saving metadata to disk.
+2026-10-17 21:21:42,916 - freqtrade.freqai.freqai_interface - INFO - Training ETH/USDT:USDT, 2/2 pairs from 2024-01-09 00:00:00 to 2025-01-08 00:00:00, 2/2 trains
+2026-10-17 21:21:42,917 - freqtrade.freqai.data_kitchen - INFO - Could not find backtesting prediction file at 
+/RUN/offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1736294400_prediction.feather
+2026-10-17 21:21:42,925 - freqtrade.freqai.freqai_interface - INFO - Could not find model at 
+/RUN/offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736294400/cb_eth_1736294400
+2026-10-17 21:21:42,926 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - -------------------- Starting training ETH/USDT:USDT --------------------
+2026-10-17 21:21:42,932 - freqtrade.freqai.data_kitchen - INFO - ETH/USDT:USDT: dropped 3 training points due to NaNs in populated dataset 2190.
+2026-10-17 21:21:42,933 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - -------------------- Training on data from 2024-01-09 to 2025-01-07 --------------------
+2026-10-17 21:21:43,337 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - Training model on 92 features
+2026-10-17 21:21:43,338 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - Training model on 1749 data points
+2026-10-17 21:21:43,338 - XGBoostRegressorES - INFO - ETH/USDT:USDT: 早停已启用 rounds=30（监控测试集）
+2026-10-17 21:21:43,657 - XGBoostRegressorES - INFO - ETH/USDT:USDT: 实际训练轮数=31 best_iteration=0
+2026-10-17 21:21:43,658 - freqtrade.freqai.base_models.BaseRegressionModel - INFO - -------------------- Done training ETH/USDT:USDT (0.73 secs) --------------------
+2026-10-17 21:21:43,711 - freqtrade.plot.plotting - INFO - Stored plot as 
+/RUN/offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736294400/cb_eth_1736294400--s_return.html
+2026-10-17 21:21:43,712 - freqtrade.freqai.freqai_interface - INFO - Saving metadata to disk.
+2026-10-17 21:21:43,788 - freqtrade.optimize.backtesting - INFO - Backtesting with data from 2025-01-01 00:00:00 up to 2025-01-15 00:00:00 (14 days).
+backtest ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4/4   100% • 0:00:04 • 0:00:00
+backtest ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 84/84 100% • 0:00:05 • 0:00:00
+2026-10-17 21:21:44,631 - freqtrade.misc - INFO - dumping json to "/RUN/offline/results/backtest-result-2026-10-17_21-21-44.meta.json"

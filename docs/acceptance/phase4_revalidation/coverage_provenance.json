@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "checked_at": "2026-10-17T13:23:43.358307+00:00",
+  "source": "docs/acceptance/phase3_data_coverage.json",
+  "frozen_copy": "phase4_coverage_input.json",
+  "recorded_input_sha256": "0cfd51281a39dc49e65af7b7d6971c2041ada2564c1800f432c5708b24e2ed24",
+  "source_sha256": "0cfd51281a39dc49e65af7b7d6971c2041ada2564c1800f432c5708b24e2ed24",
+  "frozen_copy_sha256": "0cfd51281a39dc49e65af7b7d6971c2041ada2564c1800f432c5708b24e2ed24",
+  "method": "Exact copy frozen after completed revalidation; source and copied bytes both equal the hash recorded by the actual revalidation runner."
+}

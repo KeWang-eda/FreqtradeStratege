@@ -1,0 +1,57 @@
+{
+  "policy": "metadata-only",
+  "component": "freqtrade",
+  "arguments": [
+    "backtesting",
+    "-c",
+    "config.json",
+    "-c",
+    "configs/backtest-local.json",
+    "-c",
+    "configs/environment/freqtrade-mihomo.json",
+    "--userdir",
+    "/RUN/runs/online",
+    "--datadir",
+    "/REPO/data",
+    "--strategy-path",
+    "/REPO",
+    "--freqaimodel-path",
+    "/REPO/freqaimodels",
+    "--strategy",
+    "MyStrategy",
+    "--timerange",
+    "20250101-20250122",
+    "--pairs",
+    "BTC/USDT:USDT",
+    "ETH/USDT:USDT",
+    "BNB/USDT:USDT",
+    "--cache",
+    "none",
+    "--export",
+    "signals",
+    "--backtest-directory",
+    "/RUN/runs/online/results"
+  ],
+  "http_requests": [
+    {
+      "method": "GET",
+      "host": "fapi.binance.com",
+      "path": "/fapi/v1/exchangeInfo",
+      "allowed": true
+    }
+  ],
+  "socket_events": [
+    {
+      "event": "socket.connect",
+      "host": "127.0.0.1",
+      "port": 7890,
+      "allowed": true
+    }
+  ],
+  "process_events": [],
+  "completed": true,
+  "denied_operations": 0,
+  "exit_code": 0,
+  "freqtrade_imported": true,
+  "ccxt_imported": true
+}

@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "checked_at": "2026-10-17T13:16:14Z",
+  "method": "Read every published flat file and every tar member in each summary publication.hash_ledger; compare SHA256 to published_sha256. Scan textual files and nested ZIP JSON/Python members for unmapped private home roots.",
+  "reports": [
+    {"summary": "phase4_extension_attempt1_summary.json", "checked_entries": 3, "mismatches": []},
+    {"summary": "phase4_extension_attempt2_summary.json", "checked_entries": 29, "mismatches": []},
+    {"summary": "phase4_extension_summary.json", "checked_entries": 57, "mismatches": []}
+  ],
+  "unmapped_private_home_roots": 0,
+  "raw_comparison_passed_before_redaction": true,
+  "comparison_scope": "Final successful continuation only; failed attempts did not execute regression comparison.",
+  "prediction_rows": [42, 42, 42, 42, 42, 42, 42, 42, 42],
+  "result_metric_fields_compared": 115,
+  "exported_configuration_fields_compared": 32
+}

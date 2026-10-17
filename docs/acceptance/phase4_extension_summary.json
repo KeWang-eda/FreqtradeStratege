@@ -1,0 +1,1100 @@
+{
+  "status": "PASS",
+  "executed_at": "2026-10-17T13:15:07.600211+00:00",
+  "versions": {
+    "python": "3.13.13",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.0",
+    "xgboost": "3.4.1",
+    "lightgbm": "4.7.0",
+    "TA-Lib": "0.7.1",
+    "technical": "1.7.0",
+    "freqtrade": "2026.7",
+    "pyarrow": "25.0.1",
+    "PyYAML": "6.0.3"
+  },
+  "pairs": [
+    "BTC/USDT:USDT",
+    "ETH/USDT:USDT",
+    "BNB/USDT:USDT"
+  ],
+  "timerange": "20250101-20250122",
+  "capture_attempt": 2,
+  "minimum_gate": {
+    "file": "docs/acceptance/phase4_summary.json",
+    "sha256": "19aeb236e68e4e7882aa8aaa7c50203044f19bcb94074113a56123420a04f864"
+  },
+  "coverage_gate": {
+    "file": "docs/acceptance/phase3_extension_coverage.json",
+    "sha256": "a4a6537b894b922d19b124fcb2755311651afee28763aa4bbe6a931a1012d297"
+  },
+  "snapshot": {
+    "file": "phase4_extension_snapshot.json",
+    "file_sha256": "b752da90fbf65a4d24c4a5eaaddf6c7c122acd799afbe1042ef2f9e6edbf86d2",
+    "payload_sha256": "80cdce1c464648ccad5297d0eb7c4fd27ea0ed49c5d88a71e433bd00297c6617",
+    "raw_sha256": "c6b3f75bdc99982a33a2c4f94ec24af7e7dae5e130be58f50f407cdcc5ab9f7a",
+    "acquired_at": "2026-10-17T13:08:12.995176+00:00",
+    "versions": {
+      "freqtrade": "2026.7",
+      "ccxt": "4.5.75"
+    },
+    "pairs": [
+      "BNB/USDT:USDT",
+      "BTC/USDT:USDT",
+      "ETH/USDT:USDT"
+    ],
+    "source": {
+      "url": "https://fapi.binance.com/fapi/v1/exchangeInfo",
+      "method": "GET",
+      "authenticated": false
+    },
+    "leverage_source": "freqtrade/exchange/binance_leverage_tiers.json",
+    "leverage_sha256": "e54a119386e3f0bc15855f5ed2086d0e4f7c1c483c20e3d0e6d3241c7e2491c7"
+  },
+  "execution": {
+    "online": {
+      "exit_code": 0,
+      "audit": {
+        "policy": "metadata-only",
+        "component": "freqtrade",
+        "arguments": [
+          "backtesting",
+          "-c",
+          "config.json",
+          "-c",
+          "configs/backtest-local.json",
+          "-c",
+          "configs/environment/freqtrade-mihomo.json",
+          "--userdir",
+          "/RUN/runs/online",
+          "--datadir",
+          "/REPO/data",
+          "--strategy-path",
+          "/REPO",
+          "--freqaimodel-path",
+          "/REPO/freqaimodels",
+          "--strategy",
+          "MyStrategy",
+          "--timerange",
+          "20250101-20250122",
+          "--pairs",
+          "BTC/USDT:USDT",
+          "ETH/USDT:USDT",
+          "BNB/USDT:USDT",
+          "--cache",
+          "none",
+          "--export",
+          "signals",
+          "--backtest-directory",
+          "/RUN/runs/online/results"
+        ],
+        "http_requests": [
+          {
+            "method": "GET",
+            "host": "fapi.binance.com",
+            "path": "/fapi/v1/exchangeInfo",
+            "allowed": true
+          }
+        ],
+        "socket_events": [
+          {
+            "event": "socket.connect",
+            "host": "127.0.0.1",
+            "port": 7890,
+            "allowed": true
+          }
+        ],
+        "process_events": [],
+        "completed": true,
+        "denied_operations": 0,
+        "exit_code": 0,
+        "freqtrade_imported": true,
+        "ccxt_imported": true
+      },
+      "syscalls": {
+        "proxy_connect_count": 1,
+        "proxy_send_count": 4,
+        "local_wakeup_send_count": 1,
+        "other_connect_or_send_count": 0
+      },
+      "provenance": "Fresh real online process from capture attempt 2; raw audit/log/syscalls revalidated after correcting only syscall classification, no online cache reuse or rerun"
+    },
+    "offline": {
+      "exit_code": 0,
+      "audit": {
+        "policy": "deny-all",
+        "component": "offline-backtest",
+        "arguments": [
+          "backtesting",
+          "--snapshot",
+          "/RUN/phase4_extension_snapshot.json",
+          "--",
+          "-c",
+          "config.json",
+          "-c",
+          "configs/backtest-local.json",
+          "-c",
+          "configs/environment/freqtrade-mihomo.json",
+          "--userdir",
+          "/RUN/runs/offline",
+          "--datadir",
+          "/REPO/data",
+          "--strategy-path",
+          "/REPO",
+          "--freqaimodel-path",
+          "/REPO/freqaimodels",
+          "--strategy",
+          "MyStrategy",
+          "--timerange",
+          "20250101-20250122",
+          "--pairs",
+          "BTC/USDT:USDT",
+          "ETH/USDT:USDT",
+          "BNB/USDT:USDT",
+          "--cache",
+          "none",
+          "--export",
+          "signals",
+          "--backtest-directory",
+          "/RUN/runs/offline/results"
+        ],
+        "http_requests": [],
+        "socket_events": [],
+        "process_events": [],
+        "completed": true,
+        "denied_operations": 0,
+        "exit_code": 0,
+        "freqtrade_imported": true,
+        "ccxt_imported": true
+      },
+      "syscalls": {
+        "connect_or_send_count": 0,
+        "failed_local_nscd_probes": 0,
+        "socket_creation_count": 1,
+        "bind_count": 1,
+        "scope": "strace -f captures network syscalls of traced process and children"
+      },
+      "command": [
+        "unshare",
+        "--user",
+        "--map-root-user",
+        "--net",
+        "strace",
+        "-f",
+        "-e",
+        "trace=network",
+        "-o",
+        "/RUN/phase4_extension_offline_network.strace",
+        "/PYTHON_ENV/bin/python",
+        "/REPO/tools/audit_local_network.py",
+        "--policy",
+        "deny-all",
+        "--report",
+        "/RUN/phase4_extension_offline_network.json",
+        "offline-backtest",
+        "backtesting",
+        "--snapshot",
+        "/RUN/phase4_extension_snapshot.json",
+        "--",
+        "-c",
+        "config.json",
+        "-c",
+        "configs/backtest-local.json",
+        "-c",
+        "configs/environment/freqtrade-mihomo.json",
+        "--userdir",
+        "/RUN/runs/offline",
+        "--datadir",
+        "/REPO/data",
+        "--strategy-path",
+        "/REPO",
+        "--freqaimodel-path",
+        "/REPO/freqaimodels",
+        "--strategy",
+        "MyStrategy",
+        "--timerange",
+        "20250101-20250122",
+        "--pairs",
+        "BTC/USDT:USDT",
+        "ETH/USDT:USDT",
+        "BNB/USDT:USDT",
+        "--cache",
+        "none",
+        "--export",
+        "signals",
+        "--backtest-directory",
+        "/RUN/runs/offline/results"
+      ]
+    }
+  },
+  "training": {
+    "online": {
+      "completed_fit_count": 9,
+      "metadata_count": 9,
+      "prediction_count": 9,
+      "fits_by_pair": {
+        "BTC/USDT:USDT": 3,
+        "ETH/USDT:USDT": 3,
+        "BNB/USDT:USDT": 3
+      },
+      "models": [
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1735689600/cb_bnb_1735689600_metadata.json",
+          "feature_count": 136
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1736294400/cb_bnb_1736294400_metadata.json",
+          "feature_count": 136
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1736899200/cb_bnb_1736899200_metadata.json",
+          "feature_count": 136
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1735689600/cb_btc_1735689600_metadata.json",
+          "feature_count": 92
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736294400/cb_btc_1736294400_metadata.json",
+          "feature_count": 92
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736899200/cb_btc_1736899200_metadata.json",
+          "feature_count": 92
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1735689600/cb_eth_1735689600_metadata.json",
+          "feature_count": 92
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736294400/cb_eth_1736294400_metadata.json",
+          "feature_count": 92
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736899200/cb_eth_1736899200_metadata.json",
+          "feature_count": 92
+        }
+      ]
+    },
+    "offline": {
+      "completed_fit_count": 9,
+      "metadata_count": 9,
+      "prediction_count": 9,
+      "fits_by_pair": {
+        "BTC/USDT:USDT": 3,
+        "ETH/USDT:USDT": 3,
+        "BNB/USDT:USDT": 3
+      },
+      "models": [
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1735689600/cb_bnb_1735689600_metadata.json",
+          "feature_count": 136
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1736294400/cb_bnb_1736294400_metadata.json",
+          "feature_count": 136
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1736899200/cb_bnb_1736899200_metadata.json",
+          "feature_count": 136
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1735689600/cb_btc_1735689600_metadata.json",
+          "feature_count": 92
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736294400/cb_btc_1736294400_metadata.json",
+          "feature_count": 92
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736899200/cb_btc_1736899200_metadata.json",
+          "feature_count": 92
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1735689600/cb_eth_1735689600_metadata.json",
+          "feature_count": 92
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736294400/cb_eth_1736294400_metadata.json",
+          "feature_count": 92
+        },
+        {
+          "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736899200/cb_eth_1736899200_metadata.json",
+          "feature_count": 92
+        }
+      ]
+    }
+  },
+  "fresh_userdirs_empty": true,
+  "cache": "none",
+  "protected_inputs_unchanged": true,
+  "protected_source_check_scope": "Source fingerprints freeze before fresh offline continuation through finish; local history and base/local configs also match earlier Phase 3 gate",
+  "protected_input_hashes": {
+    "config.json": "2d12ac5c86fc76fedaa2b73e84237d9a2f1eb265587b81f6c155bafb6fb6acff",
+    "configs/backtest-local.json": "f45574361fbe09487abfa536d0b3ce90fa9935bdbb59c9f62e9bff572e7a6b37",
+    "configs/environment/freqtrade-mihomo.json": "8ffcfdb8ac900018d734984613721ea92d3c885db60adb51945a2d8e4a6566e3",
+    "feature.py": "f6869f568b8bbace6562e74147163e4d777a5b5bb34af412175eb59fa4a4acfe",
+    "MyStrategy.py": "f41c6b02936c2dd027261944f92db1f0197bd44ba1644c6b317e53807b06c4a8",
+    "util.py": "cca35d32acc52a6bc6efda95bef431ce6c40fdc268ad63168ce6c585a29964e9",
+    "verify_no_lookahead.py": "58a6c15c85b89972e4541520a7062c5d34e5edd3f3bf6b9f1e72b6322d361736",
+    "_quant_strategy_bootstrap.py": "6ee1b6b37480bf37be42ca87650db60f46e82bf340e7a2f6866d7f13fff10e52",
+    "model.py": "746dcd6d48167fe6ea7aeab75c4c02fb41829c3e96d56eca81ab74a181664d09",
+    "test_my_strategy.py": "b90d57d03e32ab5eaea96e94b79d009b1aea6972d242bdf0b461f171854bba37",
+    "src/quant_strategy/cli.py": "9fdec6dccdb68158cbccf5b88e7e10b2be1b3a3c09e733f49674b41d39557119",
+    "src/quant_strategy/api.py": "7ebd2f3aab9bc33991bd70515ae3a57a7cb99114f916a26dab2d4e9baa2e8d62",
+    "src/quant_strategy/__init__.py": "2b097d3f7e041ad9e86d114c4ae907e335b1461e06a3d39f2264bdcd6e721caf",
+    "src/quant_strategy/errors.py": "eb95191ee280da2edd9195efb4a9a37beb55b023695506782d8419c896abda6f",
+    "src/quant_strategy/market_data/__init__.py": "17ab33457589cb1143f0bd5ec3e3c836a07310d15e24162154dbf09a54b8ab52",
+    "src/quant_strategy/market_data/time_index.py": "63d437c004cf320831b25066d03e539828b93c0eb9e03bcb68bac13ac78e6167",
+    "src/quant_strategy/market_data/loader.py": "9b8785fdd831a0778dd11be54901c92c2da2616c81084b610e1b1ebd4499acb7",
+    "src/quant_strategy/market_data/validation.py": "7846f78cf58338e63bbb18baa2eb01303596adaccfe089fc36195c8906cf5126",
+    "src/quant_strategy/dataset/builder.py": "80ebc7e0bab228630fea466cb413e1a16993e8c7f7ea0e86a11ae440f81e132c",
+    "src/quant_strategy/dataset/__init__.py": "2c3625fba54c330f8f1e72245680fb7c9bb8cd740e5e0236a42347a599af14bf",
+    "src/quant_strategy/prediction/__init__.py": "421a0c0d0b758cde363ed2cacb1ff6176cbf37e436ff80f560c68cba1fa5d239",
+    "src/quant_strategy/prediction/batch.py": "888029b0e26de89d13fb055770c6fbcad834d109b9bb9d63b30638af04fa4aad",
+    "src/quant_strategy/features/builder.py": "94002f32f3e1d5cc894d5151148971248598699e6422b6acf5e040f262d3cc76",
+    "src/quant_strategy/features/__init__.py": "8744105f9ebeb449d2fcaeb1719af8a363261c9ccd377028ec72c9e73551a8bf",
+    "src/quant_strategy/features/momentum.py": "80b491132169d406d365a6f349569e1c3ffb72f2cdb37c11a88da4662792b54f",
+    "src/quant_strategy/features/price.py": "37707f0372d2d6a20d4b400f655e50ef476cedfc252607003ed1feb83b7e14ba",
+    "src/quant_strategy/features/technical.py": "cefa77c990e209be7fcb86879aba67ef49c471312819887237d9afd63e7f92dc",
+    "src/quant_strategy/infrastructure/experiment_store.py": "d868b7a6f48ba17a06e3446f7fd50a1f8fd6f9e0c3a8f376734c1565c2caf0c5",
+    "src/quant_strategy/infrastructure/snapshot_store.py": "7f7b47f2ed98d99e5f766020f31c869aed357242b6de34b597f13a6aa84de644",
+    "src/quant_strategy/infrastructure/__init__.py": "cc97b17f566d8ea3ffc56222b9aa5a4fcee1d06341a2f03231d765d373dcb8c4",
+    "src/quant_strategy/infrastructure/artifact_audit.py": "c9949056a1f409d0920e3b76396dfa61bccc70e9cd4cffdec6916ed131f14708",
+    "src/quant_strategy/infrastructure/model_store.py": "788b4e29c9ef927f3372fa90c114962e82781904fb0927cc0c7fec7a5f7d5545",
+    "src/quant_strategy/infrastructure/alignment_audit.py": "b3a1c3eab058d87f4cf9472fb1eb200b74163f44799b7b41de105b5635e73b1d",
+    "src/quant_strategy/preprocessing/__init__.py": "2f9376e336baadd1fc45de7cd992f891b80065ff0b099578de32c1f51b35c980",
+    "src/quant_strategy/preprocessing/pipeline.py": "3ec76c15144a4226690d21abac8a3be5bc4c3e78902a47e536a9f18795329bc4",
+    "src/quant_strategy/backends/standalone.py": "8c66e044730a508aba8e7119a2096a43209da9c2a0728759de67d217c05f14ec",
+    "src/quant_strategy/backends/factory.py": "a109d25749e9b7988e7bce8db6a13c5fefaba7751783edd461b6084a3100c9c4",
+    "src/quant_strategy/backends/base.py": "7414d2e0cf1d75eff51f4fd8bb78de0dcce6b6fbea5f5e958a0737eeba3e90a3",
+    "src/quant_strategy/backends/freqai.py": "3dd4989da38df4dc581c347d68f1046b442dcb18e53fbd78860bb4de523b2316",
+    "src/quant_strategy/backends/__init__.py": "c920e8554f2ce8e28d62d57d0615d139784035b377c74cd87d8a9410e9cc9026",
+    "src/quant_strategy/validation/splitters.py": "1db1c5abaf06ec7cb36444879a6e86d52eccf2ba0f3b3db35a7ff83d9b884be4",
+    "src/quant_strategy/validation/leakage.py": "c7925cb1786cf27ea9e223a965e6e77a9ee15ad43db3b19aad4c5fa91a0ec59d",
+    "src/quant_strategy/validation/__init__.py": "b058ba7e28a369b5ea55976d89078aad9002a5ad272141b51d84657e2d0078a3",
+    "src/quant_strategy/validation/truncation.py": "ab82d567b9ca49c85a0669add0dc3fa120c08a6b7fe544bd20bdf38949a37c6a",
+    "src/quant_strategy/validation/metrics.py": "43273def6d6c92e5428c6e3b3318efff7a10856c702755a1236d45472836aa27",
+    "src/quant_strategy/labels/returns.py": "5c554c3873001c722c6ce8d5c72a3d1fd4d1e0fd6af38cd681cb669c65c7a6a8",
+    "src/quant_strategy/labels/__init__.py": "e5e159bc2507d381ff7c3d04ef9580882fec8a19d9a3cc706b17e992e4748bda",
+    "src/quant_strategy/execution/coordinator.py": "263a809cf35d83b7b86702d12f401d2084d146b58b6efbb434431e548eb9e666",
+    "src/quant_strategy/execution/market_snapshot.py": "b74a388cc22036de77a819da7ac6db0201f50d2446750c923445842db2d67cab",
+    "src/quant_strategy/execution/signals.py": "604435041477e8f23162ddb67855d6e229b73593910187eef7b3dc995f20d77c",
+    "src/quant_strategy/execution/__init__.py": "727adfa9ea7b4b742cf5a1268b9ba638bac81a68167ba34bfa34899f87a95afa",
+    "src/quant_strategy/execution/freqtrade_strategy.py": "04692c3a938450767646cb2ecc133836c4f2b83f64183437ce1455e5183786ed",
+    "src/quant_strategy/execution/offline_backtest.py": "6913dee31fa8eb4957908c8e06194836a95c7518203afc492e4995a27ad0dc2e",
+    "src/quant_strategy/config/schema.py": "e2d8bc89a34a8aef772035d7887372f86eb918160b1b16351b4e03583e53cdf8",
+    "src/quant_strategy/config/__init__.py": "6029da00f3e18960d51ae3966401e73d2e6932bc3695462c44b85f04362bfd3a",
+    "src/quant_strategy/config/loader.py": "c42bec55548ff8ca4c7656b66d383a113421a74365bcd55a277502d60b796526",
+    "src/quant_strategy/training/__init__.py": "714dab7fca47d4cd3a0bc91f90c9ab43eef9f09c96d93f90b48ce9c1a03d5a45",
+    "src/quant_strategy/training/trainer.py": "388d4b045c218403be554e12113b523f1dc302237dd7654dc0c9e99409c53875",
+    "src/quant_strategy/portfolio/ranking.py": "c6e00c4a3f6f164afa425948037ee2082f6fa9543ad06c2ddb1c9a1d92b9742f",
+    "src/quant_strategy/portfolio/__init__.py": "e889489645ef0d8757376827eb27da58013ec7ef273dd6d9bd04d00896b2743f",
+    "src/quant_strategy/portfolio/risk.py": "632a448966aa4d1146877f1ecdb51666d551727ec41063c5c037192f3b6ed131",
+    "src/quant_strategy/portfolio/position.py": "7c67d8913ab582e89d69c6c41f1c1074fcb3f8faabfa9bbaec5c0f0602045657",
+    "src/quant_strategy/experiments/runner.py": "d36be4532d6c1c3d9100ec0d6b0edef00c9798326ef0bcaeed5d9c7ca42eff14",
+    "src/quant_strategy/experiments/__init__.py": "93d8fc6d7540b38241e59cef63aa3686b7862022293eb56b0cae8db79151ef97",
+    "freqaimodels/MomentumRidgeRegressor.py": "b2649616272e735d152ab7bee8085bd6f7d7bf517086871f4b90d81071928fbf",
+    "freqaimodels/XGBoostRegressorES.py": "0d32f7ca61cd4e643c530cf658585e53c1ba7d38c3104e2668a5a91aad33d7f2",
+    "data/futures/BTC_USDT_USDT-4h-futures.feather": "841837255751a6dfe5a4507fdff5b4cace91baef23ba079816ed7ecc165e0121",
+    "data/futures/BTC_USDT_USDT-1h-mark.feather": "81b59942715175a5f389de58599210d5bb940b6936ebbc2aac0ea454e4528cb8",
+    "data/futures/BTC_USDT_USDT-1h-funding_rate.feather": "b51b18ea9cee16216d8a24aac3a9685f305905e04c99cd9701b9589b692f74c6",
+    "data/futures/ETH_USDT_USDT-4h-futures.feather": "3593cd46198d451305a280683e128c48a874be895295e5c3665161945767d0bc",
+    "data/futures/ETH_USDT_USDT-1h-mark.feather": "bd9ea1c7341b0b25afc578c1a7c323129c826b71cd25685bac0d852b77bbac4a",
+    "data/futures/ETH_USDT_USDT-1h-funding_rate.feather": "2bcd5dd3d7520d58d6ab156a2aad2035c7382f3b6b9f80a85aac30aad9f9082d",
+    "data/futures/BNB_USDT_USDT-4h-futures.feather": "7cfc5f3527b85f625c455b576b3f6ad6f8d71d1301f10e56be1a0b9260b4d98d",
+    "data/futures/BNB_USDT_USDT-1h-mark.feather": "d31f1874c1202a12c0b9a7ef4ce0e49bf33b66bf24bced06a16128ec14cbb792",
+    "data/futures/BNB_USDT_USDT-1h-funding_rate.feather": "3a758fcf81ef9801d2d1098dd76b4149fcec655e46f987a05b651820e934b66f"
+  },
+  "regression": {
+    "passed": true,
+    "tolerance": {
+      "rtol": 1e-12,
+      "atol": 1e-12
+    },
+    "comparison_policy": {
+      "excluded_result_fields": {
+        "backtest_run_start_ts": "Wall-clock process start time, unrelated to historical decisions",
+        "backtest_run_end_ts": "Wall-clock process end time, unrelated to historical decisions"
+      },
+      "metadata_normalization": "Validate data_path suffix against artifact parent; normalize only independent userdir root",
+      "metadata_fields": "All fields, including unknown/extra fields, are compared",
+      "configuration": "All exported fields including exchange/FreqAI; config_files only normalizes checkout root, preserving order",
+      "nonfinite": "Reject non-finite JSON and frame infinities; paired frame NaN masks must match"
+    },
+    "archives": {
+      "old": {
+        "path": "/RUN/runs/online/results/backtest-result-2026-10-17_21-08-29.zip",
+        "sha256": "a104d1fe27f4e2bae8f2d2cbc1c7da6f00947a8ee28bf0266b1eead99a5686ae"
+      },
+      "new": {
+        "path": "/RUN/runs/offline/results/backtest-result-2026-10-17_21-15-06.zip",
+        "sha256": "a4a57ba17998caee40112a9c333efce692cf29c2af40a20b50599adbc74da132"
+      }
+    },
+    "start": "2025-01-01 00:00:00+00:00",
+    "end": "2025-01-22 00:00:00+00:00",
+    "trade_count": {
+      "old": 29,
+      "new": 29
+    },
+    "order_count": {
+      "old": 58,
+      "new": 58
+    },
+    "metrics": {
+      "compared_keys": [
+        "avg_stake_amount",
+        "backtest_best_day",
+        "backtest_best_day_abs",
+        "backtest_days",
+        "backtest_end",
+        "backtest_end_ts",
+        "backtest_start",
+        "backtest_start_ts",
+        "backtest_worst_day",
+        "backtest_worst_day_abs",
+        "best_pair",
+        "cagr",
+        "calmar",
+        "canceled_entry_orders",
+        "canceled_trade_entries",
+        "csum_max",
+        "csum_min",
+        "daily_profit",
+        "draw_days",
+        "drawdown_duration",
+        "drawdown_duration_s",
+        "drawdown_end",
+        "drawdown_end_ts",
+        "drawdown_start",
+        "drawdown_start_ts",
+        "draws",
+        "dry_run_wallet",
+        "enable_protections",
+        "exit_profit_offset",
+        "exit_profit_only",
+        "exit_reason_summary",
+        "expectancy",
+        "expectancy_ratio",
+        "final_balance",
+        "freqai_identifier",
+        "freqaimodel",
+        "holding_avg",
+        "holding_avg_s",
+        "ignore_roi_if_entry_signal",
+        "left_open_trades",
+        "locks",
+        "loser_holding_avg",
+        "loser_holding_avg_s",
+        "loser_holding_max",
+        "loser_holding_max_s",
+        "loser_holding_min",
+        "loser_holding_min_s",
+        "losing_days",
+        "losses",
+        "margin_mode",
+        "market_change",
+        "max_consecutive_losses",
+        "max_consecutive_wins",
+        "max_drawdown_abs",
+        "max_drawdown_account",
+        "max_drawdown_high",
+        "max_drawdown_low",
+        "max_open_trades",
+        "max_open_trades_setting",
+        "max_relative_drawdown",
+        "minimal_roi",
+        "mix_tag_stats",
+        "p_value",
+        "pairlist",
+        "periodic_breakdown",
+        "profit_factor",
+        "profit_mean",
+        "profit_median",
+        "profit_total",
+        "profit_total_abs",
+        "profit_total_long",
+        "profit_total_long_abs",
+        "profit_total_short",
+        "profit_total_short_abs",
+        "rejected_signals",
+        "replaced_entry_orders",
+        "results_per_enter_tag",
+        "results_per_pair",
+        "sharpe",
+        "sortino",
+        "sqn",
+        "stake_amount",
+        "stake_currency",
+        "stake_currency_decimals",
+        "starting_balance",
+        "stoploss",
+        "strategy_name",
+        "timedout_entry_orders",
+        "timedout_exit_orders",
+        "timeframe",
+        "timeframe_detail",
+        "timerange",
+        "total_trades",
+        "total_volume",
+        "trade_count_long",
+        "trade_count_short",
+        "trades_per_day",
+        "trading_mode",
+        "trailing_only_offset_is_reached",
+        "trailing_stop",
+        "trailing_stop_positive",
+        "trailing_stop_positive_offset",
+        "use_custom_stoploss",
+        "use_exit_signal",
+        "wallet_stats",
+        "winner_holding_avg",
+        "winner_holding_avg_s",
+        "winner_holding_max",
+        "winner_holding_max_s",
+        "winner_holding_min",
+        "winner_holding_min_s",
+        "winning_days",
+        "winrate",
+        "wins",
+        "worst_pair"
+      ],
+      "values": {
+        "old": {
+          "profit_total_abs": -25.447139770000007,
+          "final_balance": 974.55286023,
+          "sharpe": -4.802197587176136,
+          "max_drawdown_account": 0.03503975726890054
+        },
+        "new": {
+          "profit_total_abs": -25.447139770000007,
+          "final_balance": 974.55286023,
+          "sharpe": -4.802197587176136,
+          "max_drawdown_account": 0.03503975726890054
+        }
+      }
+    },
+    "configuration_keys": [
+      "$schema",
+      "_comment",
+      "_comment_exit",
+      "_comment_position",
+      "cancel_open_orders_on_exit",
+      "config_files",
+      "datadir",
+      "dataformat_ohlcv",
+      "dry_run",
+      "dry_run_wallet",
+      "entry_pricing",
+      "exchange",
+      "exit_pricing",
+      "fee",
+      "fiat_display_currency",
+      "freqai",
+      "freqaimodel",
+      "initial_state",
+      "internals",
+      "margin_mode",
+      "max_open_trades",
+      "my_experiment",
+      "order_types",
+      "pairlists",
+      "stake_amount",
+      "stake_currency",
+      "stoploss",
+      "timeframe",
+      "tradable_balance_ratio",
+      "trading_mode",
+      "trailing_stop",
+      "unfilledtimeout"
+    ],
+    "signal_counts": {
+      "signals": {
+        "ETH/USDT:USDT": {
+          "old": 9,
+          "new": 9
+        },
+        "BTC/USDT:USDT": {
+          "old": 7,
+          "new": 7
+        },
+        "BNB/USDT:USDT": {
+          "old": 13,
+          "new": 13
+        }
+      },
+      "rejected": {
+        "ETH/USDT:USDT": {
+          "old": 88,
+          "new": 88
+        },
+        "BTC/USDT:USDT": {
+          "old": 68,
+          "new": 68
+        },
+        "BNB/USDT:USDT": {
+          "old": 37,
+          "new": 37
+        }
+      },
+      "exited": {
+        "ETH/USDT:USDT": {
+          "old": 9,
+          "new": 9
+        },
+        "BTC/USDT:USDT": {
+          "old": 7,
+          "new": 7
+        },
+        "BNB/USDT:USDT": {
+          "old": 13,
+          "new": 13
+        }
+      }
+    },
+    "prediction_files": [
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_bnb_1735689600_prediction.feather",
+        "rows": 42,
+        "old_sha256": "66d5bb3f22c8c92f5fc8672730f800238fb52d461ddb21163daca1095a3908fc",
+        "new_sha256": "66d5bb3f22c8c92f5fc8672730f800238fb52d461ddb21163daca1095a3908fc"
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_bnb_1736294400_prediction.feather",
+        "rows": 42,
+        "old_sha256": "f2d536e16f4ad96b1c08b96584de88ab219df185768e86a2afcbf393063013dd",
+        "new_sha256": "f2d536e16f4ad96b1c08b96584de88ab219df185768e86a2afcbf393063013dd"
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_bnb_1736899200_prediction.feather",
+        "rows": 42,
+        "old_sha256": "18dee625a1d15339cb9a6c9539ffe96cad1446f6ff9a723da3233003bd5c2d85",
+        "new_sha256": "18dee625a1d15339cb9a6c9539ffe96cad1446f6ff9a723da3233003bd5c2d85"
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1735689600_prediction.feather",
+        "rows": 42,
+        "old_sha256": "45b0cec00969259b71e906fdd0e2956cadafa8675ab795611114d61b6c2df614",
+        "new_sha256": "45b0cec00969259b71e906fdd0e2956cadafa8675ab795611114d61b6c2df614"
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1736294400_prediction.feather",
+        "rows": 42,
+        "old_sha256": "147b333f878f3b4d8196688a6eaf2ad64032d5cbe5351a52422e00ad1ec4b036",
+        "new_sha256": "147b333f878f3b4d8196688a6eaf2ad64032d5cbe5351a52422e00ad1ec4b036"
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1736899200_prediction.feather",
+        "rows": 42,
+        "old_sha256": "106dd25f30b264f23352078f8f6a917069d902aa8eb073d55de630032399d569",
+        "new_sha256": "106dd25f30b264f23352078f8f6a917069d902aa8eb073d55de630032399d569"
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1735689600_prediction.feather",
+        "rows": 42,
+        "old_sha256": "4f268f4288bdf17c109229eeac0ac2c51a7cdd79b0ee61342a7f5d81c43f5993",
+        "new_sha256": "4f268f4288bdf17c109229eeac0ac2c51a7cdd79b0ee61342a7f5d81c43f5993"
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1736294400_prediction.feather",
+        "rows": 42,
+        "old_sha256": "d4ef13e4ee0d8166645b9a9053e91de11b2d1a250b8e8dd2e0dab20bb376a3be",
+        "new_sha256": "d4ef13e4ee0d8166645b9a9053e91de11b2d1a250b8e8dd2e0dab20bb376a3be"
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1736899200_prediction.feather",
+        "rows": 42,
+        "old_sha256": "f4b3cf545cb2d7473486467a20ee2ab87f1a8114353b6efb4658524c9af65444",
+        "new_sha256": "f4b3cf545cb2d7473486467a20ee2ab87f1a8114353b6efb4658524c9af65444"
+      }
+    ],
+    "model_schemas": [
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1735689600/cb_bnb_1735689600_metadata.json",
+        "feature_count": 136
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1736294400/cb_bnb_1736294400_metadata.json",
+        "feature_count": 136
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1736899200/cb_bnb_1736899200_metadata.json",
+        "feature_count": 136
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1735689600/cb_btc_1735689600_metadata.json",
+        "feature_count": 92
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736294400/cb_btc_1736294400_metadata.json",
+        "feature_count": 92
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736899200/cb_btc_1736899200_metadata.json",
+        "feature_count": 92
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1735689600/cb_eth_1735689600_metadata.json",
+        "feature_count": 92
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736294400/cb_eth_1736294400_metadata.json",
+        "feature_count": 92
+      },
+      {
+        "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736899200/cb_eth_1736899200_metadata.json",
+        "feature_count": 92
+      }
+    ],
+    "differences": []
+  },
+  "publication": {
+    "raw_comparison_precedes_redaction": true,
+    "redaction_scope": "Only local filesystem roots in UTF-8 logs/JSON/ZIP config; binary signals and predictions unchanged",
+    "raw_files": "Retained only in local ephemeral workspace; never required for rerunning acceptance",
+    "hash_ledger": [
+      {
+        "file": "phase4_extension_capture.log",
+        "raw_sha256": "bcc9951000c6b3857bd76ee07c552f8a1887f521645a27c0620779accc728c4e",
+        "published_sha256": "b297dd6eeb9a1fce8d27b39c2ef03631a09ff8a5b8014773e2bbf35b9784fb64",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_capture_command.json",
+        "raw_sha256": "7d298006b8e86236e05f295bb0bcbc8a5c41373fbd27967fae9ea185774697e6",
+        "published_sha256": "c55f2099196706c41d98b54b714da630841c83169775a314efba64bfdf119c17",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_continue.py",
+        "raw_sha256": "6a858326c9cbd2aabdd10c6f3b459b45429e2a82fb9c59e634d73e36b250a4de",
+        "published_sha256": "6a858326c9cbd2aabdd10c6f3b459b45429e2a82fb9c59e634d73e36b250a4de",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_input_manifest.json",
+        "raw_sha256": "b2fd3aed080fd3b8641e842a74a6429b0c50fb23181a5ac0fdef916d1a9e8bed",
+        "published_sha256": "b2fd3aed080fd3b8641e842a74a6429b0c50fb23181a5ac0fdef916d1a9e8bed",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_offline.log",
+        "raw_sha256": "834f91f29cfb78de39d99e4f86f1ebe03135ba1cb4b342dda5c01c6d6ac25f9d",
+        "published_sha256": "b3810988368417445c6da9dfa35cdd2b445f317dbcb710fbc63b4b32cdfb5dea",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_offline_network.json",
+        "raw_sha256": "6ba0c9c68f6f0b83df66bf727f83b838de007e43101e3d76302f826828cc09cd",
+        "published_sha256": "24b38d013034db5bcda5164f47bf220be302b644aa07925272c49fb3eea2b593",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_offline_network.strace",
+        "raw_sha256": "bc802097e19d999746a9d7c0aa1ec66877ded721752d5eeb8719ea30851755cd",
+        "published_sha256": "bc802097e19d999746a9d7c0aa1ec66877ded721752d5eeb8719ea30851755cd",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_online.log",
+        "raw_sha256": "ecccbdaebd90ca2883747467b222de7347b758585c3cd5feda6081794a0687b2",
+        "published_sha256": "5216f3ce9f657d1b1e94330f3a2fcaaa29d21f6ac8606bf26064918d302163f9",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_online_network.json",
+        "raw_sha256": "c4747a8e58a7dad236027ffbb3347ffdc894764a34b82651abb9b383fe80286e",
+        "published_sha256": "12f4baa8979b798f0b39d9521664fe08070127c0c667dad6850948a159b68640",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_online_network.strace",
+        "raw_sha256": "221cb31a8e55c73149560122286171849b2b804482fe405549ba1b1e7dafe093",
+        "published_sha256": "221cb31a8e55c73149560122286171849b2b804482fe405549ba1b1e7dafe093",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_regression.json",
+        "raw_sha256": "f75d5a6477b52181281c5897b3a1617cd744c4bae532d9c07186cfaaf55a2eca",
+        "published_sha256": "ee333a32614d5b67d0b7e814b650b25df26a2956c88bfef84a2bb5cced14e319",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_snapshot.json",
+        "raw_sha256": "b752da90fbf65a4d24c4a5eaaddf6c7c122acd799afbe1042ef2f9e6edbf86d2",
+        "published_sha256": "b752da90fbf65a4d24c4a5eaaddf6c7c122acd799afbe1042ef2f9e6edbf86d2",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_bnb_1735689600_prediction.feather",
+        "raw_sha256": "66d5bb3f22c8c92f5fc8672730f800238fb52d461ddb21163daca1095a3908fc",
+        "published_sha256": "66d5bb3f22c8c92f5fc8672730f800238fb52d461ddb21163daca1095a3908fc",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_bnb_1736294400_prediction.feather",
+        "raw_sha256": "f2d536e16f4ad96b1c08b96584de88ab219df185768e86a2afcbf393063013dd",
+        "published_sha256": "f2d536e16f4ad96b1c08b96584de88ab219df185768e86a2afcbf393063013dd",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_bnb_1736899200_prediction.feather",
+        "raw_sha256": "18dee625a1d15339cb9a6c9539ffe96cad1446f6ff9a723da3233003bd5c2d85",
+        "published_sha256": "18dee625a1d15339cb9a6c9539ffe96cad1446f6ff9a723da3233003bd5c2d85",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1735689600_prediction.feather",
+        "raw_sha256": "45b0cec00969259b71e906fdd0e2956cadafa8675ab795611114d61b6c2df614",
+        "published_sha256": "45b0cec00969259b71e906fdd0e2956cadafa8675ab795611114d61b6c2df614",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1736294400_prediction.feather",
+        "raw_sha256": "147b333f878f3b4d8196688a6eaf2ad64032d5cbe5351a52422e00ad1ec4b036",
+        "published_sha256": "147b333f878f3b4d8196688a6eaf2ad64032d5cbe5351a52422e00ad1ec4b036",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1736899200_prediction.feather",
+        "raw_sha256": "106dd25f30b264f23352078f8f6a917069d902aa8eb073d55de630032399d569",
+        "published_sha256": "106dd25f30b264f23352078f8f6a917069d902aa8eb073d55de630032399d569",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1735689600_prediction.feather",
+        "raw_sha256": "4f268f4288bdf17c109229eeac0ac2c51a7cdd79b0ee61342a7f5d81c43f5993",
+        "published_sha256": "4f268f4288bdf17c109229eeac0ac2c51a7cdd79b0ee61342a7f5d81c43f5993",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1736294400_prediction.feather",
+        "raw_sha256": "d4ef13e4ee0d8166645b9a9053e91de11b2d1a250b8e8dd2e0dab20bb376a3be",
+        "published_sha256": "d4ef13e4ee0d8166645b9a9053e91de11b2d1a250b8e8dd2e0dab20bb376a3be",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1736899200_prediction.feather",
+        "raw_sha256": "f4b3cf545cb2d7473486467a20ee2ab87f1a8114353b6efb4658524c9af65444",
+        "published_sha256": "f4b3cf545cb2d7473486467a20ee2ab87f1a8114353b6efb4658524c9af65444",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/run_params.json",
+        "raw_sha256": "917eb21fa0f256b44bc1c5056b972aba9f9c4476f586df28c8d6b6bb7609ce88",
+        "published_sha256": "917eb21fa0f256b44bc1c5056b972aba9f9c4476f586df28c8d6b6bb7609ce88",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1735689600/cb_bnb_1735689600_metadata.json",
+        "raw_sha256": "84b389a21bf5b0c48a95b40be4d89988aadbd73c513c977030fc22e63bac38ca",
+        "published_sha256": "eac375b4da36aec39c7f4f1508936dc57e4229c87a72380b3b042a3f8bfc4e71",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1736294400/cb_bnb_1736294400_metadata.json",
+        "raw_sha256": "dcfa7257053dce0100a06039790f3863929b13c40b2a16210cfb0fcbe1200cbc",
+        "published_sha256": "0c6f0ab1daf28a4c2cdcb11107637c06899d8506d0b3034138ff9cbc1f054248",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1736899200/cb_bnb_1736899200_metadata.json",
+        "raw_sha256": "7161f8316a860f358c290ec8ed98a18e1e0e3be4e84f2b913a10e7a98e6ab4fb",
+        "published_sha256": "f991b064611ad4badd60a3f97a91d0bd6bf135f79aa0ec37159563f91584d6d1",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1735689600/cb_btc_1735689600_metadata.json",
+        "raw_sha256": "86112ad440d7443ff9161bcf1b143481f885d92267c5bbc36513e01939fca5b6",
+        "published_sha256": "5dd920e3372a584fd0a200f1118af3790f6077d2c51e776633c7a04647d6e388",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736294400/cb_btc_1736294400_metadata.json",
+        "raw_sha256": "90a7489c39a1901d5d9ab50de54b33a81dfb0c283a3905b59123049bd8d1fc85",
+        "published_sha256": "085def9151922d7a6b3350ba5a30d62556dd67a1d09ca51c5497204c71da5abb",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736899200/cb_btc_1736899200_metadata.json",
+        "raw_sha256": "38970c24c8c33d44dc1bb5f3686c07a499c0402ad45766c1371853285a059217",
+        "published_sha256": "01ef32f079d75f28e92543c1facf40361c928310b50fecc6d0a4fe3ea07e95cc",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1735689600/cb_eth_1735689600_metadata.json",
+        "raw_sha256": "0a8cd5aaa48fb3557d4ae618b3c53112d06345eef579b3202e411003b3f74127",
+        "published_sha256": "52177c64fdf2e51a0cc32843cea91ed521010aa6bcc98fdff821cf29405d2333",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736294400/cb_eth_1736294400_metadata.json",
+        "raw_sha256": "4d5a5986da432829867686ed398ae644ecbb1194fc7f1465d9f78940504556de",
+        "published_sha256": "db60544713a13d5dffe2b858565a0728fed8fa95625ddb26daaf2f559b9b99e9",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736899200/cb_eth_1736899200_metadata.json",
+        "raw_sha256": "cb2c6cc37df691d3a2f006d0b6bc274072d4e3b8008a40d5a95e6ba9dbad90af",
+        "published_sha256": "8b179aee0c3891bc279a4cd31a3911322cb3218b5f3058e26646269f73a2503a",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/results/.last_result.json",
+        "raw_sha256": "10debde57c1ab96c8132cdcef28fcd05cd2f339986d0f5d666d3c7b89bd03fb9",
+        "published_sha256": "10debde57c1ab96c8132cdcef28fcd05cd2f339986d0f5d666d3c7b89bd03fb9",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/results/backtest-result-2026-10-17_21-15-06.meta.json",
+        "raw_sha256": "ce3fcc2fc1ba9504d6e764980fdfc886156c42ba397dd60218492e74b3f258ba",
+        "published_sha256": "ce3fcc2fc1ba9504d6e764980fdfc886156c42ba397dd60218492e74b3f258ba",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:offline/results/backtest-result-2026-10-17_21-15-06.zip",
+        "raw_sha256": "a4a57ba17998caee40112a9c333efce692cf29c2af40a20b50599adbc74da132",
+        "published_sha256": "00ff75abf8f3db43c35dfe20a530a3efed6dc0598a9c0ca9bfd811b25f8d5682",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_bnb_1735689600_prediction.feather",
+        "raw_sha256": "66d5bb3f22c8c92f5fc8672730f800238fb52d461ddb21163daca1095a3908fc",
+        "published_sha256": "66d5bb3f22c8c92f5fc8672730f800238fb52d461ddb21163daca1095a3908fc",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_bnb_1736294400_prediction.feather",
+        "raw_sha256": "f2d536e16f4ad96b1c08b96584de88ab219df185768e86a2afcbf393063013dd",
+        "published_sha256": "f2d536e16f4ad96b1c08b96584de88ab219df185768e86a2afcbf393063013dd",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_bnb_1736899200_prediction.feather",
+        "raw_sha256": "18dee625a1d15339cb9a6c9539ffe96cad1446f6ff9a723da3233003bd5c2d85",
+        "published_sha256": "18dee625a1d15339cb9a6c9539ffe96cad1446f6ff9a723da3233003bd5c2d85",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1735689600_prediction.feather",
+        "raw_sha256": "45b0cec00969259b71e906fdd0e2956cadafa8675ab795611114d61b6c2df614",
+        "published_sha256": "45b0cec00969259b71e906fdd0e2956cadafa8675ab795611114d61b6c2df614",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1736294400_prediction.feather",
+        "raw_sha256": "147b333f878f3b4d8196688a6eaf2ad64032d5cbe5351a52422e00ad1ec4b036",
+        "published_sha256": "147b333f878f3b4d8196688a6eaf2ad64032d5cbe5351a52422e00ad1ec4b036",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1736899200_prediction.feather",
+        "raw_sha256": "106dd25f30b264f23352078f8f6a917069d902aa8eb073d55de630032399d569",
+        "published_sha256": "106dd25f30b264f23352078f8f6a917069d902aa8eb073d55de630032399d569",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1735689600_prediction.feather",
+        "raw_sha256": "4f268f4288bdf17c109229eeac0ac2c51a7cdd79b0ee61342a7f5d81c43f5993",
+        "published_sha256": "4f268f4288bdf17c109229eeac0ac2c51a7cdd79b0ee61342a7f5d81c43f5993",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1736294400_prediction.feather",
+        "raw_sha256": "d4ef13e4ee0d8166645b9a9053e91de11b2d1a250b8e8dd2e0dab20bb376a3be",
+        "published_sha256": "d4ef13e4ee0d8166645b9a9053e91de11b2d1a250b8e8dd2e0dab20bb376a3be",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1736899200_prediction.feather",
+        "raw_sha256": "f4b3cf545cb2d7473486467a20ee2ab87f1a8114353b6efb4658524c9af65444",
+        "published_sha256": "f4b3cf545cb2d7473486467a20ee2ab87f1a8114353b6efb4658524c9af65444",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/run_params.json",
+        "raw_sha256": "917eb21fa0f256b44bc1c5056b972aba9f9c4476f586df28c8d6b6bb7609ce88",
+        "published_sha256": "917eb21fa0f256b44bc1c5056b972aba9f9c4476f586df28c8d6b6bb7609ce88",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1735689600/cb_bnb_1735689600_metadata.json",
+        "raw_sha256": "92823e8c3820eef0000313557f19faf1c0e362da618c2ea4c8bc4efe5b08c683",
+        "published_sha256": "1a396220de9c7d94eca8f5245c5f68c11dbd0f8222269a5c92f27029f04bfce1",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1736294400/cb_bnb_1736294400_metadata.json",
+        "raw_sha256": "36ac504048fd9493b33c4846ffe37e51f772a578457e12e6f1c047740bfe60ef",
+        "published_sha256": "356884fa89c5a1bba3083c5d5068eac8a634dde5e9419888d030c77949d1c7c4",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BNB_1736899200/cb_bnb_1736899200_metadata.json",
+        "raw_sha256": "d763ed26994e3f72f2111eb422c556a33b1a485cf75c53eeac36b64d026e4523",
+        "published_sha256": "57ab3678f5f0338ad070d0a863accfe65ec60a558c376b019b27f21f1c08254e",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1735689600/cb_btc_1735689600_metadata.json",
+        "raw_sha256": "a759707be0040aa2521ab7793758592249d36c9f936dc6c7c14c755ab85b031a",
+        "published_sha256": "8bbe020846e5bcbe93071083ceae9d7a7045286159ed36777278e4d3849c330c",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736294400/cb_btc_1736294400_metadata.json",
+        "raw_sha256": "6cb2ef903c84ebd4d0fc97908b46e4da1ae7659047052e4c5f18007a7b54960a",
+        "published_sha256": "4c7e5b1c432a9bedeb06d67cc1e70f31b3bc442035dda1b71ca3df87e338b708",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736899200/cb_btc_1736899200_metadata.json",
+        "raw_sha256": "dde5acee5d3e72806f051fcf0e24330bf55115938efc49b8b77c0931364ef471",
+        "published_sha256": "db1ae549a213801509844fc313981cc4ea2ad87b55affd458d16c309df261280",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1735689600/cb_eth_1735689600_metadata.json",
+        "raw_sha256": "5c97fb90a17d534d14371405a85075d596e6ed1af237a55b845359055369350d",
+        "published_sha256": "6ade7451ac20e3df3a9d4b8ed53559a72fcd4fdcd5b3616b69587bb5771a47e5",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736294400/cb_eth_1736294400_metadata.json",
+        "raw_sha256": "03f60cd7d95e36dbed233f083ade8375697435c40148df69ecdd358217915c9d",
+        "published_sha256": "e437591d084c7634108a9874500916277f7f5d1f91f56cdf095c14713aca0f6a",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736899200/cb_eth_1736899200_metadata.json",
+        "raw_sha256": "a49eee5a2b643c9c27a48a1766902e7ca096ec49c1bff1d42a78ceb8aac50456",
+        "published_sha256": "6edd441cc1bad18a8a0f4239f86a5f1a6511714ad08503ddce9e585c33014fe8",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/results/.last_result.json",
+        "raw_sha256": "de67e2dc0e3d663fb79b78236d241e930b21c5c76fe7853c9daddb28b34d5229",
+        "published_sha256": "de67e2dc0e3d663fb79b78236d241e930b21c5c76fe7853c9daddb28b34d5229",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/results/backtest-result-2026-10-17_21-08-29.meta.json",
+        "raw_sha256": "4798935f8fb3b80a8ae064eae6d4874b37ba0a8c004318779566d99a0d7ae05e",
+        "published_sha256": "4798935f8fb3b80a8ae064eae6d4874b37ba0a8c004318779566d99a0d7ae05e",
+        "path_redacted": false
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz:online/results/backtest-result-2026-10-17_21-08-29.zip",
+        "raw_sha256": "a104d1fe27f4e2bae8f2d2cbc1c7da6f00947a8ee28bf0266b1eead99a5686ae",
+        "published_sha256": "ea9c8e17cde0edd1cd10387a1288028e2115e8efd0362c336fd979b26d63f88f",
+        "path_redacted": true
+      },
+      {
+        "file": "phase4_extension_artifacts.tar.gz",
+        "published_sha256": "93d043c51d391fd64c6411e00fbc7750c10b8bcc4cd8562c39eb3089d473618c"
+      }
+    ]
+  }
+}

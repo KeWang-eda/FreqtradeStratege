@@ -16,11 +16,11 @@
   },
   "archives": {
     "old": {
-      "path": "phase4_reference_artifacts.tar.gz",
+      "path": "phase4_reference_artifacts.tar.gz:results/backtest-result-2026-10-17_19-33-00.zip",
       "sha256": "33b7ed6b9f09892f9067c4cfba944c82411a172eb414523d453fd2c434521ffb"
     },
     "new": {
-      "path": "phase4_artifacts.tar.gz",
+      "path": "phase4_artifacts.tar.gz:results/backtest-result-2026-10-17_21-03-09.zip",
       "sha256": "ac8c7f5c05327adc2990eb4ea8b3923d4bca4100d949738e90d704dd87feccab"
     }
   },

@@ -49,9 +49,9 @@ git rev-parse HEAD origin/main
 "$FREQTRADE_PYTHON" -m pip freeze
 PYTHONPATH=src "$FREQTRADE_PYTHON" -m pytest -q \
   --junitxml=docs/acceptance/phase0_pytest.xml
-/PYTHON_ENV/bin/ruff check src tests tools \
+"$FREQTRADE_PYTHON" -m ruff check src tests tools \
   MyStrategy.py feature.py model.py util.py verify_no_lookahead.py _quant_strategy_bootstrap.py
-/PYTHON_ENV/bin/ruff format --check src tests tools \
+"$FREQTRADE_PYTHON" -m ruff format --check src tests tools \
   MyStrategy.py feature.py model.py util.py verify_no_lookahead.py _quant_strategy_bootstrap.py
 ```
 

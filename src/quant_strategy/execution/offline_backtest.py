@@ -10,6 +10,7 @@ import asyncio
 import logging
 from copy import deepcopy
 from pathlib import Path
+from typing import Any
 
 import ccxt
 import ccxt.pro
@@ -33,14 +34,18 @@ class OfflineNetworkError(RuntimeError):
 class LocalBinanceClient(ccxt.binance):
     """Real CCXT client whose transport fails before any HTTP/DNS/socket access."""
 
-    def fetch(self, url, method="GET", headers=None, body=None):
+    def fetch(
+        self, url: str, method: str = "GET", headers: dict | None = None, body: Any = None
+    ) -> Any:
         raise OfflineNetworkError(f"Offline backtest forbids exchange HTTP: {method} {url}")
 
 
 class LocalBinanceAsyncClient(ccxt.pro.binance):
     """Async transport guard; native backtesting never starts websocket clients."""
 
-    async def fetch(self, url, method="GET", headers=None, body=None):
+    async def fetch(
+        self, url: str, method: str = "GET", headers: dict | None = None, body: Any = None
+    ) -> Any:
         raise OfflineNetworkError(f"Offline backtest forbids exchange HTTP: {method} {url}")
 
 
@@ -106,7 +111,7 @@ def check_config(config: dict) -> list[str]:
 class SnapshotBinance(Binance):
     """Keep native validation, leverage, pricing and precision; replace metadata I/O."""
 
-    def __init__(self, config: dict, snapshot_path: Path, max_age_days: float = 30):
+    def __init__(self, config: dict, snapshot_path: Path, max_age_days: float = 30) -> None:
         required = check_config(config)
         self._snapshot = load_snapshot(snapshot_path, required, max_age_days)
         # Native Backtesting also forces this, but injection constructs the exchange first.
@@ -117,7 +122,7 @@ class SnapshotBinance(Binance):
             self.close()
             raise
 
-    def close(self):
+    def close(self) -> None:
         # Failed preflight must also be safe when the native destructor calls close().
         loop = getattr(self, "loop", None)
         if loop is None or getattr(self, "_snapshot_closed", False):
@@ -136,7 +141,7 @@ class SnapshotBinance(Binance):
                 loop.close()
             self._snapshot_closed = True
 
-    def _init_ccxt(self, exchange_config, sync, ccxt_kwargs):
+    def _init_ccxt(self, exchange_config: dict, sync: bool, ccxt_kwargs: dict) -> ccxt.Exchange:
         # Native constructor already merged _ccxt_config and sync/async configuration.
         # Backtesting strips credentials and does not use demo/private initialization.
         # Preserve any native static parameters using the same merge precedence.
@@ -145,7 +150,7 @@ class SnapshotBinance(Binance):
         options = deep_merge_dicts(self._ccxt_params, deepcopy(ccxt_kwargs))
         return (LocalBinanceClient if sync else LocalBinanceAsyncClient)(options)
 
-    async def _api_reload_markets(self, reload=False):
+    async def _api_reload_markets(self, reload: bool = False) -> None:
         # No network fallback, including forced/scheduled reloads. Native reload_markets
         # shares these markets/options with the sync client and retains validation.
         normalized = deepcopy(self._snapshot["normalized"])
@@ -189,15 +194,41 @@ def main(argv: list[str] | None = None) -> int:
     """Separate explicit online capture from strictly local historical backtesting."""
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
-    capture = subparsers.add_parser("capture", help="Explicitly fetch genuine public metadata")
-    capture.add_argument("--snapshot", type=Path, required=True)
-    capture.add_argument("--pairs", nargs="+", required=True)
+    capture = subparsers.add_parser(
+        "capture",
+        help="Explicitly fetch genuine public metadata",
+        description="Fetch public Binance USDT-M metadata once. No candles, credentials or existing snapshot overwrite.",
+    )
+    capture.add_argument(
+        "--snapshot",
+        type=Path,
+        required=True,
+        help="New file in an existing directory; atomic publication without replacement",
+    )
+    capture.add_argument(
+        "--pairs",
+        nargs="+",
+        required=True,
+        help="Unique exact perpetual pairs, including correlation feature pairs",
+    )
     capture.add_argument("--proxy", help="Process-local HTTPS proxy, e.g. http://127.0.0.1:7890")
     backtest = subparsers.add_parser(
-        "backtesting", help="Native engine with verified local metadata"
+        "backtesting",
+        help="Native engine with verified local metadata",
+        description="Historical BACKTEST only, Binance USDT isolated, StaticPairList. Snapshot errors never fall back to networking. Put native options after --.",
     )
-    backtest.add_argument("--snapshot", type=Path, required=True)
-    backtest.add_argument("--snapshot-max-age-days", type=float, default=30)
+    backtest.add_argument(
+        "--snapshot",
+        type=Path,
+        required=True,
+        help="Trusted genuine snapshot matching Freqtrade 2026.7 / CCXT 4.5.75 and every required pair",
+    )
+    backtest.add_argument(
+        "--snapshot-max-age-days",
+        type=float,
+        default=30,
+        help="Positive maximum acquisition age, default 30 days. Long allowances are only for explicit frozen experiment reproduction.",
+    )
     backtest.add_argument(
         "arguments", nargs=argparse.REMAINDER, help="-- followed by native options"
     )

@@ -1,0 +1,28 @@
+{
+  "executed_at": "2026-10-17T13:16:08.535171+00:00",
+  "baseline_head": "5ce05d6684345c56902b4af85a32d5889b92ac7b",
+  "data_files_checked": 216,
+  "data_changed": [],
+  "frozen_source_files_checked": 58,
+  "source_changes": {
+    "src/quant_strategy/execution/market_snapshot.py": {
+      "baseline": "3b481c2b009b62df293100a2109c1500d5fbe7da65283b9517c0379c8ffcc425",
+      "current": "b74a388cc22036de77a819da7ac6db0201f50d2446750c923445842db2d67cab",
+      "allowed": true
+    },
+    "src/quant_strategy/execution/offline_backtest.py": {
+      "baseline": "36d60f3e76da6667c3d05b01bfbaefe1a179b59a1f22c0a0d8788214eff70586",
+      "current": "6913dee31fa8eb4957908c8e06194836a95c7518203afc492e4995a27ad0dc2e",
+      "allowed": true
+    },
+    "src/quant_strategy/infrastructure/experiment_store.py": {
+      "baseline": "367b3ad548ed7386cdce4e4cf2e25c7f22411c5c89511bceea914b5950142a7d",
+      "current": "d868b7a6f48ba17a06e3446f7fd50a1f8fd6f9e0c3a8f376734c1565c2caf0c5",
+      "allowed": true
+    }
+  },
+  "unexpected_source_changes": [],
+  "historical_evidence_unchanged": true,
+  "original_snapshot_file_unchanged": true,
+  "passed": true
+}

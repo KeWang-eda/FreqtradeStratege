@@ -1,5 +1,7 @@
 # 本次验证结果（2026-10-17）
 
+> 以下表格是初版离线实现的历史 115 项记录；本轮独立基线复验、边界加固、多币种覆盖、系统断网及最终全量测试见[分阶段最终报告](acceptance/final_report.md)。后续报告不覆盖或重写历史原始工件。
+
 原始 commit：`22d6ee5254c899b262201277dca54c0f71a53c20`。环境沿用 Freqtrade 2026.7 / Python 3.13.13 / pandas 3.0.5 / NumPy 2.5.2 / scikit-learn 1.9.0 / XGBoost 3.4.1，完整依赖见 baseline/environment.freeze.txt。
 
 | 检查 | 实际结果 |

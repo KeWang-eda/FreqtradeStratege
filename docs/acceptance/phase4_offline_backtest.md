@@ -2,6 +2,8 @@
 
 阶段状态：**PASS（最低 BTC/ETH 范围）**。本轮实际执行于 2026-10-17 13:03 UTC；只有在 Phase 2 严格配置比较修复和 Phase 3 最低范围门槛通过之后才启动。全币种和更长区间未验收。
 
+**最终补证：13:21 UTC 用最终 Phase 3 报告重新完成同范围原生断网回测，依然 PASS。** 首次运行后的 13:09，数据审计报告因审计器补修重新生成，首次 summary 记录的输入 SHA 已无法与公开文件直接对应；旧输入没有单独留存，不能归因脱敏。旧证据均保留，本次从空 userdir 再训练 4 次，13 交易/26 订单/4 预测、HTTP/DNS/connect/send 全 0、严格 differences=[]。最终权威准入证据为 [重新验收 summary](phase4_revalidation/phase4_summary.json)，其 gate SHA `0cfd5128…` 与最终覆盖文件一致；[原生日志](phase4_revalidation/phase4_backtest.log)、[网络 JSON](phase4_revalidation/phase4_backtest_network.json)、[strace](phase4_revalidation/phase4_backtest_network.strace)、[回归](phase4_revalidation/phase4_regression.json)、[公开工件重放](phase4_revalidation/phase4_published_replay.json)独立保存。首次最终证据检查失败记录见 [manifest 初次失败](phase6_evidence_first_attempt.json)，未改写旧 summary 的哈希。
+
 ## 验收表
 
 | 验收项 | 执行命令或检查方式 | 预期 | 实际 | 证据 | 状态 |

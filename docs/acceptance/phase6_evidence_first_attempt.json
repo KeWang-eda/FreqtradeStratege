@@ -1,0 +1,15 @@
+{
+  "status": "FAIL",
+  "executed_at": "2026-10-17T13:21:36.867867+00:00",
+  "check": "Final evidence manifest first attempt",
+  "failure": "Historical Phase 4 coverage input SHA does not match coverage report subsequently regenerated in place",
+  "recorded_gate": {
+    "file": "docs/acceptance/phase3_data_coverage.json",
+    "sha256": "b9ebb7596ebec3f3fcf8e2831da3c9da5833a49b5b10b86cdcd38fcc04a049eb"
+  },
+  "current_published_gate_sha256": "0cfd51281a39dc49e65af7b7d6971c2041ada2564c1800f432c5708b24e2ed24",
+  "historical_backtest_completed_at": "2026-10-17T13:03:10.429651+00:00",
+  "current_coverage_generated_at": "2026-10-17T13:09:50.988994+00:00",
+  "cause": "Phase 3 report regenerated after first Phase 4 run; raw old gate was not retained. No redaction-only equivalence claimed.",
+  "resolution": "Retain original evidence unchanged; run fresh native minimum acceptance using final coverage into phase4_revalidation/ and verify its exact gate hash."
+}

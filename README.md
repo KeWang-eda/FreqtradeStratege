@@ -22,13 +22,15 @@
 
 沿用当前环境，从仓库根目录运行：
 
-```bash
-/home/wangke/project/freqtrade/.venv/bin/python -m pytest -q
+先激活包含 Freqtrade 2026.7 / CCXT 4.5.75 的虚拟环境，设置 `export FREQTRADE_PYTHON="$(command -v python)"`。当前版本约束是离线适配器的兼容边界，不会自动升级依赖。
 
-PYTHONPATH=src /home/wangke/project/freqtrade/.venv/bin/python -m quant_strategy.cli validate \
+```bash
+"$FREQTRADE_PYTHON" -m pytest -q
+
+PYTHONPATH=src "$FREQTRADE_PYTHON" -m quant_strategy.cli validate \
   -c configs/base.yaml -c configs/environment/local.yaml
 
-PYTHONPATH=src /home/wangke/project/freqtrade/.venv/bin/python -m quant_strategy.cli run \
+PYTHONPATH=src "$FREQTRADE_PYTHON" -m quant_strategy.cli run \
   -c configs/base.yaml -c configs/environment/local.yaml \
   -c configs/experiments/baseline_volnorm.yaml \
   --output /tmp/quant-experiments --experiment-id volnorm-ridge
@@ -44,7 +46,11 @@ PYTHONPATH=src /home/wangke/project/freqtrade/.venv/bin/python -m quant_strategy
 
 使用本机 mihomo 后，已完成 BTC/ETH 两个窗口的真实 Freqtrade 原版/新版回测：两周窗口均为 13 笔、三周窗口均为 25 笔，交易明细、导出信号、逐窗口预测和特征 schema 对照通过，两个版本的长短窗口重叠交易检查也通过。行情读取本地 `data/`；框架启动的 Binance 市场规则查询使用 `configs/environment/freqtrade-mihomo.json` 中的代理配置。完整结果归档与复现命令见 [回测验收](docs/baseline/acceptance/README.md)。
 
-历史回测还提供独立的离线快照入口：真实 Binance 市场元数据通过显式 `capture` 采集，离线注入原生回测引擎；缺失、损坏或版本不符立即失败。BTC/ETH 两周回测已在独立网络命名空间中通过，与联网基线的 13 笔交易、26 个订单、预测文件和指标一致。115 项测试通过；适用版本、快照和准确命令见 [完全离线回测报告](docs/offline_backtest_snapshot.md)。普通 `freqtrade backtesting` 仍采用原联网初始化。
+历史回测提供显式快照入口：真实 Binance 元数据通过 `capture` 采集，校验后注入原生回测引擎；缺失、损坏或不兼容立即失败。已在系统断网下重新训练 BTC/ETH 两周回测，与可信联网参考的 13 笔交易、26 个订单、4 个预测文件及全部有效配置严格一致。115 项是初版历史测试记录；当前分阶段结果见[最终验收](docs/acceptance/final_report.md)。普通 `freqtrade backtesting` 和 `trade` 保留原生行为。
+
+扩展验收使用新采集的真实市场快照，BTC/ETH/BNB 三周联网和离线分别重新训练 9 次；29 笔交易、58 个订单及全部预测、配置、指标严格一致。离线 HTTP、DNS、外部连接和发送为 0；完整双侧工件与失败尝试见[扩展验收](docs/acceptance/phase4_extension.md)。这不代表 72 币或全历史回测通过。
+
+本轮审计全部 72 个交易对、216 份真实行情/mark/funding 文件，逐币记录训练预热和付款时刻表限制，没有补造或下载数据。只使用本地消费时，无需 Binance；新交易对的真实市场快照采集与行情更新必须显式执行。运行命令见[操作手册](docs/operations.md)，数据限制见[覆盖报告](docs/acceptance/phase3_data_coverage.md)。
 
 - [架构与目录](docs/architecture.md)
 - [接口与扩展](docs/interfaces.md)
@@ -55,5 +61,6 @@ PYTHONPATH=src /home/wangke/project/freqtrade/.venv/bin/python -m quant_strategy
 - [本次验证结果与适用范围](docs/validation_report.md)
 - [本地历史数据与 Binance 网络请求排查](docs/local_data_network_audit.md)
 - [完全离线回测：市场快照、实现和测试证据](docs/offline_backtest_snapshot.md)
+- [本轮 Phase 0–6 验收、风险与迁移](docs/acceptance/final_report.md)
 
 改动生产特征、标签或模型参数后应更换 `freqai.identifier`。本次通过适配保留原生产特征 schema，实际交易/模型配置保持原值。
