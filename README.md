@@ -2,6 +2,8 @@
 
 4h 加密货币回归策略及独立研究引擎。按重构设计 v2 分离特征、标签、时间验证、模型训练、预测和仓位决策，保留 Freqtrade/FreqAI 交易入口。
 
+**本地数据 / 离线回测任务只需看这一份：[任务总结与使用说明](docs/offline_backtest_summary.md)。** 包含 Phase 0–6 结论、修改内容、真实测试结果、运行命令和剩余问题；分阶段文档作为证据附件保留。
+
 当前实际配置使用 **XGBoostRegressorES**，72 个交易对白名单，最多 1 个持仓，预测跨度 3 根 K 线。默认 volnorm 标签是未来收益率除以当前 ATR(14)/close。每个决策时点只比较同一根 K 线的有效预测，按预测绝对值取第一名，正数做多、负数做空，没有幅度阈值。同分沿用白名单顺序。
 
 目标与当前持仓一致则持有，目标变化则轮换；完整快照没有有效候选则退出，缺少某个币对的快照则等待。保留 2 倍杠杆上限、stoploss=-1、ROI=999、关闭 trailing 的现有规则。
@@ -42,15 +44,10 @@ PYTHONPATH=src "$FREQTRADE_PYTHON" -m quant_strategy.cli run \
 
 ## 验证边界与文档
 
-修改前 11 项测试已冻结，原版特征/标签有数值回归样本。分层测试还覆盖 FreqAI 2026.7 的真实 train/predict 接口、跨币种时间一致性、特征因果性、测试集与早停隔离，以及工件加载。
+离线任务的结论、命令及验收范围统一在[任务总结与使用说明](docs/offline_backtest_summary.md)。已有分阶段报告与历史记录保留供追查，不作为必须逐篇阅读的操作步骤。
 
-使用本机 mihomo 后，已完成 BTC/ETH 两个窗口的真实 Freqtrade 原版/新版回测：两周窗口均为 13 笔、三周窗口均为 25 笔，交易明细、导出信号、逐窗口预测和特征 schema 对照通过，两个版本的长短窗口重叠交易检查也通过。行情读取本地 `data/`；框架启动的 Binance 市场规则查询使用 `configs/environment/freqtrade-mihomo.json` 中的代理配置。完整结果归档与复现命令见 [回测验收](docs/baseline/acceptance/README.md)。
-
-历史回测提供显式快照入口：真实 Binance 元数据通过 `capture` 采集，校验后注入原生回测引擎；缺失、损坏或不兼容立即失败。已在系统断网下重新训练 BTC/ETH 两周回测，与可信联网参考的 13 笔交易、26 个订单、4 个预测文件及全部有效配置严格一致。115 项是初版历史测试记录；当前分阶段结果见[最终验收](docs/acceptance/final_report.md)。普通 `freqtrade backtesting` 和 `trade` 保留原生行为。
-
-扩展验收使用新采集的真实市场快照，BTC/ETH/BNB 三周联网和离线分别重新训练 9 次；29 笔交易、58 个订单及全部预测、配置、指标严格一致。离线 HTTP、DNS、外部连接和发送为 0；完整双侧工件与失败尝试见[扩展验收](docs/acceptance/phase4_extension.md)。这不代表 72 币或全历史回测通过。
-
-本轮审计全部 72 个交易对、216 份真实行情/mark/funding 文件，逐币记录训练预热和付款时刻表限制，没有补造或下载数据。只使用本地消费时，无需 Binance；新交易对的真实市场快照采集与行情更新必须显式执行。运行命令见[操作手册](docs/operations.md)，数据限制见[覆盖报告](docs/acceptance/phase3_data_coverage.md)。
+<details>
+<summary>其他架构资料与历史证据（按需展开）</summary>
 
 - [架构与目录](docs/architecture.md)
 - [接口与扩展](docs/interfaces.md)
@@ -62,5 +59,8 @@ PYTHONPATH=src "$FREQTRADE_PYTHON" -m quant_strategy.cli run \
 - [本地历史数据与 Binance 网络请求排查](docs/local_data_network_audit.md)
 - [完全离线回测：市场快照、实现和测试证据](docs/offline_backtest_snapshot.md)
 - [本轮 Phase 0–6 验收、风险与迁移](docs/acceptance/final_report.md)
+- [早期原版 / 重构版真实回测对照](docs/baseline/acceptance/README.md)
+
+</details>
 
 改动生产特征、标签或模型参数后应更换 `freqai.identifier`。本次通过适配保留原生产特征 schema，实际交易/模型配置保持原值。
