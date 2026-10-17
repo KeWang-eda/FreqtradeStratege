@@ -1,0 +1,15 @@
+{
+  "policy": "deny-all",
+  "component": "research",
+  "arguments": [
+    "compare",
+    "/tmp/quant-network-audit.Nw3JNh/experiments/ridge",
+    "/tmp/quant-network-audit.Nw3JNh/experiments/xgboost"
+  ],
+  "http_requests": [],
+  "socket_events": [],
+  "exit_code": 0,
+  "denied_operations": 0,
+  "freqtrade_imported": false,
+  "ccxt_imported": false
+}

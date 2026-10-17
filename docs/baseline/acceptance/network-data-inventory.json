@@ -1,0 +1,1520 @@
+{
+  "4h-futures": [
+    {
+      "pair": "1INCH/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/1INCH_USDT_USDT-4h-futures.feather",
+      "rows": 12724,
+      "start": "2020-12-25 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "AAVE/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/AAVE_USDT_USDT-4h-futures.feather",
+      "rows": 13145,
+      "start": "2020-10-16 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "ADA/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ADA_USDT_USDT-4h-futures.feather",
+      "rows": 14698,
+      "start": "2020-01-31 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "ALGO/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ALGO_USDT_USDT-4h-futures.feather",
+      "rows": 13876,
+      "start": "2020-06-16 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "AR/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/AR_USDT_USDT-4h-futures.feather",
+      "rows": 11064,
+      "start": "2021-09-28 00:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "ATOM/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ATOM_USDT_USDT-4h-futures.feather",
+      "rows": 14655,
+      "start": "2020-02-07 12:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "AVAX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/AVAX_USDT_USDT-4h-futures.feather",
+      "rows": 13283,
+      "start": "2020-09-23 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "AXS/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/AXS_USDT_USDT-4h-futures.feather",
+      "rows": 12935,
+      "start": "2020-11-20 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "BAND/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BAND_USDT_USDT-4h-futures.feather",
+      "rows": 13619,
+      "start": "2020-07-29 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "BAT/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BAT_USDT_USDT-4h-futures.feather",
+      "rows": 14620,
+      "start": "2020-02-13 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BCH_USDT_USDT-4h-futures.feather",
+      "rows": 14880,
+      "start": "2020-01-01 00:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "BEL/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BEL_USDT_USDT-4h-futures.feather",
+      "rows": 12947,
+      "start": "2020-11-18 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "BNB/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BNB_USDT_USDT-4h-futures.feather",
+      "rows": 14638,
+      "start": "2020-02-10 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "BSV/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BSV_USDT_USDT-4h-futures.feather",
+      "rows": 6549,
+      "start": "2023-10-20 12:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BTC_USDT_USDT-4h-futures.feather",
+      "rows": 14880,
+      "start": "2020-01-01 00:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "CAKE/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/CAKE_USDT_USDT-4h-futures.feather",
+      "rows": 6471,
+      "start": "2023-11-02 12:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "CFX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/CFX_USDT_USDT-4h-futures.feather",
+      "rows": 8001,
+      "start": "2023-02-20 12:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "COMP/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/COMP_USDT_USDT-4h-futures.feather",
+      "rows": 13792,
+      "start": "2020-06-30 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "CRV/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/CRV_USDT_USDT-4h-futures.feather",
+      "rows": 13415,
+      "start": "2020-09-01 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "DASH/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/DASH_USDT_USDT-4h-futures.feather",
+      "rows": 14674,
+      "start": "2020-02-04 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/DOGE_USDT_USDT-4h-futures.feather",
+      "rows": 13732,
+      "start": "2020-07-10 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "DOT/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/DOT_USDT_USDT-4h-futures.feather",
+      "rows": 13475,
+      "start": "2020-08-22 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "EGLD/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/EGLD_USDT_USDT-4h-futures.feather",
+      "rows": 13337,
+      "start": "2020-09-14 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "ENJ/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ENJ_USDT_USDT-4h-futures.feather",
+      "rows": 13247,
+      "start": "2020-09-29 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "ENS/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ENS_USDT_USDT-4h-futures.feather",
+      "rows": 10686,
+      "start": "2021-11-30 00:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "ETC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ETC_USDT_USDT-4h-futures.feather",
+      "rows": 14788,
+      "start": "2020-01-16 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "ETH/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ETH_USDT_USDT-4h-futures.feather",
+      "rows": 14880,
+      "start": "2020-01-01 00:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "FET/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/FET_USDT_USDT-4h-futures.feather",
+      "rows": 8208,
+      "start": "2023-01-17 00:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "FIL/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/FIL_USDT_USDT-4h-futures.feather",
+      "rows": 13145,
+      "start": "2020-10-16 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "GRT/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/GRT_USDT_USDT-4h-futures.feather",
+      "rows": 12761,
+      "start": "2020-12-19 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "HBAR/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/HBAR_USDT_USDT-4h-futures.feather",
+      "rows": 12233,
+      "start": "2021-03-17 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "ICP/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ICP_USDT_USDT-4h-futures.feather",
+      "rows": 8880,
+      "start": "2022-09-27 00:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "INJ/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/INJ_USDT_USDT-4h-futures.feather",
+      "rows": 9126,
+      "start": "2022-08-17 00:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "IOST/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/IOST_USDT_USDT-4h-futures.feather",
+      "rows": 14572,
+      "start": "2020-02-21 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "IOTA/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/IOTA_USDT_USDT-4h-futures.feather",
+      "rows": 14626,
+      "start": "2020-02-12 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "JASMY/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/JASMY_USDT_USDT-4h-futures.feather",
+      "rows": 9840,
+      "start": "2022-04-20 00:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "KAVA/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/KAVA_USDT_USDT-4h-futures.feather",
+      "rows": 13625,
+      "start": "2020-07-28 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "KNC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/KNC_USDT_USDT-4h-futures.feather",
+      "rows": 13840,
+      "start": "2020-06-22 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "KSM/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/KSM_USDT_USDT-4h-futures.feather",
+      "rows": 13157,
+      "start": "2020-10-14 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "LDO/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/LDO_USDT_USDT-4h-futures.feather",
+      "rows": 8907,
+      "start": "2022-09-22 12:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/LINK_USDT_USDT-4h-futures.feather",
+      "rows": 14782,
+      "start": "2020-01-17 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "LTC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/LTC_USDT_USDT-4h-futures.feather",
+      "rows": 14830,
+      "start": "2020-01-09 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "NEAR/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/NEAR_USDT_USDT-4h-futures.feather",
+      "rows": 13150,
+      "start": "2020-10-15 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "NEO/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/NEO_USDT_USDT-4h-futures.feather",
+      "rows": 14596,
+      "start": "2020-02-17 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "ONT/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ONT_USDT_USDT-4h-futures.feather",
+      "rows": 14632,
+      "start": "2020-02-11 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "PENDLE/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/PENDLE_USDT_USDT-4h-futures.feather",
+      "rows": 7056,
+      "start": "2023-07-28 00:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "QNT/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/QNT_USDT_USDT-4h-futures.feather",
+      "rows": 8742,
+      "start": "2022-10-20 00:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "QTUM/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/QTUM_USDT_USDT-4h-futures.feather",
+      "rows": 14578,
+      "start": "2020-02-20 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "RENDER/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/RENDER_USDT_USDT-4h-futures.feather",
+      "rows": 4870,
+      "start": "2024-07-26 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "RLC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/RLC_USDT_USDT-4h-futures.feather",
+      "rows": 13607,
+      "start": "2020-07-31 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "RSR/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/RSR_USDT_USDT-4h-futures.feather",
+      "rows": 13127,
+      "start": "2020-10-19 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "RUNE/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/RUNE_USDT_USDT-4h-futures.feather",
+      "rows": 13397,
+      "start": "2020-09-04 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "SKL/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/SKL_USDT_USDT-4h-futures.feather",
+      "rows": 12827,
+      "start": "2020-12-08 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "SNX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/SNX_USDT_USDT-4h-futures.feather",
+      "rows": 13523,
+      "start": "2020-08-14 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "SOL/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/SOL_USDT_USDT-4h-futures.feather",
+      "rows": 13337,
+      "start": "2020-09-14 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "STX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/STX_USDT_USDT-4h-futures.feather",
+      "rows": 7995,
+      "start": "2023-02-21 12:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "SUN/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/SUN_USDT_USDT-4h-futures.feather",
+      "rows": 4707,
+      "start": "2024-08-22 12:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "SUSHI/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/SUSHI_USDT_USDT-4h-futures.feather",
+      "rows": 13397,
+      "start": "2020-09-04 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "THETA/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/THETA_USDT_USDT-4h-futures.feather",
+      "rows": 13996,
+      "start": "2020-05-27 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "TRB/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/TRB_USDT_USDT-4h-futures.feather",
+      "rows": 13403,
+      "start": "2020-09-03 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "TRX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/TRX_USDT_USDT-4h-futures.feather",
+      "rows": 14794,
+      "start": "2020-01-15 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "UNI/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/UNI_USDT_USDT-4h-futures.feather",
+      "rows": 13313,
+      "start": "2020-09-18 04:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "VET/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/VET_USDT_USDT-4h-futures.feather",
+      "rows": 14614,
+      "start": "2020-02-14 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "XLM/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/XLM_USDT_USDT-4h-futures.feather",
+      "rows": 14764,
+      "start": "2020-01-20 08:00:00+00:00",
+      "end": "2026-10-15 20:00:00+00:00"
+    },
+    {
+      "pair": "XMR/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/XMR_USDT_USDT-4h-futures.feather",
+      "rows": 12474,
+      "start": "2020-02-03 08:00:00+00:00",
+      "end": "2025-10-13 04:00:00+00:00"
+    },
+    {
+      "pair": "XRP/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/XRP_USDT_USDT-4h-futures.feather",
+      "rows": 12474,
+      "start": "2020-01-06 08:00:00+00:00",
+      "end": "2025-09-15 04:00:00+00:00"
+    },
+    {
+      "pair": "XTZ/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/XTZ_USDT_USDT-4h-futures.feather",
+      "rows": 12474,
+      "start": "2020-02-06 08:00:00+00:00",
+      "end": "2025-10-16 04:00:00+00:00"
+    },
+    {
+      "pair": "YFI/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/YFI_USDT_USDT-4h-futures.feather",
+      "rows": 11476,
+      "start": "2020-08-31 04:00:00+00:00",
+      "end": "2025-11-25 16:00:00+00:00"
+    },
+    {
+      "pair": "ZEC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ZEC_USDT_USDT-4h-futures.feather",
+      "rows": 12474,
+      "start": "2020-02-05 08:00:00+00:00",
+      "end": "2025-10-15 04:00:00+00:00"
+    },
+    {
+      "pair": "ZEN/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ZEN_USDT_USDT-4h-futures.feather",
+      "rows": 10977,
+      "start": "2020-11-24 04:00:00+00:00",
+      "end": "2025-11-27 12:00:00+00:00"
+    },
+    {
+      "pair": "ZIL/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ZIL_USDT_USDT-4h-futures.feather",
+      "rows": 11476,
+      "start": "2020-06-18 08:00:00+00:00",
+      "end": "2025-09-12 20:00:00+00:00"
+    },
+    {
+      "pair": "ZRX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ZRX_USDT_USDT-4h-futures.feather",
+      "rows": 11476,
+      "start": "2020-06-24 08:00:00+00:00",
+      "end": "2025-09-18 20:00:00+00:00"
+    }
+  ],
+  "1h-mark": [
+    {
+      "pair": "1INCH/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/1INCH_USDT_USDT-1h-mark.feather",
+      "rows": 50819,
+      "start": "2020-12-25 08:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "AAVE/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/AAVE_USDT_USDT-1h-mark.feather",
+      "rows": 52504,
+      "start": "2020-10-16 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "ADA/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ADA_USDT_USDT-1h-mark.feather",
+      "rows": 59002,
+      "start": "2020-01-19 09:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "ALGO/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ALGO_USDT_USDT-1h-mark.feather",
+      "rows": 55928,
+      "start": "2020-05-26 11:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "AR/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/AR_USDT_USDT-1h-mark.feather",
+      "rows": 44201,
+      "start": "2021-09-27 02:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "ATOM/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ATOM_USDT_USDT-1h-mark.feather",
+      "rows": 58571,
+      "start": "2020-02-06 08:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "AVAX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/AVAX_USDT_USDT-1h-mark.feather",
+      "rows": 53074,
+      "start": "2020-09-22 09:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "AXS/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/AXS_USDT_USDT-1h-mark.feather",
+      "rows": 51664,
+      "start": "2020-11-20 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "BAND/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BAND_USDT_USDT-1h-mark.feather",
+      "rows": 54400,
+      "start": "2020-07-29 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "BAT/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BAT_USDT_USDT-1h-mark.feather",
+      "rows": 58407,
+      "start": "2020-02-13 04:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BCH_USDT_USDT-1h-mark.feather",
+      "rows": 59443,
+      "start": "2020-01-01 00:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "BEL/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BEL_USDT_USDT-1h-mark.feather",
+      "rows": 51713,
+      "start": "2020-11-18 02:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "BNB/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BNB_USDT_USDT-1h-mark.feather",
+      "rows": 59443,
+      "start": "2020-01-01 00:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "BSV/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BSV_USDT_USDT-1h-mark.feather",
+      "rows": 26125,
+      "start": "2023-10-20 06:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BTC_USDT_USDT-1h-mark.feather",
+      "rows": 59443,
+      "start": "2020-01-01 00:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "CAKE/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/CAKE_USDT_USDT-1h-mark.feather",
+      "rows": 25811,
+      "start": "2023-11-02 08:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "CFX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/CFX_USDT_USDT-1h-mark.feather",
+      "rows": 31933,
+      "start": "2023-02-20 06:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "COMP/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/COMP_USDT_USDT-1h-mark.feather",
+      "rows": 55097,
+      "start": "2020-06-30 02:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "CRV/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/CRV_USDT_USDT-1h-mark.feather",
+      "rows": 53584,
+      "start": "2020-09-01 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "DASH/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/DASH_USDT_USDT-1h-mark.feather",
+      "rows": 58622,
+      "start": "2020-02-04 05:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/DOGE_USDT_USDT-1h-mark.feather",
+      "rows": 54856,
+      "start": "2020-07-10 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "DOT/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/DOT_USDT_USDT-1h-mark.feather",
+      "rows": 53873,
+      "start": "2020-08-20 02:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "EGLD/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/EGLD_USDT_USDT-1h-mark.feather",
+      "rows": 53288,
+      "start": "2020-09-13 11:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "ENJ/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ENJ_USDT_USDT-1h-mark.feather",
+      "rows": 52913,
+      "start": "2020-09-29 02:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "ENS/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ENS_USDT_USDT-1h-mark.feather",
+      "rows": 42683,
+      "start": "2021-11-29 08:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "ETC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ETC_USDT_USDT-1h-mark.feather",
+      "rows": 59077,
+      "start": "2020-01-16 06:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "ETH/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ETH_USDT_USDT-1h-mark.feather",
+      "rows": 59443,
+      "start": "2020-01-01 00:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "FET/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/FET_USDT_USDT-1h-mark.feather",
+      "rows": 32773,
+      "start": "2023-01-16 06:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "FIL/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/FIL_USDT_USDT-1h-mark.feather",
+      "rows": 52505,
+      "start": "2020-10-16 02:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "GRT/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/GRT_USDT_USDT-1h-mark.feather",
+      "rows": 50966,
+      "start": "2020-12-19 05:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "HBAR/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/HBAR_USDT_USDT-1h-mark.feather",
+      "rows": 48856,
+      "start": "2021-03-17 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "ICP/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ICP_USDT_USDT-1h-mark.feather",
+      "rows": 47537,
+      "start": "2021-05-11 02:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "INJ/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/INJ_USDT_USDT-1h-mark.feather",
+      "rows": 36443,
+      "start": "2022-08-16 08:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "IOST/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/IOST_USDT_USDT-1h-mark.feather",
+      "rows": 58256,
+      "start": "2020-02-19 11:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "IOTA/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/IOTA_USDT_USDT-1h-mark.feather",
+      "rows": 58431,
+      "start": "2020-02-12 04:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "JASMY/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/JASMY_USDT_USDT-1h-mark.feather",
+      "rows": 39304,
+      "start": "2022-04-19 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "KAVA/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/KAVA_USDT_USDT-1h-mark.feather",
+      "rows": 54424,
+      "start": "2020-07-28 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "KNC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/KNC_USDT_USDT-1h-mark.feather",
+      "rows": 55285,
+      "start": "2020-06-22 06:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "KSM/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/KSM_USDT_USDT-1h-mark.feather",
+      "rows": 52552,
+      "start": "2020-10-14 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "LDO/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/LDO_USDT_USDT-1h-mark.feather",
+      "rows": 35561,
+      "start": "2022-09-22 02:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/LINK_USDT_USDT-1h-mark.feather",
+      "rows": 59052,
+      "start": "2020-01-17 07:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "LTC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/LTC_USDT_USDT-1h-mark.feather",
+      "rows": 59247,
+      "start": "2020-01-09 04:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "NEAR/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/NEAR_USDT_USDT-1h-mark.feather",
+      "rows": 52546,
+      "start": "2020-10-14 09:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "NEO/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/NEO_USDT_USDT-1h-mark.feather",
+      "rows": 58311,
+      "start": "2020-02-17 04:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "ONT/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ONT_USDT_USDT-1h-mark.feather",
+      "rows": 58454,
+      "start": "2020-02-11 05:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "PENDLE/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/PENDLE_USDT_USDT-1h-mark.feather",
+      "rows": 28210,
+      "start": "2023-07-25 09:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "QNT/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/QNT_USDT_USDT-1h-mark.feather",
+      "rows": 34890,
+      "start": "2022-10-20 01:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "QTUM/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/QTUM_USDT_USDT-1h-mark.feather",
+      "rows": 58256,
+      "start": "2020-02-19 11:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "RENDER/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/RENDER_USDT_USDT-1h-mark.feather",
+      "rows": 19402,
+      "start": "2024-07-26 09:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "RLC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/RLC_USDT_USDT-1h-mark.feather",
+      "rows": 54353,
+      "start": "2020-07-31 02:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "RSR/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/RSR_USDT_USDT-1h-mark.feather",
+      "rows": 52430,
+      "start": "2020-10-19 05:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "RUNE/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/RUNE_USDT_USDT-1h-mark.feather",
+      "rows": 53512,
+      "start": "2020-09-04 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "SKL/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/SKL_USDT_USDT-1h-mark.feather",
+      "rows": 51231,
+      "start": "2020-12-08 04:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "SNX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/SNX_USDT_USDT-1h-mark.feather",
+      "rows": 54016,
+      "start": "2020-08-14 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "SOL/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/SOL_USDT_USDT-1h-mark.feather",
+      "rows": 53288,
+      "start": "2020-09-13 11:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "STX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/STX_USDT_USDT-1h-mark.feather",
+      "rows": 31912,
+      "start": "2023-02-21 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "SUN/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/SUN_USDT_USDT-1h-mark.feather",
+      "rows": 18751,
+      "start": "2024-08-22 12:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "SUSHI/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/SUSHI_USDT_USDT-1h-mark.feather",
+      "rows": 53512,
+      "start": "2020-09-04 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "THETA/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/THETA_USDT_USDT-1h-mark.feather",
+      "rows": 55928,
+      "start": "2020-05-26 11:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "TRB/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/TRB_USDT_USDT-1h-mark.feather",
+      "rows": 53537,
+      "start": "2020-09-03 02:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "TRX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/TRX_USDT_USDT-1h-mark.feather",
+      "rows": 59104,
+      "start": "2020-01-15 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "UNI/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/UNI_USDT_USDT-1h-mark.feather",
+      "rows": 53196,
+      "start": "2020-09-17 07:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "VET/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/VET_USDT_USDT-1h-mark.feather",
+      "rows": 58384,
+      "start": "2020-02-14 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "XLM/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/XLM_USDT_USDT-1h-mark.feather",
+      "rows": 59002,
+      "start": "2020-01-19 09:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "XMR/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/XMR_USDT_USDT-1h-mark.feather",
+      "rows": 59002,
+      "start": "2020-01-19 09:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "XRP/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/XRP_USDT_USDT-1h-mark.feather",
+      "rows": 59320,
+      "start": "2020-01-06 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "XTZ/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/XTZ_USDT_USDT-1h-mark.feather",
+      "rows": 58622,
+      "start": "2020-02-04 05:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "YFI/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/YFI_USDT_USDT-1h-mark.feather",
+      "rows": 53606,
+      "start": "2020-08-31 05:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "ZEC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ZEC_USDT_USDT-1h-mark.feather",
+      "rows": 58622,
+      "start": "2020-02-04 05:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "ZEN/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ZEN_USDT_USDT-1h-mark.feather",
+      "rows": 51568,
+      "start": "2020-11-24 03:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "ZIL/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ZIL_USDT_USDT-1h-mark.feather",
+      "rows": 55404,
+      "start": "2020-06-17 07:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    },
+    {
+      "pair": "ZRX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ZRX_USDT_USDT-1h-mark.feather",
+      "rows": 55241,
+      "start": "2020-06-24 02:00:00+00:00",
+      "end": "2026-10-12 18:00:00+00:00"
+    }
+  ],
+  "1h-funding_rate": [
+    {
+      "pair": "1INCH/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/1INCH_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6350,
+      "start": "2020-12-25 16:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "AAVE/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/AAVE_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6561,
+      "start": "2020-10-16 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "ADA/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ADA_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7373,
+      "start": "2020-01-19 16:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "ALGO/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ALGO_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6989,
+      "start": "2020-05-26 16:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "AR/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/AR_USDT_USDT-1h-funding_rate.feather",
+      "rows": 5523,
+      "start": "2021-09-27 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "ATOM/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ATOM_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7319,
+      "start": "2020-02-06 16:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "AVAX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/AVAX_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6632,
+      "start": "2020-09-22 16:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "AXS/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/AXS_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7416,
+      "start": "2020-11-20 08:00:00+00:00",
+      "end": "2026-10-12 12:00:00+00:00"
+    },
+    {
+      "pair": "BAND/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BAND_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6798,
+      "start": "2020-07-29 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "BAT/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BAT_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7299,
+      "start": "2020-02-13 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "BCH/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BCH_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7429,
+      "start": "2020-01-01 00:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "BEL/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BEL_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6462,
+      "start": "2020-11-18 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "BNB/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BNB_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7308,
+      "start": "2020-02-10 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "BSV/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BSV_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6528,
+      "start": "2023-10-20 08:00:00+00:00",
+      "end": "2026-10-12 12:00:00+00:00"
+    },
+    {
+      "pair": "BTC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/BTC_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7429,
+      "start": "2020-01-01 00:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "CAKE/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/CAKE_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6449,
+      "start": "2023-11-02 16:00:00+00:00",
+      "end": "2026-10-12 12:00:00+00:00"
+    },
+    {
+      "pair": "CFX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/CFX_USDT_USDT-1h-funding_rate.feather",
+      "rows": 3990,
+      "start": "2023-02-20 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "COMP/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/COMP_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6885,
+      "start": "2020-06-30 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "CRV/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/CRV_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6696,
+      "start": "2020-09-01 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "DASH/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/DASH_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7326,
+      "start": "2020-02-04 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "DOGE/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/DOGE_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6855,
+      "start": "2020-07-10 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "DOT/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/DOT_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6732,
+      "start": "2020-08-20 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "EGLD/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/EGLD_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6659,
+      "start": "2020-09-13 16:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "ENJ/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ENJ_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7507,
+      "start": "2020-09-29 08:00:00+00:00",
+      "end": "2026-10-12 12:00:00+00:00"
+    },
+    {
+      "pair": "ENS/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ENS_USDT_USDT-1h-funding_rate.feather",
+      "rows": 5333,
+      "start": "2021-11-29 16:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "ETC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ETC_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7383,
+      "start": "2020-01-16 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "ETH/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ETH_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7429,
+      "start": "2020-01-01 00:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "FET/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/FET_USDT_USDT-1h-funding_rate.feather",
+      "rows": 4095,
+      "start": "2023-01-16 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "FIL/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/FIL_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6561,
+      "start": "2020-10-16 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "GRT/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/GRT_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6369,
+      "start": "2020-12-19 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "HBAR/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/HBAR_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6105,
+      "start": "2021-03-17 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "ICP/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ICP_USDT_USDT-1h-funding_rate.feather",
+      "rows": 5940,
+      "start": "2021-05-11 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "INJ/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/INJ_USDT_USDT-1h-funding_rate.feather",
+      "rows": 4553,
+      "start": "2022-08-16 16:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "IOST/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/IOST_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7477,
+      "start": "2020-02-21 08:00:00+00:00",
+      "end": "2026-10-12 12:00:00+00:00"
+    },
+    {
+      "pair": "IOTA/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/IOTA_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7302,
+      "start": "2020-02-12 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "JASMY/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/JASMY_USDT_USDT-1h-funding_rate.feather",
+      "rows": 4911,
+      "start": "2022-04-19 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "KAVA/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/KAVA_USDT_USDT-1h-funding_rate.feather",
+      "rows": 8559,
+      "start": "2020-07-28 08:00:00+00:00",
+      "end": "2026-10-12 12:00:00+00:00"
+    },
+    {
+      "pair": "KNC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/KNC_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6909,
+      "start": "2020-06-22 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "KSM/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/KSM_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6567,
+      "start": "2020-10-14 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "LDO/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/LDO_USDT_USDT-1h-funding_rate.feather",
+      "rows": 4443,
+      "start": "2022-09-22 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "LINK/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/LINK_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7380,
+      "start": "2020-01-17 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "LTC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/LTC_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7404,
+      "start": "2020-01-09 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "NEAR/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/NEAR_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6566,
+      "start": "2020-10-14 16:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "NEO/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/NEO_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7287,
+      "start": "2020-02-17 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "ONT/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ONT_USDT_USDT-1h-funding_rate.feather",
+      "rows": 8644,
+      "start": "2020-02-11 08:00:00+00:00",
+      "end": "2026-10-12 12:00:00+00:00"
+    },
+    {
+      "pair": "PENDLE/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/PENDLE_USDT_USDT-1h-funding_rate.feather",
+      "rows": 3524,
+      "start": "2023-07-25 16:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "QNT/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/QNT_USDT_USDT-1h-funding_rate.feather",
+      "rows": 4359,
+      "start": "2022-10-20 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "QTUM/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/QTUM_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7280,
+      "start": "2020-02-19 16:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "RENDER/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/RENDER_USDT_USDT-1h-funding_rate.feather",
+      "rows": 4848,
+      "start": "2024-07-26 12:00:00+00:00",
+      "end": "2026-10-12 12:00:00+00:00"
+    },
+    {
+      "pair": "RLC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/RLC_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6874,
+      "start": "2020-07-31 08:00:00+00:00",
+      "end": "2026-10-12 12:00:00+00:00"
+    },
+    {
+      "pair": "RSR/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/RSR_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6552,
+      "start": "2020-10-19 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "RUNE/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/RUNE_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6687,
+      "start": "2020-09-04 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "SKL/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/SKL_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7554,
+      "start": "2020-12-08 08:00:00+00:00",
+      "end": "2026-10-12 12:00:00+00:00"
+    },
+    {
+      "pair": "SNX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/SNX_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6750,
+      "start": "2020-08-14 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "SOL/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/SOL_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6734,
+      "start": "2020-09-13 16:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "STX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/STX_USDT_USDT-1h-funding_rate.feather",
+      "rows": 3987,
+      "start": "2023-02-21 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "SUN/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/SUN_USDT_USDT-1h-funding_rate.feather",
+      "rows": 4685,
+      "start": "2024-08-22 16:00:00+00:00",
+      "end": "2026-10-12 12:00:00+00:00"
+    },
+    {
+      "pair": "SUSHI/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/SUSHI_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6687,
+      "start": "2020-09-04 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "THETA/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/THETA_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6989,
+      "start": "2020-05-26 16:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "TRB/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/TRB_USDT_USDT-1h-funding_rate.feather",
+      "rows": 9979,
+      "start": "2020-09-03 08:00:00+00:00",
+      "end": "2026-10-12 12:00:00+00:00"
+    },
+    {
+      "pair": "TRX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/TRX_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7386,
+      "start": "2020-01-15 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "UNI/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/UNI_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6648,
+      "start": "2020-09-17 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "VET/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/VET_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7296,
+      "start": "2020-02-14 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "XLM/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/XLM_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7373,
+      "start": "2020-01-19 16:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "XMR/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/XMR_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7373,
+      "start": "2020-01-19 16:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "XRP/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/XRP_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7413,
+      "start": "2020-01-06 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "XTZ/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/XTZ_USDT_USDT-1h-funding_rate.feather",
+      "rows": 8713,
+      "start": "2020-02-04 08:00:00+00:00",
+      "end": "2026-10-12 12:00:00+00:00"
+    },
+    {
+      "pair": "YFI/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/YFI_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6699,
+      "start": "2020-08-31 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "ZEC/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ZEC_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7326,
+      "start": "2020-02-04 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "ZEN/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ZEN_USDT_USDT-1h-funding_rate.feather",
+      "rows": 6444,
+      "start": "2020-11-24 08:00:00+00:00",
+      "end": "2026-10-12 00:00:00+00:00"
+    },
+    {
+      "pair": "ZIL/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ZIL_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7848,
+      "start": "2020-06-17 08:00:00+00:00",
+      "end": "2026-10-12 12:00:00+00:00"
+    },
+    {
+      "pair": "ZRX/USDT:USDT",
+      "file": "/home/wangke/project/FreqtradeStratege/data/futures/ZRX_USDT_USDT-1h-funding_rate.feather",
+      "rows": 7894,
+      "start": "2020-06-24 08:00:00+00:00",
+      "end": "2026-10-12 12:00:00+00:00"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "policy": "deny-all",
+  "component": "research",
+  "arguments": [
+    "run",
+    "-c",
+    "configs/base.yaml",
+    "-c",
+    "configs/environment/local.yaml",
+    "-c",
+    "configs/estimators/xgboost.yaml",
+    "--output",
+    "/tmp/quant-network-audit.Nw3JNh/experiments",
+    "--experiment-id",
+    "xgboost"
+  ],
+  "http_requests": [],
+  "socket_events": [],
+  "exit_code": 0,
+  "denied_operations": 0,
+  "freqtrade_imported": false,
+  "ccxt_imported": false
+}

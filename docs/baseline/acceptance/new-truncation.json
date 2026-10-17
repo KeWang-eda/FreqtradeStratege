@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "overlap_start": "2025-01-01 00:00:00+00:00",
+  "overlap_end_exclusive": "2025-01-15 00:00:00+00:00",
+  "short_entries": 13,
+  "long_entries": 13,
+  "only_short": [],
+  "only_long": [],
+  "exit_differences": [],
+  "boundary_exits_skipped": [
+    [
+      "BTC/USDT:USDT",
+      "2025-01-14T00:00:00+00:00",
+      false,
+      94485.4
+    ]
+  ],
+  "scope": "overlap trade regression; does not prove absence of all future-data leakage"
+}

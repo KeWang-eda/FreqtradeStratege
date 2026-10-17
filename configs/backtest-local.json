@@ -1,0 +1,12 @@
+{
+  "_comment": "仅用于当前 Binance USDT 线性合约历史回测：本地行情仍由 --datadir 读取；市场精度和交易限制仍从真实 exchangeInfo 获取。CCXT 默认加载 spot/linear/inverse，限制为 linear 可避免无关市场请求。不要用于现货、币本位或替代实盘配置。",
+  "exchange": {
+    "ccxt_config": {
+      "options": {
+        "fetchMarkets": {
+          "types": ["linear"]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "policy": "metadata-only",
+  "component": "freqtrade",
+  "arguments": [
+    "backtesting",
+    "-c",
+    "config.json",
+    "-c",
+    "configs/environment/freqtrade-mihomo.json",
+    "--userdir",
+    "/tmp/quant-network-audit.Nw3JNh/before",
+    "--datadir",
+    "/home/wangke/project/FreqtradeStratege/data",
+    "--strategy-path",
+    "/home/wangke/project/FreqtradeStratege",
+    "--freqaimodel-path",
+    "/home/wangke/project/FreqtradeStratege/freqaimodels",
+    "--strategy",
+    "MyStrategy",
+    "--timerange",
+    "20250101-20250115",
+    "--pairs",
+    "BTC/USDT:USDT",
+    "ETH/USDT:USDT",
+    "--cache",
+    "none",
+    "--export",
+    "signals",
+    "--backtest-directory",
+    "/tmp/quant-network-audit.Nw3JNh/before/results"
+  ],
+  "http_requests": [
+    {
+      "method": "GET",
+      "host": "api.binance.com",
+      "path": "/api/v3/exchangeInfo",
+      "allowed": true
+    },
+    {
+      "method": "GET",
+      "host": "fapi.binance.com",
+      "path": "/fapi/v1/exchangeInfo",
+      "allowed": true
+    },
+    {
+      "method": "GET",
+      "host": "dapi.binance.com",
+      "path": "/dapi/v1/exchangeInfo",
+      "allowed": true
+    }
+  ],
+  "socket_events": [
+    {
+      "event": "socket.connect",
+      "host": "127.0.0.1",
+      "port": 7890,
+      "allowed": true
+    },
+    {
+      "event": "socket.connect",
+      "host": "127.0.0.1",
+      "port": 7890,
+      "allowed": true
+    },
+    {
+      "event": "socket.connect",
+      "host": "127.0.0.1",
+      "port": 7890,
+      "allowed": true
+    }
+  ],
+  "exit_code": 0,
+  "denied_operations": 0,
+  "freqtrade_imported": true,
+  "ccxt_imported": true
+}

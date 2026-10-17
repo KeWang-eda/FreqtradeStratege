@@ -22,6 +22,8 @@
   --backtest-directory /tmp/quant-refactor-baseline.BW441d/results
 ```
 
-实际初次尝试遗漏了 `--datadir`，在读取 K 线前就因 Binance `fapi.binance.com/fapi/v1/exchangeInfo` 多次 RequestTimeout 中断；以上命令补上明确数据路径供重跑。未取得旧版交易列表、收益指标或两个窗口的截断报告，全部标记为 **待复现**。禁止把合成数据测试或独立预测指标称为真实交易回测通过。
+实际初次尝试遗漏了 `--datadir`，在读取 K 线前就因 Binance `fapi.binance.com/fapi/v1/exchangeInfo` 多次 RequestTimeout 中断；以上命令补上明确数据路径供重跑。该次尝试未取得交易结果，曾标记为待复现。
 
 随后使用以上完整命令重试，仅追加临时配置把 ccxt 同步/异步请求 timeout 改为 5000ms（不变更交易规则），最终退出码为 2，错误为 `Could not load markets` / Binance `api.binance.com/api/v3/exchangeInfo` RequestTimeout。完整日志保存在 `backtest-retry.log`。
+
+之后确认本机已运行 mihomo，并通过 `configs/environment/freqtrade-mihomo.json` 显式配置代理。原版及新版均已成功完成两个窗口真实回测，补齐交易基线、完整预测/信号回归和截断报告，见 [acceptance/README.md](acceptance/README.md)。上述失败日志保留为历史记录，不再代表当前阻塞状态。

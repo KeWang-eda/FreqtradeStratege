@@ -1,0 +1,51 @@
+{
+  "checked_checkout": "main @ 3739472 plus preexisting uncommitted work",
+  "environment": {
+    "freqtrade": "2026.7",
+    "ccxt": "4.5.75",
+    "pandas": "3.0.5",
+    "numpy": "2.5.2",
+    "xgboost": "3.4.1"
+  },
+  "research_network_blocked": "passed for validate/dataset-build/Ridge and XGBoost 3-fold runs/compare",
+  "native_backtest_without_any_network": "blocked at required linear exchangeInfo; not passed",
+  "native_backtest_with_only_metadata": "passed with one real fapi exchangeInfo and local OHLCV/mark/funding",
+  "live_trading": "original paths retained and branch-tested; no account/order session executed",
+  "native_regression": {
+    "old": 13,
+    "new": 13
+  },
+  "pytest": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "96",
+    "time": "17.984",
+    "timestamp": "2026-10-17T19:36:35.703830+08:00",
+    "hostname": "Laptop"
+  },
+  "audit_evidence_sha256": {
+    "network-after.json": "425c7296d031eb2eae56fdbfc4a50213ecefe78177939ea8095be3ce82a1fe0a",
+    "network-after.log": "4665f6dc43d495e7c606f72139d892534cffa81480c81a89b5df591f06b3ba57",
+    "network-after.zip": "78c2d9cc83f58a3317b0a9b6c8fa7d609c349f38ae128ced502b7d5cb90b6687",
+    "network-before.json": "8bb35c3b69919013db9c08b22ae225b40cf54164656985eaf15ceb2bfe072715",
+    "network-before.log": "5630c083915fe4432cf2300e086c7cdaac1d3e12ca859db2d2fb8184d04e6a25",
+    "network-before.zip": "1f48ebbabfa8fde1edb0c8fb7924c8efe6239799c8253ce3eb6c403d342b152d",
+    "network-data-inventory.json": "b4c865791fd7bd2d496d2345782bb6719cb36d284d592d722bb27022e66151b3",
+    "network-denied.json": "afdae1edb34931ac0e35421ad9cdc5fe13b3031f75ec7005c2254a6bcbbb1e91",
+    "network-denied.log": "5ff355359d66c257a7d24c7e3b2432654b2a16429dfbb9237992e77fd57d37b9",
+    "network-pytest.xml": "fb7a64a4b6763c840570c4c6335ef0ca937f624913b9afef4d52cb3dbad40561",
+    "network-regression.json": "36456e3aa5d9d93461d3a016629ef7839681190c3fa560198680059bbdfedf12",
+    "network-research-compare.json": "08c40f0a26fd6d4c273973fe4fc73f79e99b3d7ff3f0299cdad00be3b701016d",
+    "network-research-dataset.json": "0a30b9eaef97183c62f9afeb548f426fc6eac9529436821ff75b537811e9e1f4",
+    "network-research-ridge.json": "446009dac52ff523fc00145f603f37fff10af203d45bd9479483405a6d827a1e",
+    "network-research-validate.json": "a7e70c1eb47d66c708a06e3a7c87ca406b85c82acc9428a79702e3a6b18fb920",
+    "network-research-xgboost.json": "1596b18ae0dc06869088ec2b9e3b890ae49091c25bfc5018a97d91c7362381ab"
+  },
+  "config_sha256": {
+    "config.json": "2d12ac5c86fc76fedaa2b73e84237d9a2f1eb265587b81f6c155bafb6fb6acff",
+    "configs/backtest-local.json": "f45574361fbe09487abfa536d0b3ce90fa9935bdbb59c9f62e9bff572e7a6b37",
+    "configs/environment/freqtrade-mihomo.json": "8ffcfdb8ac900018d734984613721ea92d3c885db60adb51945a2d8e4a6566e3"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "policy": "deny-all",
+  "component": "freqtrade",
+  "arguments": [
+    "backtesting",
+    "-c",
+    "config.json",
+    "-c",
+    "configs/backtest-local.json",
+    "-c",
+    "configs/environment/freqtrade-mihomo.json",
+    "--userdir",
+    "/tmp/quant-network-audit.Nw3JNh/denied-linear",
+    "--datadir",
+    "/home/wangke/project/FreqtradeStratege/data",
+    "--strategy-path",
+    "/home/wangke/project/FreqtradeStratege",
+    "--freqaimodel-path",
+    "/home/wangke/project/FreqtradeStratege/freqaimodels",
+    "--strategy",
+    "MyStrategy",
+    "--timerange",
+    "20250101-20250115",
+    "--pairs",
+    "BTC/USDT:USDT",
+    "ETH/USDT:USDT",
+    "--cache",
+    "none",
+    "--export",
+    "trades",
+    "--backtest-directory",
+    "/tmp/quant-network-audit.Nw3JNh/denied-linear/results"
+  ],
+  "http_requests": [
+    {
+      "method": "GET",
+      "host": "fapi.binance.com",
+      "path": "/fapi/v1/exchangeInfo",
+      "allowed": false
+    }
+  ],
+  "socket_events": [],
+  "exit_code": 1,
+  "denied_operations": 1,
+  "freqtrade_imported": true,
+  "ccxt_imported": true
+}

@@ -42,7 +42,9 @@ PYTHONPATH=src /home/wangke/project/freqtrade/.venv/bin/python -m quant_strategy
 
 修改前 11 项测试已冻结，原版特征/标签有数值回归样本。分层测试还覆盖 FreqAI 2026.7 的真实 train/predict 接口、跨币种时间一致性、特征因果性、测试集与早停隔离，以及工件加载。
 
-真实 Freqtrade 交易回测尝试受到 Binance 市场信息请求超时阻塞，旧新交易列表及长短窗口截断对照仍待复现；本地研究训练通过不代表交易回测验收完成。
+使用本机 mihomo 后，已完成 BTC/ETH 两个窗口的真实 Freqtrade 原版/新版回测：两周窗口均为 13 笔、三周窗口均为 25 笔，交易明细、导出信号、逐窗口预测和特征 schema 对照通过，两个版本的长短窗口重叠交易检查也通过。行情读取本地 `data/`；框架启动的 Binance 市场规则查询使用 `configs/environment/freqtrade-mihomo.json` 中的代理配置。完整结果归档与复现命令见 [回测验收](docs/baseline/acceptance/README.md)。
+
+历史回测还提供独立的离线快照入口：真实 Binance 市场元数据通过显式 `capture` 采集，离线注入原生回测引擎；缺失、损坏或版本不符立即失败。BTC/ETH 两周回测已在独立网络命名空间中通过，与联网基线的 13 笔交易、26 个订单、预测文件和指标一致。115 项测试通过；适用版本、快照和准确命令见 [完全离线回测报告](docs/offline_backtest_snapshot.md)。普通 `freqtrade backtesting` 仍采用原联网初始化。
 
 - [架构与目录](docs/architecture.md)
 - [接口与扩展](docs/interfaces.md)
@@ -50,6 +52,8 @@ PYTHONPATH=src /home/wangke/project/freqtrade/.venv/bin/python -m quant_strategy
 - [实验协议和工件](docs/experiment_protocol.md)
 - [命令、回测与测试](docs/operations.md)
 - [迁移、差异、验收及回滚](docs/migration_plan.md)
-- [本次验证结果与待验收项](docs/validation_report.md)
+- [本次验证结果与适用范围](docs/validation_report.md)
+- [本地历史数据与 Binance 网络请求排查](docs/local_data_network_audit.md)
+- [完全离线回测：市场快照、实现和测试证据](docs/offline_backtest_snapshot.md)
 
 改动生产特征、标签或模型参数后应更换 `freqai.identifier`。本次通过适配保留原生产特征 schema，实际交易/模型配置保持原值。

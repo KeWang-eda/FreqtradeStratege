@@ -1,0 +1,100 @@
+{
+  "passed": true,
+  "tolerance": {
+    "rtol": 1e-12,
+    "atol": 1e-12
+  },
+  "archives": {
+    "old": {
+      "path": "/tmp/quant-network-audit.Nw3JNh/before/results/backtest-result-2026-10-17_19-31-58.zip",
+      "sha256": "1f48ebbabfa8fde1edb0c8fb7924c8efe6239799c8253ce3eb6c403d342b152d"
+    },
+    "new": {
+      "path": "/tmp/quant-network-audit.Nw3JNh/after/results/backtest-result-2026-10-17_19-33-00.zip",
+      "sha256": "78c2d9cc83f58a3317b0a9b6c8fa7d609c349f38ae128ced502b7d5cb90b6687"
+    }
+  },
+  "start": "2025-01-01 00:00:00+00:00",
+  "end": "2025-01-15 00:00:00+00:00",
+  "trade_count": {
+    "old": 13,
+    "new": 13
+  },
+  "signal_counts": {
+    "signals": {
+      "ETH/USDT:USDT": {
+        "old": 5,
+        "new": 5
+      },
+      "BTC/USDT:USDT": {
+        "old": 8,
+        "new": 8
+      }
+    },
+    "rejected": {
+      "ETH/USDT:USDT": {
+        "old": 63,
+        "new": 63
+      },
+      "BTC/USDT:USDT": {
+        "old": 6,
+        "new": 6
+      }
+    },
+    "exited": {
+      "ETH/USDT:USDT": {
+        "old": 5,
+        "new": 5
+      },
+      "BTC/USDT:USDT": {
+        "old": 8,
+        "new": 8
+      }
+    }
+  },
+  "prediction_files": [
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1735689600_prediction.feather",
+      "rows": 42,
+      "old_sha256": "45b0cec00969259b71e906fdd0e2956cadafa8675ab795611114d61b6c2df614",
+      "new_sha256": "45b0cec00969259b71e906fdd0e2956cadafa8675ab795611114d61b6c2df614"
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1736294400_prediction.feather",
+      "rows": 42,
+      "old_sha256": "147b333f878f3b4d8196688a6eaf2ad64032d5cbe5351a52422e00ad1ec4b036",
+      "new_sha256": "147b333f878f3b4d8196688a6eaf2ad64032d5cbe5351a52422e00ad1ec4b036"
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1735689600_prediction.feather",
+      "rows": 42,
+      "old_sha256": "4f268f4288bdf17c109229eeac0ac2c51a7cdd79b0ee61342a7f5d81c43f5993",
+      "new_sha256": "4f268f4288bdf17c109229eeac0ac2c51a7cdd79b0ee61342a7f5d81c43f5993"
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1736294400_prediction.feather",
+      "rows": 42,
+      "old_sha256": "d4ef13e4ee0d8166645b9a9053e91de11b2d1a250b8e8dd2e0dab20bb376a3be",
+      "new_sha256": "d4ef13e4ee0d8166645b9a9053e91de11b2d1a250b8e8dd2e0dab20bb376a3be"
+    }
+  ],
+  "model_schemas": [
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1735689600/cb_btc_1735689600_metadata.json",
+      "feature_count": 92
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736294400/cb_btc_1736294400_metadata.json",
+      "feature_count": 92
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1735689600/cb_eth_1735689600_metadata.json",
+      "feature_count": 92
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736294400/cb_eth_1736294400_metadata.json",
+      "feature_count": 92
+    }
+  ],
+  "differences": []
+}

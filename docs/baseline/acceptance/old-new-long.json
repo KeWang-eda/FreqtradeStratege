@@ -1,0 +1,120 @@
+{
+  "passed": true,
+  "tolerance": {
+    "rtol": 1e-12,
+    "atol": 1e-12
+  },
+  "archives": {
+    "old": {
+      "path": "/tmp/quant-refactor-acceptance.WTrLjb/old-long/results/backtest-result-2026-10-17_19-12-31.zip",
+      "sha256": "022d7fbc0789b9fc30ba6b86d0da295bbf68283a351612b0661afab3d5c6b3ea"
+    },
+    "new": {
+      "path": "/tmp/quant-refactor-acceptance.WTrLjb/new-long/results/backtest-result-2026-10-17_19-13-13.zip",
+      "sha256": "f7085c16809e632120de3d9d193a6b25ff8094156cf148917a4c041a566cf0a1"
+    }
+  },
+  "start": "2025-01-01 00:00:00+00:00",
+  "end": "2025-01-22 00:00:00+00:00",
+  "trade_count": {
+    "old": 25,
+    "new": 25
+  },
+  "signal_counts": {
+    "signals": {
+      "BTC/USDT:USDT": {
+        "old": 14,
+        "new": 14
+      },
+      "ETH/USDT:USDT": {
+        "old": 11,
+        "new": 11
+      }
+    },
+    "rejected": {
+      "BTC/USDT:USDT": {
+        "old": 16,
+        "new": 16
+      },
+      "ETH/USDT:USDT": {
+        "old": 80,
+        "new": 80
+      }
+    },
+    "exited": {
+      "BTC/USDT:USDT": {
+        "old": 14,
+        "new": 14
+      },
+      "ETH/USDT:USDT": {
+        "old": 11,
+        "new": 11
+      }
+    }
+  },
+  "prediction_files": [
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1735689600_prediction.feather",
+      "rows": 42,
+      "old_sha256": "45b0cec00969259b71e906fdd0e2956cadafa8675ab795611114d61b6c2df614",
+      "new_sha256": "45b0cec00969259b71e906fdd0e2956cadafa8675ab795611114d61b6c2df614"
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1736294400_prediction.feather",
+      "rows": 42,
+      "old_sha256": "147b333f878f3b4d8196688a6eaf2ad64032d5cbe5351a52422e00ad1ec4b036",
+      "new_sha256": "147b333f878f3b4d8196688a6eaf2ad64032d5cbe5351a52422e00ad1ec4b036"
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1736899200_prediction.feather",
+      "rows": 42,
+      "old_sha256": "106dd25f30b264f23352078f8f6a917069d902aa8eb073d55de630032399d569",
+      "new_sha256": "106dd25f30b264f23352078f8f6a917069d902aa8eb073d55de630032399d569"
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1735689600_prediction.feather",
+      "rows": 42,
+      "old_sha256": "4f268f4288bdf17c109229eeac0ac2c51a7cdd79b0ee61342a7f5d81c43f5993",
+      "new_sha256": "4f268f4288bdf17c109229eeac0ac2c51a7cdd79b0ee61342a7f5d81c43f5993"
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1736294400_prediction.feather",
+      "rows": 42,
+      "old_sha256": "d4ef13e4ee0d8166645b9a9053e91de11b2d1a250b8e8dd2e0dab20bb376a3be",
+      "new_sha256": "d4ef13e4ee0d8166645b9a9053e91de11b2d1a250b8e8dd2e0dab20bb376a3be"
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1736899200_prediction.feather",
+      "rows": 42,
+      "old_sha256": "f4b3cf545cb2d7473486467a20ee2ab87f1a8114353b6efb4658524c9af65444",
+      "new_sha256": "f4b3cf545cb2d7473486467a20ee2ab87f1a8114353b6efb4658524c9af65444"
+    }
+  ],
+  "model_schemas": [
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1735689600/cb_btc_1735689600_metadata.json",
+      "feature_count": 92
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736294400/cb_btc_1736294400_metadata.json",
+      "feature_count": 92
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736899200/cb_btc_1736899200_metadata.json",
+      "feature_count": 92
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1735689600/cb_eth_1735689600_metadata.json",
+      "feature_count": 92
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736294400/cb_eth_1736294400_metadata.json",
+      "feature_count": 92
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736899200/cb_eth_1736899200_metadata.json",
+      "feature_count": 92
+    }
+  ],
+  "differences": []
+}
