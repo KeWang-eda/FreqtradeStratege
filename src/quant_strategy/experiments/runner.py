@@ -25,14 +25,15 @@ from quant_strategy.infrastructure.experiment_store import (
 )
 from quant_strategy.infrastructure.model_store import save_model
 from quant_strategy.market_data import load_ohlcv
+from quant_strategy.market_data.contracts import frame_fingerprint
 from quant_strategy.training import StandaloneBackend, TrainingRequest
 from quant_strategy.validation import TimeSeriesSplitter, prediction_metrics
 
 
 def _dataset_hash(dataset: Dataset) -> str:
     digest = hashlib.sha256()
-    for frame in (dataset.X, dataset.y, dataset.metadata):
-        digest.update(pd.util.hash_pandas_object(frame, index=True).values.tobytes())
+    for frame in (dataset.X, dataset.y.to_frame(), dataset.metadata):
+        digest.update(frame_fingerprint(frame).encode())
     return digest.hexdigest()
 
 
@@ -91,6 +92,11 @@ def run_experiment(
                 pair: {"path": path, "sha256": file_hash(path)}
                 for pair, path in config.data.items()
             }
+            if any(
+                frame.attrs.get("source_sha256") != manifest["input_files"][pair]["sha256"]
+                for pair, frame in frames.items()
+            ):
+                raise DataContractError("Input changed between loading and recording provenance")
         dataset = build_dataset(frames, config)
         raw_hash = hashlib.sha256()
         for pair, frame in sorted(frames.items()):
@@ -102,6 +108,7 @@ def run_experiment(
             )
         manifest["input_data_sha256"] = raw_hash.hexdigest()
         manifest["dataset_sha256"] = _dataset_hash(dataset)
+        dataset.exclusions.to_parquet(output / "sample_exclusions.parquet", index=False)
         manifest["data"] = {
             "pairs": sorted(frames),
             "timeframe": config.timeframe,

@@ -1,0 +1,5 @@
+a378f7e docs: consolidate offline backtesting task into one reading guide
+0c31df8 test: complete phased offline acceptance and fresh three-pair regression
+4808c32 test: verify native offline lifecycle and research mode isolation
+eb44042 feat: audit raw historical coverage and native FreqAI warmup
+3a7bd58 fix: reject ambiguous market types and compare full backtest configuration

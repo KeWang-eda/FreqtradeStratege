@@ -1,0 +1,768 @@
+{
+  "schema_version": 1,
+  "scope": "User hard acceptance requirements; phase3–5 not admitted after native P0 failure",
+  "requirements": [
+    {
+      "requirement_id": "DATA-001",
+      "phase": 1,
+      "requirement": "合法样本身份、币种、特征与标签时间及数据版本",
+      "test": "test_every_input_row_has_eligibility_identity_and_exclusion_reason",
+      "test_nodeids": [
+        "tests.unit.test_sample_governance.test_every_input_row_has_eligibility_identity_and_exclusion_reason"
+      ],
+      "fault_or_unexecuted_scenario": "伪造metadata、重复ID、倒置时间",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "DATA-002",
+      "phase": 1,
+      "requirement": "逐样本排除原因",
+      "test": "test_every_input_row_has_eligibility_identity_and_exclusion_reason",
+      "test_nodeids": [
+        "tests.unit.test_sample_governance.test_every_input_row_has_eligibility_identity_and_exclusion_reason"
+      ],
+      "fault_or_unexecuted_scenario": "warmup不足与尾部标签不完整",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "DATA-003",
+      "phase": 1,
+      "requirement": "缺失funding不得补零",
+      "test": "test_funding_missing_event_never_becomes_zero_rate",
+      "test_nodeids": [
+        "tests.unit.test_training_data_contracts.test_funding_missing_event_never_becomes_zero_rate"
+      ],
+      "fault_or_unexecuted_scenario": "删除付款事件；未知或变频schedule",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "DATA-004",
+      "phase": 1,
+      "requirement": "时间戳、频率、单位由契约验证",
+      "test": "test_invalid_candle_grid_fails_closed",
+      "test_nodeids": [
+        "tests.unit.test_training_data_contracts.test_invalid_candle_grid_fails_closed[off_grid]",
+        "tests.unit.test_training_data_contracts.test_invalid_candle_grid_fails_closed[nonintegral_difference]",
+        "tests.unit.test_training_data_contracts.test_invalid_candle_grid_fails_closed[naive]",
+        "tests.unit.test_training_data_contracts.test_invalid_candle_grid_fails_closed[duplicate]",
+        "tests.unit.test_training_data_contracts.test_invalid_candle_grid_fails_closed[unsorted]",
+        "tests.unit.test_training_data_contracts.test_invalid_candle_grid_fails_closed[nat]"
+      ],
+      "fault_or_unexecuted_scenario": "乱序、重复、错网格、无时区",
+      "actual_unit_results": {
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "DATA-005",
+      "phase": 1,
+      "requirement": "相同输入与配置数据集可重复",
+      "test": "test_same_real_data_rebuilds_identical_schema_samples_and_exclusions",
+      "test_nodeids": [
+        "tests.integration.test_dataset_governance.test_same_real_data_rebuilds_identical_schema_samples_and_exclusions"
+      ],
+      "fault_or_unexecuted_scenario": "交换币种输入顺序后重建真实样本",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "DATA-006",
+      "phase": 1,
+      "requirement": "损坏、缺失或零有效样本必须失败或隔离",
+      "test": "test_an_empty_pair_cannot_be_silently_hidden_by_other_pair",
+      "test_nodeids": [
+        "tests.unit.test_sample_governance.test_an_empty_pair_cannot_be_silently_hidden_by_other_pair"
+      ],
+      "fault_or_unexecuted_scenario": "一币有效样本0、NaN/Inf/非法价格/非数值",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "DATA-007",
+      "phase": 1,
+      "requirement": "原始数据只读并具有内容与schema指纹",
+      "test": "test_file_change_during_read_fails_before_dataset",
+      "test_nodeids": [
+        "tests.integration.test_dataset_governance.test_file_change_during_read_fails_before_dataset"
+      ],
+      "fault_or_unexecuted_scenario": "读文件期间修改、重命名特征列",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "DATA-008",
+      "phase": 1,
+      "requirement": "数据质量不过不启动正式训练",
+      "test": "test_formal_entry_does_not_train_with_failed_engineering_gate",
+      "test_nodeids": [
+        "tests.integration.test_formal_training_admission.test_formal_entry_does_not_train_with_failed_engineering_gate[FAIL]",
+        "tests.integration.test_formal_training_admission.test_formal_entry_does_not_train_with_failed_engineering_gate[PARTIAL]",
+        "tests.integration.test_formal_training_admission.test_formal_entry_does_not_train_with_failed_engineering_gate[BLOCKED]"
+      ],
+      "fault_or_unexecuted_scenario": "FAIL/PARTIAL/BLOCKED凭证",
+      "actual_unit_results": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "LEAK-001",
+      "phase": 2,
+      "requirement": "全部实际输入特征有时间依赖契约",
+      "test": "test_contracts_match_actual_schema_and_explicit_close_availability",
+      "test_nodeids": [
+        "tests.leakage.test_feature_time_contracts.test_contracts_match_actual_schema_and_explicit_close_availability"
+      ],
+      "fault_or_unexecuted_scenario": "未知列与未审查版本",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PARTIAL",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "LEAK-002",
+      "phase": 2,
+      "requirement": "未来扰动与截断不改变历史特征",
+      "test": "test_baseline_all_columns_pass_actual_future_perturbation_and_truncation",
+      "test_nodeids": [
+        "tests.leakage.test_feature_time_contracts.test_baseline_all_columns_pass_actual_future_perturbation_and_truncation"
+      ],
+      "fault_or_unexecuted_scenario": "扰动t之后价格和数量、截断未来",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "LEAK-003",
+      "phase": 2,
+      "requirement": "标签不得跨训练和早停验证边界",
+      "test": "test_actual_native_split_exposes_overlapping_training_labels",
+      "test_nodeids": [
+        "tests.integration.test_native_training_boundaries.test_actual_native_split_exposes_overlapping_training_labels"
+      ],
+      "fault_or_unexecuted_scenario": "真实原生拆分：BTC/ETH各3个跨界标签",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "FAIL",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "LEAK-004",
+      "phase": 2,
+      "requirement": "预处理拟合局限当前训练折",
+      "test": "test_test_distribution_cannot_change_fit_parameters",
+      "test_nodeids": [
+        "tests.leakage.test_information_boundaries.test_test_distribution_cannot_change_fit_parameters"
+      ],
+      "fault_or_unexecuted_scenario": "改变外层test分布和标签",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PARTIAL",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "LEAK-005",
+      "phase": 2,
+      "requirement": "已知泄漏植入必须被检出",
+      "test": "test_injected_known_schema_leak_is_detected_by_values_not_registry",
+      "test_nodeids": [
+        "tests.leakage.test_feature_time_contracts.test_injected_known_schema_leak_is_detected_by_values_not_registry[future_shift]",
+        "tests.leakage.test_feature_time_contracts.test_injected_known_schema_leak_is_detected_by_values_not_registry[whole_frame_mean]",
+        "tests.leakage.test_feature_time_contracts.test_injected_known_schema_leak_is_detected_by_values_not_registry[backfill]"
+      ],
+      "fault_or_unexecuted_scenario": "future shift、全局均值、backfill、约1e-13泄漏",
+      "actual_unit_results": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "LEAK-006",
+      "phase": 2,
+      "requirement": "动态原生展开特征必须运行时验证",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "完整原生92/136列未来扰动尚未完成",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "LEAK-007",
+      "phase": 2,
+      "requirement": "长历史与递归状态边界精确定义",
+      "test": "test_recursive_state_starts_at_continuous_segment",
+      "test_nodeids": [
+        "tests.leakage.test_feature_time_contracts.test_recursive_state_starts_at_continuous_segment"
+      ],
+      "fault_or_unexecuted_scenario": "断档后重置；短段无证据不能被长段掩盖",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "LEAK-008",
+      "phase": 2,
+      "requirement": "跨币未来扰动和排名不受未来影响",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "完整原生相关特征与排名动态验证尚未完成",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "SPLIT-001",
+      "phase": 3,
+      "requirement": "三种切分各有真实数据集成",
+      "test": "test_split_contract_global_pair_boundaries",
+      "test_nodeids": [
+        "tests.contract.test_backends_and_splits.test_split_contract_global_pair_boundaries[fixed_holdout]",
+        "tests.contract.test_backends_and_splits.test_split_contract_global_pair_boundaries[expanding_window]",
+        "tests.contract.test_backends_and_splits.test_split_contract_global_pair_boundaries[rolling_window]",
+        "tests.contract.test_backends_and_splits.test_split_contract_global_pair_boundaries[purged_walk_forward]"
+      ],
+      "fault_or_unexecuted_scenario": "依赖Phase2，未启动本轮正式切分集成",
+      "actual_unit_results": {
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "SPLIT-002",
+      "phase": 3,
+      "requirement": "每折边界及样本ID导出",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "待阶段准入后实施/验收",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "SPLIT-003",
+      "phase": 3,
+      "requirement": "每项purge与embargo可追溯",
+      "test": "test_split_contract_global_pair_boundaries",
+      "test_nodeids": [
+        "tests.contract.test_backends_and_splits.test_split_contract_global_pair_boundaries[fixed_holdout]",
+        "tests.contract.test_backends_and_splits.test_split_contract_global_pair_boundaries[expanding_window]",
+        "tests.contract.test_backends_and_splits.test_split_contract_global_pair_boundaries[rolling_window]",
+        "tests.contract.test_backends_and_splits.test_split_contract_global_pair_boundaries[purged_walk_forward]"
+      ],
+      "fault_or_unexecuted_scenario": "待真实样本逐项审计",
+      "actual_unit_results": {
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "SPLIT-004",
+      "phase": 3,
+      "requirement": "切分泄漏与错误索引负测",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "待索引映射和越界故障注入",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "SPLIT-005",
+      "phase": 3,
+      "requirement": "最终holdout程序级访问保护",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "待独立解锁与访问账本",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "SPLIT-006",
+      "phase": 3,
+      "requirement": "不得随机切分冒充时序评估",
+      "test": "test_native_shuffle_is_detected_not_reinterpreted_as_walk_forward",
+      "test_nodeids": [
+        "tests.integration.test_native_training_boundaries.test_native_shuffle_is_detected_not_reinterpreted_as_walk_forward"
+      ],
+      "fault_or_unexecuted_scenario": "原生shuffle检出；正式协议仍未准入",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "SPLIT-007",
+      "phase": 3,
+      "requirement": "不得根据最终holdout挑模型",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "未访问最终holdout选模型；新协议未验收",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "MODEL-001",
+      "phase": 4,
+      "requirement": "核心预测和交易指标手工样本验证",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "未进入本轮指标工程",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "MODEL-002",
+      "phase": 4,
+      "requirement": "真实多折训练预测及离线回测",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "未启动正式Walk-Forward流程",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "MODEL-003",
+      "phase": 4,
+      "requirement": "朴素基准与候选同数据同折",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "待Ridge/XGBoost/均值和交易基准对照",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "MODEL-004",
+      "phase": 4,
+      "requirement": "逐折逐币逐窗口完整输出",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "本轮未生成正式模型评估",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "MODEL-005",
+      "phase": 4,
+      "requirement": "成本和信号成交时点强制测试",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "待手续费/funding/滑点核算测试",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "MODEL-006",
+      "phase": 4,
+      "requirement": "基准差异及考虑自相关的不确定性",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "待区块重采样和成本敏感性方案预注册",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "MODEL-007",
+      "phase": 4,
+      "requirement": "不得仅凭训练或单次收益宣称有效",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "未作模型有效性结论",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "EXP-001",
+      "phase": 5,
+      "requirement": "实验具有完整输入代码模型输出指纹",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "本轮正式实验管理未准入",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "EXP-002",
+      "phase": 5,
+      "requirement": "定位每份真实实验产物",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "待原生与研究独立lineage验收",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "EXP-003",
+      "phase": 5,
+      "requirement": "不可比实验程序拒绝直接排名",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "既有compare不足，未在本轮越过Gate修改",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "EXP-004",
+      "phase": 5,
+      "requirement": "重复实验差异可解释",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "未启动正式重复训练比较",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "EXP-005",
+      "phase": 5,
+      "requirement": "失败实验与历史成功记录不覆盖",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "既有测试继续运行，不代替新阶段验收",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "EXP-006",
+      "phase": 5,
+      "requirement": "研究和FreqAI分别完成集成",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "原生隔离失败，禁止合并声明通过",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "EXP-007",
+      "phase": 5,
+      "requirement": "可复现结论来自真实重复执行",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "仅数据重建已验证，正式模型复现未验收",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "GATE-001",
+      "phase": 6,
+      "requirement": "验收核对实际内容与输入指纹",
+      "test": "test_independent_data_gate_rebuilds_instead_of_trusting_pass_string",
+      "test_nodeids": [
+        "tests.unit.test_training_readiness_gate.test_independent_data_gate_rebuilds_instead_of_trusting_pass_string"
+      ],
+      "fault_or_unexecuted_scenario": "报告写PASS但dataset哈希篡改",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "GATE-002",
+      "phase": 6,
+      "requirement": "P0失败必须否决准入",
+      "test": "test_p0_failure_dominates_blocked_downstream",
+      "test_nodeids": [
+        "tests.unit.test_training_readiness_gate.test_p0_failure_dominates_blocked_downstream"
+      ],
+      "fault_or_unexecuted_scenario": "P0 FAIL且后续BLOCKED",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "GATE-003",
+      "phase": 6,
+      "requirement": "缺失证据不得标PASS",
+      "test": "test_missing_real_evidence_is_blocked_not_invented_pass_or_test_failure",
+      "test_nodeids": [
+        "tests.unit.test_training_readiness_gate.test_missing_real_evidence_is_blocked_not_invented_pass_or_test_failure"
+      ],
+      "fault_or_unexecuted_scenario": "无真实JUnit/报告",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "GATE-004",
+      "phase": 6,
+      "requirement": "全量测试本轮实际执行",
+      "test": "test_skipped_case_is_not_executed_gate_evidence",
+      "test_nodeids": [
+        "tests.unit.test_training_readiness_gate.test_skipped_case_is_not_executed_gate_evidence"
+      ],
+      "fault_or_unexecuted_scenario": "skip不得算执行；最终398/0/0",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "GATE-005",
+      "phase": 6,
+      "requirement": "真实多折端到端是总验收必需项",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "因Phase2 FAIL未执行，禁止继承旧报告",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "BLOCKED",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "GATE-006",
+      "phase": 6,
+      "requirement": "独立目录保留失败和阻断证据",
+      "test": null,
+      "test_nodeids": [],
+      "fault_or_unexecuted_scenario": "本轮实际保留红测试和失败Gate；专门覆盖拒写测试未新增",
+      "actual_unit_results": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PARTIAL",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "GATE-007",
+      "phase": 6,
+      "requirement": "工程预测交易生产结论严格区分",
+      "test": "test_engineering_gate_does_not_grant_profitability_or_live_admission",
+      "test_nodeids": [
+        "tests.unit.test_training_readiness_gate.test_engineering_gate_does_not_grant_profitability_or_live_admission"
+      ],
+      "fault_or_unexecuted_scenario": "即便工程PASS也不授予效果或实盘准入",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "GATE-008",
+      "phase": 6,
+      "requirement": "正式训练在调用模型前受程序保护",
+      "test": "test_formal_entry_does_not_train_with_failed_engineering_gate",
+      "test_nodeids": [
+        "tests.integration.test_formal_training_admission.test_formal_entry_does_not_train_with_failed_engineering_gate[FAIL]",
+        "tests.integration.test_formal_training_admission.test_formal_entry_does_not_train_with_failed_engineering_gate[PARTIAL]",
+        "tests.integration.test_formal_training_admission.test_formal_entry_does_not_train_with_failed_engineering_gate[BLOCKED]"
+      ],
+      "fault_or_unexecuted_scenario": "实际FAIL凭证CLI exit2且无输出目录",
+      "actual_unit_results": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "PASS",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    },
+    {
+      "requirement_id": "GATE-009",
+      "phase": 6,
+      "requirement": "所有必需阶段均执行通过才授权",
+      "test": "test_passing_only_one_phase_or_empty_evidence_cannot_authorize_training",
+      "test_nodeids": [
+        "tests.unit.test_training_readiness_gate.test_passing_only_one_phase_or_empty_evidence_cannot_authorize_training"
+      ],
+      "fault_or_unexecuted_scenario": "只有部分阶段PASS、其他未执行",
+      "actual_unit_results": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "acceptance_status": "FAIL",
+      "interpretation": "An existing unit test passing is not downstream stage admission; Phases3–5 remain blocked."
+    }
+  ],
+  "count": 46,
+  "counts_by_status": {
+    "PASS": 17,
+    "FAIL": 2,
+    "PARTIAL": 3,
+    "BLOCKED": 24
+  }
+}

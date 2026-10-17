@@ -1,0 +1,142 @@
+FFFFFF                                                                   [100%]
+=================================== FAILURES ===================================
+______ test_gap_excludes_labels_crossing_missing_bar_and_restarts_warmup _______
+
+candles =                          date        open  ...       close      volume
+0   2024-01-01 00:00:00+00:00  100.100000  ... ...  111.031280  693.560778
+239 2024-02-09 20:00:00+00:00  110.727274  ...  110.616658  699.999364
+
+[240 rows x 6 columns]
+
+    def test_gap_excludes_labels_crossing_missing_bar_and_restarts_warmup(candles):
+        missing = candles.date.iloc[100]
+        raw = candles.drop(index=100).reset_index(drop=True)
+        dataset = build_dataset({"BTC": raw}, ExperimentConfig())
+>       assert not (
+            (dataset.metadata.candle_timestamp < missing)
+            & (dataset.metadata.label_end_time > missing)
+        ).any()
+E       AssertionError: assert not np.True_
+E        +  where np.True_ = any()
+E        +    where any = (0     2024-01-05 00:00:00+00:00\n1     2024-01-05 04:00:00+00:00\n2     2024-01-05 08:00:00+00:00\n3     2024-01-05 12:00...24-02-09 04:00:00+00:00\n211   2024-02-09 08:00:00+00:00\nName: candle_timestamp, Length: 212, dtype: datetime64[us, UTC] < Timestamp('2024-01-17 16:00:00+0000', tz='UTC') & 0     2024-01-05 16:00:00+00:00\n1     2024-01-05 20:00:00+00:00\n2     2024-01-06 00:00:00+00:00\n3     2024-01-06 04:00...2024-02-09 20:00:00+00:00\n211   2024-02-10 00:00:00+00:00\nName: label_end_time, Length: 212, dtype: datetime64[us, UTC] > Timestamp('2024-01-17 16:00:00+0000', tz='UTC')).any
+E        +      where 0     2024-01-05 00:00:00+00:00\n1     2024-01-05 04:00:00+00:00\n2     2024-01-05 08:00:00+00:00\n3     2024-01-05 12:00...24-02-09 04:00:00+00:00\n211   2024-02-09 08:00:00+00:00\nName: candle_timestamp, Length: 212, dtype: datetime64[us, UTC] =     pair  ...            label_end_time\n0    BTC  ... 2024-01-05 16:00:00+00:00\n1    BTC  ... 2024-01-05 20:00:00+00:0... 16:00:00+00:00\n210  BTC  ... 2024-02-09 20:00:00+00:00\n211  BTC  ... 2024-02-10 00:00:00+00:00\n\n[212 rows x 4 columns].candle_timestamp
+E        +        where     pair  ...            label_end_time\n0    BTC  ... 2024-01-05 16:00:00+00:00\n1    BTC  ... 2024-01-05 20:00:00+00:0... 16:00:00+00:00\n210  BTC  ... 2024-02-09 20:00:00+00:00\n211  BTC  ... 2024-02-10 00:00:00+00:00\n\n[212 rows x 4 columns] = Dataset(X=     %-rsi-period-6  %-ema-distance-period-6  ...    %-hour  %-day-of-week\n0         87.430661              ...'BTC': {'input': 239, 'feature_unavailable': 24, 'label_unavailable': 3, 'excluded': 27, 'kept': 212, 'time_gaps': 1}}).metadata
+E        +      and   0     2024-01-05 16:00:00+00:00\n1     2024-01-05 20:00:00+00:00\n2     2024-01-06 00:00:00+00:00\n3     2024-01-06 04:00...2024-02-09 20:00:00+00:00\n211   2024-02-10 00:00:00+00:00\nName: label_end_time, Length: 212, dtype: datetime64[us, UTC] =     pair  ...            label_end_time\n0    BTC  ... 2024-01-05 16:00:00+00:00\n1    BTC  ... 2024-01-05 20:00:00+00:0... 16:00:00+00:00\n210  BTC  ... 2024-02-09 20:00:00+00:00\n211  BTC  ... 2024-02-10 00:00:00+00:00\n\n[212 rows x 4 columns].label_end_time
+E        +        where     pair  ...            label_end_time\n0    BTC  ... 2024-01-05 16:00:00+00:00\n1    BTC  ... 2024-01-05 20:00:00+00:0... 16:00:00+00:00\n210  BTC  ... 2024-02-09 20:00:00+00:00\n211  BTC  ... 2024-02-10 00:00:00+00:00\n\n[212 rows x 4 columns] = Dataset(X=     %-rsi-period-6  %-ema-distance-period-6  ...    %-hour  %-day-of-week\n0         87.430661              ...'BTC': {'input': 239, 'feature_unavailable': 24, 'label_unavailable': 3, 'excluded': 27, 'kept': 212, 'time_gaps': 1}}).metadata
+
+tests/unit/test_sample_governance.py:17: AssertionError
+______ test_every_input_row_has_eligibility_identity_and_exclusion_reason ______
+
+candles =                          date        open  ...       close      volume
+0   2024-01-01 00:00:00+00:00  100.100000  ... ...  111.031280  693.560778
+239 2024-02-09 20:00:00+00:00  110.727274  ...  110.616658  699.999364
+
+[240 rows x 6 columns]
+
+    def test_every_input_row_has_eligibility_identity_and_exclusion_reason(candles):
+        dataset = build_dataset({"BTC": candles}, ExperimentConfig())
+>       assert dataset.metadata.sample_id.is_unique
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_sample_governance.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self =     pair  ...            label_end_time
+0    BTC  ... 2024-01-05 16:00:00+00:00
+1    BTC  ... 2024-01-05 20:00:00+00:0... 16:00:00+00:00
+211  BTC  ... 2024-02-09 20:00:00+00:00
+212  BTC  ... 2024-02-10 00:00:00+00:00
+
+[213 rows x 4 columns]
+name = 'sample_id'
+
+    @final
+    def __getattr__(self, name: str):
+        """
+        After regular attribute access, try looking up the name
+        This allows simpler access to columns for interactive use.
+        """
+        # Note: obj.x will always call obj.__getattribute__('x') prior to
+        # calling obj.__getattr__('x').
+        if (
+            name not in self._internal_names_set
+            and name not in self._metadata
+            and name not in self._accessors
+            and self._info_axis._can_hold_identifiers_and_holds_name(name)
+        ):
+            return self[name]
+>       return object.__getattribute__(self, name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'DataFrame' object has no attribute 'sample_id'. Did you mean: 'sample'?
+
+../freqtrade/.venv/lib/python3.13/site-packages/pandas/core/generic.py:6194: AttributeError
+____________ test_dataset_rejects_invented_or_duplicated_provenance ____________
+
+candles =                          date        open  ...       close      volume
+0   2024-01-01 00:00:00+00:00  100.100000  ... ...  111.031280  693.560778
+239 2024-02-09 20:00:00+00:00  110.727274  ...  110.616658  699.999364
+
+[240 rows x 6 columns]
+
+    def test_dataset_rejects_invented_or_duplicated_provenance(candles):
+        good = build_dataset({"BTC": candles}, ExperimentConfig())
+>       with pytest.raises(DataContractError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_sample_governance.py:41: Failed
+______________ test_off_grid_and_zero_eligible_are_hard_failures _______________
+
+candles =                          date        open  ...       close      volume
+0   2024-01-01 00:00:00+00:00  100.100000  ... ...  111.031280  693.560778
+239 2024-02-09 20:00:00+00:00  110.727274  ...  110.616658  699.999364
+
+[240 rows x 6 columns]
+
+    def test_off_grid_and_zero_eligible_are_hard_failures(candles):
+>       with pytest.raises(DataContractError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_sample_governance.py:54: Failed
+________________ test_dataset_build_is_repeatable_and_read_only ________________
+
+candles =                          date        open  ...       close      volume
+0   2024-01-01 00:00:00+00:00  100.100000  ... ...  111.031280  693.560778
+239 2024-02-09 20:00:00+00:00  110.727274  ...  110.616658  699.999364
+
+[240 rows x 6 columns]
+
+    def test_dataset_build_is_repeatable_and_read_only(candles):
+        before = candles.copy(deep=True)
+        first = build_dataset({"BTC": candles}, ExperimentConfig())
+        second = build_dataset({"BTC": candles}, ExperimentConfig())
+        pd.testing.assert_frame_equal(first.X, second.X)
+        pd.testing.assert_frame_equal(first.metadata, second.metadata)
+>       pd.testing.assert_frame_equal(first.exclusions, second.exclusions)
+                                      ^^^^^^^^^^^^^^^^
+E       AttributeError: 'Dataset' object has no attribute 'exclusions'
+
+tests/unit/test_sample_governance.py:66: AttributeError
+__________ test_an_empty_pair_cannot_be_silently_hidden_by_other_pair __________
+
+candles =                          date        open  ...       close      volume
+0   2024-01-01 00:00:00+00:00  100.100000  ... ...  111.031280  693.560778
+239 2024-02-09 20:00:00+00:00  110.727274  ...  110.616658  699.999364
+
+[240 rows x 6 columns]
+
+    def test_an_empty_pair_cannot_be_silently_hidden_by_other_pair(candles):
+>       with pytest.raises(DataContractError, match="BTC"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_sample_governance.py:71: Failed
+=========================== short test summary info ============================
+FAILED tests/unit/test_sample_governance.py::test_gap_excludes_labels_crossing_missing_bar_and_restarts_warmup
+FAILED tests/unit/test_sample_governance.py::test_every_input_row_has_eligibility_identity_and_exclusion_reason
+FAILED tests/unit/test_sample_governance.py::test_dataset_rejects_invented_or_duplicated_provenance
+FAILED tests/unit/test_sample_governance.py::test_off_grid_and_zero_eligible_are_hard_failures
+FAILED tests/unit/test_sample_governance.py::test_dataset_build_is_repeatable_and_read_only
+FAILED tests/unit/test_sample_governance.py::test_an_empty_pair_cannot_be_silently_hidden_by_other_pair
+6 failed in 1.11s

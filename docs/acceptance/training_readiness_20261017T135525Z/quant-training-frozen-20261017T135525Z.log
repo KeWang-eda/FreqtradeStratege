@@ -1,0 +1,17 @@
+........................................................................ [ 18%]
+........................................................................ [ 36%]
+........................................................................ [ 54%]
+........................................................................ [ 72%]
+........................................................................ [ 90%]
+.....................................                                    [100%]
+=============================== warnings summary ===============================
+tests/contract/test_backends_and_splits.py: 1 warning
+tests/e2e/test_research_pipeline.py: 150 warnings
+tests/integration/test_freqtrade_regression_report.py: 660 warnings
+tests/integration/test_offline_freqtrade.py: 56 warnings
+  /PYTHON_ENV/lib/python3.13/site-packages/joblib/numpy_pickle.py:207: DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+  As an alternative, you can create a new view using np.reshape (with copy=False if needed).
+    array.shape = self.shape
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+397 passed, 867 warnings in 54.23s

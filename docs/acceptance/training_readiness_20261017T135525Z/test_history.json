@@ -1,0 +1,201 @@
+{
+  "scope": "This-round executed test attempts; never add these counts together as final coverage",
+  "final_junit": "quant-training-delivery-20261017T135525Z.xml",
+  "runs": [
+    {
+      "junit": "quant-training-admission-unit.xml",
+      "sha256": "9da2072ee9e9615032c4075db73f9304a7d114e5da662f7ab4d62d3b9a8aa56f",
+      "counts": {
+        "tests": 18,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "passed": 18,
+      "exit_code": 0,
+      "exit_evidence": "Actual tool process result and JUnit agree",
+      "timestamp": "2026-10-17T22:21:25.662670+08:00",
+      "duration_seconds": 1.566
+    },
+    {
+      "junit": "quant-training-baseline-20261017T135525Z.xml",
+      "sha256": "55265118d0683ea0ea21be5de08d2308db9a079b1dc4bc47b0a557a69d50bdef",
+      "counts": {
+        "tests": 298,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "passed": 298,
+      "exit_code": 0,
+      "exit_evidence": "Actual tool process result and JUnit agree",
+      "timestamp": "2026-10-17T21:56:19.954920+08:00",
+      "duration_seconds": 52.702
+    },
+    {
+      "junit": "quant-training-delivery-20261017T135525Z.xml",
+      "sha256": "625fc65be67fec0d482184d86e8c5149f03ac9a167cd84e5e5d107cb68a49d00",
+      "counts": {
+        "tests": 398,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "passed": 398,
+      "exit_code": 0,
+      "exit_evidence": "Actual tool process result and JUnit agree",
+      "timestamp": "2026-10-17T22:21:39.577402+08:00",
+      "duration_seconds": 55.682
+    },
+    {
+      "junit": "quant-training-final-20261017T135525Z.xml",
+      "sha256": "901baea179cf89d412f5938226f294c70d4bf67892f64fc91d8ddbea802803ee",
+      "counts": {
+        "tests": 390,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "passed": 390,
+      "exit_code": 0,
+      "exit_evidence": "Actual tool process result and JUnit agree",
+      "timestamp": "2026-10-17T22:17:12.736644+08:00",
+      "duration_seconds": 53.955
+    },
+    {
+      "junit": "quant-training-formal-admission.xml",
+      "sha256": "31b587cec040ffa9cbe34956949de9d46ab7dd0bde0144c8d890e5003c70f63f",
+      "counts": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "passed": 5,
+      "exit_code": 0,
+      "exit_evidence": "Actual tool process result and JUnit agree",
+      "timestamp": "2026-10-17T22:18:36.725377+08:00",
+      "duration_seconds": 1.029
+    },
+    {
+      "junit": "quant-training-frozen-20261017T135525Z.xml",
+      "sha256": "08a8d868fa252d991c947c205fdfab6b0fc80b1dfcd3317965332a9a26676e22",
+      "counts": {
+        "tests": 397,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "passed": 397,
+      "exit_code": 0,
+      "exit_evidence": "Actual tool process result and JUnit agree",
+      "timestamp": "2026-10-17T22:19:42.159483+08:00",
+      "duration_seconds": 54.231
+    },
+    {
+      "junit": "quant-training-lineage-red.xml",
+      "sha256": "9254719e8632ebd4ff55a253d6a9737c2d71d59426141c36abe56f07a871ad3e",
+      "counts": {
+        "tests": 3,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      "passed": 2,
+      "exit_code": 1,
+      "exit_evidence": "Actual tool process result and JUnit agree",
+      "timestamp": "2026-10-17T22:03:39.243360+08:00",
+      "duration_seconds": 1.491
+    },
+    {
+      "junit": "quant-training-native-diagnostic.xml",
+      "sha256": "d35ac41185377aa73189bc3588592d23ac282ea844ec74b428a02a2ca917041d",
+      "counts": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "passed": 4,
+      "exit_code": 0,
+      "exit_evidence": "Actual tool process result and JUnit agree",
+      "timestamp": "2026-10-17T22:06:46.545381+08:00",
+      "duration_seconds": 2.243
+    },
+    {
+      "junit": "quant-training-phase1-final.xml",
+      "sha256": "c82b9cfed271b4d5c8f1facf2658ba95dfc54460d3e45da95deaa627908616a9",
+      "counts": {
+        "tests": 94,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "passed": 94,
+      "exit_code": 0,
+      "exit_evidence": "Actual tool process result and JUnit agree",
+      "timestamp": "2026-10-17T22:04:09.274313+08:00",
+      "duration_seconds": 3.193
+    },
+    {
+      "junit": "quant-training-phase1-green.xml",
+      "sha256": "7fa5278cd0caf6f66d67ccf3eafea7a91e0e95572d7724070cf395547d367131",
+      "counts": {
+        "tests": 91,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "passed": 91,
+      "exit_code": 0,
+      "exit_evidence": "Actual tool process result and JUnit agree",
+      "timestamp": "2026-10-17T22:02:28.547380+08:00",
+      "duration_seconds": 2.752
+    },
+    {
+      "junit": "quant-training-phase1-red.xml",
+      "sha256": "237555b6cddaf5986a6356a152b9997a59cb064b6cdbc775cb216d2bd908f347",
+      "counts": {
+        "tests": 6,
+        "failures": 6,
+        "errors": 0,
+        "skipped": 0
+      },
+      "passed": 0,
+      "exit_code": 1,
+      "exit_evidence": "Actual tool process result and JUnit agree",
+      "timestamp": "2026-10-17T22:01:08.712949+08:00",
+      "duration_seconds": 1.11
+    },
+    {
+      "junit": "quant-training-readiness-unit-final.xml",
+      "sha256": "e022331aa2df49e302442ab589ed5f6b2af82b4ca47bce876d2b65c3f32a4089",
+      "counts": {
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "passed": 12,
+      "exit_code": 0,
+      "exit_evidence": "Actual tool process result and JUnit agree",
+      "timestamp": "2026-10-17T22:16:44.481579+08:00",
+      "duration_seconds": 1.536
+    },
+    {
+      "junit": "quant-training-readiness-unit.xml",
+      "sha256": "043237188c7f0321ef45ac535f11c9a3c3f06db8318837910d7238cecc19ff2d",
+      "counts": {
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "passed": 9,
+      "exit_code": 0,
+      "exit_evidence": "Actual tool process result and JUnit agree",
+      "timestamp": "2026-10-17T22:14:05.009089+08:00",
+      "duration_seconds": 1.019
+    }
+  ]
+}

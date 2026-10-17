@@ -17,16 +17,23 @@ def main(argv: list[str] | None = None) -> int:
     """Run research tasks; return 0 on success and 2 for invalid requests."""
     parser = argparse.ArgumentParser(prog="quant-strategy")
     subparsers = parser.add_subparsers(dest="command", required=True)
-    for command in ("validate", "run", "dataset-build"):
+    for command in ("validate", "run", "formal-run", "dataset-build"):
         sub = subparsers.add_parser(
             command, aliases=["config-check"] if command == "validate" else []
         )
         sub.add_argument("-c", "--config", action="append", required=True)
         sub.add_argument("--set", dest="overrides", action="append", default=[])
-        if command == "run":
+        if command in {"run", "formal-run"}:
             sub.add_argument("--output", default="/tmp/quant-strategy-artifacts")
             sub.add_argument("--experiment-id")
             sub.add_argument("--evaluate-final-holdout", action="store_true")
+        if command == "formal-run":
+            sub.add_argument(
+                "--readiness",
+                type=Path,
+                required=True,
+                help="Current six-stage readiness.json; FAIL/PARTIAL/BLOCKED deny training",
+            )
     compare = subparsers.add_parser("compare")
     compare.add_argument("experiments", nargs="+")
     for command in ("artifact-check", "leakage-check"):
@@ -52,6 +59,10 @@ def _execute(args: argparse.Namespace) -> int:
         print(json.dumps(report, ensure_ascii=False, indent=2))
         return 0 if report["passed"] else 1
     config = load_config(args.config, args.overrides)
+    if args.command == "formal-run":
+        from quant_strategy.validation.admission import require_training_admission
+
+        require_training_admission(args.readiness, config)
     if args.command in {"validate", "config-check"}:
         if config.model.backend == "standalone":
             create_regressor(config.model, config.seed)

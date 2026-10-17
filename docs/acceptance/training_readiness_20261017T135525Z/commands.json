@@ -1,0 +1,188 @@
+{
+  "run_id": "training_readiness_20261017T135525Z",
+  "recorded_at": "2026-10-17T14:34:46.879564+00:00",
+  "scope": "Actual executions in this task. Paths use public root tokens; old historical acceptance is not substituted.",
+  "commands": [
+    {
+      "id": "initial-baseline",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "-q",
+        "--basetemp=/RUN/quant-training-baseline-20261017T135525Z",
+        "--junitxml=/RUN/quant-training-baseline-20261017T135525Z.xml"
+      ],
+      "exit_code": 0,
+      "result": "298 passed /0 failed/0 skipped",
+      "junit": "quant-training-baseline-20261017T135525Z.xml",
+      "junit_sha256": "55265118d0683ea0ea21be5de08d2308db9a079b1dc4bc47b0a557a69d50bdef"
+    },
+    {
+      "id": "phase1-red",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "tests/unit/test_sample_governance.py",
+        "-q"
+      ],
+      "exit_code": 1,
+      "result": "6 failed",
+      "junit": "quant-training-phase1-red.xml",
+      "junit_sha256": "237555b6cddaf5986a6356a152b9997a59cb064b6cdbc775cb216d2bd908f347"
+    },
+    {
+      "id": "schema-red",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "tests/integration/test_dataset_governance.py",
+        "-q"
+      ],
+      "exit_code": 1,
+      "result": "1 failed /2 passed",
+      "junit": "quant-training-lineage-red.xml",
+      "junit_sha256": "9254719e8632ebd4ff55a253d6a9737c2d71d59426141c36abe56f07a871ad3e"
+    },
+    {
+      "id": "phase1-repaired",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "tests/unit/test_sample_governance.py",
+        "tests/unit/test_training_data_contracts.py",
+        "tests/integration/test_dataset_governance.py",
+        "tests/unit/test_config_labels_features.py",
+        "tests/leakage/test_information_boundaries.py",
+        "-q"
+      ],
+      "exit_code": 0,
+      "result": "94 passed /0 failed/0 skipped",
+      "junit": "quant-training-phase1-final.xml",
+      "junit_sha256": "c82b9cfed271b4d5c8f1facf2658ba95dfc54460d3e45da95deaa627908616a9"
+    },
+    {
+      "id": "source-audit-final",
+      "command": [
+        "python",
+        "tools/audit_training_data.py",
+        "--output",
+        "docs/acceptance/training_readiness_20261017T135525Z/source_sample_audit"
+      ],
+      "exit_code": 0,
+      "report": "source_sample_audit/phase1_data.json",
+      "report_sha256": "dec3a4f9dac5c0025d830933c1c81421aad3969444ce7ba11ed6e41e6ee5401c"
+    },
+    {
+      "id": "native-boundary-diagnostic",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "tests/integration/test_native_training_boundaries.py",
+        "-q"
+      ],
+      "exit_code": 0,
+      "result": "4 detector tests passed; actual native boundary gate FAIL",
+      "junit": "quant-training-native-diagnostic.xml",
+      "junit_sha256": "d35ac41185377aa73189bc3588592d23ac282ea844ec74b428a02a2ca917041d"
+    },
+    {
+      "id": "final-pytest",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "-q",
+        "--basetemp=/RUN/quant-training-delivery-20261017T135525Z",
+        "--junitxml=/RUN/quant-training-delivery-20261017T135525Z.xml"
+      ],
+      "exit_code": 0,
+      "result": "398 passed /0 failed/0 skipped",
+      "junit": "quant-training-delivery-20261017T135525Z.xml",
+      "junit_sha256": "625fc65be67fec0d482184d86e8c5149f03ac9a167cd84e5e5d107cb68a49d00"
+    },
+    {
+      "id": "independent-readiness",
+      "command": [
+        "python",
+        "tools/accept_training_readiness.py",
+        "--evidence",
+        "docs/acceptance/training_readiness_20261017T135525Z",
+        "--test-run",
+        "docs/acceptance/training_readiness_20261017T135525Z/test_run.json",
+        "--output",
+        "docs/acceptance/training_readiness_20261017T135525Z/final_gate"
+      ],
+      "exit_code": 1,
+      "report": "final_gate/readiness.json",
+      "report_sha256": "8ebc7ae45848fdc866bd4a93fed9410695ce0f08ab16555348cef8fea55cac88"
+    },
+    {
+      "id": "formal-training-denial",
+      "command": [
+        "python",
+        "-m",
+        "quant_strategy.cli",
+        "formal-run",
+        "-c",
+        "configs/base.yaml",
+        "-c",
+        "configs/environment/local.yaml",
+        "--readiness",
+        "docs/acceptance/training_readiness_20261017T135525Z/final_gate/readiness.json",
+        "--output",
+        "/RUN/quant-training-denied-20261017T135525Z",
+        "--experiment-id",
+        "denied"
+      ],
+      "exit_code": 2,
+      "training_output_created": false,
+      "log": "formal_training_denied.log",
+      "log_sha256": "c4302c27297e63e3e907e96b2807c2bbf4fbff8166c08a0e6b17a286615283d1"
+    },
+    {
+      "id": "ruff",
+      "command": [
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools",
+        "MyStrategy.py",
+        "feature.py",
+        "model.py",
+        "util.py",
+        "verify_no_lookahead.py",
+        "_quant_strategy_bootstrap.py"
+      ],
+      "exit_code": 0,
+      "log": "lint.log",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "id": "format",
+      "command": [
+        "ruff",
+        "format",
+        "--check",
+        "src",
+        "tests",
+        "tools",
+        "MyStrategy.py",
+        "feature.py",
+        "model.py",
+        "util.py",
+        "verify_no_lookahead.py",
+        "_quant_strategy_bootstrap.py"
+      ],
+      "exit_code": 0,
+      "result": "95 files already formatted",
+      "log": "format.log",
+      "log_sha256": "7f3da2bcc8322b1f7a5cd484d184d90cc4d8cf31a2e46927ad3b83962a3c2a51"
+    }
+  ]
+}

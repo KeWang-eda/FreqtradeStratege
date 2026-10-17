@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "phase": 1,
+  "status": "PASS",
+  "executed_at": "2026-10-17T14:07:40.143228+00:00",
+  "environment": {
+    "python": "3.13.13",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.0",
+    "xgboost": "3.4.1",
+    "lightgbm": "4.7.0",
+    "TA-Lib": "0.7.1",
+    "technical": "1.7.0",
+    "freqtrade": "2026.7",
+    "pyarrow": "25.0.1",
+    "PyYAML": "6.0.3"
+  },
+  "git": {
+    "commit": "a378f7e5ba05b2dd5a4805a63a1ba80dbedaf5fa",
+    "dirty": true,
+    "diff_sha256": "cfc44898198c2e775fc768534f68ee94d63bf04dcaf5f94caedc6edfba2f136c"
+  },
+  "research_config": {
+    "name": "baseline_raw",
+    "label": {
+      "mode": "raw",
+      "prediction_horizon": 3,
+      "volatility_period": 14
+    },
+    "validation": {
+      "method": "purged_walk_forward",
+      "n_splits": 3,
+      "test_size": 0.2,
+      "min_train_size": null,
+      "train_window_size": null,
+      "purge_candles": null,
+      "purge_reason": null,
+      "embargo_candles": 3,
+      "final_holdout_fraction": 0.15
+    },
+    "model": {
+      "backend": "standalone",
+      "name": "ridge",
+      "params": {
+        "alpha": 10.0
+      }
+    },
+    "feature_version": "baseline-v2",
+    "seed": 42,
+    "features": [],
+    "periods": [
+      6,
+      14,
+      24
+    ],
+    "timeframe": "4h",
+    "data": {
+      "BTC/USDT:USDT": "data/futures/BTC_USDT_USDT-4h-futures.feather",
+      "ETH/USDT:USDT": "data/futures/ETH_USDT_USDT-4h-futures.feather"
+    }
+  },
+  "config_sha256": "df65c97464aab1f0aed5028347d125207c4743bbee103f7d25057aa3480f9852",
+  "input_files": {
+    "BTC/USDT:USDT": {
+      "path": "data/futures/BTC_USDT_USDT-4h-futures.feather",
+      "sha256": "841837255751a6dfe5a4507fdff5b4cace91baef23ba079816ed7ecc165e0121"
+    },
+    "ETH/USDT:USDT": {
+      "path": "data/futures/ETH_USDT_USDT-4h-futures.feather",
+      "sha256": "3593cd46198d451305a280683e128c48a874be895295e5c3665161945767d0bc"
+    }
+  },
+  "dataset_sha256": "cb240c0c6d64ab8b37465a902e02c21c12952a7f371a5c5af4f4fe37ef94dd3d",
+  "samples": 29706,
+  "features": [
+    "%-rsi-period-6",
+    "%-ema-distance-period-6",
+    "%-sma-distance-period-6",
+    "%-atr-ratio-period-6",
+    "%-relative-volume-period-6",
+    "%-momentum-period-6",
+    "%-rsi-period-14",
+    "%-ema-distance-period-14",
+    "%-sma-distance-period-14",
+    "%-atr-ratio-period-14",
+    "%-relative-volume-period-14",
+    "%-momentum-period-14",
+    "%-rsi-period-24",
+    "%-ema-distance-period-24",
+    "%-sma-distance-period-24",
+    "%-atr-ratio-period-24",
+    "%-relative-volume-period-24",
+    "%-momentum-period-24",
+    "%-return",
+    "%-range",
+    "%-body",
+    "%-volume-change",
+    "%-volatility-6",
+    "%-volatility-24",
+    "%-hour",
+    "%-day-of-week"
+  ],
+  "quality": {
+    "BTC/USDT:USDT": {
+      "input": 14880,
+      "feature_unavailable": 24,
+      "label_unavailable": 3,
+      "excluded": 27,
+      "kept": 14853,
+      "time_gaps": 0
+    },
+    "ETH/USDT:USDT": {
+      "input": 14880,
+      "feature_unavailable": 24,
+      "label_unavailable": 3,
+      "excluded": 27,
+      "kept": 14853,
+      "time_gaps": 0
+    }
+  },
+  "sources_by_status": {
+    "PASS": 144,
+    "PARTIAL": 0,
+    "BLOCKED": 72,
+    "FAIL": 0
+  },
+  "source_policy": "Missing/unknown sources quarantined; no global zero-missing-rate rule. Funding schedule unverified sources cannot authorize formal funding evaluation.",
+  "thresholds": {
+    "illegal_eligible_samples": 0,
+    "duplicate_sample_ids": 0,
+    "input_mutations": 0,
+    "minimum_samples": "Every requested pair must retain >=1; splitter enforces window-specific minima"
+  },
+  "time_contract": "UTC open t; features observed at t+bar; label end at t+horizon bars+bar; reset recursive features at every gap",
+  "availability_scope": "Research OHLCV samples; native mark/funding inventory is separate and not silently approved",
+  "artifacts": {
+    "sample_exclusions.parquet": "bfb9a7cbe57c01e108a1b59609e0c40858a9d13cdd1d01cb2a96d6b0b4c8f98d",
+    "source_audit.json": "2676921d786d639cc5e973a878f018683dbba35d65f5dac4640a2ab4dcc1f6db",
+    "sample_metadata.parquet": "7bc73ac9be747e4717bc64176e1f1c21daa5dd422b08e0f488bc20ca08947a58"
+  }
+}

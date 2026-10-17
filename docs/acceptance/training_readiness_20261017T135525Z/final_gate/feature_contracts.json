@@ -1,0 +1,470 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "timeframe": "4h",
+  "feature_count": 26,
+  "columns": {
+    "%-rsi-period-6": {
+      "status": "PASS",
+      "sources": [
+        "close"
+      ],
+      "implementation": "features/momentum.py:rsi",
+      "earliest_dependency": {
+        "kind": "segment_start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": true
+    },
+    "%-ema-distance-period-6": {
+      "status": "PASS",
+      "sources": [
+        "close"
+      ],
+      "implementation": "features/momentum.py:ema-distance",
+      "earliest_dependency": {
+        "kind": "segment_start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": true
+    },
+    "%-sma-distance-period-6": {
+      "status": "PASS",
+      "sources": [
+        "close"
+      ],
+      "implementation": "features/momentum.py:SMA/close",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": -5,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-atr-ratio-period-6": {
+      "status": "PASS",
+      "sources": [
+        "high",
+        "low",
+        "close"
+      ],
+      "implementation": "features/momentum.py:ATR/close",
+      "earliest_dependency": {
+        "kind": "segment_start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": true
+    },
+    "%-relative-volume-period-6": {
+      "status": "PASS",
+      "sources": [
+        "volume"
+      ],
+      "implementation": "features/momentum.py:volume/rolling_mean",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": -5,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-momentum-period-6": {
+      "status": "PASS",
+      "sources": [
+        "close"
+      ],
+      "implementation": "features/momentum.py:momentum",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": -6,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-rsi-period-14": {
+      "status": "PASS",
+      "sources": [
+        "close"
+      ],
+      "implementation": "features/momentum.py:rsi",
+      "earliest_dependency": {
+        "kind": "segment_start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": true
+    },
+    "%-ema-distance-period-14": {
+      "status": "PASS",
+      "sources": [
+        "close"
+      ],
+      "implementation": "features/momentum.py:ema-distance",
+      "earliest_dependency": {
+        "kind": "segment_start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": true
+    },
+    "%-sma-distance-period-14": {
+      "status": "PASS",
+      "sources": [
+        "close"
+      ],
+      "implementation": "features/momentum.py:SMA/close",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": -13,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-atr-ratio-period-14": {
+      "status": "PASS",
+      "sources": [
+        "high",
+        "low",
+        "close"
+      ],
+      "implementation": "features/momentum.py:ATR/close",
+      "earliest_dependency": {
+        "kind": "segment_start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": true
+    },
+    "%-relative-volume-period-14": {
+      "status": "PASS",
+      "sources": [
+        "volume"
+      ],
+      "implementation": "features/momentum.py:volume/rolling_mean",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": -13,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-momentum-period-14": {
+      "status": "PASS",
+      "sources": [
+        "close"
+      ],
+      "implementation": "features/momentum.py:momentum",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": -14,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-rsi-period-24": {
+      "status": "PASS",
+      "sources": [
+        "close"
+      ],
+      "implementation": "features/momentum.py:rsi",
+      "earliest_dependency": {
+        "kind": "segment_start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": true
+    },
+    "%-ema-distance-period-24": {
+      "status": "PASS",
+      "sources": [
+        "close"
+      ],
+      "implementation": "features/momentum.py:ema-distance",
+      "earliest_dependency": {
+        "kind": "segment_start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": true
+    },
+    "%-sma-distance-period-24": {
+      "status": "PASS",
+      "sources": [
+        "close"
+      ],
+      "implementation": "features/momentum.py:SMA/close",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": -23,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-atr-ratio-period-24": {
+      "status": "PASS",
+      "sources": [
+        "high",
+        "low",
+        "close"
+      ],
+      "implementation": "features/momentum.py:ATR/close",
+      "earliest_dependency": {
+        "kind": "segment_start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": true
+    },
+    "%-relative-volume-period-24": {
+      "status": "PASS",
+      "sources": [
+        "volume"
+      ],
+      "implementation": "features/momentum.py:volume/rolling_mean",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": -23,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-momentum-period-24": {
+      "status": "PASS",
+      "sources": [
+        "close"
+      ],
+      "implementation": "features/momentum.py:momentum",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": -24,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-return": {
+      "status": "PASS",
+      "sources": [
+        "close"
+      ],
+      "implementation": "features/price.py or technical.py:%-return",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": -1,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-range": {
+      "status": "PASS",
+      "sources": [
+        "high",
+        "low",
+        "close"
+      ],
+      "implementation": "features/price.py or technical.py:%-range",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": 0,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-body": {
+      "status": "PASS",
+      "sources": [
+        "open",
+        "close"
+      ],
+      "implementation": "features/price.py or technical.py:%-body",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": 0,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-volume-change": {
+      "status": "PASS",
+      "sources": [
+        "volume"
+      ],
+      "implementation": "features/price.py or technical.py:%-volume-change",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": -1,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-volatility-6": {
+      "status": "PASS",
+      "sources": [
+        "close"
+      ],
+      "implementation": "features/price.py or technical.py:%-volatility-6",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": -6,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-volatility-24": {
+      "status": "PASS",
+      "sources": [
+        "close"
+      ],
+      "implementation": "features/price.py or technical.py:%-volatility-24",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": -24,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-hour": {
+      "status": "PASS",
+      "sources": [
+        "date"
+      ],
+      "implementation": "features/price.py or technical.py:%-hour",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": 0,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    },
+    "%-day-of-week": {
+      "status": "PASS",
+      "sources": [
+        "date"
+      ],
+      "implementation": "features/price.py or technical.py:%-day-of-week",
+      "earliest_dependency": {
+        "kind": "bounded_window",
+        "offset_candles": 0,
+        "clamp": "continuous segment start"
+      },
+      "latest_dependency": {
+        "offset_candles": 0,
+        "observation": "current candle close"
+      },
+      "available_at": "candle_open + timeframe",
+      "recursive_from_segment_start": false
+    }
+  },
+  "scope": "independent research feature schema; future labels excluded",
+  "continuous_segments": "recursive state starts at each segment's first observed candle",
+  "bounds_semantics": "earliest dependency is inclusive; latest values are unavailable until candle close"
+}

@@ -1,0 +1,24 @@
+..F                                                                      [100%]
+=================================== FAILURES ===================================
+_______________ test_schema_changes_are_part_of_dataset_identity _______________
+
+candles =                          date        open  ...       close      volume
+0   2024-01-01 00:00:00+00:00  100.100000  ... ...  111.031280  693.560778
+239 2024-02-09 20:00:00+00:00  110.727274  ...  110.616658  699.999364
+
+[240 rows x 6 columns]
+
+    def test_schema_changes_are_part_of_dataset_identity(candles):
+        from quant_strategy.experiments.runner import _dataset_hash
+    
+        good = build_dataset({"BTC": candles}, ExperimentConfig())
+        before = _dataset_hash(good)
+        good.X.rename(columns={good.X.columns[0]: "%different_semantics"}, inplace=True)
+>       assert _dataset_hash(good) != before
+E       AssertionError: assert 'a88d081866b38ed380b7f30a44a98b9611b8128531e858cd849dcbd6f18100f1' != 'a88d081866b38ed380b7f30a44a98b9611b8128531e858cd849dcbd6f18100f1'
+E        +  where 'a88d081866b38ed380b7f30a44a98b9611b8128531e858cd849dcbd6f18100f1' = <function _dataset_hash at 0x7f9774493420>(Dataset(X=     %different_semantics  %-ema-distance-period-6  ...    %-hour  %-day-of-week\n0               87.430661  ..._unavailable\n26  ab1a8838e706d0737ff67bbebdb45345b22ebc08476657...  ...  label_tail_unavailable\n\n[27 rows x 7 columns]))
+
+tests/integration/test_dataset_governance.py:53: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_dataset_governance.py::test_schema_changes_are_part_of_dataset_identity
+1 failed, 2 passed in 1.49s

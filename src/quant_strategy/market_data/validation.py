@@ -18,6 +18,12 @@ def validate_ohlcv(dataframe: pd.DataFrame) -> pd.DataFrame:
     if dates.hasnans or dates.has_duplicates or not dates.is_monotonic_increasing:
         raise DataContractError("OHLCV dates must be nonmissing, unique and increasing")
     frame["date"] = dates.tz_convert("UTC")
+    if any(
+        not pd.api.types.is_numeric_dtype(frame[column])
+        or pd.api.types.is_bool_dtype(frame[column])
+        for column in required[1:]
+    ):
+        raise DataContractError("OHLCV numeric fields must have numeric dtypes")
     try:
         numeric = frame[required[1:]].to_numpy(dtype=float)
     except (TypeError, ValueError) as exc:
