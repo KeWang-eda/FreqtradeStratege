@@ -1,0 +1,7 @@
+{
+  "policy": "deny DNS/connect/sendto through Python audit hook plus unshare -Urn",
+  "scope": "BTC/ETH 20250101-20250115 data coverage audit only",
+  "events": [],
+  "network_operations": 0,
+  "exit_code": 0
+}

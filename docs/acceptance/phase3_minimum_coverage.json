@@ -1,0 +1,506 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-17T13:09:28.650799+00:00",
+  "versions": {
+    "freqtrade": "2026.7",
+    "ccxt": "4.5.75",
+    "pandas": "3.0.5",
+    "numpy": "2.5.2",
+    "pyarrow": "25.0.1"
+  },
+  "configs": [
+    {
+      "path": "config.json",
+      "sha256": "2d12ac5c86fc76fedaa2b73e84237d9a2f1eb265587b81f6c155bafb6fb6acff"
+    },
+    {
+      "path": "configs/backtest-local.json",
+      "sha256": "f45574361fbe09487abfa536d0b3ce90fa9935bdbb59c9f62e9bff572e7a6b37"
+    }
+  ],
+  "baseline": {
+    "path": "docs/acceptance/phase0_inventory.json",
+    "sha256": "8d58daea11fc1b6c11e863f6b25daae61f83470533e7ba82798b3b3575079dc7"
+  },
+  "requirements": {
+    "timerange": "20250101-20250115",
+    "timeframe": "4h",
+    "include_timeframes": [
+      "4h"
+    ],
+    "start": "2025-01-01T00:00:00+00:00",
+    "stop_exclusive": "2025-01-15T00:00:00+00:00",
+    "strategy_startup_candles": 100,
+    "required_startup_candles": {
+      "4h": 2290
+    },
+    "required_starts": {
+      "4h": "2023-12-16T08:00:00+00:00"
+    },
+    "train_period_days": 365,
+    "backtest_period_days": 7,
+    "label_horizon_candles": 3,
+    "include_shifted_candles": 1,
+    "indicator_periods_candles": [
+      6,
+      14,
+      24
+    ]
+  },
+  "trading_pairs": [
+    "BTC/USDT:USDT",
+    "ETH/USDT:USDT"
+  ],
+  "correlation_pairs": [
+    "BTC/USDT:USDT",
+    "ETH/USDT:USDT"
+  ],
+  "snapshot": {
+    "path": "docs/baseline/acceptance/binance-usdt-market-snapshot.json",
+    "file_sha256": "fe78bb00d2384991cc20e76097dfaf8b0c7df5ae88f0dc21cf80181d717db0ff",
+    "sha256": "c085efcfe8e2c3f62e39fb5e983e601fc89fd20d7c45893e0ade640092ac5bc2",
+    "acquired_at": "2026-10-17T12:04:06.169588+00:00",
+    "pairs": [
+      "BTC/USDT:USDT",
+      "ETH/USDT:USDT"
+    ],
+    "versions": {
+      "freqtrade": "2026.7",
+      "ccxt": "4.5.75"
+    },
+    "represents_historical_market_rules": false
+  },
+  "pairs": [
+    {
+      "pair": "BTC/USDT:USDT",
+      "role": "trading",
+      "raw_data_ready": true,
+      "metadata_scope_ready": true,
+      "offline_backtest_ready": true,
+      "correlation_alignment": [
+        {
+          "timeframe": "4h",
+          "correlation_pair": "BTC/USDT:USDT",
+          "base_candles_missing_correlation": 0
+        },
+        {
+          "timeframe": "4h",
+          "correlation_pair": "ETH/USDT:USDT",
+          "base_candles_missing_correlation": 0
+        }
+      ],
+      "correlation_history_ready": true,
+      "labels": {
+        "shift_horizon": 3,
+        "horizon_timestamp_misalignments": 0,
+        "unavailable_last_loaded_labels": 3,
+        "training_windows": [
+          {
+            "start": "2024-01-02T00:00:00+00:00",
+            "stop_exclusive": "2025-01-01T00:00:00+00:00",
+            "rows": 2190,
+            "finite_labels": 2187,
+            "missing_labels": 3,
+            "tail_labels_remain_missing": true,
+            "labels_outside_training_boundary": 0
+          },
+          {
+            "start": "2024-01-09T00:00:00+00:00",
+            "stop_exclusive": "2025-01-08T00:00:00+00:00",
+            "rows": 2190,
+            "finite_labels": 2187,
+            "missing_labels": 3,
+            "tail_labels_remain_missing": true,
+            "labels_outside_training_boundary": 0
+          }
+        ],
+        "training_targets_checked_without_future_rows": true,
+        "ready": true
+      },
+      "funding_mark_alignment": {
+        "events": 42,
+        "events_missing_mark_price": 0,
+        "ready": true
+      },
+      "files": [
+        {
+          "path": "data/futures/BTC_USDT_USDT-4h-futures.feather",
+          "kind": "futures",
+          "timeframe": "4h",
+          "exists": true,
+          "errors": [],
+          "sha256": "841837255751a6dfe5a4507fdff5b4cace91baef23ba079816ed7ecc165e0121",
+          "baseline_sha256": "841837255751a6dfe5a4507fdff5b4cace91baef23ba079816ed7ecc165e0121",
+          "baseline_match": true,
+          "rows": 14880,
+          "columns": [
+            "date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "start": "2020-01-01T00:00:00+00:00",
+          "end": "2026-10-15T20:00:00+00:00",
+          "timezone": "UTC",
+          "duplicate_timestamps": 0,
+          "sorted": true,
+          "null_timestamps": 0,
+          "invalid_numeric_values": {},
+          "invalid_price_rows": 0,
+          "negative_volume_rows": 0,
+          "observed_interval_seconds": {
+            "14400": 14879
+          },
+          "off_grid_rows": 0,
+          "coverage": {
+            "required_start": "2023-12-16T08:00:00+00:00",
+            "required_stop_exclusive": "2025-01-15T00:00:00+00:00",
+            "expected_rows": 2374,
+            "missing_rows": 0,
+            "missing_intervals": [],
+            "complete": true
+          },
+          "global_gaps": {
+            "required_start": "2020-01-01T00:00:00+00:00",
+            "required_stop_exclusive": "2026-10-16T00:00:00+00:00",
+            "expected_rows": 14880,
+            "missing_rows": 0,
+            "missing_intervals": [],
+            "complete": true
+          },
+          "changed_during_audit": false,
+          "usable": true
+        },
+        {
+          "path": "data/futures/BTC_USDT_USDT-1h-mark.feather",
+          "kind": "mark",
+          "timeframe": "1h",
+          "exists": true,
+          "errors": [],
+          "sha256": "81b59942715175a5f389de58599210d5bb940b6936ebbc2aac0ea454e4528cb8",
+          "baseline_sha256": "81b59942715175a5f389de58599210d5bb940b6936ebbc2aac0ea454e4528cb8",
+          "baseline_match": true,
+          "rows": 59443,
+          "columns": [
+            "date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "start": "2020-01-01T00:00:00+00:00",
+          "end": "2026-10-12T18:00:00+00:00",
+          "timezone": "UTC",
+          "duplicate_timestamps": 0,
+          "sorted": true,
+          "null_timestamps": 0,
+          "invalid_numeric_values": {},
+          "invalid_price_rows": 0,
+          "negative_volume_rows": 0,
+          "observed_interval_seconds": {
+            "3600": 59442
+          },
+          "off_grid_rows": 0,
+          "coverage": {
+            "required_start": "2025-01-01T00:00:00+00:00",
+            "required_stop_exclusive": "2025-01-15T00:00:00+00:00",
+            "expected_rows": 336,
+            "missing_rows": 0,
+            "missing_intervals": [],
+            "complete": true
+          },
+          "global_gaps": {
+            "required_start": "2020-01-01T00:00:00+00:00",
+            "required_stop_exclusive": "2026-10-12T19:00:00+00:00",
+            "expected_rows": 59443,
+            "missing_rows": 0,
+            "missing_intervals": [],
+            "complete": true
+          },
+          "changed_during_audit": false,
+          "usable": true
+        },
+        {
+          "path": "data/futures/BTC_USDT_USDT-1h-funding_rate.feather",
+          "kind": "funding_rate",
+          "timeframe": "1h",
+          "exists": true,
+          "errors": [],
+          "sha256": "b51b18ea9cee16216d8a24aac3a9685f305905e04c99cd9701b9589b692f74c6",
+          "baseline_sha256": "b51b18ea9cee16216d8a24aac3a9685f305905e04c99cd9701b9589b692f74c6",
+          "baseline_match": true,
+          "rows": 7429,
+          "columns": [
+            "date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "start": "2020-01-01T00:00:00+00:00",
+          "end": "2026-10-12T00:00:00+00:00",
+          "timezone": "UTC",
+          "duplicate_timestamps": 0,
+          "sorted": true,
+          "null_timestamps": 0,
+          "invalid_numeric_values": {},
+          "negative_volume_rows": 0,
+          "observed_interval_seconds": {
+            "28800": 7428
+          },
+          "cadence": "uniform_observed_events",
+          "filename_timeframe_is_payment_cadence": false,
+          "window_event_rows": 42,
+          "window_observed_interval_seconds": {
+            "28800": 41
+          },
+          "coverage": {
+            "required_start": "2025-01-01T00:00:00+00:00",
+            "required_stop_exclusive": "2025-01-15T00:00:00+00:00",
+            "expected_rows": 42,
+            "missing_rows": 0,
+            "missing_intervals": [],
+            "complete": true
+          },
+          "global_gaps": null,
+          "changed_during_audit": false,
+          "usable": true
+        }
+      ]
+    },
+    {
+      "pair": "ETH/USDT:USDT",
+      "role": "trading",
+      "raw_data_ready": true,
+      "metadata_scope_ready": true,
+      "offline_backtest_ready": true,
+      "correlation_alignment": [
+        {
+          "timeframe": "4h",
+          "correlation_pair": "BTC/USDT:USDT",
+          "base_candles_missing_correlation": 0
+        },
+        {
+          "timeframe": "4h",
+          "correlation_pair": "ETH/USDT:USDT",
+          "base_candles_missing_correlation": 0
+        }
+      ],
+      "correlation_history_ready": true,
+      "labels": {
+        "shift_horizon": 3,
+        "horizon_timestamp_misalignments": 0,
+        "unavailable_last_loaded_labels": 3,
+        "training_windows": [
+          {
+            "start": "2024-01-02T00:00:00+00:00",
+            "stop_exclusive": "2025-01-01T00:00:00+00:00",
+            "rows": 2190,
+            "finite_labels": 2187,
+            "missing_labels": 3,
+            "tail_labels_remain_missing": true,
+            "labels_outside_training_boundary": 0
+          },
+          {
+            "start": "2024-01-09T00:00:00+00:00",
+            "stop_exclusive": "2025-01-08T00:00:00+00:00",
+            "rows": 2190,
+            "finite_labels": 2187,
+            "missing_labels": 3,
+            "tail_labels_remain_missing": true,
+            "labels_outside_training_boundary": 0
+          }
+        ],
+        "training_targets_checked_without_future_rows": true,
+        "ready": true
+      },
+      "funding_mark_alignment": {
+        "events": 42,
+        "events_missing_mark_price": 0,
+        "ready": true
+      },
+      "files": [
+        {
+          "path": "data/futures/ETH_USDT_USDT-4h-futures.feather",
+          "kind": "futures",
+          "timeframe": "4h",
+          "exists": true,
+          "errors": [],
+          "sha256": "3593cd46198d451305a280683e128c48a874be895295e5c3665161945767d0bc",
+          "baseline_sha256": "3593cd46198d451305a280683e128c48a874be895295e5c3665161945767d0bc",
+          "baseline_match": true,
+          "rows": 14880,
+          "columns": [
+            "date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "start": "2020-01-01T00:00:00+00:00",
+          "end": "2026-10-15T20:00:00+00:00",
+          "timezone": "UTC",
+          "duplicate_timestamps": 0,
+          "sorted": true,
+          "null_timestamps": 0,
+          "invalid_numeric_values": {},
+          "invalid_price_rows": 0,
+          "negative_volume_rows": 0,
+          "observed_interval_seconds": {
+            "14400": 14879
+          },
+          "off_grid_rows": 0,
+          "coverage": {
+            "required_start": "2023-12-16T08:00:00+00:00",
+            "required_stop_exclusive": "2025-01-15T00:00:00+00:00",
+            "expected_rows": 2374,
+            "missing_rows": 0,
+            "missing_intervals": [],
+            "complete": true
+          },
+          "global_gaps": {
+            "required_start": "2020-01-01T00:00:00+00:00",
+            "required_stop_exclusive": "2026-10-16T00:00:00+00:00",
+            "expected_rows": 14880,
+            "missing_rows": 0,
+            "missing_intervals": [],
+            "complete": true
+          },
+          "changed_during_audit": false,
+          "usable": true
+        },
+        {
+          "path": "data/futures/ETH_USDT_USDT-1h-mark.feather",
+          "kind": "mark",
+          "timeframe": "1h",
+          "exists": true,
+          "errors": [],
+          "sha256": "bd9ea1c7341b0b25afc578c1a7c323129c826b71cd25685bac0d852b77bbac4a",
+          "baseline_sha256": "bd9ea1c7341b0b25afc578c1a7c323129c826b71cd25685bac0d852b77bbac4a",
+          "baseline_match": true,
+          "rows": 59443,
+          "columns": [
+            "date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "start": "2020-01-01T00:00:00+00:00",
+          "end": "2026-10-12T18:00:00+00:00",
+          "timezone": "UTC",
+          "duplicate_timestamps": 0,
+          "sorted": true,
+          "null_timestamps": 0,
+          "invalid_numeric_values": {},
+          "invalid_price_rows": 0,
+          "negative_volume_rows": 0,
+          "observed_interval_seconds": {
+            "3600": 59442
+          },
+          "off_grid_rows": 0,
+          "coverage": {
+            "required_start": "2025-01-01T00:00:00+00:00",
+            "required_stop_exclusive": "2025-01-15T00:00:00+00:00",
+            "expected_rows": 336,
+            "missing_rows": 0,
+            "missing_intervals": [],
+            "complete": true
+          },
+          "global_gaps": {
+            "required_start": "2020-01-01T00:00:00+00:00",
+            "required_stop_exclusive": "2026-10-12T19:00:00+00:00",
+            "expected_rows": 59443,
+            "missing_rows": 0,
+            "missing_intervals": [],
+            "complete": true
+          },
+          "changed_during_audit": false,
+          "usable": true
+        },
+        {
+          "path": "data/futures/ETH_USDT_USDT-1h-funding_rate.feather",
+          "kind": "funding_rate",
+          "timeframe": "1h",
+          "exists": true,
+          "errors": [],
+          "sha256": "2bcd5dd3d7520d58d6ab156a2aad2035c7382f3b6b9f80a85aac30aad9f9082d",
+          "baseline_sha256": "2bcd5dd3d7520d58d6ab156a2aad2035c7382f3b6b9f80a85aac30aad9f9082d",
+          "baseline_match": true,
+          "rows": 7429,
+          "columns": [
+            "date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "start": "2020-01-01T00:00:00+00:00",
+          "end": "2026-10-12T00:00:00+00:00",
+          "timezone": "UTC",
+          "duplicate_timestamps": 0,
+          "sorted": true,
+          "null_timestamps": 0,
+          "invalid_numeric_values": {},
+          "negative_volume_rows": 0,
+          "observed_interval_seconds": {
+            "28800": 7428
+          },
+          "cadence": "uniform_observed_events",
+          "filename_timeframe_is_payment_cadence": false,
+          "window_event_rows": 42,
+          "window_observed_interval_seconds": {
+            "28800": 41
+          },
+          "coverage": {
+            "required_start": "2025-01-01T00:00:00+00:00",
+            "required_stop_exclusive": "2025-01-15T00:00:00+00:00",
+            "expected_rows": 42,
+            "missing_rows": 0,
+            "missing_intervals": [],
+            "complete": true
+          },
+          "global_gaps": null,
+          "changed_during_audit": false,
+          "usable": true
+        }
+      ]
+    }
+  ],
+  "minimum_scope_ready": true,
+  "minimum_scope": {
+    "pairs": [
+      "BTC/USDT:USDT",
+      "ETH/USDT:USDT"
+    ],
+    "timerange": "20250101-20250115",
+    "raw_data_ready": true,
+    "metadata_scope_ready": true
+  },
+  "summary": {
+    "pair_count": 2,
+    "file_count": 6,
+    "existing_files": 6,
+    "raw_data_ready_pairs": 2,
+    "offline_backtest_ready_pairs": 2,
+    "changed_since_baseline": 0,
+    "changed_during_audit": 0,
+    "minimum_scope_ready": true,
+    "all_requested_pairs_ready": true,
+    "all_requested_pairs_raw_ready": true
+  },
+  "limitations": [
+    "Read-only preflight, not a claim that all pairs were backtested or trained.",
+    "Current market snapshot is not a reconstruction of historical exchange/leverage rules.",
+    "Funding event cadence is observed, not established by an archived exchange payment schedule.",
+    "Native OHLCV/mark loading may fill missing candles; this audit does not fill or change them.",
+    "No data download, zero-funding fallback, market-rule fabrication or strategy change."
+  ]
+}
