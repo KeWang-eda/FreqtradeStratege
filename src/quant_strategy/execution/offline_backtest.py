@@ -80,6 +80,19 @@ def check_config(config: dict) -> list[str]:
             raise SnapshotError(
                 "Offline client requires native swap scope and verified TLS settings"
             )
+        ccxt_options = options.get("options", {})
+        fetch_markets = ccxt_options.get("fetchMarkets", {})
+        if (
+            "urls" in options
+            or ccxt_options.get("sandboxMode")
+            or ccxt_options.get("enableDemoTrading")
+            or ccxt_options.get("defaultSubType", "linear") != "linear"
+            or not isinstance(fetch_markets, dict)
+            or fetch_markets.get("types", ["linear"]) != ["linear"]
+        ):
+            raise SnapshotError(
+                "Offline metadata supports only the Binance production linear market scope"
+            )
     try:
         asyncio.get_running_loop()
     except RuntimeError:

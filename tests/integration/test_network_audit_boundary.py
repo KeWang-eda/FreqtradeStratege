@@ -12,7 +12,8 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 @pytest.mark.parametrize(
-    "operation", ["http", "dns", "connect", "sendto", "sendmsg", "getnameinfo", "child", "system"]
+    "operation",
+    ["http", "dns", "connect", "sendto", "sendmsg", "getnameinfo", "child", "system", "git_remote"],
 )
 def test_caught_denial_cannot_report_success(tmp_path, operation):
     report = tmp_path / "audit.json"
@@ -31,6 +32,8 @@ def run(arguments):
             socket.getnameinfo(("203.0.113.1", 443), 0)
         elif operation == "child":
             subprocess.run([sys.executable,"-c","pass"], check=True)
+        elif operation == "git_remote":
+            subprocess.run(["git","fetch"], check=True)
         elif operation == "system":
             os.system("true")
         else:

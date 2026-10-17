@@ -1,0 +1,85 @@
+...........................................................F............ [ 94%]
+....                                                                     [100%]
+=================================== FAILURES ===================================
+__________________ test_all_model_metadata_is_compared[label] __________________
+
+tmp_path = PosixPath('/tmp/pytest-of-wangke/pytest-88/test_all_model_metadata_is_com1')
+mutation = 'label'
+
+    @pytest.mark.parametrize(
+        "mutation", ["feature_order", "label", "statistics", "extra", "missing", "other_metadata"]
+    )
+    def test_all_model_metadata_is_compared(tmp_path, mutation):
+        old, new = tmp_path / "old", tmp_path / "new"
+        make_run(old)
+        make_run(new)
+        path = new / "btc_metadata.json"
+        value = json.loads(path.read_text())
+        if mutation == "feature_order":
+            value["training_features_list"].insert(0, "%another_feature")
+        elif mutation == "label":
+            value["label_list"] = ["&different"]
+        elif mutation == "statistics":
+            value["labels_std"]["&-s_return"] += 1e-13  # Preserve original exact metadata comparison.
+        elif mutation == "extra":
+            value["extra"] = None
+        elif mutation == "missing":
+            del value["labels_mean"]
+        else:
+            value["extra_returns_per_train"] = {"unexpected": 1}
+        path.write_text(json.dumps(value))
+        if mutation == "missing":
+            with pytest.raises(ValueError, match="Incomplete model metadata"):
+                compare_runs(old, new)
+        else:
+>           assert not compare_runs(old, new)["passed"]
+                       ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/integration/test_freqtrade_regression_report.py:202: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tools/verify_freqtrade_regression.py:191: in compare_runs
+    right = _model_metadata(new / relative, relative)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/tmp/pytest-of-wangke/pytest-88/test_all_model_metadata_is_com1/new/btc_metadata.json')
+relative = PosixPath('btc_metadata.json')
+
+    def _model_metadata(path: Path, relative: Path) -> dict:
+        value = _json(path.read_text())
+        required = {"training_features_list", "label_list", "labels_mean", "labels_std"}
+        if not isinstance(value, dict) or not required <= value.keys():
+            raise ValueError(f"Incomplete model metadata: {path}")
+        for key in ("training_features_list", "label_list"):
+            if (
+                not isinstance(value[key], list)
+                or not value[key]
+                or any(not isinstance(v, str) for v in value[key])
+                or len(value[key]) != len(set(value[key]))
+            ):
+                raise ValueError(f"Invalid {key}: {path}")
+        for key in ("labels_mean", "labels_std"):
+            statistics = value[key]
+            if (
+                not isinstance(statistics, dict)
+                or set(statistics) != set(value["label_list"])
+                or any(
+                    isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v)
+                    for v in statistics.values()
+                )
+                or (key == "labels_std" and any(v < 0 for v in statistics.values()))
+            ):
+>               raise ValueError(f"Invalid {key}: {path}")
+E               ValueError: Invalid labels_mean: /tmp/pytest-of-wangke/pytest-88/test_all_model_metadata_is_com1/new/btc_metadata.json
+
+tools/verify_freqtrade_regression.py:108: ValueError
+=============================== warnings summary ===============================
+tests/integration/test_freqtrade_regression_report.py: 570 warnings
+  /home/wangke/project/freqtrade/.venv/lib/python3.13/site-packages/joblib/numpy_pickle.py:207: DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+  As an alternative, you can create a new view using np.reshape (with copy=False if needed).
+    array.shape = self.shape
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/integration/test_freqtrade_regression_report.py::test_all_model_metadata_is_compared[label]
+1 failed, 75 passed, 570 warnings in 8.15s

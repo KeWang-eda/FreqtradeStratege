@@ -12,10 +12,25 @@ import zipfile
 from pathlib import Path
 
 import joblib
+import numpy as np
 import pandas as pd
 
 from quant_strategy.infrastructure.experiment_store import file_hash, write_json
 from quant_strategy.validation.truncation import load_backtest
+
+TOLERANCE = {"rtol": 1e-12, "atol": 1e-12}
+METRIC_EXCLUSIONS = {
+    "backtest_run_start_ts": "Wall-clock process start time, unrelated to historical decisions",
+    "backtest_run_end_ts": "Wall-clock process end time, unrelated to historical decisions",
+}
+
+
+def _reject_constant(value: str):
+    raise ValueError(f"Non-finite JSON number is invalid in results/model metadata: {value}")
+
+
+def _json(value):
+    return json.loads(value, parse_constant=_reject_constant)
 
 
 def _archive(directory: Path) -> Path:
@@ -36,26 +51,73 @@ def _signals(archive: Path, kind: str) -> dict:
 
 def _metrics(archive: Path, strategy: str) -> dict:
     with zipfile.ZipFile(archive) as handle:
-        results = [
-            json.loads(handle.read(name)) for name in handle.namelist() if name.endswith(".json")
-        ]
+        results = [_json(handle.read(name)) for name in handle.namelist() if name.endswith(".json")]
     result = next(
         value["strategy"][strategy] for value in results if isinstance(value.get("strategy"), dict)
     )
     # Only wall-clock execution timestamps are excluded; historical boundaries,
     # all metrics, wallet statistics and trading settings must remain equivalent.
-    excluded = {"trades", "backtest_run_start_ts", "backtest_run_end_ts"}
+    excluded = {"trades", *METRIC_EXCLUSIONS}
     return {key: value for key, value in result.items() if key not in excluded}
 
 
-def _equivalent(left, right) -> bool:
+def _equivalent(left, right, *, numeric_tolerance=True) -> bool:
+    if isinstance(left, bool) or isinstance(right, bool):
+        return type(left) is type(right) and left == right
     if isinstance(left, dict) and isinstance(right, dict):
-        return left.keys() == right.keys() and all(_equivalent(left[k], right[k]) for k in left)
+        return left.keys() == right.keys() and all(
+            _equivalent(left[k], right[k], numeric_tolerance=numeric_tolerance) for k in left
+        )
     if isinstance(left, list) and isinstance(right, list):
-        return len(left) == len(right) and all(_equivalent(a, b) for a, b in zip(left, right))
+        return len(left) == len(right) and all(
+            _equivalent(a, b, numeric_tolerance=numeric_tolerance) for a, b in zip(left, right)
+        )
     if isinstance(left, (int, float)) and isinstance(right, (int, float)):
-        return math.isclose(left, right, rel_tol=1e-12, abs_tol=1e-12)
+        return (
+            math.isclose(left, right, rel_tol=1e-12, abs_tol=1e-12)
+            if numeric_tolerance
+            else left == right
+        )
     return left == right
+
+
+def _model_metadata(path: Path, relative: Path) -> dict:
+    value = _json(path.read_text())
+    required = {"training_features_list", "label_list", "labels_mean", "labels_std"}
+    if not isinstance(value, dict) or not required <= value.keys():
+        raise ValueError(f"Incomplete model metadata: {path}")
+    for key in ("training_features_list", "label_list"):
+        if (
+            not isinstance(value[key], list)
+            or not value[key]
+            or any(not isinstance(v, str) for v in value[key])
+            or len(value[key]) != len(set(value[key]))
+        ):
+            raise ValueError(f"Invalid {key}: {path}")
+    for key in ("labels_mean", "labels_std"):
+        statistics = value[key]
+        if (
+            not isinstance(statistics, dict)
+            or set(statistics) != set(value["label_list"])
+            or any(
+                isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v)
+                for v in statistics.values()
+            )
+            or (key == "labels_std" and any(v < 0 for v in statistics.values()))
+        ):
+            raise ValueError(f"Invalid {key}: {path}")
+    if "data_path" in value:
+        actual = Path(value["data_path"])
+        expected = relative.parent
+        if (
+            not actual.is_absolute()
+            or tuple(actual.parts[-len(expected.parts) :]) != expected.parts
+        ):
+            raise ValueError(f"Model data_path does not match artifact location: {path}")
+        # Retain and validate the complete relative path. Only the run root varies
+        # by design when FreqAI is retrained in independent fresh userdirs.
+        value["data_path"] = "${USERDIR}/" + expected.as_posix()
+    return value
 
 
 def compare_runs(old: Path, new: Path) -> dict:
@@ -67,6 +129,10 @@ def compare_runs(old: Path, new: Path) -> dict:
         raise ValueError("Runs must use the same strategy and timerange")
 
     def compare_frames(label: str, left: pd.DataFrame, right: pd.DataFrame) -> None:
+        for frame in (left, right):
+            numeric = frame.select_dtypes(include="number")
+            if np.isinf(numeric.to_numpy(dtype=float)).any():
+                differences.append(f"{label}: invalid infinite values")
         try:
             pd.testing.assert_frame_equal(left, right, check_exact=False, rtol=1e-12, atol=1e-12)
         except AssertionError as exc:
@@ -75,6 +141,8 @@ def compare_runs(old: Path, new: Path) -> dict:
     compare_frames(
         "trades", pd.DataFrame(results["old"]["trades"]), pd.DataFrame(results["new"]["trades"])
     )
+    if not _equivalent(results["old"]["trades"], results["new"]["trades"], numeric_tolerance=False):
+        differences.append("trades/orders: nested records differ")
     metrics = {name: _metrics(path, results[name]["strategy"]) for name, path in archives.items()}
     if not _equivalent(metrics["old"], metrics["new"]):
         for key in metrics["old"].keys() | metrics["new"].keys():
@@ -119,17 +187,27 @@ def compare_runs(old: Path, new: Path) -> dict:
         )
     schemas = []
     for relative in matching_files("*_metadata.json"):
-        left = json.loads((old / relative).read_text())
-        right = json.loads((new / relative).read_text())
-        for key in ("training_features_list", "label_list", "labels_mean", "labels_std"):
-            if key not in left or key not in right or left[key] != right[key]:
+        left = _model_metadata(old / relative, relative)
+        right = _model_metadata(new / relative, relative)
+        for key in left.keys() | right.keys():
+            if (
+                key not in left
+                or key not in right
+                or not _equivalent(left.get(key), right.get(key), numeric_tolerance=False)
+            ):
                 differences.append(f"{relative}: {key} differs or missing")
         schemas.append(
             {"file": str(relative), "feature_count": len(left.get("training_features_list", []))}
         )
     return {
         "passed": not differences,
-        "tolerance": {"rtol": 1e-12, "atol": 1e-12},
+        "tolerance": TOLERANCE,
+        "comparison_policy": {
+            "excluded_result_fields": METRIC_EXCLUSIONS,
+            "metadata_normalization": "Validate data_path suffix against artifact parent; normalize only independent userdir root",
+            "metadata_fields": "All fields, including unknown/extra fields, are compared",
+            "nonfinite": "Reject non-finite JSON and frame infinities; paired frame NaN masks must match",
+        },
         "archives": {
             name: {"path": str(path), "sha256": file_hash(path)} for name, path in archives.items()
         },
@@ -171,7 +249,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         report = compare_runs(args.old, args.new)
-    except (ValueError, OSError, KeyError, zipfile.BadZipFile) as exc:
+    except (ValueError, OSError, KeyError, TypeError, AttributeError, zipfile.BadZipFile) as exc:
         report = {"passed": False, "error": str(exc)}
         code = 2
     else:

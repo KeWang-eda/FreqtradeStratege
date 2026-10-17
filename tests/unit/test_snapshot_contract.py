@@ -1,6 +1,10 @@
 """Fail-closed snapshot tests use recorded genuine metadata, never live API access."""
 
 import json
+import os
+import subprocess
+import sys
+import time
 from copy import deepcopy
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -182,3 +186,81 @@ def test_atomic_publication_rejects_concurrent_writer_and_ignores_stale_temp(tmp
 def test_capture_rejects_duplicate_pair_scope_before_api(tmp_path):
     with pytest.raises(module.SnapshotError, match="unique"):
         module.capture_snapshot(tmp_path / "markets.json", [PAIRS[0], PAIRS[0]])
+
+
+@pytest.mark.parametrize(
+    "bad_tiers",
+    [
+        {},
+        {PAIRS[0]: [], PAIRS[1]: []},
+        {
+            PAIRS[0]: [
+                {"minNotional": 0, "maxNotional": 1, "maxLeverage": 0, "maintenanceMarginRate": 0.1}
+            ],
+            PAIRS[1]: [],
+        },
+    ],
+)
+def test_missing_or_invalid_native_leverage_file_fails(tmp_path, monkeypatch, bad_tiers):
+    import freqtrade.exchange.binance as native
+
+    monkeypatch.setattr(native, "__file__", str(tmp_path / "binance.py"))
+    (tmp_path / "binance_leverage_tiers.json").write_text(json.dumps(bad_tiers))
+    with pytest.raises(module.SnapshotError):
+        module.leverage_rules(PAIRS)
+
+
+def test_killed_writer_leaves_only_unusable_temp_not_final(tmp_path):
+    final = tmp_path / "markets.json"
+    marker = tmp_path / "writing"
+    script = """
+import sys,time
+from pathlib import Path
+from quant_strategy.execution import market_snapshot as module
+def interruptible_dump(value, handle, **kwargs):
+    handle.write("{"); handle.flush()
+    Path(sys.argv[2]).write_text("started")
+    time.sleep(30)
+module.json.dump=interruptible_dump
+module.publish_snapshot(Path(sys.argv[1]), {"value":1})
+"""
+    process = subprocess.Popen(
+        [sys.executable, "-c", script, str(final), str(marker)],
+        env={**os.environ, "PYTHONPATH": str(SOURCE.parents[3] / "src")},
+    )
+    try:
+        deadline = time.monotonic() + 10
+        while not marker.exists() and process.poll() is None and time.monotonic() < deadline:
+            time.sleep(0.01)
+        assert marker.exists(), "Writer failed to reach the interrupted-write point"
+        process.kill()
+        process.wait(timeout=5)
+        assert not final.exists()
+        temporary = list(tmp_path.glob(".markets.json.*.tmp"))
+        assert len(temporary) == 1 and temporary[0].read_text() == "{"
+        with pytest.raises(module.SnapshotError):
+            module.load_snapshot(temporary[0], PAIRS)
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait(timeout=5)
+
+
+@pytest.mark.parametrize(
+    "failure", ["schema_boolean", "authentication_number", "age_boolean", "order_types_string"]
+)
+def test_json_primitive_types_do_not_coerce_to_valid_contracts(tmp_path, snapshot, failure):
+    age = 36500
+    if failure == "schema_boolean":
+        snapshot["schema_version"] = True
+    elif failure == "authentication_number":
+        snapshot["source"]["authenticated"] = 0
+    elif failure == "age_boolean":
+        age = True
+    else:
+        next(m for m in snapshot["raw_response"]["symbols"] if m["symbol"] == "BTCUSDT")[
+            "orderTypes"
+        ] = "LIMIT"
+        snapshot["raw_sha256"] = module.digest(snapshot["raw_response"])
+    with pytest.raises(module.SnapshotError):
+        module.load_snapshot(write_snapshot(tmp_path / "bad.json", snapshot), PAIRS, age)

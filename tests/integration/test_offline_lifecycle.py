@@ -113,3 +113,56 @@ def test_active_event_loop_rejected_before_client_creation(config):
             SnapshotBinance(config, SNAPSHOT, 36500)
 
     asyncio.run(construct())
+
+
+@pytest.mark.parametrize("failure", ["constructor", "start"])
+def test_native_engine_failures_release_exchange_and_restore_native_state(
+    config, monkeypatch, failure
+):
+    from freqtrade.commands import optimize_commands
+    from freqtrade.optimize.backtesting import Backtesting
+
+    from quant_strategy.execution.offline_backtest import run_backtest
+
+    instances = []
+    original = SnapshotBinance.__init__
+
+    def construct(self, *args, **kwargs):
+        original(self, *args, **kwargs)
+        instances.append(self)
+
+    monkeypatch.setattr(SnapshotBinance, "__init__", construct)
+    monkeypatch.setattr(optimize_commands, "setup_optimize_configuration", lambda *args: config)
+    cleanup = []
+    monkeypatch.setattr(Backtesting, "cleanup", lambda: cleanup.append(True))
+
+    def fail(*args, **kwargs):
+        raise RuntimeError("injected engine failure")
+
+    if failure == "constructor":
+        monkeypatch.setattr(Backtesting, "__init__", fail)
+    else:
+        monkeypatch.setattr(Backtesting, "__init__", lambda *args, **kwargs: None)
+        monkeypatch.setattr(Backtesting, "start", fail)
+    with pytest.raises(RuntimeError, match="injected engine failure"):
+        run_backtest(["-c", str(ROOT / "config.json")], SNAPSHOT, 36500)
+    assert cleanup == [True]
+    assert len(instances) == 1 and instances[0].loop.is_closed()
+
+
+@pytest.mark.parametrize(
+    "options",
+    [
+        {"sandboxMode": True},
+        {"enableDemoTrading": True},
+        {"defaultSubType": "inverse"},
+        {"fetchMarkets": {"types": ["inverse"]}},
+    ],
+)
+def test_ccxt_market_scope_overrides_fail_before_clients(config, monkeypatch, options):
+    calls = []
+    config["exchange"]["ccxt_config"] = {"options": options}
+    monkeypatch.setattr(SnapshotBinance, "_init_ccxt", lambda *args: calls.append(args))
+    with pytest.raises(SnapshotError, match="production linear"):
+        SnapshotBinance(config, SNAPSHOT, 36500)
+    assert calls == []

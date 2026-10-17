@@ -72,8 +72,11 @@ def _raw_rules(market: dict) -> None:
         or market.get("quoteAsset") != "USDT"
         or market.get("marginAsset") != "USDT"
         or not market.get("baseAsset")
-        or not market.get("status")
-        or not market.get("orderTypes")
+        or not isinstance(market.get("status"), str)
+        or not market["status"]
+        or not isinstance(market.get("orderTypes"), list)
+        or not market["orderTypes"]
+        or any(not isinstance(order, str) or not order for order in market["orderTypes"])
     ):
         raise SnapshotError("Incomplete USDT perpetual market identity/order rules")
     filters = market["filters"]
@@ -276,7 +279,7 @@ def load_snapshot(path: Path, required_pairs: list[str], max_age_days: float = 3
     """Validate integrity, origin, scope, freshness and real-response parsing before use."""
     try:
         runtime = versions()
-        if not math.isfinite(max_age_days) or max_age_days <= 0:
+        if isinstance(max_age_days, bool) or not math.isfinite(max_age_days) or max_age_days <= 0:
             raise SnapshotError("snapshot-max-age-days must be finite and positive")
         snapshot = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=_unique_object)
         if not isinstance(snapshot, dict) or set(snapshot) != ENVELOPE_FIELDS:
@@ -292,6 +295,7 @@ def load_snapshot(path: Path, required_pairs: list[str], max_age_days: float = 3
             or snapshot["exchange"] != "binance"
             or snapshot["market_type"] != "linear-usdt-perpetual"
             or snapshot["source"] != {"url": ENDPOINT, "method": "GET", "authenticated": False}
+            or snapshot["source"]["authenticated"] is not False
             or snapshot["versions"] != runtime
         ):
             raise SnapshotError("Snapshot schema/exchange/source/version mismatch")
