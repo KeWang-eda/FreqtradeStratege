@@ -1,0 +1,5 @@
+5ce05d6 feat: add verified offline market snapshots for native backtests
+3739472 重构
+22d6ee5 Add whitelist multi-timeframe futures data
+dafa6c2 docs(research): correct per-pair scale audit
+e9760e1 docs(research): isolate label drift and pair score scale

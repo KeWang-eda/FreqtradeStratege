@@ -1,0 +1,68 @@
+..................F.......                                               [100%]
+=================================== FAILURES ===================================
+_____ test_research_cli_dataset_training_cv_and_comparison_without_network _____
+
+tmp_path = PosixPath('/tmp/pytest-of-wangke/pytest-82/test_research_cli_dataset_trai0')
+candles =                          date        open  ...       close      volume
+0   2024-01-01 00:00:00+00:00  100.100000  ... ...  111.031280  693.560778
+239 2024-02-09 20:00:00+00:00  110.727274  ...  110.616658  699.999364
+
+[240 rows x 6 columns]
+
+    def test_research_cli_dataset_training_cv_and_comparison_without_network(tmp_path, candles):
+        source = tmp_path / "candles.feather"
+        candles.to_feather(source)
+        config = tmp_path / "research.json"
+        config.write_text(json.dumps({"research": {"data": {"BTC": str(source)}}}))
+        for command in ("validate", "dataset-build"):
+            audit_research(tmp_path, command, [command, "-c", str(config)])
+        output = tmp_path / "artifacts"
+>       audit_research(
+            tmp_path,
+            "training",
+            ["run", "-c", str(config), "--output", str(output), "--experiment-id", "offline"],
+        )
+
+tests/integration/test_local_data_network.py:50: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+tmp_path = PosixPath('/tmp/pytest-of-wangke/pytest-82/test_research_cli_dataset_trai0')
+name = 'training'
+arguments = ['run', '-c', '/tmp/pytest-of-wangke/pytest-82/test_research_cli_dataset_trai0/research.json', '--output', '/tmp/pytest-of-wangke/pytest-82/test_research_cli_dataset_trai0/artifacts', '--experiment-id', ...]
+
+    def audit_research(tmp_path, name, arguments):
+        report = tmp_path / f"{name}.json"
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "tools/audit_local_network.py"),
+                "--policy",
+                "deny-all",
+                "--report",
+                str(report),
+                "research",
+                *arguments,
+            ],
+            cwd=ROOT,
+            env={**os.environ, "PYTHONPATH": str(ROOT / "src")},
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+>       assert result.returncode == 0, result.stdout + result.stderr
+E       AssertionError: /tmp/pytest-of-wangke/pytest-82/test_research_cli_dataset_trai0/artifacts/offline
+E         
+E       assert 3 == 0
+E        +  where 3 = CompletedProcess(args=['/home/wangke/project/freqtrade/.venv/bin/python', '/home/wangke/project/FreqtradeStratege/tool... returncode=3, stdout='/tmp/pytest-of-wangke/pytest-82/test_research_cli_dataset_trai0/artifacts/offline\n', stderr='').returncode
+
+tests/integration/test_local_data_network.py:35: AssertionError
+=============================== warnings summary ===============================
+tests/integration/test_offline_freqtrade.py: 56 warnings
+  /home/wangke/project/freqtrade/.venv/lib/python3.13/site-packages/joblib/numpy_pickle.py:207: DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+  As an alternative, you can create a new view using np.reshape (with copy=False if needed).
+    array.shape = self.shape
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/integration/test_local_data_network.py::test_research_cli_dataset_training_cv_and_comparison_without_network
+1 failed, 25 passed, 56 warnings in 29.85s

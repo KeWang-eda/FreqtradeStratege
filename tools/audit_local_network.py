@@ -8,6 +8,7 @@ No installed framework files, TLS settings or global proxy settings are changed.
 import argparse
 import ipaddress
 import json
+import shutil
 import socket
 import sys
 import traceback
@@ -23,8 +24,11 @@ class NetworkDenied(OSError):
 def install_policy(policy: str, report: dict[str, Any]) -> None:
     """Block all networking or permit only Binance exchangeInfo over loopback proxy.
 
-    HTTP is checked at requests/aiohttp entry points; socket audit events also
-    reject direct external TCP/DNS, including code outside these HTTP libraries.
+    HTTP is checked at requests/aiohttp entry points; Python socket audit events
+    reject TCP/UDP/DNS. Child creation is rejected except exact local Git provenance
+    queries with fsmonitor/external diff/textconv disabled; all are recorded.
+    Native libraries can bypass Python hooks: use a network namespace and strace
+    for OS isolation/evidence, rather than claiming this hook covers C syscalls.
     This instrumentation is for diagnosis, never for live/dry-run execution.
     """
     allowed = {
@@ -32,6 +36,20 @@ def install_policy(policy: str, report: dict[str, Any]) -> None:
         ("fapi.binance.com", "/fapi/v1/exchangeInfo"),
         ("dapi.binance.com", "/dapi/v1/exchangeInfo"),
     }
+    git = shutil.which("git")
+    git_prefix = [
+        git,
+        "--no-pager",
+        "-c",
+        "core.fsmonitor=false",
+        "-C",
+        str(Path(__file__).resolve().parents[1]),
+    ]
+    local_queries = [
+        [*git_prefix, "rev-parse", "HEAD"],
+        [*git_prefix, "status", "--porcelain"],
+        [*git_prefix, "diff", "--no-ext-diff", "--no-textconv", "--binary", "HEAD"],
+    ]
 
     def check_http(method: str, url: Any) -> None:
         parsed = urlsplit(str(url))
@@ -61,9 +79,36 @@ def install_policy(policy: str, report: dict[str, Any]) -> None:
             return False
 
     def socket_audit(event: str, args: tuple) -> None:
-        if event in {"socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr"}:
+        if event in {
+            "subprocess.Popen",
+            "os.system",
+            "os.posix_spawn",
+            "os.exec",
+            "os.fork",
+            "os.forkpty",
+        }:
+            permit = (
+                event == "subprocess.Popen"
+                and git is not None
+                and args[0] == git
+                and args[1] in local_queries
+            )
+            report.setdefault("process_events", []).append(
+                {
+                    "event": event,
+                    "allowed": permit,
+                    "executable": str(args[0]) if args else None,
+                    "scope": "fixed local Git provenance query" if permit else "unaudited child",
+                }
+            )
+            if not permit:
+                raise NetworkDenied(f"Audit denied unaudited child process: {event}")
+            return
+        if event == "socket.getnameinfo":
+            host, port = args[0][:2]
+        elif event in {"socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr"}:
             host, port = args[0], args[1] if event == "socket.getaddrinfo" else None
-        elif event in {"socket.connect", "socket.sendto"} and args[0].family in {
+        elif event in {"socket.connect", "socket.sendto", "socket.sendmsg"} and args[0].family in {
             socket.AF_INET,
             socket.AF_INET6,
         }:
@@ -119,10 +164,12 @@ def main(argv: list[str] | None = None) -> int:
         "arguments": arguments,
         "http_requests": [],
         "socket_events": [],
+        "process_events": [],
+        "completed": False,
     }
-    install_policy(args.policy, report)
     code = 2
     try:
+        install_policy(args.policy, report)
         if args.component == "research":
             from quant_strategy.cli import main as run
         elif args.component == "offline-backtest":
@@ -131,19 +178,26 @@ def main(argv: list[str] | None = None) -> int:
             from freqtrade.main import main as run
         returned = run(arguments)
         code = 0 if returned is None else int(returned)
+        report["completed"] = True
     except SystemExit as exc:
-        code = int(exc.code or 0)
+        code = exc.code if isinstance(exc.code, int) else (0 if exc.code is None else 1)
+        report["completed"] = True
+    except KeyboardInterrupt:
+        code = 130
+        report["error"] = {"type": "KeyboardInterrupt", "message": "Interrupted"}
     except Exception as exc:
         report["error"] = {"type": type(exc).__name__, "message": str(exc)}
         code = 1
         traceback.print_exc()
     finally:
-        report["exit_code"] = code
         report["denied_operations"] = sum(
             not item["allowed"]
-            for key in ("http_requests", "socket_events")
+            for key in ("http_requests", "socket_events", "process_events")
             for item in report[key]
         )
+        if code == 0 and report["denied_operations"]:
+            code = 3
+        report["exit_code"] = code
         report["freqtrade_imported"] = "freqtrade" in sys.modules
         report["ccxt_imported"] = "ccxt" in sys.modules
         args.report.write_text(

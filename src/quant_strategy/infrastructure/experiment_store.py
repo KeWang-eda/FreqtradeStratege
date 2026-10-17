@@ -10,6 +10,7 @@ import importlib.metadata
 import json
 import platform
 import re
+import shutil
 import subprocess
 import tarfile
 from pathlib import Path
@@ -62,7 +63,16 @@ def environment_versions() -> dict[str, str | None]:
 
 def git_state() -> dict[str, Any]:
     """Record source revision and dirty status when run inside a Git checkout."""
-    command = ["git", "-C", str(Path(__file__).resolve().parents[3])]
+    # Provenance queries must not execute user-configured fsmonitor/diff/textconv
+    # commands. This also lets the network auditor recognize exact local queries.
+    command = [
+        shutil.which("git") or "git",
+        "--no-pager",
+        "-c",
+        "core.fsmonitor=false",
+        "-C",
+        str(Path(__file__).resolve().parents[3]),
+    ]
     try:
         commit = subprocess.check_output(
             [*command, "rev-parse", "HEAD"], text=True, stderr=subprocess.DEVNULL
@@ -71,7 +81,8 @@ def git_state() -> dict[str, Any]:
             [*command, "status", "--porcelain"], text=True, stderr=subprocess.DEVNULL
         )
         diff = subprocess.check_output(
-            [*command, "diff", "--binary", "HEAD"], stderr=subprocess.DEVNULL
+            [*command, "diff", "--no-ext-diff", "--no-textconv", "--binary", "HEAD"],
+            stderr=subprocess.DEVNULL,
         )
         return {
             "commit": commit,

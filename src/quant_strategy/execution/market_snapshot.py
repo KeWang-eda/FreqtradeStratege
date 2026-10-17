@@ -10,6 +10,9 @@ https://developers.binance.com/docs/derivatives/usds-margined-futures/market-dat
 import hashlib
 import json
 import math
+import os
+import re
+import tempfile
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -17,10 +20,87 @@ from typing import Any
 SUPPORTED = {"freqtrade": "2026.7", "ccxt": "4.5.75"}
 ENDPOINT = "https://fapi.binance.com/fapi/v1/exchangeInfo"
 SCHEMA = 1
+ENVELOPE_FIELDS = {
+    "schema_version",
+    "exchange",
+    "market_type",
+    "request_started_at",
+    "acquired_at",
+    "source",
+    "versions",
+    "pairs",
+    "raw_response",
+    "raw_sha256",
+    "normalized",
+    "leverage_rules",
+    "sha256",
+}
 
 
 class SnapshotError(ValueError):
     """Metadata is missing, incompatible or cannot be verified."""
+
+
+def validate_pairs(pairs: list[str]) -> list[str]:
+    """Require an explicit, nonempty, unambiguous market scope."""
+    if (
+        not isinstance(pairs, list)
+        or not pairs
+        or any(
+            not isinstance(pair, str) or not re.fullmatch(r"[A-Z0-9]+/USDT:USDT", pair)
+            for pair in pairs
+        )
+        or len(pairs) != len(set(pairs))
+    ):
+        raise SnapshotError("Specify unique exact Binance USDT perpetual pairs")
+    return sorted(pairs)
+
+
+def _positive(value: Any, label: str, *, zero: bool = False) -> float:
+    if isinstance(value, bool):
+        raise SnapshotError(f"Invalid numeric rule: {label}")
+    number = float(value)
+    if not math.isfinite(number) or number < 0 or (not zero and number == 0):
+        raise SnapshotError(f"Missing or invalid market rule: {label}")
+    return number
+
+
+def _raw_rules(market: dict) -> None:
+    """CCXT permits fallback precision: reject incomplete raw rules before parsing."""
+    if (
+        market.get("contractType") != "PERPETUAL"
+        or market.get("quoteAsset") != "USDT"
+        or market.get("marginAsset") != "USDT"
+        or not market.get("baseAsset")
+        or not market.get("status")
+        or not market.get("orderTypes")
+    ):
+        raise SnapshotError("Incomplete USDT perpetual market identity/order rules")
+    filters = market["filters"]
+    indexed = {entry["filterType"]: entry for entry in filters}
+    if len(filters) != len(indexed):
+        raise SnapshotError("Duplicate market filter types")
+    for kind, minimum, maximum, step in (
+        ("PRICE_FILTER", "minPrice", "maxPrice", "tickSize"),
+        ("LOT_SIZE", "minQty", "maxQty", "stepSize"),
+        ("MARKET_LOT_SIZE", "minQty", "maxQty", "stepSize"),
+    ):
+        if kind not in indexed:
+            raise SnapshotError(f"Missing market rule: {kind}")
+        rule = indexed[kind]
+        lower = _positive(rule[minimum], f"{kind}/{minimum}")
+        upper = _positive(rule[maximum], f"{kind}/{maximum}")
+        _positive(rule[step], f"{kind}/{step}")
+        if upper < lower:
+            raise SnapshotError(f"Reversed limits: {kind}")
+    notional = indexed.get("MIN_NOTIONAL", indexed.get("NOTIONAL"))
+    if not notional:
+        raise SnapshotError("Missing market rule: MIN_NOTIONAL/NOTIONAL")
+    _positive(notional.get("minNotional", notional.get("notional")), "minimum notional")
+    if "contractSize" in market:
+        _positive(market["contractSize"], "contractSize")
+    # Binance USDT-M usually omits contractSize. CCXT's native parser defines it
+    # as 1 in that case; retain this native interpretation, never supply a rule.
 
 
 def digest(value: Any) -> str:
@@ -50,6 +130,16 @@ def leverage_rules(pairs: list[str]) -> dict:
     missing = set(pairs) - tiers.keys()
     if missing:
         raise SnapshotError(f"Native bundled leverage tiers missing pairs: {sorted(missing)}")
+    for pair in pairs:
+        if not tiers[pair]:
+            raise SnapshotError(f"Empty native leverage tiers: {pair}")
+        for tier in tiers[pair]:
+            lower = _positive(tier["minNotional"], "tier/minNotional", zero=True)
+            upper = _positive(tier["maxNotional"], "tier/maxNotional")
+            _positive(tier["maxLeverage"], "tier/maxLeverage")
+            _positive(tier["maintenanceMarginRate"], "tier/maintenanceMarginRate")
+            if upper <= lower:
+                raise SnapshotError(f"Invalid native leverage tier: {pair}")
     return {
         "source": "freqtrade/exchange/binance_leverage_tiers.json",
         "sha256": hashlib.sha256(content).hexdigest(),
@@ -61,13 +151,22 @@ def parse_response(raw: dict, pairs: list[str]) -> dict:
     """Use the real CCXT parser on the genuine response, without any API emulation."""
     import ccxt
 
+    pairs = validate_pairs(pairs)
     api = ccxt.binance({"options": {"defaultType": "swap"}})
     try:
+        raw_markets = raw["symbols"]
+        ids = [market["symbol"] for market in raw_markets]
+        if len(ids) != len(set(ids)):
+            raise SnapshotError("Duplicate raw market symbols")
         markets = api.parse_markets(raw["symbols"])
         indexed = {market["symbol"]: market for market in markets}
+        if len(indexed) != len(markets):
+            raise SnapshotError("Ambiguous normalized market symbols")
         missing = set(pairs) - indexed.keys()
         if missing:
             raise SnapshotError(f"Real exchangeInfo does not contain pairs: {sorted(missing)}")
+        for pair in pairs:
+            _raw_rules(indexed[pair]["info"])
         api.set_markets([indexed[pair] for pair in pairs])
         for pair, market in api.markets.items():
             if not (
@@ -82,6 +181,10 @@ def parse_response(raw: dict, pairs: list[str]) -> dict:
             "currencies": dict(api.currencies),
             "precision_mode": api.precisionMode,
         }
+    except (KeyError, TypeError, ValueError, ccxt.BaseError) as exc:
+        if isinstance(exc, SnapshotError):
+            raise
+        raise SnapshotError(f"Incomplete or invalid genuine response: {exc}") from exc
     finally:
         api.close()
 
@@ -91,10 +194,8 @@ def capture_snapshot(path: Path, pairs: list[str], proxy: str | None = None) -> 
     import ccxt
 
     runtime = versions()
-    pairs = sorted(set(pairs))
-    if not pairs:
-        raise SnapshotError("Specify at least one exact pair")
-    if path.exists():
+    pairs = validate_pairs(pairs)
+    if path.exists() or path.is_symlink():
         raise SnapshotError(f"Refusing to overwrite snapshot: {path}")
     options = {"options": {"defaultType": "swap"}, "timeout": 30000}
     if proxy:
@@ -103,6 +204,8 @@ def capture_snapshot(path: Path, pairs: list[str], proxy: str | None = None) -> 
     started = datetime.now(UTC).isoformat()
     try:
         raw = api.fapiPublicGetExchangeInfo()
+    except ccxt.BaseError as exc:
+        raise SnapshotError(f"Explicit market acquisition failed: {exc}") from exc
     finally:
         api.close()
     snapshot = {
@@ -120,11 +223,44 @@ def capture_snapshot(path: Path, pairs: list[str], proxy: str | None = None) -> 
         "leverage_rules": leverage_rules(pairs),
     }
     snapshot["sha256"] = digest(snapshot)
-    # Exclusive create also protects an existing snapshot against concurrent capture.
-    with path.open("x", encoding="utf-8") as handle:
-        json.dump(snapshot, handle, ensure_ascii=False, indent=2, allow_nan=False)
-        handle.write("\n")
+    publish_snapshot(path, snapshot)
     return snapshot
+
+
+def publish_snapshot(path: Path, snapshot: dict) -> None:
+    """Publish a fully synced file atomically without ever replacing an existing name.
+
+    Same-directory os.link is the POSIX no-clobber publication primitive. A killed
+    writer may leave an obvious hidden .tmp file, never a partially written final.
+    https://docs.python.org/3/library/tempfile.html#tempfile.NamedTemporaryFile
+    https://docs.python.org/3/library/os.html#os.link
+    """
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as handle:
+            temporary = Path(handle.name)
+            json.dump(snapshot, handle, ensure_ascii=False, indent=2, allow_nan=False)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.link(temporary, path)
+        directory_fd = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
+    except OSError as exc:
+        raise SnapshotError(f"Cannot atomically publish snapshot {path}: {exc}") from exc
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
 
 
 def _unique_object(items: list[tuple[str, Any]]) -> dict:
@@ -143,11 +279,16 @@ def load_snapshot(path: Path, required_pairs: list[str], max_age_days: float = 3
         if not math.isfinite(max_age_days) or max_age_days <= 0:
             raise SnapshotError("snapshot-max-age-days must be finite and positive")
         snapshot = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=_unique_object)
+        if not isinstance(snapshot, dict) or set(snapshot) != ENVELOPE_FIELDS:
+            raise SnapshotError(
+                f"Cannot validate market snapshot {path}: envelope has missing or unknown fields"
+            )
         claimed_hash = snapshot.pop("sha256")
         if digest(snapshot) != claimed_hash:
             raise SnapshotError("Snapshot SHA256 mismatch")
         if (
-            snapshot["schema_version"] != SCHEMA
+            type(snapshot["schema_version"]) is not int
+            or snapshot["schema_version"] != SCHEMA
             or snapshot["exchange"] != "binance"
             or snapshot["market_type"] != "linear-usdt-perpetual"
             or snapshot["source"] != {"url": ENDPOINT, "method": "GET", "authenticated": False}
@@ -166,7 +307,8 @@ def load_snapshot(path: Path, required_pairs: list[str], max_age_days: float = 3
         ):
             raise SnapshotError("Snapshot timestamps invalid or snapshot expired")
         pairs = snapshot["pairs"]
-        if not pairs or pairs != sorted(set(pairs)) or set(required_pairs) - set(pairs):
+        validate_pairs(required_pairs)
+        if pairs != validate_pairs(pairs) or set(required_pairs) - set(pairs):
             raise SnapshotError(f"Snapshot pair scope does not cover {sorted(required_pairs)}")
         raw = snapshot["raw_response"]
         if snapshot["raw_sha256"] != digest(raw):

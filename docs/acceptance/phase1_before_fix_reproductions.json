@@ -1,0 +1,5 @@
+{
+  "missing_price_filter": "incorrectly accepted",
+  "unknown_envelope_field": "incorrectly accepted",
+  "boolean_equals_number": true
+}

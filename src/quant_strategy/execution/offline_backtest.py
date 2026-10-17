@@ -6,6 +6,7 @@ See market_snapshot.py for upstream references and compatibility checks.
 """
 
 import argparse
+import asyncio
 import logging
 from copy import deepcopy
 from pathlib import Path
@@ -19,6 +20,7 @@ from quant_strategy.execution.market_snapshot import (
     SnapshotError,
     capture_snapshot,
     load_snapshot,
+    validate_pairs,
     versions,
 )
 
@@ -65,9 +67,25 @@ def check_config(config: dict) -> list[str]:
     correlated = (
         config.get("freqai", {}).get("feature_parameters", {}).get("include_corr_pairlist", [])
     )
+    validate_pairs(pairs)
+    if correlated:
+        validate_pairs(correlated)
     required = sorted(set(pairs) | set(correlated))
-    if not pairs or any(not pair.endswith("/USDT:USDT") for pair in required):
-        raise SnapshotError("Specify exact Binance USDT perpetual pairs, without patterns")
+    for key in ("ccxt_config", "ccxt_sync_config", "ccxt_async_config"):
+        options = exchange.get(key, {})
+        if (
+            options.get("verify") is False
+            or options.get("options", {}).get("defaultType", "swap") != "swap"
+        ):
+            raise SnapshotError(
+                "Offline client requires native swap scope and verified TLS settings"
+            )
+    try:
+        asyncio.get_running_loop()
+    except RuntimeError:
+        pass
+    else:
+        raise SnapshotError("Construct the synchronous backtest outside a running event loop")
     return required
 
 
@@ -79,12 +97,30 @@ class SnapshotBinance(Binance):
         self._snapshot = load_snapshot(snapshot_path, required, max_age_days)
         # Native Backtesting also forces this, but injection constructs the exchange first.
         config["dry_run"] = True
-        super().__init__(config, validate=True, load_leverage_tiers=True)
+        try:
+            super().__init__(config, validate=True, load_leverage_tiers=True)
+        except BaseException:
+            self.close()
+            raise
 
     def close(self):
         # Failed preflight must also be safe when the native destructor calls close().
-        if hasattr(self, "_exchange_ws"):
-            super().close()
+        loop = getattr(self, "loop", None)
+        if loop is None or getattr(self, "_snapshot_closed", False):
+            return
+        try:
+            try:
+                client = getattr(self, "_api_async", None)
+                if client is not None and not loop.is_closed():
+                    loop.run_until_complete(client.close())
+            finally:
+                client = getattr(self, "_api", None)
+                if client is not None:
+                    client.close()
+        finally:
+            if not loop.is_closed():
+                loop.close()
+            self._snapshot_closed = True
 
     def _init_ccxt(self, exchange_config, sync, ccxt_kwargs):
         # Native constructor already merged _ccxt_config and sync/async configuration.
