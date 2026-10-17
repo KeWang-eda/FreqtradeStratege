@@ -1,0 +1,68 @@
+3307188 socket(AF_INET6, SOCK_STREAM|SOCK_CLOEXEC, IPPROTO_IP) = 3
+3307188 bind(3, {sa_family=AF_INET6, sin6_port=htons(0), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "::1", &sin6_addr), sin6_scope_id=0}, 28) = -1 EADDRNOTAVAIL (无法指定被请求的地址)
+3307285 +++ exited with 0 +++
+3307188 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3307285, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+3307287 +++ exited with 1 +++
+3307286 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3307287, si_uid=0, si_status=1, si_utime=0, si_stime=0} ---
+3307286 +++ exited with 0 +++
+3307188 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3307286, si_uid=0, si_status=0, si_utime=16, si_stime=2} ---
+3307289 +++ exited with 1 +++
+3307288 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3307289, si_uid=0, si_status=1, si_utime=0, si_stime=0} ---
+3307288 +++ exited with 0 +++
+3307188 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3307288, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+3307188 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 4
+3307188 connect(4, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (没有那个文件或目录)
+3307188 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 4
+3307188 connect(4, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (没有那个文件或目录)
+3307188 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 4
+3307188 connect(4, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (没有那个文件或目录)
+3307188 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 4
+3307188 connect(4, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (没有那个文件或目录)
+3307370 +++ exited with 0 +++
+3307369 +++ exited with 0 +++
+3307372 +++ exited with 0 +++
+3307368 +++ exited with 0 +++
+3307371 +++ exited with 0 +++
+3307375 +++ exited with 0 +++
+3307374 +++ exited with 0 +++
+3307373 +++ exited with 0 +++
+3307376 +++ exited with 0 +++
+3307377 +++ exited with 0 +++
+3307378 +++ exited with 0 +++
+3307298 +++ exited with 0 +++
+3307297 +++ exited with 0 +++
+3307296 +++ exited with 0 +++
+3307299 +++ exited with 0 +++
+3307292 +++ exited with 0 +++
+3307293 +++ exited with 0 +++
+3307294 +++ exited with 0 +++
+3307295 +++ exited with 0 +++
+3307291 +++ exited with 0 +++
+3307290 +++ exited with 0 +++
+3307230 +++ exited with 0 +++
+3307232 +++ exited with 0 +++
+3307233 +++ exited with 0 +++
+3307235 +++ exited with 0 +++
+3307236 +++ exited with 0 +++
+3307231 +++ exited with 0 +++
+3307234 +++ exited with 0 +++
+3307250 +++ exited with 0 +++
+3307249 +++ exited with 0 +++
+3307251 +++ exited with 0 +++
+3307252 +++ exited with 0 +++
+3307253 +++ exited with 0 +++
+3307254 +++ exited with 0 +++
+3307255 +++ exited with 0 +++
+3307248 +++ exited with 0 +++
+3307246 +++ exited with 0 +++
+3307247 +++ exited with 0 +++
+3307245 +++ exited with 0 +++
+3307244 +++ exited with 0 +++
+3307243 +++ exited with 0 +++
+3307242 +++ exited with 0 +++
+3307241 +++ exited with 0 +++
+3307240 +++ exited with 0 +++
+3307239 +++ exited with 0 +++
+3307237 +++ exited with 0 +++
+3307238 +++ exited with 0 +++
+3307188 +++ exited with 0 +++

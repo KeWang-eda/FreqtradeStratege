@@ -1,0 +1,102 @@
+2026-10-17 21:06:41,255 - freqtrade - INFO - freqtrade 2026.7
+2026-10-17 21:06:41,516 - numexpr.utils - INFO - NumExpr defaulting to 8 threads.
+2026-10-17 21:06:43,306 - freqtrade.configuration.load_config - INFO - Using config: config.json ...
+2026-10-17 21:06:43,307 - freqtrade.configuration.load_config - INFO - Using config: configs/backtest-local.json ...
+2026-10-17 21:06:43,308 - freqtrade.configuration.load_config - INFO - Using config: configs/environment/freqtrade-mihomo.json ...
+2026-10-17 21:06:43,311 - freqtrade.loggers - INFO - Enabling colorized output.
+2026-10-17 21:06:43,312 - freqtrade.loggers - INFO - Logfile configured
+2026-10-17 21:06:43,312 - freqtrade.loggers - INFO - Verbosity set to 0
+2026-10-17 21:06:43,313 - freqtrade.configuration.configuration - INFO - Using additional Strategy lookup path: /REPO
+2026-10-17 21:06:43,314 - freqtrade.configuration.configuration - INFO - Using max_open_trades: 1 ...
+2026-10-17 21:06:43,314 - freqtrade.configuration.configuration - INFO - Parameter --timerange detected: 20250101-20250115 ...
+2026-10-17 21:06:43,316 - freqtrade.configuration.configuration - INFO - Using user-data directory: /RUN/native ...
+2026-10-17 21:06:43,317 - freqtrade.configuration.configuration - INFO - Using data directory: /REPO/data ...
+2026-10-17 21:06:43,318 - freqtrade.configuration.configuration - INFO - Using /RUN/native/results as backtest directory ...
+2026-10-17 21:06:43,318 - freqtrade.configuration.configuration - INFO - Parameter --export detected: signals ...
+2026-10-17 21:06:43,319 - freqtrade.configuration.configuration - INFO - Parameter --cache=none detected ...
+2026-10-17 21:06:43,320 - freqtrade.configuration.configuration - INFO - Using pairs ['BTC/USDT:USDT', 'ETH/USDT:USDT']
+2026-10-17 21:06:43,320 - freqtrade.configuration.configuration - INFO - Filter trades by timerange: 20250101-20250115
+2026-10-17 21:06:43,321 - freqtrade.configuration.configuration - INFO - Using freqaimodel path: /REPO/freqaimodels
+2026-10-17 21:06:43,322 - freqtrade.exchange.check_exchange - INFO - Checking exchange...
+2026-10-17 21:06:43,330 - freqtrade.exchange.check_exchange - INFO - Exchange "binance" is officially supported by the Freqtrade development team.
+2026-10-17 21:06:43,331 - freqtrade.configuration.config_validation - INFO - Validating configuration ...
+2026-10-17 21:06:43,335 - freqtrade.commands.optimize_commands - INFO - Starting freqtrade in Backtesting mode
+2026-10-17 21:06:43,336 - freqtrade.exchange.exchange - INFO - Instance is running with dry_run enabled
+2026-10-17 21:06:43,336 - freqtrade.exchange.exchange - INFO - Using CCXT 4.5.75
+2026-10-17 21:06:43,337 - freqtrade.exchange.exchange - INFO - Applying additional ccxt config: {'options': {'defaultType': 'swap', 'fetchMarkets': {'types': ['linear']}}, 'httpsProxy': 
+'http://127.0.0.1:7890', 'timeout': 30000}
+2026-10-17 21:06:43,344 - freqtrade.exchange.exchange - INFO - Applying additional ccxt config: {'options': {'defaultType': 'swap', 'fetchMarkets': {'types': ['linear']}}, 'httpsProxy': 
+'http://127.0.0.1:7890', 'timeout': 30000, 'aiohttp_trust_env': True, 'enableRateLimit': True}
+2026-10-17 21:06:43,353 - freqtrade.exchange.exchange - INFO - Using Exchange "Binance"
+2026-10-17 21:06:43,363 - freqtrade - ERROR - Fatal exception!
+Traceback (most recent call last):
+  File "/LOCAL_HOME/project/freqtrade/freqtrade/main.py", line 52, in main
+    return_code = args["func"](args)
+  File "/LOCAL_HOME/project/freqtrade/freqtrade/commands/optimize_commands.py", line 60, in start_backtesting
+    backtesting = Backtesting(config)
+  File "/LOCAL_HOME/project/freqtrade/freqtrade/optimize/backtesting.py", line 170, in __init__
+    exchange = ExchangeResolver.load_exchange(self.config, load_leverage_tiers=True)
+  File "/LOCAL_HOME/project/freqtrade/freqtrade/resolvers/exchange_resolver.py", line 44, in load_exchange
+    exchange = ExchangeResolver._load_exchange(
+        exchange_name,
+    ...<5 lines>...
+        },
+    )
+  File "/LOCAL_HOME/project/freqtrade/freqtrade/resolvers/exchange_resolver.py", line 78, in _load_exchange
+    exchange = ex_class(**kwargs)
+  File "/LOCAL_HOME/project/freqtrade/freqtrade/exchange/binance.py", line 86, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/LOCAL_HOME/project/freqtrade/freqtrade/exchange/exchange.py", line 301, in __init__
+    self.reload_markets(True, load_leverage_tiers=False)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/LOCAL_HOME/project/freqtrade/freqtrade/exchange/exchange.py", line 725, in reload_markets
+    retrier(self._load_async_markets, retries=retries)(reload=True)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/LOCAL_HOME/project/freqtrade/freqtrade/exchange/common.py", line 181, in wrapper
+    return f(*args, **kwargs)
+  File "/LOCAL_HOME/project/freqtrade/freqtrade/exchange/exchange.py", line 698, in _load_async_markets
+    markets = self.loop.run_until_complete(self._api_reload_markets(reload=reload))
+  File "/LOCAL_HOME/miniconda3/lib/python3.13/asyncio/base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/LOCAL_HOME/project/freqtrade/freqtrade/exchange/exchange.py", line 685, in _api_reload_markets
+    await self._api_async.load_markets(reload=reload, params={})
+  File "/PYTHON_ENV/lib/python3.13/site-packages/ccxt/async_support/base/exchange.py", line 377, in load_markets
+    raise e
+  File "/PYTHON_ENV/lib/python3.13/site-packages/ccxt/async_support/base/exchange.py", line 369, in load_markets
+    result = await self.markets_loading
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/PYTHON_ENV/lib/python3.13/site-packages/ccxt/async_support/base/exchange.py", line 336, in load_markets_helper
+    markets = await self.fetch_markets(params)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/PYTHON_ENV/lib/python3.13/site-packages/ccxt/async_support/binance.py", line 3423, in fetch_markets
+    results = await asyncio.gather(*promisesRaw)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/PYTHON_ENV/lib/python3.13/site-packages/ccxt/async_support/binance.py", line 12474, in request
+    response = await self.fetch2(path, api, method, params, headers, body, config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/PYTHON_ENV/lib/python3.13/site-packages/ccxt/async_support/base/exchange.py", line 1064, in fetch2
+    raise e
+  File "/PYTHON_ENV/lib/python3.13/site-packages/ccxt/async_support/base/exchange.py", line 1045, in fetch2
+    response = await self.fetch(request['url'], request['method'], request['headers'], request['body'])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/PYTHON_ENV/lib/python3.13/site-packages/ccxt/async_support/base/exchange.py", line 246, in fetch
+    async with session_method(yarl.URL(url, encoded=True),
+               ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                              data=encoded_body,
+                              ^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+                              timeout=aiohttp.ClientTimeout(total=(self.timeout / 1000), sock_connect=(self.timeout / 1000), sock_read=(self.timeout / 1000)),
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                              proxy=final_proxy) as response:
+                              ^^^^^^^^^^^^^^^^^^
+  File "/PYTHON_ENV/lib/python3.13/site-packages/aiohttp/client.py", line 1693, in __aenter__
+    self._resp: _RetType_co = await self._coro
+                              ^^^^^^^^^^^^^^^^
+  File "/REPO/tools/audit_local_network.py", line 139, in async_request
+    check_http(method, str_or_url)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/REPO/tools/audit_local_network.py", line 71, in check_http
+    raise NetworkDenied(f"Audit denied HTTP {method} {parsed.hostname}{parsed.path}")
+NetworkDenied: Audit denied HTTP GET fapi.binance.com/fapi/v1/exchangeInfo

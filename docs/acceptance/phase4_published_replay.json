@@ -1,0 +1,281 @@
+{
+  "passed": true,
+  "tolerance": {
+    "rtol": 1e-12,
+    "atol": 1e-12
+  },
+  "comparison_policy": {
+    "excluded_result_fields": {
+      "backtest_run_start_ts": "Wall-clock process start time, unrelated to historical decisions",
+      "backtest_run_end_ts": "Wall-clock process end time, unrelated to historical decisions"
+    },
+    "metadata_normalization": "Validate data_path suffix against artifact parent; normalize only independent userdir root",
+    "metadata_fields": "All fields, including unknown/extra fields, are compared",
+    "configuration": "All exported fields including exchange/FreqAI; config_files only normalizes checkout root, preserving order",
+    "nonfinite": "Reject non-finite JSON and frame infinities; paired frame NaN masks must match"
+  },
+  "archives": {
+    "old": {
+      "path": "phase4_reference_artifacts.tar.gz",
+      "sha256": "33b7ed6b9f09892f9067c4cfba944c82411a172eb414523d453fd2c434521ffb"
+    },
+    "new": {
+      "path": "phase4_artifacts.tar.gz",
+      "sha256": "ac8c7f5c05327adc2990eb4ea8b3923d4bca4100d949738e90d704dd87feccab"
+    }
+  },
+  "start": "2025-01-01 00:00:00+00:00",
+  "end": "2025-01-15 00:00:00+00:00",
+  "trade_count": {
+    "old": 13,
+    "new": 13
+  },
+  "order_count": {
+    "old": 26,
+    "new": 26
+  },
+  "metrics": {
+    "compared_keys": [
+      "avg_stake_amount",
+      "backtest_best_day",
+      "backtest_best_day_abs",
+      "backtest_days",
+      "backtest_end",
+      "backtest_end_ts",
+      "backtest_start",
+      "backtest_start_ts",
+      "backtest_worst_day",
+      "backtest_worst_day_abs",
+      "best_pair",
+      "cagr",
+      "calmar",
+      "canceled_entry_orders",
+      "canceled_trade_entries",
+      "csum_max",
+      "csum_min",
+      "daily_profit",
+      "draw_days",
+      "drawdown_duration",
+      "drawdown_duration_s",
+      "drawdown_end",
+      "drawdown_end_ts",
+      "drawdown_start",
+      "drawdown_start_ts",
+      "draws",
+      "dry_run_wallet",
+      "enable_protections",
+      "exit_profit_offset",
+      "exit_profit_only",
+      "exit_reason_summary",
+      "expectancy",
+      "expectancy_ratio",
+      "final_balance",
+      "freqai_identifier",
+      "freqaimodel",
+      "holding_avg",
+      "holding_avg_s",
+      "ignore_roi_if_entry_signal",
+      "left_open_trades",
+      "locks",
+      "loser_holding_avg",
+      "loser_holding_avg_s",
+      "loser_holding_max",
+      "loser_holding_max_s",
+      "loser_holding_min",
+      "loser_holding_min_s",
+      "losing_days",
+      "losses",
+      "margin_mode",
+      "market_change",
+      "max_consecutive_losses",
+      "max_consecutive_wins",
+      "max_drawdown_abs",
+      "max_drawdown_account",
+      "max_drawdown_high",
+      "max_drawdown_low",
+      "max_open_trades",
+      "max_open_trades_setting",
+      "max_relative_drawdown",
+      "minimal_roi",
+      "mix_tag_stats",
+      "p_value",
+      "pairlist",
+      "periodic_breakdown",
+      "profit_factor",
+      "profit_mean",
+      "profit_median",
+      "profit_total",
+      "profit_total_abs",
+      "profit_total_long",
+      "profit_total_long_abs",
+      "profit_total_short",
+      "profit_total_short_abs",
+      "rejected_signals",
+      "replaced_entry_orders",
+      "results_per_enter_tag",
+      "results_per_pair",
+      "sharpe",
+      "sortino",
+      "sqn",
+      "stake_amount",
+      "stake_currency",
+      "stake_currency_decimals",
+      "starting_balance",
+      "stoploss",
+      "strategy_name",
+      "timedout_entry_orders",
+      "timedout_exit_orders",
+      "timeframe",
+      "timeframe_detail",
+      "timerange",
+      "total_trades",
+      "total_volume",
+      "trade_count_long",
+      "trade_count_short",
+      "trades_per_day",
+      "trading_mode",
+      "trailing_only_offset_is_reached",
+      "trailing_stop",
+      "trailing_stop_positive",
+      "trailing_stop_positive_offset",
+      "use_custom_stoploss",
+      "use_exit_signal",
+      "wallet_stats",
+      "winner_holding_avg",
+      "winner_holding_avg_s",
+      "winner_holding_max",
+      "winner_holding_max_s",
+      "winner_holding_min",
+      "winner_holding_min_s",
+      "winning_days",
+      "winrate",
+      "wins",
+      "worst_pair"
+    ],
+    "values": {
+      "old": {
+        "profit_total_abs": -7.72891548,
+        "final_balance": 992.27108452,
+        "sharpe": -2.4156875909722673,
+        "max_drawdown_account": 0.019077787162898503
+      },
+      "new": {
+        "profit_total_abs": -7.72891548,
+        "final_balance": 992.27108452,
+        "sharpe": -2.4156875909722673,
+        "max_drawdown_account": 0.019077787162898503
+      }
+    }
+  },
+  "configuration_keys": [
+    "$schema",
+    "_comment",
+    "_comment_exit",
+    "_comment_position",
+    "cancel_open_orders_on_exit",
+    "config_files",
+    "datadir",
+    "dataformat_ohlcv",
+    "dry_run",
+    "dry_run_wallet",
+    "entry_pricing",
+    "exchange",
+    "exit_pricing",
+    "fee",
+    "fiat_display_currency",
+    "freqai",
+    "freqaimodel",
+    "initial_state",
+    "internals",
+    "margin_mode",
+    "max_open_trades",
+    "my_experiment",
+    "order_types",
+    "pairlists",
+    "stake_amount",
+    "stake_currency",
+    "stoploss",
+    "timeframe",
+    "tradable_balance_ratio",
+    "trading_mode",
+    "trailing_stop",
+    "unfilledtimeout"
+  ],
+  "signal_counts": {
+    "signals": {
+      "BTC/USDT:USDT": {
+        "old": 8,
+        "new": 8
+      },
+      "ETH/USDT:USDT": {
+        "old": 5,
+        "new": 5
+      }
+    },
+    "rejected": {
+      "BTC/USDT:USDT": {
+        "old": 6,
+        "new": 6
+      },
+      "ETH/USDT:USDT": {
+        "old": 63,
+        "new": 63
+      }
+    },
+    "exited": {
+      "BTC/USDT:USDT": {
+        "old": 8,
+        "new": 8
+      },
+      "ETH/USDT:USDT": {
+        "old": 5,
+        "new": 5
+      }
+    }
+  },
+  "prediction_files": [
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1735689600_prediction.feather",
+      "rows": 42,
+      "old_sha256": "45b0cec00969259b71e906fdd0e2956cadafa8675ab795611114d61b6c2df614",
+      "new_sha256": "45b0cec00969259b71e906fdd0e2956cadafa8675ab795611114d61b6c2df614"
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_btc_1736294400_prediction.feather",
+      "rows": 42,
+      "old_sha256": "147b333f878f3b4d8196688a6eaf2ad64032d5cbe5351a52422e00ad1ec4b036",
+      "new_sha256": "147b333f878f3b4d8196688a6eaf2ad64032d5cbe5351a52422e00ad1ec4b036"
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1735689600_prediction.feather",
+      "rows": 42,
+      "old_sha256": "4f268f4288bdf17c109229eeac0ac2c51a7cdd79b0ee61342a7f5d81c43f5993",
+      "new_sha256": "4f268f4288bdf17c109229eeac0ac2c51a7cdd79b0ee61342a7f5d81c43f5993"
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/backtesting_predictions/cb_eth_1736294400_prediction.feather",
+      "rows": 42,
+      "old_sha256": "d4ef13e4ee0d8166645b9a9053e91de11b2d1a250b8e8dd2e0dab20bb376a3be",
+      "new_sha256": "d4ef13e4ee0d8166645b9a9053e91de11b2d1a250b8e8dd2e0dab20bb376a3be"
+    }
+  ],
+  "model_schemas": [
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1735689600/cb_btc_1735689600_metadata.json",
+      "feature_count": 92
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-BTC_1736294400/cb_btc_1736294400_metadata.json",
+      "feature_count": 92
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1735689600/cb_eth_1735689600_metadata.json",
+      "feature_count": 92
+    },
+    {
+      "file": "models/mystrategy-4h-regression-72pair-corr-s1-v1/sub-train-ETH_1736294400/cb_eth_1736294400_metadata.json",
+      "feature_count": 92
+    }
+  ],
+  "differences": []
+}

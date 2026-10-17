@@ -1,0 +1,29 @@
+3307664 socket(AF_INET6, SOCK_STREAM|SOCK_CLOEXEC, IPPROTO_IP) = 3
+3307664 bind(3, {sa_family=AF_INET6, sin6_port=htons(0), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "::1", &sin6_addr), sin6_scope_id=0}, 28) = -1 EADDRNOTAVAIL (无法指定被请求的地址)
+3307664 socketpair(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC, 0, [4, 5]) = 0
+3307664 getsockname(4, {sa_family=AF_UNIX}, [128->2]) = 0
+3307664 getsockname(5, {sa_family=AF_UNIX}, [128->2]) = 0
+3307666 +++ exited with 0 +++
+3307665 +++ exited with 0 +++
+3307669 +++ exited with 0 +++
+3307668 +++ exited with 0 +++
+3307667 +++ exited with 0 +++
+3307670 +++ exited with 0 +++
+3307671 +++ exited with 0 +++
+3307689 +++ exited with 0 +++
+3307690 +++ exited with 0 +++
+3307691 +++ exited with 0 +++
+3307692 +++ exited with 0 +++
+3307693 +++ exited with 0 +++
+3307694 +++ exited with 0 +++
+3307695 +++ exited with 0 +++
+3307687 +++ exited with 1 +++
+3307686 +++ exited with 1 +++
+3307685 +++ exited with 1 +++
+3307684 +++ exited with 1 +++
+3307683 +++ exited with 1 +++
+3307682 +++ exited with 1 +++
+3307681 +++ exited with 1 +++
+3307680 +++ exited with 1 +++
+3307672 +++ exited with 1 +++
+3307664 +++ exited with 1 +++

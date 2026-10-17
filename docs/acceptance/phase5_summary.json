@@ -1,0 +1,1026 @@
+{
+  "status": "PASS",
+  "executed_at": "2026-10-17T13:06:43.943553+00:00",
+  "versions": {
+    "python": "3.13.13",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.0",
+    "xgboost": "3.4.1",
+    "lightgbm": "4.7.0",
+    "TA-Lib": "0.7.1",
+    "technical": "1.7.0",
+    "freqtrade": "2026.7",
+    "pyarrow": "25.0.1",
+    "PyYAML": "6.0.3"
+  },
+  "executions": {
+    "phase5_validate": {
+      "exit_code": 0,
+      "audit": {
+        "policy": "deny-all",
+        "component": "research",
+        "arguments": [
+          "validate",
+          "-c",
+          "configs/base.yaml",
+          "-c",
+          "configs/environment/local.yaml"
+        ],
+        "http_requests": [],
+        "socket_events": [],
+        "process_events": [],
+        "completed": true,
+        "denied_operations": 0,
+        "exit_code": 0,
+        "freqtrade_imported": false,
+        "ccxt_imported": false
+      },
+      "syscalls": {
+        "connect_or_send_count": 0,
+        "failed_local_nscd_probes": 0,
+        "socket_creation_count": 1,
+        "bind_count": 1,
+        "scope": "strace -f captures network syscalls of traced process and children"
+      },
+      "command": [
+        "unshare",
+        "--user",
+        "--map-root-user",
+        "--net",
+        "strace",
+        "-f",
+        "-e",
+        "trace=network",
+        "-o",
+        "/RUN/phase5_validate_network.strace",
+        "/PYTHON_ENV/bin/python",
+        "/REPO/tools/audit_local_network.py",
+        "--policy",
+        "deny-all",
+        "--report",
+        "/RUN/phase5_validate_network.json",
+        "research",
+        "validate",
+        "-c",
+        "configs/base.yaml",
+        "-c",
+        "configs/environment/local.yaml"
+      ]
+    },
+    "phase5_dataset_build": {
+      "exit_code": 0,
+      "audit": {
+        "policy": "deny-all",
+        "component": "research",
+        "arguments": [
+          "dataset-build",
+          "-c",
+          "configs/base.yaml",
+          "-c",
+          "configs/environment/local.yaml"
+        ],
+        "http_requests": [],
+        "socket_events": [],
+        "process_events": [],
+        "completed": true,
+        "denied_operations": 0,
+        "exit_code": 0,
+        "freqtrade_imported": false,
+        "ccxt_imported": false
+      },
+      "syscalls": {
+        "connect_or_send_count": 0,
+        "failed_local_nscd_probes": 0,
+        "socket_creation_count": 1,
+        "bind_count": 1,
+        "scope": "strace -f captures network syscalls of traced process and children"
+      },
+      "command": [
+        "unshare",
+        "--user",
+        "--map-root-user",
+        "--net",
+        "strace",
+        "-f",
+        "-e",
+        "trace=network",
+        "-o",
+        "/RUN/phase5_dataset_build_network.strace",
+        "/PYTHON_ENV/bin/python",
+        "/REPO/tools/audit_local_network.py",
+        "--policy",
+        "deny-all",
+        "--report",
+        "/RUN/phase5_dataset_build_network.json",
+        "research",
+        "dataset-build",
+        "-c",
+        "configs/base.yaml",
+        "-c",
+        "configs/environment/local.yaml"
+      ]
+    },
+    "phase5_ridge": {
+      "exit_code": 0,
+      "audit": {
+        "policy": "deny-all",
+        "component": "research",
+        "arguments": [
+          "run",
+          "-c",
+          "configs/base.yaml",
+          "-c",
+          "configs/environment/local.yaml",
+          "-c",
+          "configs/estimators/ridge.yaml",
+          "--output",
+          "/RUN/experiments",
+          "--experiment-id",
+          "ridge"
+        ],
+        "http_requests": [],
+        "socket_events": [],
+        "process_events": [
+          {
+            "event": "subprocess.Popen",
+            "allowed": true,
+            "executable": "/usr/bin/git",
+            "scope": "fixed local Git provenance query"
+          },
+          {
+            "event": "subprocess.Popen",
+            "allowed": true,
+            "executable": "/usr/bin/git",
+            "scope": "fixed local Git provenance query"
+          },
+          {
+            "event": "subprocess.Popen",
+            "allowed": true,
+            "executable": "/usr/bin/git",
+            "scope": "fixed local Git provenance query"
+          }
+        ],
+        "completed": true,
+        "denied_operations": 0,
+        "exit_code": 0,
+        "freqtrade_imported": false,
+        "ccxt_imported": false
+      },
+      "syscalls": {
+        "connect_or_send_count": 0,
+        "failed_local_nscd_probes": 4,
+        "socket_creation_count": 5,
+        "bind_count": 1,
+        "scope": "strace -f captures network syscalls of traced process and children"
+      },
+      "command": [
+        "unshare",
+        "--user",
+        "--map-root-user",
+        "--net",
+        "strace",
+        "-f",
+        "-e",
+        "trace=network",
+        "-o",
+        "/RUN/phase5_ridge_network.strace",
+        "/PYTHON_ENV/bin/python",
+        "/REPO/tools/audit_local_network.py",
+        "--policy",
+        "deny-all",
+        "--report",
+        "/RUN/phase5_ridge_network.json",
+        "research",
+        "run",
+        "-c",
+        "configs/base.yaml",
+        "-c",
+        "configs/environment/local.yaml",
+        "-c",
+        "configs/estimators/ridge.yaml",
+        "--output",
+        "/RUN/experiments",
+        "--experiment-id",
+        "ridge"
+      ]
+    },
+    "phase5_xgboost": {
+      "exit_code": 0,
+      "audit": {
+        "policy": "deny-all",
+        "component": "research",
+        "arguments": [
+          "run",
+          "-c",
+          "configs/base.yaml",
+          "-c",
+          "configs/environment/local.yaml",
+          "-c",
+          "configs/estimators/xgboost.yaml",
+          "--output",
+          "/RUN/experiments",
+          "--experiment-id",
+          "xgboost"
+        ],
+        "http_requests": [],
+        "socket_events": [],
+        "process_events": [
+          {
+            "event": "subprocess.Popen",
+            "allowed": true,
+            "executable": "/usr/bin/git",
+            "scope": "fixed local Git provenance query"
+          },
+          {
+            "event": "subprocess.Popen",
+            "allowed": true,
+            "executable": "/usr/bin/git",
+            "scope": "fixed local Git provenance query"
+          },
+          {
+            "event": "subprocess.Popen",
+            "allowed": true,
+            "executable": "/usr/bin/git",
+            "scope": "fixed local Git provenance query"
+          }
+        ],
+        "completed": true,
+        "denied_operations": 0,
+        "exit_code": 0,
+        "freqtrade_imported": false,
+        "ccxt_imported": false
+      },
+      "syscalls": {
+        "connect_or_send_count": 0,
+        "failed_local_nscd_probes": 4,
+        "socket_creation_count": 5,
+        "bind_count": 1,
+        "scope": "strace -f captures network syscalls of traced process and children"
+      },
+      "command": [
+        "unshare",
+        "--user",
+        "--map-root-user",
+        "--net",
+        "strace",
+        "-f",
+        "-e",
+        "trace=network",
+        "-o",
+        "/RUN/phase5_xgboost_network.strace",
+        "/PYTHON_ENV/bin/python",
+        "/REPO/tools/audit_local_network.py",
+        "--policy",
+        "deny-all",
+        "--report",
+        "/RUN/phase5_xgboost_network.json",
+        "research",
+        "run",
+        "-c",
+        "configs/base.yaml",
+        "-c",
+        "configs/environment/local.yaml",
+        "-c",
+        "configs/estimators/xgboost.yaml",
+        "--output",
+        "/RUN/experiments",
+        "--experiment-id",
+        "xgboost"
+      ]
+    },
+    "phase5_compare": {
+      "exit_code": 0,
+      "audit": {
+        "policy": "deny-all",
+        "component": "research",
+        "arguments": [
+          "compare",
+          "/RUN/experiments/ridge",
+          "/RUN/experiments/xgboost"
+        ],
+        "http_requests": [],
+        "socket_events": [],
+        "process_events": [],
+        "completed": true,
+        "denied_operations": 0,
+        "exit_code": 0,
+        "freqtrade_imported": false,
+        "ccxt_imported": false
+      },
+      "syscalls": {
+        "connect_or_send_count": 0,
+        "failed_local_nscd_probes": 0,
+        "socket_creation_count": 1,
+        "bind_count": 1,
+        "scope": "strace -f captures network syscalls of traced process and children"
+      },
+      "command": [
+        "unshare",
+        "--user",
+        "--map-root-user",
+        "--net",
+        "strace",
+        "-f",
+        "-e",
+        "trace=network",
+        "-o",
+        "/RUN/phase5_compare_network.strace",
+        "/PYTHON_ENV/bin/python",
+        "/REPO/tools/audit_local_network.py",
+        "--policy",
+        "deny-all",
+        "--report",
+        "/RUN/phase5_compare_network.json",
+        "research",
+        "compare",
+        "/RUN/experiments/ridge",
+        "/RUN/experiments/xgboost"
+      ]
+    },
+    "phase5_native": {
+      "exit_code": 1,
+      "audit": {
+        "policy": "deny-all",
+        "component": "freqtrade",
+        "arguments": [
+          "backtesting",
+          "-c",
+          "config.json",
+          "-c",
+          "configs/backtest-local.json",
+          "-c",
+          "configs/environment/freqtrade-mihomo.json",
+          "--userdir",
+          "/RUN/native",
+          "--datadir",
+          "/REPO/data",
+          "--strategy-path",
+          "/REPO",
+          "--freqaimodel-path",
+          "/REPO/freqaimodels",
+          "--strategy",
+          "MyStrategy",
+          "--timerange",
+          "20250101-20250115",
+          "--pairs",
+          "BTC/USDT:USDT",
+          "ETH/USDT:USDT",
+          "--cache",
+          "none",
+          "--export",
+          "signals",
+          "--backtest-directory",
+          "/RUN/native/results"
+        ],
+        "http_requests": [
+          {
+            "method": "GET",
+            "host": "fapi.binance.com",
+            "path": "/fapi/v1/exchangeInfo",
+            "allowed": false
+          }
+        ],
+        "socket_events": [],
+        "process_events": [],
+        "completed": true,
+        "denied_operations": 1,
+        "exit_code": 1,
+        "freqtrade_imported": true,
+        "ccxt_imported": true
+      },
+      "syscalls": {
+        "connect_or_send_count": 0,
+        "failed_local_nscd_probes": 0,
+        "socket_creation_count": 1,
+        "bind_count": 1,
+        "scope": "strace -f captures network syscalls of traced process and children"
+      },
+      "command": [
+        "unshare",
+        "--user",
+        "--map-root-user",
+        "--net",
+        "strace",
+        "-f",
+        "-e",
+        "trace=network",
+        "-o",
+        "/RUN/phase5_native_network.strace",
+        "/PYTHON_ENV/bin/python",
+        "/REPO/tools/audit_local_network.py",
+        "--policy",
+        "deny-all",
+        "--report",
+        "/RUN/phase5_native_network.json",
+        "freqtrade",
+        "backtesting",
+        "-c",
+        "config.json",
+        "-c",
+        "configs/backtest-local.json",
+        "-c",
+        "configs/environment/freqtrade-mihomo.json",
+        "--userdir",
+        "/RUN/native",
+        "--datadir",
+        "/REPO/data",
+        "--strategy-path",
+        "/REPO",
+        "--freqaimodel-path",
+        "/REPO/freqaimodels",
+        "--strategy",
+        "MyStrategy",
+        "--timerange",
+        "20250101-20250115",
+        "--pairs",
+        "BTC/USDT:USDT",
+        "ETH/USDT:USDT",
+        "--cache",
+        "none",
+        "--export",
+        "signals",
+        "--backtest-directory",
+        "/RUN/native/results"
+      ]
+    }
+  },
+  "dataset": {
+    "samples": 29706,
+    "feature_columns": [
+      "%-rsi-period-6",
+      "%-ema-distance-period-6",
+      "%-sma-distance-period-6",
+      "%-atr-ratio-period-6",
+      "%-relative-volume-period-6",
+      "%-momentum-period-6",
+      "%-rsi-period-14",
+      "%-ema-distance-period-14",
+      "%-sma-distance-period-14",
+      "%-atr-ratio-period-14",
+      "%-relative-volume-period-14",
+      "%-momentum-period-14",
+      "%-rsi-period-24",
+      "%-ema-distance-period-24",
+      "%-sma-distance-period-24",
+      "%-atr-ratio-period-24",
+      "%-relative-volume-period-24",
+      "%-momentum-period-24",
+      "%-return",
+      "%-range",
+      "%-body",
+      "%-volume-change",
+      "%-volatility-6",
+      "%-volatility-24",
+      "%-hour",
+      "%-day-of-week"
+    ],
+    "quality": {
+      "BTC/USDT:USDT": {
+        "input": 14880,
+        "feature_unavailable": 24,
+        "label_unavailable": 3,
+        "excluded": 27,
+        "kept": 14853,
+        "time_gaps": 0
+      },
+      "ETH/USDT:USDT": {
+        "input": 14880,
+        "feature_unavailable": 24,
+        "label_unavailable": 3,
+        "excluded": 27,
+        "kept": 14853,
+        "time_gaps": 0
+      }
+    }
+  },
+  "research": {
+    "ridge": {
+      "status": "complete",
+      "input_files": {
+        "BTC/USDT:USDT": {
+          "path": "data/futures/BTC_USDT_USDT-4h-futures.feather",
+          "sha256": "841837255751a6dfe5a4507fdff5b4cace91baef23ba079816ed7ecc165e0121"
+        },
+        "ETH/USDT:USDT": {
+          "path": "data/futures/ETH_USDT_USDT-4h-futures.feather",
+          "sha256": "3593cd46198d451305a280683e128c48a874be895295e5c3665161945767d0bc"
+        }
+      },
+      "dataset_sha256": "d2a22bbd7623515c541df39e2bb7a79401996a61f6671c87b42d3dac6c6529eb",
+      "input_data_sha256": "ad9f2aa0ff7795d53c9676ea56b7e4042bfb031943fbe77e8ddddda1036e7e78",
+      "folds_sha256": "f1a350325a63fccd6f8e49897ae7be55c6eca09cd9020e5fadc8770b3d7e5c4d",
+      "prediction_rows": 18934,
+      "fold_count": 3,
+      "metrics": {
+        "0": {
+          "phase": "development",
+          "overall": {
+            "n": 6312,
+            "mae": 0.020654715954752035,
+            "rmse": 0.028758765572832985,
+            "direction_accuracy": 0.5019011406844106,
+            "pearson_ic": 0.04255513695580374,
+            "spearman_ic": 0.025177937932883684
+          },
+          "pairs": {
+            "BTC/USDT:USDT": {
+              "n": 3156,
+              "mae": 0.01774038328541533,
+              "rmse": 0.024927231429136887,
+              "direction_accuracy": 0.5003168567807351,
+              "pearson_ic": 0.03201305784578144,
+              "spearman_ic": 0.013917655712180843
+            },
+            "ETH/USDT:USDT": {
+              "n": 3156,
+              "mae": 0.02356904862408874,
+              "rmse": 0.032136681966633975,
+              "direction_accuracy": 0.5034854245880862,
+              "pearson_ic": 0.05043507490915084,
+              "spearman_ic": 0.032631874253179614
+            }
+          }
+        },
+        "1": {
+          "phase": "development",
+          "overall": {
+            "n": 6312,
+            "mae": 0.012314572441901744,
+            "rmse": 0.017964167127887166,
+            "direction_accuracy": 0.49477186311787075,
+            "pearson_ic": 0.04601740626907627,
+            "spearman_ic": 0.015766245135313606
+          },
+          "pairs": {
+            "BTC/USDT:USDT": {
+              "n": 3156,
+              "mae": 0.011267792141927564,
+              "rmse": 0.016870519351180183,
+              "direction_accuracy": 0.506020278833967,
+              "pearson_ic": 0.0694547510563559,
+              "spearman_ic": 0.040255861948662715
+            },
+            "ETH/USDT:USDT": {
+              "n": 3156,
+              "mae": 0.01336135274187593,
+              "rmse": 0.018994951382374708,
+              "direction_accuracy": 0.4835234474017744,
+              "pearson_ic": 0.030985983342807673,
+              "spearman_ic": -0.0024046960216753646
+            }
+          }
+        },
+        "2": {
+          "phase": "development",
+          "overall": {
+            "n": 6310,
+            "mae": 0.014881895061935541,
+            "rmse": 0.021775153956267407,
+            "direction_accuracy": 0.49334389857369254,
+            "pearson_ic": 0.08345015765226012,
+            "spearman_ic": 0.018924689912485936
+          },
+          "pairs": {
+            "BTC/USDT:USDT": {
+              "n": 3155,
+              "mae": 0.011968987173902719,
+              "rmse": 0.016934551857656556,
+              "direction_accuracy": 0.4954041204437401,
+              "pearson_ic": 0.06162801333869244,
+              "spearman_ic": 0.01930347638250909
+            },
+            "ETH/USDT:USDT": {
+              "n": 3155,
+              "mae": 0.017794802949968363,
+              "rmse": 0.025720334621047163,
+              "direction_accuracy": 0.49128367670364503,
+              "pearson_ic": 0.09684489822246937,
+              "spearman_ic": 0.023059265456358193
+            }
+          }
+        }
+      }
+    },
+    "xgboost": {
+      "status": "complete",
+      "input_files": {
+        "BTC/USDT:USDT": {
+          "path": "data/futures/BTC_USDT_USDT-4h-futures.feather",
+          "sha256": "841837255751a6dfe5a4507fdff5b4cace91baef23ba079816ed7ecc165e0121"
+        },
+        "ETH/USDT:USDT": {
+          "path": "data/futures/ETH_USDT_USDT-4h-futures.feather",
+          "sha256": "3593cd46198d451305a280683e128c48a874be895295e5c3665161945767d0bc"
+        }
+      },
+      "dataset_sha256": "d2a22bbd7623515c541df39e2bb7a79401996a61f6671c87b42d3dac6c6529eb",
+      "input_data_sha256": "ad9f2aa0ff7795d53c9676ea56b7e4042bfb031943fbe77e8ddddda1036e7e78",
+      "folds_sha256": "f1a350325a63fccd6f8e49897ae7be55c6eca09cd9020e5fadc8770b3d7e5c4d",
+      "prediction_rows": 18934,
+      "fold_count": 3,
+      "metrics": {
+        "0": {
+          "phase": "development",
+          "overall": {
+            "n": 6312,
+            "mae": 0.020695694315786144,
+            "rmse": 0.02896868785728156,
+            "direction_accuracy": 0.49081115335868186,
+            "pearson_ic": 0.05486705755953756,
+            "spearman_ic": 0.018940396636917888
+          },
+          "pairs": {
+            "BTC/USDT:USDT": {
+              "n": 3156,
+              "mae": 0.017554724836530904,
+              "rmse": 0.024971503849466576,
+              "direction_accuracy": 0.491128010139417,
+              "pearson_ic": 0.015140146398932025,
+              "spearman_ic": -0.008635020433055566
+            },
+            "ETH/USDT:USDT": {
+              "n": 3156,
+              "mae": 0.02383666379504139,
+              "rmse": 0.03247758839324898,
+              "direction_accuracy": 0.49049429657794674,
+              "pearson_ic": 0.07054046480694544,
+              "spearman_ic": 0.03373394608836282
+            }
+          }
+        },
+        "1": {
+          "phase": "development",
+          "overall": {
+            "n": 6312,
+            "mae": 0.011899971394482959,
+            "rmse": 0.017730126398005308,
+            "direction_accuracy": 0.5121989860583016,
+            "pearson_ic": 0.013568612091737473,
+            "spearman_ic": 0.0013921064118133009
+          },
+          "pairs": {
+            "BTC/USDT:USDT": {
+              "n": 3156,
+              "mae": 0.01086921280073182,
+              "rmse": 0.016694013908203742,
+              "direction_accuracy": 0.517743979721166,
+              "pearson_ic": 0.011908091630924838,
+              "spearman_ic": -0.009574490211355082
+            },
+            "ETH/USDT:USDT": {
+              "n": 3156,
+              "mae": 0.012930729988234095,
+              "rmse": 0.01870894609033842,
+              "direction_accuracy": 0.5066539923954373,
+              "pearson_ic": 0.02247608839798213,
+              "spearman_ic": 0.0020314542889843593
+            }
+          }
+        },
+        "2": {
+          "phase": "development",
+          "overall": {
+            "n": 6310,
+            "mae": 0.014744056475178461,
+            "rmse": 0.021866707422479786,
+            "direction_accuracy": 0.5213946117274167,
+            "pearson_ic": -0.0037941007833289507,
+            "spearman_ic": -0.0003933301315480889
+          },
+          "pairs": {
+            "BTC/USDT:USDT": {
+              "n": 3155,
+              "mae": 0.011791107459961552,
+              "rmse": 0.016918509466315564,
+              "direction_accuracy": 0.526782884310618,
+              "pearson_ic": -0.003924033483309674,
+              "spearman_ic": -0.0628581586123662
+            },
+            "ETH/USDT:USDT": {
+              "n": 3155,
+              "mae": 0.017697005490395372,
+              "rmse": 0.0258857069526574,
+              "direction_accuracy": 0.5160063391442156,
+              "pearson_ic": -0.0036845087640022143,
+              "spearman_ic": 0.03756288557348238
+            }
+          }
+        }
+      }
+    }
+  },
+  "native_network_attempts_expected_and_denied": 1,
+  "live_accounts_or_orders": "Not accessed; native client/credential paths verified only with boundary tests",
+  "publication": {
+    "raw_comparison_precedes_redaction": true,
+    "redaction_scope": "Only local filesystem roots in UTF-8 logs/JSON/ZIP config; binary signals and predictions unchanged",
+    "raw_files": "Retained only in local ephemeral workspace; never required for rerunning acceptance",
+    "hash_ledger": [
+      {
+        "file": "phase5_compare.log",
+        "raw_sha256": "3b22cf08665e3f3f87981cc6e5343b6ef8f8b936574d046b4b47a7bc34ce9260",
+        "published_sha256": "3b22cf08665e3f3f87981cc6e5343b6ef8f8b936574d046b4b47a7bc34ce9260",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_compare_network.json",
+        "raw_sha256": "ac2f916d4e4a8fc30e23e166a02e42a9a00ba4772c069a24421e017b41ed48d1",
+        "published_sha256": "5f8bd97b3ffbf4be38fcf76f957eadc9f3bb3211839b1949456c10fec33271b6",
+        "path_redacted": true
+      },
+      {
+        "file": "phase5_compare_network.strace",
+        "raw_sha256": "783fb8d107c7ee36a9d5cb9100f632e8bf78ef055c46350ce7f14393a968e9a7",
+        "published_sha256": "783fb8d107c7ee36a9d5cb9100f632e8bf78ef055c46350ce7f14393a968e9a7",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_dataset_build.log",
+        "raw_sha256": "305ae0553e5f03c939279fe5da9cf335f8b72de24789b9b625b4f8d68a67ca8d",
+        "published_sha256": "305ae0553e5f03c939279fe5da9cf335f8b72de24789b9b625b4f8d68a67ca8d",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_dataset_build_network.json",
+        "raw_sha256": "8354becc42269af79fec9e88e3f904ee2fb629122c364601ece9cf38e2d07b9e",
+        "published_sha256": "8354becc42269af79fec9e88e3f904ee2fb629122c364601ece9cf38e2d07b9e",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_dataset_build_network.strace",
+        "raw_sha256": "b7a52e079b0260ecc16620c9be6c6670ca5544f197e6e10876cefddb33e306a0",
+        "published_sha256": "b7a52e079b0260ecc16620c9be6c6670ca5544f197e6e10876cefddb33e306a0",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_native.log",
+        "raw_sha256": "4247a73a8cdf15ca57df582f9646e4d6bbc43c64dd5114e19837f25e66f36cd2",
+        "published_sha256": "7ac808c378ea1b0c870c81aa0912f402cd6c1f2d2e8be04d48eb54ad1dd00a2e",
+        "path_redacted": true
+      },
+      {
+        "file": "phase5_native_network.json",
+        "raw_sha256": "b2a181d1af35661856b06c5263174f8a34dcca8c01bb11bef46a1c4e86b17391",
+        "published_sha256": "3da37169d9e18f30bed51eb1bed04c5f824b457180fdb66d5a65eec99c4dfbe6",
+        "path_redacted": true
+      },
+      {
+        "file": "phase5_native_network.strace",
+        "raw_sha256": "0607b2a79bb71bddb229dd596285d9e400c1222e38763c63d5f3a40a127dcd17",
+        "published_sha256": "0607b2a79bb71bddb229dd596285d9e400c1222e38763c63d5f3a40a127dcd17",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_ridge.log",
+        "raw_sha256": "5ddfe60e4bab8367a2f7e340cc86c5f126d6a8323d19934149d5f8b93de159b9",
+        "published_sha256": "6430f33e5fa1d7b94b522cba8012b5e7dc26cba74796021c56ad9f575cdbd0b2",
+        "path_redacted": true
+      },
+      {
+        "file": "phase5_ridge_network.json",
+        "raw_sha256": "09fca6a2589d3f3777de287dd8ef5f96ac0bb21366ab192715698a5fd16dad78",
+        "published_sha256": "ae8631964cf9c3dd7e4f1461efad44825e63e50332a4b51e186f512a59e583b3",
+        "path_redacted": true
+      },
+      {
+        "file": "phase5_ridge_network.strace",
+        "raw_sha256": "1911fad87698dd670bc18988a73fa556b5354dc55618c3ec7ece18086a422436",
+        "published_sha256": "1911fad87698dd670bc18988a73fa556b5354dc55618c3ec7ece18086a422436",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_validate.log",
+        "raw_sha256": "2c370369a584e64b3b9d9848b65e44a2a4e428c657633ac8c202207225b1754d",
+        "published_sha256": "2c370369a584e64b3b9d9848b65e44a2a4e428c657633ac8c202207225b1754d",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_validate_network.json",
+        "raw_sha256": "a17b87a939b266524e8ac8863d6a83e8c07b6274e3101061885cda307a3ca676",
+        "published_sha256": "a17b87a939b266524e8ac8863d6a83e8c07b6274e3101061885cda307a3ca676",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_validate_network.strace",
+        "raw_sha256": "ee012a460ba2333a70b423bf08f261137798da072fa21709a450913556cb4760",
+        "published_sha256": "ee012a460ba2333a70b423bf08f261137798da072fa21709a450913556cb4760",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_xgboost.log",
+        "raw_sha256": "0fc75969e13e8f0ff0569f5a5a3002a85995a2cf1a198f107e24fdf72da4c9a1",
+        "published_sha256": "e902f2bf2789f672ad7ae19ff74622e1acf5eb6e3d3697dd0abb981432e4456f",
+        "path_redacted": true
+      },
+      {
+        "file": "phase5_xgboost_network.json",
+        "raw_sha256": "dc2123776b1dea6a963db9ca88d5799e6f36456592ada3b9119712b686d4ad98",
+        "published_sha256": "dafa1cbb9dcbbaf5d0361f193df73f89f5a569211de3514a6aae65edf64d651f",
+        "path_redacted": true
+      },
+      {
+        "file": "phase5_xgboost_network.strace",
+        "raw_sha256": "0bc3da28104e98049d752699a0bcd48ea91287a6761fdbbd6a976ecf606ffac9",
+        "published_sha256": "0bc3da28104e98049d752699a0bcd48ea91287a6761fdbbd6a976ecf606ffac9",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/config.resolved.yaml",
+        "raw_sha256": "31b924595202a314ead943a6c533e49512a6f1e37c52713503112e9563fd622d",
+        "published_sha256": "31b924595202a314ead943a6c533e49512a6f1e37c52713503112e9563fd622d",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/dataset_metadata.parquet",
+        "raw_sha256": "d5a36aa9e9b95fcfb742255981ca34d3a6188262733b47cdab806d9fca6b0437",
+        "published_sha256": "d5a36aa9e9b95fcfb742255981ca34d3a6188262733b47cdab806d9fca6b0437",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/development_metadata.parquet",
+        "raw_sha256": "5e500aafb297e824eb3cdb3b2b3d0d042ab1f22e16e28f07edc6fc2c6ac1d89e",
+        "published_sha256": "5e500aafb297e824eb3cdb3b2b3d0d042ab1f22e16e28f07edc6fc2c6ac1d89e",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/feature_schema.json",
+        "raw_sha256": "0f35aa3fd3842ba86e1e4594db572e8790ef835e27856b4eef0872295ab8fcd5",
+        "published_sha256": "0f35aa3fd3842ba86e1e4594db572e8790ef835e27856b4eef0872295ab8fcd5",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/folds.json",
+        "raw_sha256": "4f65ffcb37972972f9d05b0b57c34b652a37eaa30c47945fd91baa4f6302912a",
+        "published_sha256": "4f65ffcb37972972f9d05b0b57c34b652a37eaa30c47945fd91baa4f6302912a",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/leakage_report.json",
+        "raw_sha256": "ebd36c1827758e2c94b7ec325bb830d2e97870000787eb1224ebc419232f87eb",
+        "published_sha256": "ebd36c1827758e2c94b7ec325bb830d2e97870000787eb1224ebc419232f87eb",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/manifest.json",
+        "raw_sha256": "6f9b0f4219bada565203e4ab85e2d90500ea7b2a5faec84c14b6f05f54f11915",
+        "published_sha256": "6f9b0f4219bada565203e4ab85e2d90500ea7b2a5faec84c14b6f05f54f11915",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/metrics_backtest.json",
+        "raw_sha256": "9a7e42fdb7c23ac698be0f81dad2bb20f9f6bf35476dfeab0bedc41b409b71f7",
+        "published_sha256": "9a7e42fdb7c23ac698be0f81dad2bb20f9f6bf35476dfeab0bedc41b409b71f7",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/metrics_prediction.json",
+        "raw_sha256": "4a38bd2084e40bbd1b3fc1f7145385a99b1a76619e59c0c56e624b8a4a63e57c",
+        "published_sha256": "4a38bd2084e40bbd1b3fc1f7145385a99b1a76619e59c0c56e624b8a4a63e57c",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/model/0/6c7cb41c78f4ce92/manifest.json",
+        "raw_sha256": "453d6af9fc10e735e13ae0e84e8a2414ca9459f9e8693e1e718e931e51011510",
+        "published_sha256": "453d6af9fc10e735e13ae0e84e8a2414ca9459f9e8693e1e718e931e51011510",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/model/0/6f75fbee7aa2ba00/manifest.json",
+        "raw_sha256": "f3ba5460dd847c2e6572fd73107a45fc294f85874d85fc4aa7b83cd90dd8aa47",
+        "published_sha256": "f3ba5460dd847c2e6572fd73107a45fc294f85874d85fc4aa7b83cd90dd8aa47",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/model/1/6c7cb41c78f4ce92/manifest.json",
+        "raw_sha256": "f94fbf1e683b764ac936163375824f8bdad3206a3fbde2717d7326a9f5a91437",
+        "published_sha256": "f94fbf1e683b764ac936163375824f8bdad3206a3fbde2717d7326a9f5a91437",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/model/1/6f75fbee7aa2ba00/manifest.json",
+        "raw_sha256": "b865d4047973294d5dd493948f6834910318491a6c1fc62f3036e933ab6d64f8",
+        "published_sha256": "b865d4047973294d5dd493948f6834910318491a6c1fc62f3036e933ab6d64f8",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/model/2/6c7cb41c78f4ce92/manifest.json",
+        "raw_sha256": "40bc6a7bd806084e22f626aba7003266f3ea9751a691e8097f7e1f5898a99428",
+        "published_sha256": "40bc6a7bd806084e22f626aba7003266f3ea9751a691e8097f7e1f5898a99428",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/model/2/6f75fbee7aa2ba00/manifest.json",
+        "raw_sha256": "eb1989e099a8e5b65892d23322d945c7a8fdfb15fd57cf25f786e2d69b3fb121",
+        "published_sha256": "eb1989e099a8e5b65892d23322d945c7a8fdfb15fd57cf25f786e2d69b3fb121",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:ridge/predictions.parquet",
+        "raw_sha256": "cd62e29d203e86434055e42077f8eb31f487cb2cb7479eaf88b85e2e9ac17544",
+        "published_sha256": "cd62e29d203e86434055e42077f8eb31f487cb2cb7479eaf88b85e2e9ac17544",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/config.resolved.yaml",
+        "raw_sha256": "10340c5228fa5b152692c57c14961ec8afadb4a933b1295e0e4d599c8631d0d3",
+        "published_sha256": "10340c5228fa5b152692c57c14961ec8afadb4a933b1295e0e4d599c8631d0d3",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/dataset_metadata.parquet",
+        "raw_sha256": "d5a36aa9e9b95fcfb742255981ca34d3a6188262733b47cdab806d9fca6b0437",
+        "published_sha256": "d5a36aa9e9b95fcfb742255981ca34d3a6188262733b47cdab806d9fca6b0437",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/development_metadata.parquet",
+        "raw_sha256": "5e500aafb297e824eb3cdb3b2b3d0d042ab1f22e16e28f07edc6fc2c6ac1d89e",
+        "published_sha256": "5e500aafb297e824eb3cdb3b2b3d0d042ab1f22e16e28f07edc6fc2c6ac1d89e",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/feature_schema.json",
+        "raw_sha256": "0f35aa3fd3842ba86e1e4594db572e8790ef835e27856b4eef0872295ab8fcd5",
+        "published_sha256": "0f35aa3fd3842ba86e1e4594db572e8790ef835e27856b4eef0872295ab8fcd5",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/folds.json",
+        "raw_sha256": "4f65ffcb37972972f9d05b0b57c34b652a37eaa30c47945fd91baa4f6302912a",
+        "published_sha256": "4f65ffcb37972972f9d05b0b57c34b652a37eaa30c47945fd91baa4f6302912a",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/leakage_report.json",
+        "raw_sha256": "41891d226666f615fc20c4c59ee875ec4c7cdedf93b4e5ad65fa294a31cfed76",
+        "published_sha256": "41891d226666f615fc20c4c59ee875ec4c7cdedf93b4e5ad65fa294a31cfed76",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/manifest.json",
+        "raw_sha256": "341208c7c91c83cc462fb62267bcce50390037e21685f9cc4e36e72605deab9e",
+        "published_sha256": "341208c7c91c83cc462fb62267bcce50390037e21685f9cc4e36e72605deab9e",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/metrics_backtest.json",
+        "raw_sha256": "9a7e42fdb7c23ac698be0f81dad2bb20f9f6bf35476dfeab0bedc41b409b71f7",
+        "published_sha256": "9a7e42fdb7c23ac698be0f81dad2bb20f9f6bf35476dfeab0bedc41b409b71f7",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/metrics_prediction.json",
+        "raw_sha256": "dbb81b42c5c38a76d69e8a5b1259c73ee1701d113ed7cb076d0aa27f4fbf3d7a",
+        "published_sha256": "dbb81b42c5c38a76d69e8a5b1259c73ee1701d113ed7cb076d0aa27f4fbf3d7a",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/model/0/6c7cb41c78f4ce92/manifest.json",
+        "raw_sha256": "56849df570c9db3370e9504650620d9a4101f6b333dec79f5c25cdd1e3af2a51",
+        "published_sha256": "56849df570c9db3370e9504650620d9a4101f6b333dec79f5c25cdd1e3af2a51",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/model/0/6f75fbee7aa2ba00/manifest.json",
+        "raw_sha256": "c01fdca9554689e51c3774d1b3b9f96aa721730db72b19a1b31f9e53d7b22fe9",
+        "published_sha256": "c01fdca9554689e51c3774d1b3b9f96aa721730db72b19a1b31f9e53d7b22fe9",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/model/1/6c7cb41c78f4ce92/manifest.json",
+        "raw_sha256": "80f3da4874ce11a5baaae260da1b0df2c677f542de4108f110dff952d0fe33df",
+        "published_sha256": "80f3da4874ce11a5baaae260da1b0df2c677f542de4108f110dff952d0fe33df",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/model/1/6f75fbee7aa2ba00/manifest.json",
+        "raw_sha256": "a3f8944394ef7dbb938b9a1f976fd7f6c1a5c6874cb06864f52a95048a0540fe",
+        "published_sha256": "a3f8944394ef7dbb938b9a1f976fd7f6c1a5c6874cb06864f52a95048a0540fe",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/model/2/6c7cb41c78f4ce92/manifest.json",
+        "raw_sha256": "5cae4379329992f9ca3cc1cf0e687a9b0065a1bedfd84d30c116a0647db9ca3c",
+        "published_sha256": "5cae4379329992f9ca3cc1cf0e687a9b0065a1bedfd84d30c116a0647db9ca3c",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/model/2/6f75fbee7aa2ba00/manifest.json",
+        "raw_sha256": "f5b24265dd87651c325353356fe028cc4b6adb5fb56c1fc45238891a31c565a8",
+        "published_sha256": "f5b24265dd87651c325353356fe028cc4b6adb5fb56c1fc45238891a31c565a8",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz:xgboost/predictions.parquet",
+        "raw_sha256": "13696a2b84213b225b7e96b1c7ca06834d9368c74dcc6306cdba99af00281eec",
+        "published_sha256": "13696a2b84213b225b7e96b1c7ca06834d9368c74dcc6306cdba99af00281eec",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_artifacts.tar.gz",
+        "published_sha256": "bc87fbf0fbe456680ec22b550f29eea685a6a8e4be9f4169dda94c08ab0b634b"
+      }
+    ]
+  }
+}

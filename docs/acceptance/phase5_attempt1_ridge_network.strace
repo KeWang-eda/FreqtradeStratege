@@ -1,0 +1,68 @@
+3305372 socket(AF_INET6, SOCK_STREAM|SOCK_CLOEXEC, IPPROTO_IP) = 3
+3305372 bind(3, {sa_family=AF_INET6, sin6_port=htons(0), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "::1", &sin6_addr), sin6_scope_id=0}, 28) = -1 EADDRNOTAVAIL (无法指定被请求的地址)
+3305405 +++ exited with 0 +++
+3305372 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3305405, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+3305407 +++ exited with 1 +++
+3305406 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3305407, si_uid=0, si_status=1, si_utime=0, si_stime=0} ---
+3305406 +++ exited with 0 +++
+3305372 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3305406, si_uid=0, si_status=0, si_utime=13, si_stime=1} ---
+3305409 +++ exited with 1 +++
+3305408 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3305409, si_uid=0, si_status=1, si_utime=0, si_stime=0} ---
+3305408 +++ exited with 0 +++
+3305372 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3305408, si_uid=0, si_status=0, si_utime=0, si_stime=1} ---
+3305372 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 4
+3305372 connect(4, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (没有那个文件或目录)
+3305372 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 4
+3305372 connect(4, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (没有那个文件或目录)
+3305372 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 4
+3305372 connect(4, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (没有那个文件或目录)
+3305372 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 4
+3305372 connect(4, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (没有那个文件或目录)
+3305472 +++ exited with 0 +++
+3305474 +++ exited with 0 +++
+3305470 +++ exited with 0 +++
+3305471 +++ exited with 0 +++
+3305473 +++ exited with 0 +++
+3305475 +++ exited with 0 +++
+3305476 +++ exited with 0 +++
+3305477 +++ exited with 0 +++
+3305479 +++ exited with 0 +++
+3305478 +++ exited with 0 +++
+3305480 +++ exited with 0 +++
+3305416 +++ exited with 0 +++
+3305419 +++ exited with 0 +++
+3305418 +++ exited with 0 +++
+3305414 +++ exited with 0 +++
+3305415 +++ exited with 0 +++
+3305417 +++ exited with 0 +++
+3305412 +++ exited with 0 +++
+3305413 +++ exited with 0 +++
+3305411 +++ exited with 0 +++
+3305410 +++ exited with 0 +++
+3305379 +++ exited with 0 +++
+3305380 +++ exited with 0 +++
+3305381 +++ exited with 0 +++
+3305382 +++ exited with 0 +++
+3305383 +++ exited with 0 +++
+3305384 +++ exited with 0 +++
+3305385 +++ exited with 0 +++
+3305398 +++ exited with 0 +++
+3305399 +++ exited with 0 +++
+3305400 +++ exited with 0 +++
+3305401 +++ exited with 0 +++
+3305402 +++ exited with 0 +++
+3305403 +++ exited with 0 +++
+3305404 +++ exited with 0 +++
+3305397 +++ exited with 0 +++
+3305396 +++ exited with 0 +++
+3305395 +++ exited with 0 +++
+3305394 +++ exited with 0 +++
+3305393 +++ exited with 0 +++
+3305392 +++ exited with 0 +++
+3305391 +++ exited with 0 +++
+3305390 +++ exited with 0 +++
+3305389 +++ exited with 0 +++
+3305387 +++ exited with 0 +++
+3305386 +++ exited with 0 +++
+3305388 +++ exited with 0 +++
+3305372 +++ exited with 0 +++

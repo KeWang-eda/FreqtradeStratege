@@ -1,0 +1,39 @@
+{
+  "name": "baseline_raw",
+  "label": {
+    "mode": "raw",
+    "prediction_horizon": 3,
+    "volatility_period": 14
+  },
+  "validation": {
+    "method": "purged_walk_forward",
+    "n_splits": 3,
+    "test_size": 0.2,
+    "min_train_size": null,
+    "train_window_size": null,
+    "purge_candles": null,
+    "purge_reason": null,
+    "embargo_candles": 3,
+    "final_holdout_fraction": 0.15
+  },
+  "model": {
+    "backend": "standalone",
+    "name": "ridge",
+    "params": {
+      "alpha": 10.0
+    }
+  },
+  "feature_version": "baseline-v2",
+  "seed": 42,
+  "features": [],
+  "periods": [
+    6,
+    14,
+    24
+  ],
+  "timeframe": "4h",
+  "data": {
+    "BTC/USDT:USDT": "data/futures/BTC_USDT_USDT-4h-futures.feather",
+    "ETH/USDT:USDT": "data/futures/ETH_USDT_USDT-4h-futures.feather"
+  }
+}

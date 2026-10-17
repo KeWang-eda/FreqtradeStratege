@@ -1,0 +1,66 @@
+{
+  "status": "FAIL",
+  "executed_at": "2026-10-17T13:05:11.831083+00:00",
+  "error": "Unexpected connect/send syscalls: ['3305372 connect(4, {sa_family=AF_UNIX, sun_path=\"/var/run/nscd/socket\"}, 110) = -1 ENOENT (没有那个文件或目录)', '3305372 connect(4, {sa_family=AF_UNIX, sun_path=\"/var/run/nscd/socket\"}, 110) = -1 ENOENT (没有那个文件或目录)', '3305372 connect(4, {sa_family=AF_UNIX, sun_path=\"/var/run/nscd/socket\"}, 110) = -1 ENOENT (没有那个文件或目录)', '3305372 connect(4, {sa_family=AF_UNIX, sun_path=\"/var/run/nscd/socket\"}, 110) = -1 ENOENT (没有那个文件或目录)']",
+  "publication": {
+    "raw_comparison_precedes_redaction": true,
+    "redaction_scope": "Only local filesystem roots in UTF-8 logs/JSON/ZIP config; binary signals and predictions unchanged",
+    "raw_files": "Retained only in local ephemeral workspace; never required for rerunning acceptance",
+    "hash_ledger": [
+      {
+        "file": "phase5_attempt1_dataset_build.log",
+        "raw_sha256": "305ae0553e5f03c939279fe5da9cf335f8b72de24789b9b625b4f8d68a67ca8d",
+        "published_sha256": "305ae0553e5f03c939279fe5da9cf335f8b72de24789b9b625b4f8d68a67ca8d",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_attempt1_dataset_build_network.json",
+        "raw_sha256": "8354becc42269af79fec9e88e3f904ee2fb629122c364601ece9cf38e2d07b9e",
+        "published_sha256": "8354becc42269af79fec9e88e3f904ee2fb629122c364601ece9cf38e2d07b9e",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_attempt1_dataset_build_network.strace",
+        "raw_sha256": "5800364ae8a933fa77dff8001309b42709dd24573217fca6923196b0e2086c18",
+        "published_sha256": "5800364ae8a933fa77dff8001309b42709dd24573217fca6923196b0e2086c18",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_attempt1_ridge.log",
+        "raw_sha256": "adc39bb52fcfbf65af343e06376c49858bfcdc708c1fdb7a330c70441abecd4f",
+        "published_sha256": "6430f33e5fa1d7b94b522cba8012b5e7dc26cba74796021c56ad9f575cdbd0b2",
+        "path_redacted": true
+      },
+      {
+        "file": "phase5_attempt1_ridge_network.json",
+        "raw_sha256": "76ee06ba8afaa1750255371a117335d57e926d3f5c0aadd4e7abdecd50d0a789",
+        "published_sha256": "ae8631964cf9c3dd7e4f1461efad44825e63e50332a4b51e186f512a59e583b3",
+        "path_redacted": true
+      },
+      {
+        "file": "phase5_attempt1_ridge_network.strace",
+        "raw_sha256": "fc7abdc6b6b7d81e78f5c88846653bd7ca76f1ffcf1c7a9583a7e509dce54a7b",
+        "published_sha256": "fc7abdc6b6b7d81e78f5c88846653bd7ca76f1ffcf1c7a9583a7e509dce54a7b",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_attempt1_validate.log",
+        "raw_sha256": "2c370369a584e64b3b9d9848b65e44a2a4e428c657633ac8c202207225b1754d",
+        "published_sha256": "2c370369a584e64b3b9d9848b65e44a2a4e428c657633ac8c202207225b1754d",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_attempt1_validate_network.json",
+        "raw_sha256": "a17b87a939b266524e8ac8863d6a83e8c07b6274e3101061885cda307a3ca676",
+        "published_sha256": "a17b87a939b266524e8ac8863d6a83e8c07b6274e3101061885cda307a3ca676",
+        "path_redacted": false
+      },
+      {
+        "file": "phase5_attempt1_validate_network.strace",
+        "raw_sha256": "ce451ea958eea30b9f8bea934abb307ddcd3c326b79812efe0d142878954f9f5",
+        "published_sha256": "ce451ea958eea30b9f8bea934abb307ddcd3c326b79812efe0d142878954f9f5",
+        "path_redacted": false
+      }
+    ]
+  }
+}

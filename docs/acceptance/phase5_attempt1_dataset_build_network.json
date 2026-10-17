@@ -1,0 +1,19 @@
+{
+  "policy": "deny-all",
+  "component": "research",
+  "arguments": [
+    "dataset-build",
+    "-c",
+    "configs/base.yaml",
+    "-c",
+    "configs/environment/local.yaml"
+  ],
+  "http_requests": [],
+  "socket_events": [],
+  "process_events": [],
+  "completed": true,
+  "denied_operations": 0,
+  "exit_code": 0,
+  "freqtrade_imported": false,
+  "ccxt_imported": false
+}

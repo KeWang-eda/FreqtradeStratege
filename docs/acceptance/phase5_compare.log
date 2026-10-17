@@ -1,0 +1,194 @@
+[
+  {
+    "experiment_id": "ridge",
+    "config_sha256": "df65c97464aab1f0aed5028347d125207c4743bbee103f7d25057aa3480f9852",
+    "dataset_sha256": "d2a22bbd7623515c541df39e2bb7a79401996a61f6671c87b42d3dac6c6529eb",
+    "input_data_sha256": "ad9f2aa0ff7795d53c9676ea56b7e4042bfb031943fbe77e8ddddda1036e7e78",
+    "folds_sha256": "f1a350325a63fccd6f8e49897ae7be55c6eca09cd9020e5fadc8770b3d7e5c4d",
+    "folds": {
+      "0": {
+        "phase": "development",
+        "overall": {
+          "n": 6312,
+          "mae": 0.020654715954752035,
+          "rmse": 0.028758765572832985,
+          "direction_accuracy": 0.5019011406844106,
+          "pearson_ic": 0.04255513695580374,
+          "spearman_ic": 0.025177937932883684
+        },
+        "pairs": {
+          "BTC/USDT:USDT": {
+            "n": 3156,
+            "mae": 0.01774038328541533,
+            "rmse": 0.024927231429136887,
+            "direction_accuracy": 0.5003168567807351,
+            "pearson_ic": 0.03201305784578144,
+            "spearman_ic": 0.013917655712180843
+          },
+          "ETH/USDT:USDT": {
+            "n": 3156,
+            "mae": 0.02356904862408874,
+            "rmse": 0.032136681966633975,
+            "direction_accuracy": 0.5034854245880862,
+            "pearson_ic": 0.05043507490915084,
+            "spearman_ic": 0.032631874253179614
+          }
+        }
+      },
+      "1": {
+        "phase": "development",
+        "overall": {
+          "n": 6312,
+          "mae": 0.012314572441901744,
+          "rmse": 0.017964167127887166,
+          "direction_accuracy": 0.49477186311787075,
+          "pearson_ic": 0.04601740626907627,
+          "spearman_ic": 0.015766245135313606
+        },
+        "pairs": {
+          "BTC/USDT:USDT": {
+            "n": 3156,
+            "mae": 0.011267792141927564,
+            "rmse": 0.016870519351180183,
+            "direction_accuracy": 0.506020278833967,
+            "pearson_ic": 0.0694547510563559,
+            "spearman_ic": 0.040255861948662715
+          },
+          "ETH/USDT:USDT": {
+            "n": 3156,
+            "mae": 0.01336135274187593,
+            "rmse": 0.018994951382374708,
+            "direction_accuracy": 0.4835234474017744,
+            "pearson_ic": 0.030985983342807673,
+            "spearman_ic": -0.0024046960216753646
+          }
+        }
+      },
+      "2": {
+        "phase": "development",
+        "overall": {
+          "n": 6310,
+          "mae": 0.014881895061935541,
+          "rmse": 0.021775153956267407,
+          "direction_accuracy": 0.49334389857369254,
+          "pearson_ic": 0.08345015765226012,
+          "spearman_ic": 0.018924689912485936
+        },
+        "pairs": {
+          "BTC/USDT:USDT": {
+            "n": 3155,
+            "mae": 0.011968987173902719,
+            "rmse": 0.016934551857656556,
+            "direction_accuracy": 0.4954041204437401,
+            "pearson_ic": 0.06162801333869244,
+            "spearman_ic": 0.01930347638250909
+          },
+          "ETH/USDT:USDT": {
+            "n": 3155,
+            "mae": 0.017794802949968363,
+            "rmse": 0.025720334621047163,
+            "direction_accuracy": 0.49128367670364503,
+            "pearson_ic": 0.09684489822246937,
+            "spearman_ic": 0.023059265456358193
+          }
+        }
+      }
+    }
+  },
+  {
+    "experiment_id": "xgboost",
+    "config_sha256": "67692559f38e961bbebb6e5bbf01e89dfa95781e223a6e8c656c0055e855ecc3",
+    "dataset_sha256": "d2a22bbd7623515c541df39e2bb7a79401996a61f6671c87b42d3dac6c6529eb",
+    "input_data_sha256": "ad9f2aa0ff7795d53c9676ea56b7e4042bfb031943fbe77e8ddddda1036e7e78",
+    "folds_sha256": "f1a350325a63fccd6f8e49897ae7be55c6eca09cd9020e5fadc8770b3d7e5c4d",
+    "folds": {
+      "0": {
+        "phase": "development",
+        "overall": {
+          "n": 6312,
+          "mae": 0.020695694315786144,
+          "rmse": 0.02896868785728156,
+          "direction_accuracy": 0.49081115335868186,
+          "pearson_ic": 0.05486705755953756,
+          "spearman_ic": 0.018940396636917888
+        },
+        "pairs": {
+          "BTC/USDT:USDT": {
+            "n": 3156,
+            "mae": 0.017554724836530904,
+            "rmse": 0.024971503849466576,
+            "direction_accuracy": 0.491128010139417,
+            "pearson_ic": 0.015140146398932025,
+            "spearman_ic": -0.008635020433055566
+          },
+          "ETH/USDT:USDT": {
+            "n": 3156,
+            "mae": 0.02383666379504139,
+            "rmse": 0.03247758839324898,
+            "direction_accuracy": 0.49049429657794674,
+            "pearson_ic": 0.07054046480694544,
+            "spearman_ic": 0.03373394608836282
+          }
+        }
+      },
+      "1": {
+        "phase": "development",
+        "overall": {
+          "n": 6312,
+          "mae": 0.011899971394482959,
+          "rmse": 0.017730126398005308,
+          "direction_accuracy": 0.5121989860583016,
+          "pearson_ic": 0.013568612091737473,
+          "spearman_ic": 0.0013921064118133009
+        },
+        "pairs": {
+          "BTC/USDT:USDT": {
+            "n": 3156,
+            "mae": 0.01086921280073182,
+            "rmse": 0.016694013908203742,
+            "direction_accuracy": 0.517743979721166,
+            "pearson_ic": 0.011908091630924838,
+            "spearman_ic": -0.009574490211355082
+          },
+          "ETH/USDT:USDT": {
+            "n": 3156,
+            "mae": 0.012930729988234095,
+            "rmse": 0.01870894609033842,
+            "direction_accuracy": 0.5066539923954373,
+            "pearson_ic": 0.02247608839798213,
+            "spearman_ic": 0.0020314542889843593
+          }
+        }
+      },
+      "2": {
+        "phase": "development",
+        "overall": {
+          "n": 6310,
+          "mae": 0.014744056475178461,
+          "rmse": 0.021866707422479786,
+          "direction_accuracy": 0.5213946117274167,
+          "pearson_ic": -0.0037941007833289507,
+          "spearman_ic": -0.0003933301315480889
+        },
+        "pairs": {
+          "BTC/USDT:USDT": {
+            "n": 3155,
+            "mae": 0.011791107459961552,
+            "rmse": 0.016918509466315564,
+            "direction_accuracy": 0.526782884310618,
+            "pearson_ic": -0.003924033483309674,
+            "spearman_ic": -0.0628581586123662
+          },
+          "ETH/USDT:USDT": {
+            "n": 3155,
+            "mae": 0.017697005490395372,
+            "rmse": 0.0258857069526574,
+            "direction_accuracy": 0.5160063391442156,
+            "pearson_ic": -0.0036845087640022143,
+            "spearman_ic": 0.03756288557348238
+          }
+        }
+      }
+    }
+  }
+]

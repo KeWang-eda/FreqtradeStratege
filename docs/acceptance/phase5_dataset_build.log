@@ -1,0 +1,49 @@
+{
+  "samples": 29706,
+  "feature_columns": [
+    "%-rsi-period-6",
+    "%-ema-distance-period-6",
+    "%-sma-distance-period-6",
+    "%-atr-ratio-period-6",
+    "%-relative-volume-period-6",
+    "%-momentum-period-6",
+    "%-rsi-period-14",
+    "%-ema-distance-period-14",
+    "%-sma-distance-period-14",
+    "%-atr-ratio-period-14",
+    "%-relative-volume-period-14",
+    "%-momentum-period-14",
+    "%-rsi-period-24",
+    "%-ema-distance-period-24",
+    "%-sma-distance-period-24",
+    "%-atr-ratio-period-24",
+    "%-relative-volume-period-24",
+    "%-momentum-period-24",
+    "%-return",
+    "%-range",
+    "%-body",
+    "%-volume-change",
+    "%-volatility-6",
+    "%-volatility-24",
+    "%-hour",
+    "%-day-of-week"
+  ],
+  "quality": {
+    "BTC/USDT:USDT": {
+      "input": 14880,
+      "feature_unavailable": 24,
+      "label_unavailable": 3,
+      "excluded": 27,
+      "kept": 14853,
+      "time_gaps": 0
+    },
+    "ETH/USDT:USDT": {
+      "input": 14880,
+      "feature_unavailable": 24,
+      "label_unavailable": 3,
+      "excluded": 27,
+      "kept": 14853,
+      "time_gaps": 0
+    }
+  }
+}

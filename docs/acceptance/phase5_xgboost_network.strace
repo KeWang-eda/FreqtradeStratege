@@ -1,0 +1,68 @@
+3307398 socket(AF_INET6, SOCK_STREAM|SOCK_CLOEXEC, IPPROTO_IP) = 3
+3307398 bind(3, {sa_family=AF_INET6, sin6_port=htons(0), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "::1", &sin6_addr), sin6_scope_id=0}, 28) = -1 EADDRNOTAVAIL (无法指定被请求的地址)
+3307449 +++ exited with 0 +++
+3307398 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3307449, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+3307451 +++ exited with 1 +++
+3307450 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3307451, si_uid=0, si_status=1, si_utime=0, si_stime=0} ---
+3307450 +++ exited with 0 +++
+3307398 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3307450, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+3307453 +++ exited with 1 +++
+3307452 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3307453, si_uid=0, si_status=1, si_utime=0, si_stime=0} ---
+3307452 +++ exited with 0 +++
+3307398 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3307452, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+3307398 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 4
+3307398 connect(4, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (没有那个文件或目录)
+3307398 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 4
+3307398 connect(4, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (没有那个文件或目录)
+3307398 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 4
+3307398 connect(4, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (没有那个文件或目录)
+3307398 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 4
+3307398 connect(4, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (没有那个文件或目录)
+3307589 +++ exited with 0 +++
+3307587 +++ exited with 0 +++
+3307586 +++ exited with 0 +++
+3307585 +++ exited with 0 +++
+3307588 +++ exited with 0 +++
+3307591 +++ exited with 0 +++
+3307590 +++ exited with 0 +++
+3307592 +++ exited with 0 +++
+3307593 +++ exited with 0 +++
+3307594 +++ exited with 0 +++
+3307595 +++ exited with 0 +++
+3307461 +++ exited with 0 +++
+3307456 +++ exited with 0 +++
+3307458 +++ exited with 0 +++
+3307459 +++ exited with 0 +++
+3307457 +++ exited with 0 +++
+3307463 +++ exited with 0 +++
+3307462 +++ exited with 0 +++
+3307460 +++ exited with 0 +++
+3307455 +++ exited with 0 +++
+3307454 +++ exited with 0 +++
+3307399 +++ exited with 0 +++
+3307401 +++ exited with 0 +++
+3307402 +++ exited with 0 +++
+3307403 +++ exited with 0 +++
+3307400 +++ exited with 0 +++
+3307404 +++ exited with 0 +++
+3307405 +++ exited with 0 +++
+3307418 +++ exited with 0 +++
+3307419 +++ exited with 0 +++
+3307420 +++ exited with 0 +++
+3307421 +++ exited with 0 +++
+3307422 +++ exited with 0 +++
+3307423 +++ exited with 0 +++
+3307424 +++ exited with 0 +++
+3307417 +++ exited with 0 +++
+3307416 +++ exited with 0 +++
+3307415 +++ exited with 0 +++
+3307414 +++ exited with 0 +++
+3307413 +++ exited with 0 +++
+3307412 +++ exited with 0 +++
+3307411 +++ exited with 0 +++
+3307410 +++ exited with 0 +++
+3307409 +++ exited with 0 +++
+3307408 +++ exited with 0 +++
+3307406 +++ exited with 0 +++
+3307407 +++ exited with 0 +++
+3307398 +++ exited with 0 +++

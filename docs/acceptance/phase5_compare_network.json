@@ -1,0 +1,17 @@
+{
+  "policy": "deny-all",
+  "component": "research",
+  "arguments": [
+    "compare",
+    "/RUN/experiments/ridge",
+    "/RUN/experiments/xgboost"
+  ],
+  "http_requests": [],
+  "socket_events": [],
+  "process_events": [],
+  "completed": true,
+  "denied_operations": 0,
+  "exit_code": 0,
+  "freqtrade_imported": false,
+  "ccxt_imported": false
+}

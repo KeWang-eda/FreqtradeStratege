@@ -1,0 +1,44 @@
+{
+  "policy": "deny-all",
+  "component": "research",
+  "arguments": [
+    "run",
+    "-c",
+    "configs/base.yaml",
+    "-c",
+    "configs/environment/local.yaml",
+    "-c",
+    "configs/estimators/ridge.yaml",
+    "--output",
+    "/RUN/experiments",
+    "--experiment-id",
+    "ridge"
+  ],
+  "http_requests": [],
+  "socket_events": [],
+  "process_events": [
+    {
+      "event": "subprocess.Popen",
+      "allowed": true,
+      "executable": "/usr/bin/git",
+      "scope": "fixed local Git provenance query"
+    },
+    {
+      "event": "subprocess.Popen",
+      "allowed": true,
+      "executable": "/usr/bin/git",
+      "scope": "fixed local Git provenance query"
+    },
+    {
+      "event": "subprocess.Popen",
+      "allowed": true,
+      "executable": "/usr/bin/git",
+      "scope": "fixed local Git provenance query"
+    }
+  ],
+  "completed": true,
+  "denied_operations": 0,
+  "exit_code": 0,
+  "freqtrade_imported": false,
+  "ccxt_imported": false
+}
