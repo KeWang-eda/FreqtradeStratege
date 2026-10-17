@@ -3,7 +3,7 @@
   "_comment": "Freqtrade 需要严格 JSON。以 _comment 开头的键会被 Freqtrade 忽略（已用 freqtrade 2026.7 实测通过校验），因此用它内联写审查注释。策略逻辑在 MyStrategy.py，特征输入在 feature.py，标签与预测读取在 model.py。",
   "trading_mode": "futures",
   "margin_mode": "isolated",
-  "_comment_position": "全局只允许一个持仓。跨 pair 择优由 MyStrategy.confirm_trade_entry 实现：比较所有 pair 的 abs(预测收益率/近30根波动率)，只允许最强候选成交。",
+  "_comment_position": "全局只允许一个持仓。同一信号 K 线的完整跨 pair 快照按 abs(模型预测值) 排名，只允许最强候选成交。volnorm 预测本身已用 ATR/close 归一化，排名不再额外除波动率。",
   "max_open_trades": 1,
   "stake_currency": "USDT",
   "stake_amount": 100,
@@ -134,7 +134,7 @@
   },
   "freqaimodel": "XGBoostRegressorES",
   "freqai": {
-    "_comment": "回归模型：预测未来 3 根 4h K 线的收益率，目标列 &-s_return。当前使用 MomentumRidgeRegressor：只用因果 momentum/rsi 特征，降低 90 天小样本下的 XGBoost 过拟合。identifier 是模型与预测缓存命名空间，改特征/标签/模型必须换新值。label_period_candles=3 即预测未来 3 根 K 线。",
+    "_comment": "当前模型为 XGBoostRegressorES，预测未来 3 根 4h K 线的回归目标 &-s_return；量纲由 my_experiment.label 决定。MomentumRidgeRegressor 是可选研究模型。identifier 是模型与预测缓存命名空间，改特征/标签/模型必须换新值。原有 FreqAI 周期列名通过适配层保持兼容。",
     "enabled": true,
     "purge_old_models": 2,
     "train_period_days": 365,

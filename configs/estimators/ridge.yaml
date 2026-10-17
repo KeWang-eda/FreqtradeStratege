@@ -1,0 +1,6 @@
+research:
+  model:
+    backend: standalone
+    name: ridge
+    params:
+      alpha: 10.0

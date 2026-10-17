@@ -1,0 +1,4 @@
+research:
+  data:
+    "BTC/USDT:USDT": data/futures/BTC_USDT_USDT-4h-futures.feather
+    "ETH/USDT:USDT": data/futures/ETH_USDT_USDT-4h-futures.feather

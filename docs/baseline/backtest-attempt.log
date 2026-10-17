@@ -1,0 +1,34 @@
+2026-10-17 18:14:31,424 - freqtrade - INFO - freqtrade 2026.7
+2026-10-17 18:14:31,619 - numexpr.utils - INFO - NumExpr defaulting to 8 threads.
+2026-10-17 18:14:33,120 - freqtrade.configuration.load_config - INFO - Using config: /tmp/quant-refactor-baseline.BW441d/config.json ...
+2026-10-17 18:14:33,122 - freqtrade.loggers - INFO - Enabling colorized output.
+2026-10-17 18:14:33,122 - freqtrade.loggers - INFO - Logfile configured
+2026-10-17 18:14:33,123 - freqtrade.loggers - INFO - Verbosity set to 0
+2026-10-17 18:14:33,123 - freqtrade.configuration.configuration - INFO - Using additional Strategy lookup path: /tmp/quant-refactor-baseline.BW441d
+2026-10-17 18:14:33,123 - freqtrade.configuration.configuration - INFO - Using max_open_trades: 1 ...
+2026-10-17 18:14:33,124 - freqtrade.configuration.configuration - INFO - Parameter --timerange detected: 20250101-20250115 ...
+2026-10-17 18:14:33,124 - freqtrade.configuration.configuration - INFO - Using user-data directory: /tmp/quant-refactor-baseline.BW441d ...
+2026-10-17 18:14:33,125 - freqtrade.configuration.directory_operations - INFO - Created data directory: None
+2026-10-17 18:14:33,125 - freqtrade.configuration.configuration - INFO - Using data directory: /tmp/quant-refactor-baseline.BW441d/data/binance ...
+2026-10-17 18:14:33,125 - freqtrade.configuration.configuration - INFO - Using /tmp/quant-refactor-baseline.BW441d/results as backtest directory ...
+2026-10-17 18:14:33,126 - freqtrade.configuration.configuration - INFO - Parameter --export detected: trades ...
+2026-10-17 18:14:33,126 - freqtrade.configuration.configuration - INFO - Parameter --cache=none detected ...
+2026-10-17 18:14:33,126 - freqtrade.configuration.configuration - INFO - Using pairs ['BTC/USDT:USDT', 'ETH/USDT:USDT']
+2026-10-17 18:14:33,126 - freqtrade.configuration.configuration - INFO - Filter trades by timerange: 20250101-20250115
+2026-10-17 18:14:33,127 - freqtrade.configuration.configuration - INFO - Using freqaimodel path: /tmp/quant-refactor-baseline.BW441d/freqaimodels
+2026-10-17 18:14:33,127 - freqtrade.exchange.check_exchange - INFO - Checking exchange...
+2026-10-17 18:14:33,135 - freqtrade.exchange.check_exchange - INFO - Exchange "binance" is officially supported by the Freqtrade development team.
+2026-10-17 18:14:33,144 - freqtrade.configuration.config_validation - INFO - Validating configuration ...
+2026-10-17 18:14:33,146 - freqtrade.commands.optimize_commands - INFO - Starting freqtrade in Backtesting mode
+2026-10-17 18:14:33,147 - freqtrade.exchange.exchange - INFO - Instance is running with dry_run enabled
+2026-10-17 18:14:33,147 - freqtrade.exchange.exchange - INFO - Using CCXT 4.5.75
+2026-10-17 18:14:33,147 - freqtrade.exchange.exchange - INFO - Applying additional ccxt config: {'options': {'defaultType': 'swap'}}
+2026-10-17 18:14:33,155 - freqtrade.exchange.exchange - INFO - Applying additional ccxt config: {'options': {'defaultType': 'swap'}, 'aiohttp_trust_env': True, 'timeout': 120000, 'enableRateLimit': 
+True}
+2026-10-17 18:14:33,164 - freqtrade.exchange.exchange - INFO - Using Exchange "Binance"
+2026-10-17 18:16:34,026 - freqtrade.exchange.common - WARNING - _load_async_markets() returned exception: "Error in reload_markets due to RequestTimeout. Message: binance GET 
+https://fapi.binance.com/fapi/v1/exchangeInfo". Retrying still for 3 times.
+2026-10-17 18:18:35,025 - freqtrade.exchange.common - WARNING - _load_async_markets() returned exception: "Error in reload_markets due to RequestTimeout. Message: binance GET 
+https://fapi.binance.com/fapi/v1/exchangeInfo". Retrying still for 2 times.
+2026-10-17 18:20:36,025 - freqtrade.exchange.common - WARNING - _load_async_markets() returned exception: "Error in reload_markets due to RequestTimeout. Message: binance GET 
+https://fapi.binance.com/fapi/v1/exchangeInfo". Retrying still for 1 times.

@@ -1,0 +1,21 @@
+research:
+  name: baseline_raw
+  seed: 42
+  timeframe: 4h
+  feature_version: baseline-v2
+  periods: [6, 14, 24]
+  features: []
+  label:
+    mode: raw
+    prediction_horizon: 3
+    volatility_period: 14
+  model:
+    backend: standalone
+    name: ridge
+    params:
+      alpha: 10.0
+  validation:
+    method: purged_walk_forward
+    n_splits: 3
+    embargo_candles: 3
+    final_holdout_fraction: 0.15

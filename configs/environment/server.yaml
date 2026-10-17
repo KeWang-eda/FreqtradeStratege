@@ -1,0 +1,3 @@
+# Supply paths explicitly with --set 'data={"PAIR": "/absolute/file.feather"}'.
+research:
+  data: {}

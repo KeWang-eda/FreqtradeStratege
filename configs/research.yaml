@@ -1,0 +1,7 @@
+research:
+  validation:
+    method: purged_walk_forward
+    n_splits: 3
+    test_size: 0.2
+    embargo_candles: 3
+    final_holdout_fraction: 0.15
