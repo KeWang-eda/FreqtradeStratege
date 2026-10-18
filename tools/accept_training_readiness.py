@@ -422,7 +422,25 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--test-run", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--phase", choices=["all", "1", "2", "3", "4", "5", "6"], default="all")
+    parser.add_argument(
+        "--controlled",
+        action="store_true",
+        help="Independently verify frozen three-pair development infrastructure; never unlock formal OOS",
+    )
     args = parser.parse_args(argv)
+    if args.controlled:
+        from quant_strategy.research.controlled import verify_controlled_research
+
+        report = verify_controlled_research(args.evidence, args.output, args.test_run)
+        print(
+            json.dumps(
+                {
+                    key: report[key]
+                    for key in ("engineering_status", "status", "formal_research_allowed")
+                }
+            )
+        )
+        return 1 if report["status"] == FAIL else 2
     try:
         report = evaluate(args.evidence, args.test_run, args.output, args.phase)
     except (OSError, ValueError, KeyError, TypeError, ElementTree.ParseError) as error:

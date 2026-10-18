@@ -42,6 +42,13 @@ def main(argv: list[str] | None = None) -> int:
             )
     compare = subparsers.add_parser("compare")
     compare.add_argument("experiments", nargs="+")
+    controlled = subparsers.add_parser(
+        "controlled-research",
+        help="Frozen three-pair development preparation; formal holdout stays locked",
+    )
+    controlled.add_argument("-c", "--config", action="append", required=True)
+    controlled.add_argument("--output", type=Path, required=True)
+    controlled.add_argument("--train-development", action="store_true")
     for command in ("artifact-check", "leakage-check"):
         subparsers.add_parser(command).add_argument("path", type=Path)
     args = parser.parse_args(argv)
@@ -54,6 +61,14 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _execute(args: argparse.Namespace) -> int:
+    if args.command == "controlled-research":
+        from tools.prepare_controlled_research import main as controlled_main
+
+        arguments = [value for path in args.config for value in ("-c", path)]
+        arguments += ["--output", str(args.output)]
+        if args.train_development:
+            arguments.append("--train-development")
+        return controlled_main(arguments)
     if args.command == "compare":
         print(json.dumps(compare_experiments(args.experiments), ensure_ascii=False, indent=2))
         return 0

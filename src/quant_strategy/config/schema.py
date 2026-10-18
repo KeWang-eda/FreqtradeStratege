@@ -123,9 +123,14 @@ class ExperimentConfig:
     periods: tuple[int, ...] = (6, 14, 24)
     timeframe: str = "4h"
     data: dict[str, str] = field(default_factory=dict)
+    research_contract: str | None = None
 
     def __post_init__(self) -> None:
         validate_features(self.features)
+        if self.research_contract is not None and (
+            not isinstance(self.research_contract, str) or not self.research_contract
+        ):
+            raise ConfigurationError("research_contract must be a nonempty path or null")
         positive_int(self.seed, "seed", 0)
         if (
             not isinstance(self.name, str)

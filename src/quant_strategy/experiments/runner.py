@@ -88,6 +88,11 @@ def run_experiment(
     """
     if experiment_scope not in {"development", "formal"}:
         raise DataContractError("Unknown experiment scope; use development or formal")
+    if config.research_contract is not None:
+        raise DataContractError(
+            "Contract-bound native research requires the controlled-research entry; "
+            "legacy run and diagnostic holdout evaluation cannot consume this contract"
+        )
     admission = None
     if experiment_scope == "formal":
         from quant_strategy.validation.admission import require_training_admission

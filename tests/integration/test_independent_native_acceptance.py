@@ -20,6 +20,8 @@ def actual_native_run(tmp_path_factory):
         [
             sys.executable,
             "tools/run_native_training_probe.py",
+            "--end",
+            "2022-01-01T00:00:00+00:00",
             "--output",
             str(root),
             "--pairs",

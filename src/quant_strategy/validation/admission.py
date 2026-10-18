@@ -7,9 +7,11 @@ cases. The approach follows pytest JUnit and sklearn's train-only fitting rules.
 
 import importlib.metadata
 import json
+import os
 import re
 import shutil
 import subprocess
+import sys
 from dataclasses import asdict
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -222,6 +224,44 @@ def verify_test_execution(
     }
 
 
+def verify_complete_test_execution(receipt_path: Path, *, run_id: str) -> dict:
+    """Require every currently collected test, not an arbitrary successful subset."""
+    report = verify_test_execution(receipt_path, run_id=run_id)
+    command = [sys.executable, "-m", "pytest", "--collect-only", "-q"]
+    # A caller-controlled PYTEST_ADDOPTS can silently narrow collection (for
+    # example with ``-k``).  The independent completeness check must describe
+    # the repository's full suite, regardless of the shell that invokes it.
+    collection_environment = os.environ.copy()
+    collection_environment.pop("PYTEST_ADDOPTS", None)
+    result = subprocess.run(
+        command,
+        cwd=REPOSITORY_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        env=collection_environment,
+    )
+    if result.returncode != 0:
+        raise ValueError("Current full test collection failed")
+    collected = [line.strip() for line in result.stdout.splitlines() if ".py::" in line]
+    executed = report["executed_test_nodeids"]
+    if (
+        not collected
+        or len(collected) != len(set(collected))
+        or len(executed) != len(set(executed))
+        or set(executed) != set(collected)
+        or report["skipped"]
+    ):
+        raise ValueError("Complete current test suite was not executed without skips")
+    return {
+        **report,
+        "collection_command": command,
+        "collection_environment": {"PYTEST_ADDOPTS": None},
+        "collected_test_count": len(collected),
+        "collected_nodeids_sha256": canonical_hash(sorted(collected)),
+    }
+
+
 def require_training_admission(path: str | Path, config: ExperimentConfig) -> dict:
     """Revalidate receipts before creating any formal output or fitting a model."""
     try:
@@ -242,6 +282,14 @@ def require_training_admission(path: str | Path, config: ExperimentConfig) -> di
 
 
 def _require_training_admission(path: Path, config: ExperimentConfig) -> dict:
+    if config.research_contract is not None:
+        from quant_strategy.research.contract import load_research_contract
+
+        frozen = load_research_contract(config.research_contract)
+        if frozen.get("formal_oos_allowed") is not True:
+            raise DataContractError(
+                "Formal training denied: controlled development contract has no formal OOS authorization"
+            )
     report = read_evidence_json(path)
     phases = report.get("phases", {})
     if (

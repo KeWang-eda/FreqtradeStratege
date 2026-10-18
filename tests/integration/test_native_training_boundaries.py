@@ -28,7 +28,7 @@ def test_outer_training_tail_is_unlabeled_not_false_future_backtest_leak(candles
 
 def test_real_btc_native_boundary_gate_cannot_pass_by_exit_code_only():
     config = json.loads(Path("config.json").read_text())
-    raw = load_ohlcv("data/futures/BTC_USDT_USDT-4h-futures.feather").iloc[-600:]
+    raw = load_ohlcv("data/futures/BTC_USDT_USDT-4h-futures.feather").iloc[:600]
     report = audit_native_boundaries(config, raw)
     assert report["status"] == "FAIL"
     assert report["label_boundary_violations"] == 3

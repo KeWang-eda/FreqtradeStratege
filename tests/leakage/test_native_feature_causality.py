@@ -173,14 +173,20 @@ def test_actual_btc_eth_bnb_files_full_native_features_are_causal():
     config = json.loads(Path("config.json").read_text())
     pairs = ["BTC/USDT:USDT", "ETH/USDT:USDT", "BNB/USDT:USDT"]
     config["exchange"]["pair_whitelist"] = pairs
-    frames = {
+    raw_frames = {
         pair: pd.read_feather(
             Path("data/futures")
             / (pair.replace("/", "_").replace(":", "_") + "-4h-futures.feather")
         )
-        .tail(400)
-        .reset_index(drop=True)
         for pair in pairs
+    }
+    # Use one common early window.  BNB starts later than BTC/ETH; taking
+    # ``head`` independently would compare different historical regimes and
+    # could hide cross-pair timing defects.
+    common_start = max(frame.date.iloc[0] for frame in raw_frames.values())
+    frames = {
+        pair: frame.loc[frame.date >= common_start].head(400).reset_index(drop=True)
+        for pair, frame in raw_frames.items()
     }
     report = audit_native_features(config, frames, cut_points=[180, 300])
     assert report["status"] == "PASS", report

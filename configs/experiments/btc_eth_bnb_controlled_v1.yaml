@@ -1,0 +1,35 @@
+research:
+  name: btc_eth_bnb_production_task_development_v1
+  research_contract: configs/contracts/btc_eth_bnb_v1.json
+  feature_version: native-production-per-pair-v1
+  timeframe: 4h
+  seed: 42
+  label:
+    mode: volnorm
+    prediction_horizon: 3
+    volatility_period: 14
+  model:
+    backend: freqai
+    name: XGBoostRegressorES
+    params:
+      n_estimators: 500
+      max_depth: 5
+      learning_rate: 0.05
+      subsample: 0.8
+      colsample_bytree: 0.8
+      eval_metric: rmse
+      early_stopping_rounds: 30
+      verbosity: 1
+      n_jobs: -1
+      tree_method: hist
+  validation:
+    method: purged_walk_forward
+    n_splits: 3
+    test_size: 0.2
+    min_train_size: 2190
+    embargo_candles: 3
+    final_holdout_fraction: 0.15
+  data:
+    "BTC/USDT:USDT": data/futures/BTC_USDT_USDT-4h-futures.feather
+    "ETH/USDT:USDT": data/futures/ETH_USDT_USDT-4h-futures.feather
+    "BNB/USDT:USDT": data/futures/BNB_USDT_USDT-4h-futures.feather

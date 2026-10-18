@@ -29,7 +29,7 @@ from quant_strategy.validation.admission import current_source_hashes
 from quant_strategy.validation.native_features import populate_native_features
 
 
-def run_probe(config_path: Path, output: Path, pairs: list[str]) -> dict:
+def run_probe(config_path: Path, output: Path, pairs: list[str], end: str | None = None) -> dict:
     """Train once per requested pair; freeze actual inputs and preserve failures."""
     from freqtrade.configuration.config_validation import validate_config_schema
     from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
@@ -94,6 +94,15 @@ def run_probe(config_path: Path, output: Path, pairs: list[str]) -> dict:
             }
         step = timeframe_delta(config["timeframe"])
         common_end = min(frame.date.iloc[-1] for frame in frames.values()) + step
+        if end is not None:
+            requested_end = pd.Timestamp(end)
+            if (
+                requested_end.tzinfo is None
+                or requested_end > common_end
+                or requested_end.value % step.value
+            ):
+                raise ValueError("Development --end must be an available UTC candle boundary")
+            common_end = requested_end.tz_convert("UTC")
         # Native startup requirement is 365 days + max(100,2*24) = 2290 bars.
         # Keep the configured training period, with 100 earlier bars for features
         # and 48 later bars solely for development prediction API verification.
@@ -184,11 +193,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--config", type=Path, default=Path("config.json"))
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
+        "--end", help="Optional exclusive UTC prediction cutoff; tests use an early history prefix"
+    )
+    parser.add_argument(
         "--pairs", nargs="+", default=["BTC/USDT:USDT", "ETH/USDT:USDT", "BNB/USDT:USDT"]
     )
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-    run_probe(args.config, args.output, args.pairs)
+    run_probe(args.config, args.output, args.pairs, args.end)
     return 0
 
 

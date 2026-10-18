@@ -35,7 +35,7 @@ def test_same_real_data_rebuilds_identical_schema_samples_and_exclusions():
     assert all(path.is_file() for path in paths.values()), (
         "Real-data integration prerequisite missing"
     )
-    frames = {pair: load_ohlcv(path).iloc[-600:].copy() for pair, path in paths.items()}
+    frames = {pair: load_ohlcv(path).iloc[:600].copy() for pair, path in paths.items()}
     before = {pair: frame_fingerprint(frame) for pair, frame in frames.items()}
     first = build_dataset(frames, ExperimentConfig())
     second = build_dataset(dict(reversed(list(frames.items()))), ExperimentConfig())

@@ -105,7 +105,7 @@ def test_validation_extremes_never_fit_training_scaler(tmp_path, candles):
 
 @pytest.mark.parametrize("test_size", [0, 0.2])
 def test_actual_real_btc_training_and_prediction(tmp_path, test_size):
-    raw = load_ohlcv("data/futures/BTC_USDT_USDT-4h-futures.feather").iloc[-500:].copy()
+    raw = load_ohlcv("data/futures/BTC_USDT_USDT-4h-futures.feather").iloc[:500].copy()
     train_raw, predict_raw = raw.iloc[:-20], raw.iloc[-20:]
     model, dk, populated = _context(tmp_path, train_raw, test_size=test_size)
     model.model = model.train(populated, dk.pair, dk)
@@ -154,7 +154,7 @@ def test_failed_real_model_fit_keeps_failed_artifact(tmp_path, candles, monkeypa
 
 
 def test_actual_reused_datakitchen_keeps_distinct_window_fit_identities(tmp_path):
-    raw = load_ohlcv("data/futures/BTC_USDT_USDT-4h-futures.feather").iloc[-500:].copy()
+    raw = load_ohlcv("data/futures/BTC_USDT_USDT-4h-futures.feather").iloc[:500].copy()
     model, dk, first = _context(tmp_path, raw.iloc[:300])
     model.model = model.train(first, dk.pair, dk)
     first_path = model.last_native_audit_path
