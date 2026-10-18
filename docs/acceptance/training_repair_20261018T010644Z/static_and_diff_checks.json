@@ -1,0 +1,69 @@
+{
+  "production_lint": {
+    "command": [
+      "../freqtrade/.venv/bin/ruff",
+      "check",
+      "src",
+      "tests",
+      "tools",
+      "freqaimodels",
+      "MyStrategy.py",
+      "_quant_strategy_bootstrap.py",
+      "feature.py",
+      "model.py",
+      "test_my_strategy.py"
+    ],
+    "exit_code": 0,
+    "stdout": "All checks passed!\n",
+    "stderr": ""
+  },
+  "production_format": {
+    "command": [
+      "../freqtrade/.venv/bin/ruff",
+      "format",
+      "--check",
+      "src",
+      "tests",
+      "tools",
+      "freqaimodels",
+      "MyStrategy.py",
+      "_quant_strategy_bootstrap.py",
+      "feature.py",
+      "model.py",
+      "test_my_strategy.py"
+    ],
+    "exit_code": 0,
+    "stdout": "111 files already formatted\n",
+    "stderr": ""
+  },
+  "code_docs_diff_check": {
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check",
+      "--",
+      "src",
+      "tests",
+      "tools",
+      "freqaimodels",
+      "README.md",
+      "config.json",
+      "docs/training_readiness_summary.md"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "all_staged_diff_check": {
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exit_code": 2,
+    "stdout": "docs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:39: trailing whitespace.\n+tests/unit/test_admission_integrity.py:39: \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:40: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:50: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:58: trailing whitespace.\n+    \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:61: trailing whitespace.\n+    \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:81: trailing whitespace.\n+tests/unit/test_admission_integrity.py:39: \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:82: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:108: trailing whitespace.\n+tests/unit/test_admission_integrity.py:39: \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:109: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:131: trailing whitespace.\n+tests/unit/test_admission_integrity.py:44: \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:132: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:142: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:174: trailing whitespace.\n+tests/unit/test_admission_integrity.py:51: \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:175: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:181: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:209: trailing whitespace.\n+tests/unit/test_admission_integrity.py:51: \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:210: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:216: trailing whitespace.\n+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:241: trailing whitespace.\n+    \ndocs/acceptance/training_repair_20261018T010644Z/admission-red-20261018.log:259: trailing whitespace.\n+    \ndocs/acceptance/training_repair_20261018T010644Z/native-feature-status-red-20261018.log:27: trailing whitespace.\n+E         \ndocs/acceptance/training_repair_20261018T010644Z/native-feature-status-red-20261018.log:56: trailing whitespace.\n+E         \ndocs/acceptance/training_repair_20261018T010644Z/quant-repair-final-suite.log:45: trailing whitespace.\n+E         \ndocs/acceptance/training_repair_20261018T010644Z/quant-repair-final-suite.log:65: trailing whitespace.\n+    \ndocs/acceptance/training_repair_20261018T010644Z/quant-repair-final-suite.log:70: trailing whitespace.\n+E         \ndocs/acceptance/training_repair_20261018T010644Z/quant-repair-final-suite.xml:34: trailing whitespace.\n+E         \ndocs/acceptance/training_repair_20261018T010644Z/quant-repair-final-suite.xml:51: trailing whitespace.\n+    \ndocs/acceptance/training_repair_20261018T010644Z/quant-repair-final-suite.xml:56: trailing whitespace.\n+E         \ndocs/acceptance/training_repair_20261018T010644Z/quant-repair-independent-binding-green.log:12: trailing whitespace.\n+E         \ndocs/acceptance/training_repair_20261018T010644Z/quant-repair-independent-binding-green.xml:8: trailing whitespace.\n+E         \ndocs/acceptance/training_repair_20261018T010644Z/quant-repair-independent-binding-red.log:41: trailing whitespace.\n+E         \ndocs/acceptance/training_repair_20261018T010644Z/quant-repair-independent-binding-red.log:130: trailing whitespace.\n+E         \ndocs/acceptance/training_repair_20261018T010644Z/quant-repair-independent-binding-red.xml:37: trailing whitespace.\n+E         \ndocs/acceptance/training_repair_20261018T010644Z/quant-repair-independent-binding-red.xml:120: trailing whitespace.\n+E         \ndocs/acceptance/training_repair_20261018T010644Z/quant-repair-independent-tests-attempt2.log:12: trailing whitespace.\n+E         \ndocs/acceptance/training_repair_20261018T010644Z/quant-repair-independent-tests-attempt2.xml:8: trailing whitespace.\n+E         \n",
+    "stderr": ""
+  }
+}

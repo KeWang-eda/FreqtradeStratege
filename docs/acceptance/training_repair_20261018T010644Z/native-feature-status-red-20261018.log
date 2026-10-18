@@ -1,0 +1,64 @@
+FF.....                                                                  [100%]
+=================================== FAILURES ===================================
+_ test_recomputed_feature_failure_dominates_missing_sources_and_partial_scope[FAIL-source_errors0-True-FAIL] _
+
+recomputed = 'FAIL', source_errors = [{'reason': 'missing_source'}]
+all_pairs = True, expected = 'FAIL'
+
+    @pytest.mark.parametrize(
+        "recomputed,source_errors,all_pairs,expected",
+        [
+            ("FAIL", [{"reason": "missing_source"}], True, "FAIL"),
+            ("FAIL", [{"reason": "missing_source"}], False, "FAIL"),
+            ("FAIL", [], True, "FAIL"),
+            ("PASS", [{"reason": "missing_source"}], True, "BLOCKED"),
+            ("BLOCKED", [{"reason": "missing_source"}], False, "BLOCKED"),
+            ("PASS", [], False, "PARTIAL"),
+            ("PASS", [], True, "PASS"),
+        ],
+    )
+    def test_recomputed_feature_failure_dominates_missing_sources_and_partial_scope(
+        recomputed, source_errors, all_pairs, expected
+    ):
+>       assert _native_feature_scope_status(
+            recomputed, source_errors=source_errors, all_pairs=all_pairs
+        ) == expected
+E       AssertionError: assert 'BLOCKED' == 'FAIL'
+E         
+E         - FAIL
+E         + BLOCKED
+
+tests/unit/test_training_readiness_gate.py:195: AssertionError
+_ test_recomputed_feature_failure_dominates_missing_sources_and_partial_scope[FAIL-source_errors1-False-FAIL] _
+
+recomputed = 'FAIL', source_errors = [{'reason': 'missing_source'}]
+all_pairs = False, expected = 'FAIL'
+
+    @pytest.mark.parametrize(
+        "recomputed,source_errors,all_pairs,expected",
+        [
+            ("FAIL", [{"reason": "missing_source"}], True, "FAIL"),
+            ("FAIL", [{"reason": "missing_source"}], False, "FAIL"),
+            ("FAIL", [], True, "FAIL"),
+            ("PASS", [{"reason": "missing_source"}], True, "BLOCKED"),
+            ("BLOCKED", [{"reason": "missing_source"}], False, "BLOCKED"),
+            ("PASS", [], False, "PARTIAL"),
+            ("PASS", [], True, "PASS"),
+        ],
+    )
+    def test_recomputed_feature_failure_dominates_missing_sources_and_partial_scope(
+        recomputed, source_errors, all_pairs, expected
+    ):
+>       assert _native_feature_scope_status(
+            recomputed, source_errors=source_errors, all_pairs=all_pairs
+        ) == expected
+E       AssertionError: assert 'BLOCKED' == 'FAIL'
+E         
+E         - FAIL
+E         + BLOCKED
+
+tests/unit/test_training_readiness_gate.py:195: AssertionError
+=========================== short test summary info ============================
+FAILED tests/unit/test_training_readiness_gate.py::test_recomputed_feature_failure_dominates_missing_sources_and_partial_scope[FAIL-source_errors0-True-FAIL]
+FAILED tests/unit/test_training_readiness_gate.py::test_recomputed_feature_failure_dominates_missing_sources_and_partial_scope[FAIL-source_errors1-False-FAIL]
+2 failed, 5 passed, 13 deselected in 1.37s

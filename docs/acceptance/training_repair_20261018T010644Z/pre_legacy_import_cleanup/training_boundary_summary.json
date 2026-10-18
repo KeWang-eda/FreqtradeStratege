@@ -1,0 +1,185 @@
+[
+  {
+    "pair": "BTC/USDT:USDT",
+    "counts": {
+      "filtered": 3,
+      "purged": 3,
+      "train": 1746,
+      "validation": 438
+    },
+    "features": 92,
+    "validation_start": "2026-07-26 16:00:00+00:00",
+    "prediction_rows": 48,
+    "ready_predictions": 48,
+    "purged_rows": [
+      {
+        "source_index": "1846",
+        "row_position": "1746",
+        "sample_id": "5cb29290518a4419f9e874d56882ebdefda08417350de7ef01460c0f0019f842",
+        "pair": "BTC/USDT:USDT",
+        "candle_timestamp": "2026-07-26 00:00:00+00:00",
+        "available_at": "2026-07-26 04:00:00+00:00",
+        "label_start_time": "2026-07-26 04:00:00+00:00",
+        "label_end_time": "2026-07-26 16:00:00+00:00",
+        "original_split": "train",
+        "assignment": "purged",
+        "reason": "label_end_ge_validation_start",
+        "weight": "1.0",
+        "validation_start": "2026-07-26 16:00:00+00:00"
+      },
+      {
+        "source_index": "1847",
+        "row_position": "1747",
+        "sample_id": "cfb3305ce17b1eba0e9af6ea4ca9398c2b17ed279aa008c089f29c8e71faaffb",
+        "pair": "BTC/USDT:USDT",
+        "candle_timestamp": "2026-07-26 04:00:00+00:00",
+        "available_at": "2026-07-26 08:00:00+00:00",
+        "label_start_time": "2026-07-26 08:00:00+00:00",
+        "label_end_time": "2026-07-26 20:00:00+00:00",
+        "original_split": "train",
+        "assignment": "purged",
+        "reason": "label_end_ge_validation_start",
+        "weight": "1.0",
+        "validation_start": "2026-07-26 16:00:00+00:00"
+      },
+      {
+        "source_index": "1848",
+        "row_position": "1748",
+        "sample_id": "8abdca2809e65deded40d0f730a4f8352ba30acb1bf4a5cf83d6ae8fca7f599a",
+        "pair": "BTC/USDT:USDT",
+        "candle_timestamp": "2026-07-26 08:00:00+00:00",
+        "available_at": "2026-07-26 12:00:00+00:00",
+        "label_start_time": "2026-07-26 12:00:00+00:00",
+        "label_end_time": "2026-07-27 00:00:00+00:00",
+        "original_split": "train",
+        "assignment": "purged",
+        "reason": "label_end_ge_validation_start",
+        "weight": "1.0",
+        "validation_start": "2026-07-26 16:00:00+00:00"
+      }
+    ],
+    "audit_sha256": "3069464b9ff24c074bb783b1d725ab4dc737af1b781010156bf60621768500e6"
+  },
+  {
+    "pair": "ETH/USDT:USDT",
+    "counts": {
+      "filtered": 3,
+      "purged": 3,
+      "train": 1746,
+      "validation": 438
+    },
+    "features": 92,
+    "validation_start": "2026-07-26 16:00:00+00:00",
+    "prediction_rows": 48,
+    "ready_predictions": 48,
+    "purged_rows": [
+      {
+        "source_index": "1846",
+        "row_position": "1746",
+        "sample_id": "c133eb15b22fe10f6fea28e9e65f64a874068a6436dcf205b232968c8525a806",
+        "pair": "ETH/USDT:USDT",
+        "candle_timestamp": "2026-07-26 00:00:00+00:00",
+        "available_at": "2026-07-26 04:00:00+00:00",
+        "label_start_time": "2026-07-26 04:00:00+00:00",
+        "label_end_time": "2026-07-26 16:00:00+00:00",
+        "original_split": "train",
+        "assignment": "purged",
+        "reason": "label_end_ge_validation_start",
+        "weight": "1.0",
+        "validation_start": "2026-07-26 16:00:00+00:00"
+      },
+      {
+        "source_index": "1847",
+        "row_position": "1747",
+        "sample_id": "98d4ac717658f2b9bf821ccef178cdce65a539b1fdabffee2b9e82160df566de",
+        "pair": "ETH/USDT:USDT",
+        "candle_timestamp": "2026-07-26 04:00:00+00:00",
+        "available_at": "2026-07-26 08:00:00+00:00",
+        "label_start_time": "2026-07-26 08:00:00+00:00",
+        "label_end_time": "2026-07-26 20:00:00+00:00",
+        "original_split": "train",
+        "assignment": "purged",
+        "reason": "label_end_ge_validation_start",
+        "weight": "1.0",
+        "validation_start": "2026-07-26 16:00:00+00:00"
+      },
+      {
+        "source_index": "1848",
+        "row_position": "1748",
+        "sample_id": "c5538332a33ea0e0034bbd824c4b443f123f42f060b3efdff5b5e086690b7b47",
+        "pair": "ETH/USDT:USDT",
+        "candle_timestamp": "2026-07-26 08:00:00+00:00",
+        "available_at": "2026-07-26 12:00:00+00:00",
+        "label_start_time": "2026-07-26 12:00:00+00:00",
+        "label_end_time": "2026-07-27 00:00:00+00:00",
+        "original_split": "train",
+        "assignment": "purged",
+        "reason": "label_end_ge_validation_start",
+        "weight": "1.0",
+        "validation_start": "2026-07-26 16:00:00+00:00"
+      }
+    ],
+    "audit_sha256": "5b5578c94826f1f05b592331f0de26767e86d607210b1d9c02d1c850166411ab"
+  },
+  {
+    "pair": "BNB/USDT:USDT",
+    "counts": {
+      "filtered": 3,
+      "purged": 3,
+      "train": 1746,
+      "validation": 438
+    },
+    "features": 136,
+    "validation_start": "2026-07-26 16:00:00+00:00",
+    "prediction_rows": 48,
+    "ready_predictions": 48,
+    "purged_rows": [
+      {
+        "source_index": "1846",
+        "row_position": "1746",
+        "sample_id": "17c4be8c5a402da7c9535060a2c9d82c55b7b9269a438b4f9188fc8b8e395158",
+        "pair": "BNB/USDT:USDT",
+        "candle_timestamp": "2026-07-26 00:00:00+00:00",
+        "available_at": "2026-07-26 04:00:00+00:00",
+        "label_start_time": "2026-07-26 04:00:00+00:00",
+        "label_end_time": "2026-07-26 16:00:00+00:00",
+        "original_split": "train",
+        "assignment": "purged",
+        "reason": "label_end_ge_validation_start",
+        "weight": "1.0",
+        "validation_start": "2026-07-26 16:00:00+00:00"
+      },
+      {
+        "source_index": "1847",
+        "row_position": "1747",
+        "sample_id": "b5a0e4e1d34a6a356c4aa3a2e116b31671198b533880583eebe3aa8296d8d8c7",
+        "pair": "BNB/USDT:USDT",
+        "candle_timestamp": "2026-07-26 04:00:00+00:00",
+        "available_at": "2026-07-26 08:00:00+00:00",
+        "label_start_time": "2026-07-26 08:00:00+00:00",
+        "label_end_time": "2026-07-26 20:00:00+00:00",
+        "original_split": "train",
+        "assignment": "purged",
+        "reason": "label_end_ge_validation_start",
+        "weight": "1.0",
+        "validation_start": "2026-07-26 16:00:00+00:00"
+      },
+      {
+        "source_index": "1848",
+        "row_position": "1748",
+        "sample_id": "e240a17f2128e79e382af7dae310b8a57ae4f4b8ec348d17505bd102c235a586",
+        "pair": "BNB/USDT:USDT",
+        "candle_timestamp": "2026-07-26 08:00:00+00:00",
+        "available_at": "2026-07-26 12:00:00+00:00",
+        "label_start_time": "2026-07-26 12:00:00+00:00",
+        "label_end_time": "2026-07-27 00:00:00+00:00",
+        "original_split": "train",
+        "assignment": "purged",
+        "reason": "label_end_ge_validation_start",
+        "weight": "1.0",
+        "validation_start": "2026-07-26 16:00:00+00:00"
+      }
+    ],
+    "audit_sha256": "70c95ea78b36982d3492c952b8c4911256f3b6beca22080f64657b54979736aa"
+  }
+]

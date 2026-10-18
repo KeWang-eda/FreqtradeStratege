@@ -1,0 +1,131 @@
+INFO:freqtrade.resolvers.iresolver:Using resolved freqaimodel XGBoostRegressorES from '/REPO/freqaimodels/XGBoostRegressorES.py'...
+INFO:freqtrade.freqai.data_drawer:Could not find existing datadrawer, starting from scratch
+INFO:freqtrade.freqai.data_drawer:Could not find existing historic_predictions, starting from scratch
+INFO:freqtrade.freqai.freqai_interface:Set fresh train queue from whitelist. Queue: ['1INCH/USDT:USDT', 'AAVE/USDT:USDT', 'ADA/USDT:USDT', 'ALGO/USDT:USDT', 'AR/USDT:USDT', 'ATOM/USDT:USDT', 'AVAX/USDT:USDT', 'AXS/USDT:USDT', 'BAND/USDT:USDT', 'BAT/USDT:USDT', 'BCH/USDT:USDT', 'BEL/USDT:USDT', 'BNB/USDT:USDT', 'BSV/USDT:USDT', 'BTC/USDT:USDT', 'CAKE/USDT:USDT', 'CFX/USDT:USDT', 'COMP/USDT:USDT', 'CRV/USDT:USDT', 'DASH/USDT:USDT', 'DOGE/USDT:USDT', 'DOT/USDT:USDT', 'EGLD/USDT:USDT', 'ENJ/USDT:USDT', 'ENS/USDT:USDT', 'ETC/USDT:USDT', 'ETH/USDT:USDT', 'FET/USDT:USDT', 'FIL/USDT:USDT', 'GRT/USDT:USDT', 'HBAR/USDT:USDT', 'ICP/USDT:USDT', 'INJ/USDT:USDT', 'IOST/USDT:USDT', 'IOTA/USDT:USDT', 'JASMY/USDT:USDT', 'KAVA/USDT:USDT', 'KNC/USDT:USDT', 'KSM/USDT:USDT', 'LDO/USDT:USDT', 'LINK/USDT:USDT', 'LTC/USDT:USDT', 'NEAR/USDT:USDT', 'NEO/USDT:USDT', 'ONT/USDT:USDT', 'PENDLE/USDT:USDT', 'QNT/USDT:USDT', 'QTUM/USDT:USDT', 'RENDER/USDT:USDT', 'RLC/USDT:USDT', 'RSR/USDT:USDT', 'RUNE/USDT:USDT', 'SKL/USDT:USDT', 'SNX/USDT:USDT', 'SOL/USDT:USDT', 'STX/USDT:USDT', 'SUN/USDT:USDT', 'SUSHI/USDT:USDT', 'THETA/USDT:USDT', 'TRB/USDT:USDT', 'TRX/USDT:USDT', 'UNI/USDT:USDT', 'VET/USDT:USDT', 'XLM/USDT:USDT', 'XMR/USDT:USDT', 'XRP/USDT:USDT', 'XTZ/USDT:USDT', 'YFI/USDT:USDT', 'ZEC/USDT:USDT', 'ZEN/USDT:USDT', 'ZIL/USDT:USDT', 'ZRX/USDT:USDT']
+INFO:XGBoostRegressorES:-------------------- Starting isolated training BTC/USDT:USDT --------------------
+INFO:freqtrade.freqai.data_kitchen:BTC/USDT:USDT: dropped 3 training points due to NaNs in populated dataset 2190.
+INFO:XGBoostRegressorES:Training model on 92 features and 1746 purged-safe data points
+INFO:XGBoostRegressorES:BTC/USDT:USDT: 早停已启用 rounds=30（监控测试集）
+[0]	validation_0-rmse:0.27632
+[1]	validation_0-rmse:0.27611
+[2]	validation_0-rmse:0.27549
+[3]	validation_0-rmse:0.27478
+[4]	validation_0-rmse:0.27398
+[5]	validation_0-rmse:0.27371
+[6]	validation_0-rmse:0.27299
+[7]	validation_0-rmse:0.27311
+[8]	validation_0-rmse:0.27307
+[9]	validation_0-rmse:0.27292
+[10]	validation_0-rmse:0.27328
+[11]	validation_0-rmse:0.27335
+[12]	validation_0-rmse:0.27320
+[13]	validation_0-rmse:0.27337
+[14]	validation_0-rmse:0.27347
+[15]	validation_0-rmse:0.27389
+[16]	validation_0-rmse:0.27385
+[17]	validation_0-rmse:0.27392
+[18]	validation_0-rmse:0.27389
+[19]	validation_0-rmse:0.27422
+[20]	validation_0-rmse:0.27418
+[21]	validation_0-rmse:0.27430
+[22]	validation_0-rmse:0.27441
+[23]	validation_0-rmse:0.27427
+[24]	validation_0-rmse:0.27451
+[25]	validation_0-rmse:0.27507
+[26]	validation_0-rmse:0.27508
+[27]	validation_0-rmse:0.27542
+[28]	validation_0-rmse:0.27524
+[29]	validation_0-rmse:0.27545
+[30]	validation_0-rmse:0.27574
+[31]	validation_0-rmse:0.27564
+[32]	validation_0-rmse:0.27593
+[33]	validation_0-rmse:0.27595
+[34]	validation_0-rmse:0.27680
+[35]	validation_0-rmse:0.27676
+[36]	validation_0-rmse:0.27676
+[37]	validation_0-rmse:0.27702
+[38]	validation_0-rmse:0.27714
+INFO:XGBoostRegressorES:BTC/USDT:USDT: 实际训练轮数=40 best_iteration=9
+INFO:XGBoostRegressorES:-------------------- Done isolated training BTC/USDT:USDT (24.09 secs) --------------------
+INFO:XGBoostRegressorES:-------------------- Starting isolated training ETH/USDT:USDT --------------------
+INFO:freqtrade.freqai.data_kitchen:ETH/USDT:USDT: dropped 3 training points due to NaNs in populated dataset 2190.
+INFO:XGBoostRegressorES:Training model on 92 features and 1746 purged-safe data points
+INFO:XGBoostRegressorES:ETH/USDT:USDT: 早停已启用 rounds=30（监控测试集）
+[0]	validation_0-rmse:0.27913
+[1]	validation_0-rmse:0.27914
+[2]	validation_0-rmse:0.27849
+[3]	validation_0-rmse:0.27829
+[4]	validation_0-rmse:0.27771
+[5]	validation_0-rmse:0.27773
+[6]	validation_0-rmse:0.27798
+[7]	validation_0-rmse:0.27803
+[8]	validation_0-rmse:0.27819
+[9]	validation_0-rmse:0.27814
+[10]	validation_0-rmse:0.27900
+[11]	validation_0-rmse:0.27946
+[12]	validation_0-rmse:0.27968
+[13]	validation_0-rmse:0.27984
+[14]	validation_0-rmse:0.27986
+[15]	validation_0-rmse:0.28010
+[16]	validation_0-rmse:0.27999
+[17]	validation_0-rmse:0.27994
+[18]	validation_0-rmse:0.28019
+[19]	validation_0-rmse:0.28078
+[20]	validation_0-rmse:0.28070
+[21]	validation_0-rmse:0.28055
+[22]	validation_0-rmse:0.28039
+[23]	validation_0-rmse:0.28025
+[24]	validation_0-rmse:0.28026
+[25]	validation_0-rmse:0.28075
+[26]	validation_0-rmse:0.28111
+[27]	validation_0-rmse:0.28125
+[28]	validation_0-rmse:0.28133
+[29]	validation_0-rmse:0.28183
+[30]	validation_0-rmse:0.28254
+[31]	validation_0-rmse:0.28236
+[32]	validation_0-rmse:0.28245
+[33]	validation_0-rmse:0.28263
+INFO:XGBoostRegressorES:ETH/USDT:USDT: 实际训练轮数=35 best_iteration=4
+INFO:XGBoostRegressorES:-------------------- Done isolated training ETH/USDT:USDT (2.13 secs) --------------------
+INFO:XGBoostRegressorES:-------------------- Starting isolated training BNB/USDT:USDT --------------------
+INFO:freqtrade.freqai.data_kitchen:BNB/USDT:USDT: dropped 3 training points due to NaNs in populated dataset 2190.
+INFO:XGBoostRegressorES:Training model on 136 features and 1746 purged-safe data points
+INFO:XGBoostRegressorES:BNB/USDT:USDT: 早停已启用 rounds=30（监控测试集）
+[0]	validation_0-rmse:0.23604
+[1]	validation_0-rmse:0.23595
+[2]	validation_0-rmse:0.23562
+[3]	validation_0-rmse:0.23570
+[4]	validation_0-rmse:0.23520
+[5]	validation_0-rmse:0.23553
+[6]	validation_0-rmse:0.23519
+[7]	validation_0-rmse:0.23604
+[8]	validation_0-rmse:0.23653
+[9]	validation_0-rmse:0.23662
+[10]	validation_0-rmse:0.23596
+[11]	validation_0-rmse:0.23557
+[12]	validation_0-rmse:0.23592
+[13]	validation_0-rmse:0.23585
+[14]	validation_0-rmse:0.23588
+[15]	validation_0-rmse:0.23584
+[16]	validation_0-rmse:0.23643
+[17]	validation_0-rmse:0.23669
+[18]	validation_0-rmse:0.23722
+[19]	validation_0-rmse:0.23720
+[20]	validation_0-rmse:0.23715
+[21]	validation_0-rmse:0.23657
+[22]	validation_0-rmse:0.23687
+[23]	validation_0-rmse:0.23696
+[24]	validation_0-rmse:0.23698
+[25]	validation_0-rmse:0.23693
+[26]	validation_0-rmse:0.23715
+[27]	validation_0-rmse:0.23738
+[28]	validation_0-rmse:0.23669
+[29]	validation_0-rmse:0.23679
+[30]	validation_0-rmse:0.23681
+[31]	validation_0-rmse:0.23669
+[32]	validation_0-rmse:0.23694
+[33]	validation_0-rmse:0.23715
+[34]	validation_0-rmse:0.23736
+[35]	validation_0-rmse:0.23747
+INFO:XGBoostRegressorES:BNB/USDT:USDT: 实际训练轮数=37 best_iteration=6
+INFO:XGBoostRegressorES:-------------------- Done isolated training BNB/USDT:USDT (4.51 secs) --------------------

@@ -1,0 +1,299 @@
+{
+  "junit": "final_tests.xml",
+  "requirements": [
+    {
+      "requirement_id": "DATA-003",
+      "actual_executed_nodeids": [
+        "tests/unit/test_historical_coverage.py::test_hourly_funding_filename_does_not_imply_hourly_payments",
+        "tests/unit/test_historical_coverage.py::test_variable_funding_interval_requires_schedule_evidence",
+        "tests/unit/test_training_data_contracts.py::test_funding_without_verified_payment_interval_is_blocked",
+        "tests/unit/test_training_data_contracts.py::test_funding_accepts_negative_rate_and_zero_native_placeholder_fields",
+        "tests/unit/test_training_data_contracts.py::test_funding_missing_event_never_becomes_zero_rate",
+        "tests/unit/test_training_data_contracts.py::test_observed_frequency_change_does_not_create_fictional_funding_gaps",
+        "tests/unit/test_training_data_contracts.py::test_invalid_supplied_funding_schedule_fails[0]",
+        "tests/unit/test_training_data_contracts.py::test_invalid_supplied_funding_schedule_fails[-1]",
+        "tests/unit/test_training_data_contracts.py::test_invalid_supplied_funding_schedule_fails[True]",
+        "tests/unit/test_training_data_contracts.py::test_invalid_supplied_funding_schedule_fails[inf]",
+        "tests/unit/test_training_data_contracts.py::test_invalid_supplied_funding_schedule_fails[nan]",
+        "tests/unit/test_training_data_contracts.py::test_invalid_supplied_funding_schedule_fails[8]",
+        "tests/unit/test_training_data_contracts.py::test_known_funding_schedule_incompatible_event_is_corrupt"
+      ],
+      "test_cases": 13,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "BLOCKED"
+    },
+    {
+      "requirement_id": "BOUND-001",
+      "actual_executed_nodeids": [
+        "tests/unit/test_native_isolation.py::test_equality_greater_and_less_than_boundary"
+      ],
+      "test_cases": 1,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "ALIGN-001",
+      "actual_executed_nodeids": [
+        "tests/unit/test_native_isolation.py::test_weight_and_metadata_alignment",
+        "tests/unit/test_native_isolation.py::test_misaligned_labels_or_weights_fail[train_labels]",
+        "tests/unit/test_native_isolation.py::test_misaligned_labels_or_weights_fail[test_labels]",
+        "tests/unit/test_native_isolation.py::test_misaligned_labels_or_weights_fail[train_weights]",
+        "tests/unit/test_native_isolation.py::test_misaligned_labels_or_weights_fail[test_weights]",
+        "tests/unit/test_native_isolation.py::test_post_purge_faults_are_not_repaired_into_a_pass[boundary]",
+        "tests/unit/test_native_isolation.py::test_post_purge_faults_are_not_repaired_into_a_pass[purged_row]",
+        "tests/unit/test_native_isolation.py::test_post_purge_faults_are_not_repaired_into_a_pass[labels]",
+        "tests/unit/test_native_isolation.py::test_post_purge_faults_are_not_repaired_into_a_pass[weights]"
+      ],
+      "test_cases": 9,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "FIT-001",
+      "actual_executed_nodeids": [
+        "tests/integration/test_native_purged_training.py::test_actual_preprocessing_and_early_stopping_exclude_all_purged_rows",
+        "tests/integration/test_native_purged_training.py::test_native_split_corruption_fails_before_any_fit[train_labels]",
+        "tests/integration/test_native_purged_training.py::test_native_split_corruption_fails_before_any_fit[train_weights]",
+        "tests/integration/test_native_purged_training.py::test_native_split_corruption_fails_before_any_fit[test_weights]"
+      ],
+      "test_cases": 4,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "FIT-002",
+      "actual_executed_nodeids": [
+        "tests/integration/test_native_purged_training.py::test_validation_extremes_never_fit_training_scaler"
+      ],
+      "test_cases": 1,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "CACHE-001",
+      "actual_executed_nodeids": [
+        "tests/unit/test_native_isolation.py::test_unmarked_old_cache_and_changed_contract_fail",
+        "tests/unit/test_native_isolation.py::test_cache_cannot_reuse_predictions_after_source_file_change",
+        "tests/unit/test_native_isolation.py::test_valid_cache_root_does_not_bless_invalid_artifacts[truncated_marker]",
+        "tests/unit/test_native_isolation.py::test_valid_cache_root_does_not_bless_invalid_artifacts[duplicate_key]",
+        "tests/unit/test_native_isolation.py::test_valid_cache_root_does_not_bless_invalid_artifacts[unproven_model]",
+        "tests/unit/test_native_isolation.py::test_valid_cache_root_does_not_bless_invalid_artifacts[old_metadata]",
+        "tests/unit/test_native_isolation.py::test_valid_cache_root_does_not_bless_invalid_artifacts[unproven_prediction]"
+      ],
+      "test_cases": 7,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "LEAK-001",
+      "actual_executed_nodeids": [
+        "tests/leakage/test_native_feature_causality.py::test_actual_native_expansion_schema_and_all_feature_contracts",
+        "tests/leakage/test_native_feature_causality.py::test_actual_btc_eth_bnb_files_full_native_features_are_causal"
+      ],
+      "test_cases": 2,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "LEAK-002",
+      "actual_executed_nodeids": [
+        "tests/leakage/test_native_feature_causality.py::test_actual_pipeline_known_schema_future_faults_are_detected[future_shift]",
+        "tests/leakage/test_native_feature_causality.py::test_actual_pipeline_known_schema_future_faults_are_detected[whole_sample]",
+        "tests/leakage/test_native_feature_causality.py::test_actual_pipeline_known_schema_future_faults_are_detected[correlated_future]"
+      ],
+      "test_cases": 3,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "LEAK-004",
+      "actual_executed_nodeids": [
+        "tests/leakage/test_native_feature_causality.py::test_dynamic_universe_is_explicitly_blocked",
+        "tests/leakage/test_native_feature_causality.py::test_actual_snapshot_and_native_strategy_ranking_ignore_future_predictions",
+        "tests/leakage/test_native_feature_causality.py::test_future_global_dynamic_ranking_is_detected"
+      ],
+      "test_cases": 3,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "SPLIT-001",
+      "actual_executed_nodeids": [
+        "tests/integration/test_real_split_foundations.py::test_three_real_data_split_protocols_have_disjoint_traceable_sample_ids",
+        "tests/integration/test_real_split_foundations.py::test_insufficient_real_history_cannot_shrink_requested_development_prefix"
+      ],
+      "test_cases": 2,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "METRIC-001",
+      "actual_executed_nodeids": [
+        "tests/unit/test_metric_input_integrity.py::test_nonfinite_metric_input_is_an_error_not_a_filtered_success[truth0-predicted0]",
+        "tests/unit/test_metric_input_integrity.py::test_nonfinite_metric_input_is_an_error_not_a_filtered_success[truth1-predicted1]",
+        "tests/unit/test_metric_input_integrity.py::test_nonfinite_metric_input_is_an_error_not_a_filtered_success[truth2-predicted2]",
+        "tests/unit/test_metric_input_integrity.py::test_prediction_metrics_match_hand_calculation_without_sample_filtering"
+      ],
+      "test_cases": 4,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "EXP-001",
+      "actual_executed_nodeids": [
+        "tests/unit/test_admission_integrity.py::test_direct_formal_api_cannot_bypass_admission",
+        "tests/unit/test_admission_integrity.py::test_default_research_artifacts_are_explicitly_development"
+      ],
+      "test_cases": 2,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "EXP-002",
+      "actual_executed_nodeids": [
+        "tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[status]",
+        "tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[input_data_sha256]",
+        "tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[dataset_sha256]",
+        "tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[folds_sha256]",
+        "tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[label]",
+        "tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[feature_version]",
+        "tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[experiment_scope]",
+        "tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[cost_assumptions]",
+        "tests/unit/test_experiment_comparability.py::test_different_labels_refuse_direct_comparison",
+        "tests/unit/test_experiment_comparability.py::test_different_fold_indexes_refuse_direct_comparison"
+      ],
+      "test_cases": 10,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "GATE-001",
+      "actual_executed_nodeids": [
+        "tests/unit/test_admission_integrity.py::test_six_pass_strings_with_counts_and_one_hash_cannot_grant_admission",
+        "tests/unit/test_training_readiness_gate.py::test_engineering_gate_does_not_grant_profitability_or_live_admission"
+      ],
+      "test_cases": 2,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "GATE-002",
+      "actual_executed_nodeids": [
+        "tests/unit/test_admission_integrity.py::test_receipt_context_rejects_mixed_stale_or_changed_context[run_id]",
+        "tests/unit/test_admission_integrity.py::test_receipt_context_rejects_mixed_stale_or_changed_context[future]",
+        "tests/unit/test_admission_integrity.py::test_receipt_context_rejects_mixed_stale_or_changed_context[expired]",
+        "tests/unit/test_admission_integrity.py::test_receipt_context_rejects_mixed_stale_or_changed_context[too_long]",
+        "tests/unit/test_admission_integrity.py::test_receipt_context_rejects_mixed_stale_or_changed_context[naive]",
+        "tests/unit/test_admission_integrity.py::test_receipt_context_rejects_mixed_stale_or_changed_context[code]",
+        "tests/unit/test_admission_integrity.py::test_receipt_context_rejects_mixed_stale_or_changed_context[environment]",
+        "tests/unit/test_admission_integrity.py::test_receipt_context_rejects_mixed_stale_or_changed_context[commit]"
+      ],
+      "test_cases": 8,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "GATE-003",
+      "actual_executed_nodeids": [
+        "tests/unit/test_admission_integrity.py::test_junit_uses_actual_results_and_exact_identity[hidden_failure]",
+        "tests/unit/test_admission_integrity.py::test_junit_uses_actual_results_and_exact_identity[wrong_class]",
+        "tests/unit/test_admission_integrity.py::test_junit_uses_actual_results_and_exact_identity[missing_case]",
+        "tests/unit/test_admission_integrity.py::test_junit_uses_actual_results_and_exact_identity[wrong_run]",
+        "tests/unit/test_admission_integrity.py::test_junit_uses_actual_results_and_exact_identity[skipped]",
+        "tests/unit/test_training_readiness_gate.py::test_recomputed_feature_failure_dominates_missing_sources_and_partial_scope[FAIL-source_errors0-True-FAIL]",
+        "tests/unit/test_training_readiness_gate.py::test_recomputed_feature_failure_dominates_missing_sources_and_partial_scope[FAIL-source_errors1-False-FAIL]",
+        "tests/unit/test_training_readiness_gate.py::test_recomputed_feature_failure_dominates_missing_sources_and_partial_scope[FAIL-source_errors2-True-FAIL]",
+        "tests/unit/test_training_readiness_gate.py::test_recomputed_feature_failure_dominates_missing_sources_and_partial_scope[PASS-source_errors3-True-BLOCKED]",
+        "tests/unit/test_training_readiness_gate.py::test_recomputed_feature_failure_dominates_missing_sources_and_partial_scope[BLOCKED-source_errors4-False-BLOCKED]",
+        "tests/unit/test_training_readiness_gate.py::test_recomputed_feature_failure_dominates_missing_sources_and_partial_scope[PASS-source_errors5-False-PARTIAL]",
+        "tests/unit/test_training_readiness_gate.py::test_recomputed_feature_failure_dominates_missing_sources_and_partial_scope[PASS-source_errors6-True-PASS]"
+      ],
+      "test_cases": 12,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "GATE-004",
+      "actual_executed_nodeids": [
+        "tests/unit/test_admission_integrity.py::test_formal_cli_malformed_readiness_has_stable_exit_two[{]",
+        "tests/unit/test_admission_integrity.py::test_formal_cli_malformed_readiness_has_stable_exit_two[[]]",
+        "tests/unit/test_admission_integrity.py::test_formal_cli_malformed_readiness_has_stable_exit_two[null]"
+      ],
+      "test_cases": 3,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "VERIFY-001",
+      "actual_executed_nodeids": [
+        "tests/integration/test_independent_native_acceptance.py::test_real_native_training_has_independently_recomputed_safe_boundaries"
+      ],
+      "test_cases": 1,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "VERIFY-002",
+      "actual_executed_nodeids": [
+        "tests/integration/test_independent_native_acceptance.py::test_independent_verifier_rejects_self_consistently_rehashed_faults[boundary]",
+        "tests/integration/test_independent_native_acceptance.py::test_independent_verifier_rejects_self_consistently_rehashed_faults[xy]",
+        "tests/integration/test_independent_native_acceptance.py::test_independent_verifier_rejects_self_consistently_rehashed_faults[weight]",
+        "tests/integration/test_independent_native_acceptance.py::test_independent_verifier_rejects_self_consistently_rehashed_faults[fit_ids]",
+        "tests/integration/test_independent_native_acceptance.py::test_independent_verifier_rejects_self_consistently_rehashed_faults[schema]",
+        "tests/integration/test_independent_native_acceptance.py::test_independent_verifier_rejects_self_consistently_rehashed_faults[prediction]",
+        "tests/integration/test_independent_native_acceptance.py::test_independent_verifier_rejects_self_consistently_rehashed_faults[timestamp]"
+      ],
+      "test_cases": 7,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "VERIFY-003",
+      "actual_executed_nodeids": [
+        "tests/integration/test_independent_native_acceptance.py::test_independent_verifier_binds_audit_to_original_split_and_configuration[moved_validation]",
+        "tests/integration/test_independent_native_acceptance.py::test_independent_verifier_binds_audit_to_original_split_and_configuration[audit_timeframe]",
+        "tests/integration/test_independent_native_acceptance.py::test_independent_verifier_binds_audit_to_original_split_and_configuration[audit_horizon]",
+        "tests/integration/test_independent_native_acceptance.py::test_independent_verifier_binds_audit_to_original_split_and_configuration[incomplete_phase]",
+        "tests/integration/test_independent_native_acceptance.py::test_independent_verifier_binds_audit_to_original_split_and_configuration[recorded_boundary]",
+        "tests/integration/test_independent_native_acceptance.py::test_independent_verifier_binds_audit_to_original_split_and_configuration[missing_safe_train]",
+        "tests/integration/test_independent_native_acceptance.py::test_independent_verifier_binds_audit_to_original_split_and_configuration[agreed_schema_subset]"
+      ],
+      "test_cases": 7,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    },
+    {
+      "requirement_id": "REG-002",
+      "actual_executed_nodeids": [
+        "tests/integration/test_offline_freqtrade.py::test_native_backtest_in_disconnected_namespace_matches_online_reference",
+        "tests/integration/test_offline_freqtrade.py::test_corrected_native_backtest_is_reproducible_in_fresh_disconnected_userdirs"
+      ],
+      "test_cases": 2,
+      "all_tests_passed": true,
+      "scope": "engineering diagnostic checks only; see human matrix for limitations",
+      "capability_status": "PASS_IN_TESTED_SCOPE"
+    }
+  ],
+  "formal_admission": "BLOCKED",
+  "note": "Passing funding rejection tests does not prove authoritative funding schedules."
+}

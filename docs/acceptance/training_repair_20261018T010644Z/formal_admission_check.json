@@ -1,0 +1,23 @@
+{
+  "command": [
+    "../freqtrade/.venv/bin/python",
+    "-m",
+    "quant_strategy.cli",
+    "formal-run",
+    "-c",
+    "configs/base.yaml",
+    "-c",
+    "configs/environment/local.yaml",
+    "--readiness",
+    "docs/acceptance/training_repair_20261018T010644Z/final_gate/readiness.json",
+    "--output",
+    "docs/acceptance/training_repair_20261018T010644Z/denied_formal",
+    "--experiment-id",
+    "denied"
+  ],
+  "exit_code": 2,
+  "stdout": "",
+  "stderr": "ERROR:__main__:DataContractError: Formal training denied: all six engineering gates must pass\n",
+  "formal_output_created": false,
+  "readiness_sha256": "c3052b8fcc695e6fb11cb0997bf50efce4eeeeeb57038f36378a12c79ab60fc6"
+}

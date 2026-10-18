@@ -1,0 +1,622 @@
+FFFFFFFFFFF                                                              [100%]
+=================================== FAILURES ===================================
+____ test_real_native_training_has_independently_recomputed_safe_boundaries ____
+
+actual_native_run = PosixPath('/RUN/pytest/pytest-139/real-native-probe0/native_training')
+
+    def test_real_native_training_has_independently_recomputed_safe_boundaries(actual_native_run):
+        report = verify_native_training_acceptance(actual_native_run)
+>       assert report["status"] == "PASS", json.dumps(report, default=str)
+E       AssertionError: {"schema_version": 1, "status": "FAIL", "scope": "development", "pairs": [], "run_id": "real-native-probe0", "code_correctness": "FAIL", "error": {"type": "ValueError", "message": "Training code or tests differ from the actual run"}}
+E       assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/integration/test_independent_native_acceptance.py:53: AssertionError
+_ test_independent_verifier_rejects_self_consistently_rehashed_faults[boundary] _
+
+actual_native_run = PosixPath('/RUN/pytest/pytest-139/real-native-probe0/native_training')
+tmp_path = PosixPath('/RUN/pytest/pytest-139/test_independent_verifier_reje0')
+fault = 'boundary'
+
+    @pytest.mark.parametrize(
+        "fault", ["boundary", "xy", "weight", "fit_ids", "schema", "prediction", "timestamp"]
+    )
+    def test_independent_verifier_rejects_self_consistently_rehashed_faults(
+        actual_native_run, tmp_path, fault
+    ):
+        root = tmp_path / "damaged"
+        shutil.copytree(actual_native_run, root)
+        run = json.loads((root / "training_run.json").read_text())
+        directory = root / run["pairs"][0]["audit_directory"]
+        if fault in {"boundary", "timestamp"}:
+            path = directory / "samples.parquet"
+            frame = pd.read_parquet(path)
+            if fault == "boundary":
+                index = frame.index[frame.assignment == "purged"][0]
+                frame.loc[index, "assignment"] = "train"
+            else:
+                index = frame.index[frame.assignment == "train"][0]
+                frame.loc[index, "label_end_time"] += pd.Timedelta(hours=4)
+            frame.to_parquet(path)
+        elif fault in {"xy", "weight"}:
+            path = directory / "train_before_preprocessing.parquet"
+            frame = pd.read_parquet(path)
+            if fault == "xy":
+                column = next(c for c in frame if c.startswith("&"))
+                frame[column] = frame[column].shift(-1).fillna(0)
+            else:
+                frame.iloc[0, frame.columns.get_loc("sample_weight")] += 0.1
+            frame.to_parquet(path)
+        elif fault == "fit_ids":
+            path = directory / "audit.json"
+            audit = json.loads(path.read_text())
+            audit["preprocessor_fit"]["feature_pipeline"]["sample_ids"].append("purged-id")
+            path.write_text(json.dumps(audit))
+        elif fault == "schema":
+            run["pairs"][0]["features"].pop()
+            (root / "training_run.json").write_text(json.dumps(run))
+        else:
+            path = root / run["pairs"][0]["model_directory"] / "development_predictions.parquet"
+            frame = pd.read_parquet(path)
+            frame.iloc[0, frame.columns.get_loc("&-s_return")] = float("nan")
+            frame.to_parquet(path)
+        _rehash(root)
+        report = verify_native_training_acceptance(root)
+        assert report["status"] == "FAIL", (fault, report)
+        expected = {
+            "boundary": "Purge did not enforce",
+            "xy": "DataFrame.iloc",
+            "weight": "misaligned",
+            "fit_ids": "entered a preprocessor fit",
+            "schema": "Incomplete production feature schema",
+            "prediction": "Missing/nonfinite real predictions",
+            "timestamp": "Label completion time",
+        }
+>       assert expected[fault] in report["error"]["message"], (fault, report)
+E       AssertionError: ('boundary', {'schema_version': 1, 'status': 'FAIL', 'scope': 'development', 'pairs': [], ...})
+E       assert 'Purge did not enforce' in 'Training code or tests differ from the actual run'
+
+tests/integration/test_independent_native_acceptance.py:114: AssertionError
+___ test_independent_verifier_rejects_self_consistently_rehashed_faults[xy] ____
+
+actual_native_run = PosixPath('/RUN/pytest/pytest-139/real-native-probe0/native_training')
+tmp_path = PosixPath('/RUN/pytest/pytest-139/test_independent_verifier_reje1')
+fault = 'xy'
+
+    @pytest.mark.parametrize(
+        "fault", ["boundary", "xy", "weight", "fit_ids", "schema", "prediction", "timestamp"]
+    )
+    def test_independent_verifier_rejects_self_consistently_rehashed_faults(
+        actual_native_run, tmp_path, fault
+    ):
+        root = tmp_path / "damaged"
+        shutil.copytree(actual_native_run, root)
+        run = json.loads((root / "training_run.json").read_text())
+        directory = root / run["pairs"][0]["audit_directory"]
+        if fault in {"boundary", "timestamp"}:
+            path = directory / "samples.parquet"
+            frame = pd.read_parquet(path)
+            if fault == "boundary":
+                index = frame.index[frame.assignment == "purged"][0]
+                frame.loc[index, "assignment"] = "train"
+            else:
+                index = frame.index[frame.assignment == "train"][0]
+                frame.loc[index, "label_end_time"] += pd.Timedelta(hours=4)
+            frame.to_parquet(path)
+        elif fault in {"xy", "weight"}:
+            path = directory / "train_before_preprocessing.parquet"
+            frame = pd.read_parquet(path)
+            if fault == "xy":
+                column = next(c for c in frame if c.startswith("&"))
+                frame[column] = frame[column].shift(-1).fillna(0)
+            else:
+                frame.iloc[0, frame.columns.get_loc("sample_weight")] += 0.1
+            frame.to_parquet(path)
+        elif fault == "fit_ids":
+            path = directory / "audit.json"
+            audit = json.loads(path.read_text())
+            audit["preprocessor_fit"]["feature_pipeline"]["sample_ids"].append("purged-id")
+            path.write_text(json.dumps(audit))
+        elif fault == "schema":
+            run["pairs"][0]["features"].pop()
+            (root / "training_run.json").write_text(json.dumps(run))
+        else:
+            path = root / run["pairs"][0]["model_directory"] / "development_predictions.parquet"
+            frame = pd.read_parquet(path)
+            frame.iloc[0, frame.columns.get_loc("&-s_return")] = float("nan")
+            frame.to_parquet(path)
+        _rehash(root)
+        report = verify_native_training_acceptance(root)
+        assert report["status"] == "FAIL", (fault, report)
+        expected = {
+            "boundary": "Purge did not enforce",
+            "xy": "DataFrame.iloc",
+            "weight": "misaligned",
+            "fit_ids": "entered a preprocessor fit",
+            "schema": "Incomplete production feature schema",
+            "prediction": "Missing/nonfinite real predictions",
+            "timestamp": "Label completion time",
+        }
+>       assert expected[fault] in report["error"]["message"], (fault, report)
+E       AssertionError: ('xy', {'schema_version': 1, 'status': 'FAIL', 'scope': 'development', 'pairs': [], ...})
+E       assert 'DataFrame.iloc' in 'Training code or tests differ from the actual run'
+
+tests/integration/test_independent_native_acceptance.py:114: AssertionError
+_ test_independent_verifier_rejects_self_consistently_rehashed_faults[weight] __
+
+actual_native_run = PosixPath('/RUN/pytest/pytest-139/real-native-probe0/native_training')
+tmp_path = PosixPath('/RUN/pytest/pytest-139/test_independent_verifier_reje2')
+fault = 'weight'
+
+    @pytest.mark.parametrize(
+        "fault", ["boundary", "xy", "weight", "fit_ids", "schema", "prediction", "timestamp"]
+    )
+    def test_independent_verifier_rejects_self_consistently_rehashed_faults(
+        actual_native_run, tmp_path, fault
+    ):
+        root = tmp_path / "damaged"
+        shutil.copytree(actual_native_run, root)
+        run = json.loads((root / "training_run.json").read_text())
+        directory = root / run["pairs"][0]["audit_directory"]
+        if fault in {"boundary", "timestamp"}:
+            path = directory / "samples.parquet"
+            frame = pd.read_parquet(path)
+            if fault == "boundary":
+                index = frame.index[frame.assignment == "purged"][0]
+                frame.loc[index, "assignment"] = "train"
+            else:
+                index = frame.index[frame.assignment == "train"][0]
+                frame.loc[index, "label_end_time"] += pd.Timedelta(hours=4)
+            frame.to_parquet(path)
+        elif fault in {"xy", "weight"}:
+            path = directory / "train_before_preprocessing.parquet"
+            frame = pd.read_parquet(path)
+            if fault == "xy":
+                column = next(c for c in frame if c.startswith("&"))
+                frame[column] = frame[column].shift(-1).fillna(0)
+            else:
+                frame.iloc[0, frame.columns.get_loc("sample_weight")] += 0.1
+            frame.to_parquet(path)
+        elif fault == "fit_ids":
+            path = directory / "audit.json"
+            audit = json.loads(path.read_text())
+            audit["preprocessor_fit"]["feature_pipeline"]["sample_ids"].append("purged-id")
+            path.write_text(json.dumps(audit))
+        elif fault == "schema":
+            run["pairs"][0]["features"].pop()
+            (root / "training_run.json").write_text(json.dumps(run))
+        else:
+            path = root / run["pairs"][0]["model_directory"] / "development_predictions.parquet"
+            frame = pd.read_parquet(path)
+            frame.iloc[0, frame.columns.get_loc("&-s_return")] = float("nan")
+            frame.to_parquet(path)
+        _rehash(root)
+        report = verify_native_training_acceptance(root)
+        assert report["status"] == "FAIL", (fault, report)
+        expected = {
+            "boundary": "Purge did not enforce",
+            "xy": "DataFrame.iloc",
+            "weight": "misaligned",
+            "fit_ids": "entered a preprocessor fit",
+            "schema": "Incomplete production feature schema",
+            "prediction": "Missing/nonfinite real predictions",
+            "timestamp": "Label completion time",
+        }
+>       assert expected[fault] in report["error"]["message"], (fault, report)
+E       AssertionError: ('weight', {'schema_version': 1, 'status': 'FAIL', 'scope': 'development', 'pairs': [], ...})
+E       assert 'misaligned' in 'Training code or tests differ from the actual run'
+
+tests/integration/test_independent_native_acceptance.py:114: AssertionError
+_ test_independent_verifier_rejects_self_consistently_rehashed_faults[fit_ids] _
+
+actual_native_run = PosixPath('/RUN/pytest/pytest-139/real-native-probe0/native_training')
+tmp_path = PosixPath('/RUN/pytest/pytest-139/test_independent_verifier_reje3')
+fault = 'fit_ids'
+
+    @pytest.mark.parametrize(
+        "fault", ["boundary", "xy", "weight", "fit_ids", "schema", "prediction", "timestamp"]
+    )
+    def test_independent_verifier_rejects_self_consistently_rehashed_faults(
+        actual_native_run, tmp_path, fault
+    ):
+        root = tmp_path / "damaged"
+        shutil.copytree(actual_native_run, root)
+        run = json.loads((root / "training_run.json").read_text())
+        directory = root / run["pairs"][0]["audit_directory"]
+        if fault in {"boundary", "timestamp"}:
+            path = directory / "samples.parquet"
+            frame = pd.read_parquet(path)
+            if fault == "boundary":
+                index = frame.index[frame.assignment == "purged"][0]
+                frame.loc[index, "assignment"] = "train"
+            else:
+                index = frame.index[frame.assignment == "train"][0]
+                frame.loc[index, "label_end_time"] += pd.Timedelta(hours=4)
+            frame.to_parquet(path)
+        elif fault in {"xy", "weight"}:
+            path = directory / "train_before_preprocessing.parquet"
+            frame = pd.read_parquet(path)
+            if fault == "xy":
+                column = next(c for c in frame if c.startswith("&"))
+                frame[column] = frame[column].shift(-1).fillna(0)
+            else:
+                frame.iloc[0, frame.columns.get_loc("sample_weight")] += 0.1
+            frame.to_parquet(path)
+        elif fault == "fit_ids":
+            path = directory / "audit.json"
+            audit = json.loads(path.read_text())
+            audit["preprocessor_fit"]["feature_pipeline"]["sample_ids"].append("purged-id")
+            path.write_text(json.dumps(audit))
+        elif fault == "schema":
+            run["pairs"][0]["features"].pop()
+            (root / "training_run.json").write_text(json.dumps(run))
+        else:
+            path = root / run["pairs"][0]["model_directory"] / "development_predictions.parquet"
+            frame = pd.read_parquet(path)
+            frame.iloc[0, frame.columns.get_loc("&-s_return")] = float("nan")
+            frame.to_parquet(path)
+        _rehash(root)
+        report = verify_native_training_acceptance(root)
+        assert report["status"] == "FAIL", (fault, report)
+        expected = {
+            "boundary": "Purge did not enforce",
+            "xy": "DataFrame.iloc",
+            "weight": "misaligned",
+            "fit_ids": "entered a preprocessor fit",
+            "schema": "Incomplete production feature schema",
+            "prediction": "Missing/nonfinite real predictions",
+            "timestamp": "Label completion time",
+        }
+>       assert expected[fault] in report["error"]["message"], (fault, report)
+E       AssertionError: ('fit_ids', {'schema_version': 1, 'status': 'FAIL', 'scope': 'development', 'pairs': [], ...})
+E       assert 'entered a preprocessor fit' in 'Training code or tests differ from the actual run'
+
+tests/integration/test_independent_native_acceptance.py:114: AssertionError
+_ test_independent_verifier_rejects_self_consistently_rehashed_faults[schema] __
+
+actual_native_run = PosixPath('/RUN/pytest/pytest-139/real-native-probe0/native_training')
+tmp_path = PosixPath('/RUN/pytest/pytest-139/test_independent_verifier_reje4')
+fault = 'schema'
+
+    @pytest.mark.parametrize(
+        "fault", ["boundary", "xy", "weight", "fit_ids", "schema", "prediction", "timestamp"]
+    )
+    def test_independent_verifier_rejects_self_consistently_rehashed_faults(
+        actual_native_run, tmp_path, fault
+    ):
+        root = tmp_path / "damaged"
+        shutil.copytree(actual_native_run, root)
+        run = json.loads((root / "training_run.json").read_text())
+        directory = root / run["pairs"][0]["audit_directory"]
+        if fault in {"boundary", "timestamp"}:
+            path = directory / "samples.parquet"
+            frame = pd.read_parquet(path)
+            if fault == "boundary":
+                index = frame.index[frame.assignment == "purged"][0]
+                frame.loc[index, "assignment"] = "train"
+            else:
+                index = frame.index[frame.assignment == "train"][0]
+                frame.loc[index, "label_end_time"] += pd.Timedelta(hours=4)
+            frame.to_parquet(path)
+        elif fault in {"xy", "weight"}:
+            path = directory / "train_before_preprocessing.parquet"
+            frame = pd.read_parquet(path)
+            if fault == "xy":
+                column = next(c for c in frame if c.startswith("&"))
+                frame[column] = frame[column].shift(-1).fillna(0)
+            else:
+                frame.iloc[0, frame.columns.get_loc("sample_weight")] += 0.1
+            frame.to_parquet(path)
+        elif fault == "fit_ids":
+            path = directory / "audit.json"
+            audit = json.loads(path.read_text())
+            audit["preprocessor_fit"]["feature_pipeline"]["sample_ids"].append("purged-id")
+            path.write_text(json.dumps(audit))
+        elif fault == "schema":
+            run["pairs"][0]["features"].pop()
+            (root / "training_run.json").write_text(json.dumps(run))
+        else:
+            path = root / run["pairs"][0]["model_directory"] / "development_predictions.parquet"
+            frame = pd.read_parquet(path)
+            frame.iloc[0, frame.columns.get_loc("&-s_return")] = float("nan")
+            frame.to_parquet(path)
+        _rehash(root)
+        report = verify_native_training_acceptance(root)
+        assert report["status"] == "FAIL", (fault, report)
+        expected = {
+            "boundary": "Purge did not enforce",
+            "xy": "DataFrame.iloc",
+            "weight": "misaligned",
+            "fit_ids": "entered a preprocessor fit",
+            "schema": "Incomplete production feature schema",
+            "prediction": "Missing/nonfinite real predictions",
+            "timestamp": "Label completion time",
+        }
+>       assert expected[fault] in report["error"]["message"], (fault, report)
+E       AssertionError: ('schema', {'schema_version': 1, 'status': 'FAIL', 'scope': 'development', 'pairs': [], ...})
+E       assert 'Incomplete production feature schema' in 'Training code or tests differ from the actual run'
+
+tests/integration/test_independent_native_acceptance.py:114: AssertionError
+_ test_independent_verifier_rejects_self_consistently_rehashed_faults[prediction] _
+
+actual_native_run = PosixPath('/RUN/pytest/pytest-139/real-native-probe0/native_training')
+tmp_path = PosixPath('/RUN/pytest/pytest-139/test_independent_verifier_reje5')
+fault = 'prediction'
+
+    @pytest.mark.parametrize(
+        "fault", ["boundary", "xy", "weight", "fit_ids", "schema", "prediction", "timestamp"]
+    )
+    def test_independent_verifier_rejects_self_consistently_rehashed_faults(
+        actual_native_run, tmp_path, fault
+    ):
+        root = tmp_path / "damaged"
+        shutil.copytree(actual_native_run, root)
+        run = json.loads((root / "training_run.json").read_text())
+        directory = root / run["pairs"][0]["audit_directory"]
+        if fault in {"boundary", "timestamp"}:
+            path = directory / "samples.parquet"
+            frame = pd.read_parquet(path)
+            if fault == "boundary":
+                index = frame.index[frame.assignment == "purged"][0]
+                frame.loc[index, "assignment"] = "train"
+            else:
+                index = frame.index[frame.assignment == "train"][0]
+                frame.loc[index, "label_end_time"] += pd.Timedelta(hours=4)
+            frame.to_parquet(path)
+        elif fault in {"xy", "weight"}:
+            path = directory / "train_before_preprocessing.parquet"
+            frame = pd.read_parquet(path)
+            if fault == "xy":
+                column = next(c for c in frame if c.startswith("&"))
+                frame[column] = frame[column].shift(-1).fillna(0)
+            else:
+                frame.iloc[0, frame.columns.get_loc("sample_weight")] += 0.1
+            frame.to_parquet(path)
+        elif fault == "fit_ids":
+            path = directory / "audit.json"
+            audit = json.loads(path.read_text())
+            audit["preprocessor_fit"]["feature_pipeline"]["sample_ids"].append("purged-id")
+            path.write_text(json.dumps(audit))
+        elif fault == "schema":
+            run["pairs"][0]["features"].pop()
+            (root / "training_run.json").write_text(json.dumps(run))
+        else:
+            path = root / run["pairs"][0]["model_directory"] / "development_predictions.parquet"
+            frame = pd.read_parquet(path)
+            frame.iloc[0, frame.columns.get_loc("&-s_return")] = float("nan")
+            frame.to_parquet(path)
+        _rehash(root)
+        report = verify_native_training_acceptance(root)
+        assert report["status"] == "FAIL", (fault, report)
+        expected = {
+            "boundary": "Purge did not enforce",
+            "xy": "DataFrame.iloc",
+            "weight": "misaligned",
+            "fit_ids": "entered a preprocessor fit",
+            "schema": "Incomplete production feature schema",
+            "prediction": "Missing/nonfinite real predictions",
+            "timestamp": "Label completion time",
+        }
+>       assert expected[fault] in report["error"]["message"], (fault, report)
+E       AssertionError: ('prediction', {'schema_version': 1, 'status': 'FAIL', 'scope': 'development', 'pairs': [], ...})
+E       assert 'Missing/nonfinite real predictions' in 'Training code or tests differ from the actual run'
+
+tests/integration/test_independent_native_acceptance.py:114: AssertionError
+_ test_independent_verifier_rejects_self_consistently_rehashed_faults[timestamp] _
+
+actual_native_run = PosixPath('/RUN/pytest/pytest-139/real-native-probe0/native_training')
+tmp_path = PosixPath('/RUN/pytest/pytest-139/test_independent_verifier_reje6')
+fault = 'timestamp'
+
+    @pytest.mark.parametrize(
+        "fault", ["boundary", "xy", "weight", "fit_ids", "schema", "prediction", "timestamp"]
+    )
+    def test_independent_verifier_rejects_self_consistently_rehashed_faults(
+        actual_native_run, tmp_path, fault
+    ):
+        root = tmp_path / "damaged"
+        shutil.copytree(actual_native_run, root)
+        run = json.loads((root / "training_run.json").read_text())
+        directory = root / run["pairs"][0]["audit_directory"]
+        if fault in {"boundary", "timestamp"}:
+            path = directory / "samples.parquet"
+            frame = pd.read_parquet(path)
+            if fault == "boundary":
+                index = frame.index[frame.assignment == "purged"][0]
+                frame.loc[index, "assignment"] = "train"
+            else:
+                index = frame.index[frame.assignment == "train"][0]
+                frame.loc[index, "label_end_time"] += pd.Timedelta(hours=4)
+            frame.to_parquet(path)
+        elif fault in {"xy", "weight"}:
+            path = directory / "train_before_preprocessing.parquet"
+            frame = pd.read_parquet(path)
+            if fault == "xy":
+                column = next(c for c in frame if c.startswith("&"))
+                frame[column] = frame[column].shift(-1).fillna(0)
+            else:
+                frame.iloc[0, frame.columns.get_loc("sample_weight")] += 0.1
+            frame.to_parquet(path)
+        elif fault == "fit_ids":
+            path = directory / "audit.json"
+            audit = json.loads(path.read_text())
+            audit["preprocessor_fit"]["feature_pipeline"]["sample_ids"].append("purged-id")
+            path.write_text(json.dumps(audit))
+        elif fault == "schema":
+            run["pairs"][0]["features"].pop()
+            (root / "training_run.json").write_text(json.dumps(run))
+        else:
+            path = root / run["pairs"][0]["model_directory"] / "development_predictions.parquet"
+            frame = pd.read_parquet(path)
+            frame.iloc[0, frame.columns.get_loc("&-s_return")] = float("nan")
+            frame.to_parquet(path)
+        _rehash(root)
+        report = verify_native_training_acceptance(root)
+        assert report["status"] == "FAIL", (fault, report)
+        expected = {
+            "boundary": "Purge did not enforce",
+            "xy": "DataFrame.iloc",
+            "weight": "misaligned",
+            "fit_ids": "entered a preprocessor fit",
+            "schema": "Incomplete production feature schema",
+            "prediction": "Missing/nonfinite real predictions",
+            "timestamp": "Label completion time",
+        }
+>       assert expected[fault] in report["error"]["message"], (fault, report)
+E       AssertionError: ('timestamp', {'schema_version': 1, 'status': 'FAIL', 'scope': 'development', 'pairs': [], ...})
+E       assert 'Label completion time' in 'Training code or tests differ from the actual run'
+
+tests/integration/test_independent_native_acceptance.py:114: AssertionError
+_ test_independent_verifier_binds_audit_to_original_split_and_configuration[moved_validation] _
+
+actual_native_run = PosixPath('/RUN/pytest/pytest-139/real-native-probe0/native_training')
+tmp_path = PosixPath('/RUN/pytest/pytest-139/test_independent_verifier_bind0')
+fault = 'moved_validation'
+
+    @pytest.mark.parametrize("fault", ["moved_validation", "audit_timeframe", "incomplete_phase"])
+    def test_independent_verifier_binds_audit_to_original_split_and_configuration(
+        actual_native_run, tmp_path, fault
+    ):
+        root = tmp_path / "damaged"
+        shutil.copytree(actual_native_run, root)
+        run = json.loads((root / "training_run.json").read_text())
+        directory = root / run["pairs"][0]["audit_directory"]
+        audit_path = directory / "audit.json"
+        audit = json.loads(audit_path.read_text())
+        if fault == "moved_validation":
+            path = directory / "samples.parquet"
+            samples = pd.read_parquet(path)
+            first_validation = samples.index[samples.assignment == "validation"][0]
+            first_purged = samples.index[samples.assignment == "purged"][0]
+            samples.loc[[first_validation, first_purged], "assignment"] = "filtered"
+            samples.to_parquet(path)
+            for name in ("test_before_preprocessing.parquet", "test_after_preprocessing.parquet"):
+                path = directory / name
+                frame = pd.read_parquet(path)
+                frame.drop(first_validation, errors="ignore").to_parquet(path)
+        elif fault == "audit_timeframe":
+            audit["timeframe"] = "8h"
+            audit_path.write_text(json.dumps(audit))
+        else:
+            audit["phase"] = "before_preprocessing"
+            audit_path.write_text(json.dumps(audit))
+        _rehash(root)
+        report = verify_native_training_acceptance(root)
+        assert report["status"] == "FAIL", (fault, report)
+        expected = {
+            "moved_validation": "Final validation membership differs from original split",
+            "audit_timeframe": "Audit label/timeframe contract differs from production configuration",
+            "incomplete_phase": "Incomplete per-training lifecycle",
+        }
+>       assert expected[fault] in report["error"]["message"], (fault, report)
+E       AssertionError: ('moved_validation', {'schema_version': 1, 'status': 'FAIL', 'scope': 'development', 'pairs': [], ...})
+E       assert 'Final validation membership differs from original split' in 'Training code or tests differ from the actual run'
+
+tests/integration/test_independent_native_acceptance.py:152: AssertionError
+_ test_independent_verifier_binds_audit_to_original_split_and_configuration[audit_timeframe] _
+
+actual_native_run = PosixPath('/RUN/pytest/pytest-139/real-native-probe0/native_training')
+tmp_path = PosixPath('/RUN/pytest/pytest-139/test_independent_verifier_bind1')
+fault = 'audit_timeframe'
+
+    @pytest.mark.parametrize("fault", ["moved_validation", "audit_timeframe", "incomplete_phase"])
+    def test_independent_verifier_binds_audit_to_original_split_and_configuration(
+        actual_native_run, tmp_path, fault
+    ):
+        root = tmp_path / "damaged"
+        shutil.copytree(actual_native_run, root)
+        run = json.loads((root / "training_run.json").read_text())
+        directory = root / run["pairs"][0]["audit_directory"]
+        audit_path = directory / "audit.json"
+        audit = json.loads(audit_path.read_text())
+        if fault == "moved_validation":
+            path = directory / "samples.parquet"
+            samples = pd.read_parquet(path)
+            first_validation = samples.index[samples.assignment == "validation"][0]
+            first_purged = samples.index[samples.assignment == "purged"][0]
+            samples.loc[[first_validation, first_purged], "assignment"] = "filtered"
+            samples.to_parquet(path)
+            for name in ("test_before_preprocessing.parquet", "test_after_preprocessing.parquet"):
+                path = directory / name
+                frame = pd.read_parquet(path)
+                frame.drop(first_validation, errors="ignore").to_parquet(path)
+        elif fault == "audit_timeframe":
+            audit["timeframe"] = "8h"
+            audit_path.write_text(json.dumps(audit))
+        else:
+            audit["phase"] = "before_preprocessing"
+            audit_path.write_text(json.dumps(audit))
+        _rehash(root)
+        report = verify_native_training_acceptance(root)
+        assert report["status"] == "FAIL", (fault, report)
+        expected = {
+            "moved_validation": "Final validation membership differs from original split",
+            "audit_timeframe": "Audit label/timeframe contract differs from production configuration",
+            "incomplete_phase": "Incomplete per-training lifecycle",
+        }
+>       assert expected[fault] in report["error"]["message"], (fault, report)
+E       AssertionError: ('audit_timeframe', {'schema_version': 1, 'status': 'FAIL', 'scope': 'development', 'pairs': [], ...})
+E       assert 'Audit label/timeframe contract differs from production configuration' in 'Training code or tests differ from the actual run'
+
+tests/integration/test_independent_native_acceptance.py:152: AssertionError
+_ test_independent_verifier_binds_audit_to_original_split_and_configuration[incomplete_phase] _
+
+actual_native_run = PosixPath('/RUN/pytest/pytest-139/real-native-probe0/native_training')
+tmp_path = PosixPath('/RUN/pytest/pytest-139/test_independent_verifier_bind2')
+fault = 'incomplete_phase'
+
+    @pytest.mark.parametrize("fault", ["moved_validation", "audit_timeframe", "incomplete_phase"])
+    def test_independent_verifier_binds_audit_to_original_split_and_configuration(
+        actual_native_run, tmp_path, fault
+    ):
+        root = tmp_path / "damaged"
+        shutil.copytree(actual_native_run, root)
+        run = json.loads((root / "training_run.json").read_text())
+        directory = root / run["pairs"][0]["audit_directory"]
+        audit_path = directory / "audit.json"
+        audit = json.loads(audit_path.read_text())
+        if fault == "moved_validation":
+            path = directory / "samples.parquet"
+            samples = pd.read_parquet(path)
+            first_validation = samples.index[samples.assignment == "validation"][0]
+            first_purged = samples.index[samples.assignment == "purged"][0]
+            samples.loc[[first_validation, first_purged], "assignment"] = "filtered"
+            samples.to_parquet(path)
+            for name in ("test_before_preprocessing.parquet", "test_after_preprocessing.parquet"):
+                path = directory / name
+                frame = pd.read_parquet(path)
+                frame.drop(first_validation, errors="ignore").to_parquet(path)
+        elif fault == "audit_timeframe":
+            audit["timeframe"] = "8h"
+            audit_path.write_text(json.dumps(audit))
+        else:
+            audit["phase"] = "before_preprocessing"
+            audit_path.write_text(json.dumps(audit))
+        _rehash(root)
+        report = verify_native_training_acceptance(root)
+        assert report["status"] == "FAIL", (fault, report)
+        expected = {
+            "moved_validation": "Final validation membership differs from original split",
+            "audit_timeframe": "Audit label/timeframe contract differs from production configuration",
+            "incomplete_phase": "Incomplete per-training lifecycle",
+        }
+>       assert expected[fault] in report["error"]["message"], (fault, report)
+E       AssertionError: ('incomplete_phase', {'schema_version': 1, 'status': 'FAIL', 'scope': 'development', 'pairs': [], ...})
+E       assert 'Incomplete per-training lifecycle' in 'Training code or tests differ from the actual run'
+
+tests/integration/test_independent_native_acceptance.py:152: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_independent_native_acceptance.py::test_real_native_training_has_independently_recomputed_safe_boundaries
+FAILED tests/integration/test_independent_native_acceptance.py::test_independent_verifier_rejects_self_consistently_rehashed_faults[boundary]
+FAILED tests/integration/test_independent_native_acceptance.py::test_independent_verifier_rejects_self_consistently_rehashed_faults[xy]
+FAILED tests/integration/test_independent_native_acceptance.py::test_independent_verifier_rejects_self_consistently_rehashed_faults[weight]
+FAILED tests/integration/test_independent_native_acceptance.py::test_independent_verifier_rejects_self_consistently_rehashed_faults[fit_ids]
+FAILED tests/integration/test_independent_native_acceptance.py::test_independent_verifier_rejects_self_consistently_rehashed_faults[schema]
+FAILED tests/integration/test_independent_native_acceptance.py::test_independent_verifier_rejects_self_consistently_rehashed_faults[prediction]
+FAILED tests/integration/test_independent_native_acceptance.py::test_independent_verifier_rejects_self_consistently_rehashed_faults[timestamp]
+FAILED tests/integration/test_independent_native_acceptance.py::test_independent_verifier_binds_audit_to_original_split_and_configuration[moved_validation]
+FAILED tests/integration/test_independent_native_acceptance.py::test_independent_verifier_binds_audit_to_original_split_and_configuration[audit_timeframe]
+FAILED tests/integration/test_independent_native_acceptance.py::test_independent_verifier_binds_audit_to_original_split_and_configuration[incomplete_phase]
+11 failed in 11.66s

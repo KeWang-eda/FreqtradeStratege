@@ -1,0 +1,59 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> docs/acceptance/phase4_extension_continue.py:2:1
+   |
+ 1 |   """Continue attempt 2 after correcting only the online syscall classifier."""
+ 2 | / import json
+ 3 | | import sys
+ 4 | | from datetime import UTC, datetime
+ 5 | | from pathlib import Path
+ 6 | |
+ 7 | | from quant_strategy.infrastructure.experiment_store import file_hash
+ 8 | | from tools.run_offline_extension import (
+ 9 | |     CONFIGS,
+10 | |     PAIRS,
+11 | |     PREFIX,
+12 | |     ROOT,
+13 | |     finish_offline,
+14 | |     inspect_online_trace,
+15 | |     validate_gates,
+16 | |     validate_online_audit,
+17 | | )
+18 | | from tools.run_offline_acceptance import check_isolation, json_text
+   | |___________________________________________________________________^
+19 |
+20 |   workspace = Path(sys.argv[1]).resolve()
+   |
+help: Organize imports
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> freqaimodels/MomentumRidgeRegressor.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / import logging
+ 8 | | from typing import Any
+ 9 | |
+10 | | import numpy as np
+11 | | from sklearn.linear_model import Ridge
+12 | |
+13 | | from freqtrade.freqai.base_models.BaseRegressionModel import BaseRegressionModel
+14 | | from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
+   | |___________________________________________________________^
+15 |
+16 |   logger = logging.getLogger(__name__)
+   |
+help: Organize imports
+
+F401 [*] `numpy` imported but unused
+  --> freqaimodels/MomentumRidgeRegressor.py:10:17
+   |
+ 8 | from typing import Any
+ 9 |
+10 | import numpy as np
+   |                 ^^
+11 | from sklearn.linear_model import Ridge
+   |
+help: Remove unused import: `numpy`
+
+Found 3 errors.
+[*] 3 fixable with the `--fix` option.

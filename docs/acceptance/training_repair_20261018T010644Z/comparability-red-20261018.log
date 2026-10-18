@@ -1,0 +1,285 @@
+FFFFFFFFFFF.FF                                                           [100%]
+=================================== FAILURES ===================================
+_____________ test_changed_comparison_contract_is_rejected[status] _____________
+
+experiment = PosixPath('/RUN/pytest/pytest-121/test_changed_comparison_contra0/baseline')
+field = 'status'
+
+    @pytest.mark.parametrize("field", ["status", "input_data_sha256", "dataset_sha256", "folds_sha256", "label", "feature_version", "experiment_scope", "cost_assumptions"])
+    def test_changed_comparison_contract_is_rejected(experiment, field):
+        manifest_path = experiment / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        if field == "status":
+            manifest[field] = "failed"
+        elif field == "label":
+            manifest[field] = {**manifest[field], "prediction_horizon": 999}
+        elif field == "cost_assumptions":
+            manifest[field] = {"fees": "unverified"}
+        else:
+            manifest[field] = "altered"
+        manifest_path.write_text(json.dumps(manifest))
+>       with pytest.raises(DataContractError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_experiment_comparability.py:33: Failed
+_______ test_changed_comparison_contract_is_rejected[input_data_sha256] ________
+
+experiment = PosixPath('/RUN/pytest/pytest-121/test_changed_comparison_contra1/baseline')
+field = 'input_data_sha256'
+
+    @pytest.mark.parametrize("field", ["status", "input_data_sha256", "dataset_sha256", "folds_sha256", "label", "feature_version", "experiment_scope", "cost_assumptions"])
+    def test_changed_comparison_contract_is_rejected(experiment, field):
+        manifest_path = experiment / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        if field == "status":
+            manifest[field] = "failed"
+        elif field == "label":
+            manifest[field] = {**manifest[field], "prediction_horizon": 999}
+        elif field == "cost_assumptions":
+            manifest[field] = {"fees": "unverified"}
+        else:
+            manifest[field] = "altered"
+        manifest_path.write_text(json.dumps(manifest))
+>       with pytest.raises(DataContractError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_experiment_comparability.py:33: Failed
+_________ test_changed_comparison_contract_is_rejected[dataset_sha256] _________
+
+experiment = PosixPath('/RUN/pytest/pytest-121/test_changed_comparison_contra2/baseline')
+field = 'dataset_sha256'
+
+    @pytest.mark.parametrize("field", ["status", "input_data_sha256", "dataset_sha256", "folds_sha256", "label", "feature_version", "experiment_scope", "cost_assumptions"])
+    def test_changed_comparison_contract_is_rejected(experiment, field):
+        manifest_path = experiment / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        if field == "status":
+            manifest[field] = "failed"
+        elif field == "label":
+            manifest[field] = {**manifest[field], "prediction_horizon": 999}
+        elif field == "cost_assumptions":
+            manifest[field] = {"fees": "unverified"}
+        else:
+            manifest[field] = "altered"
+        manifest_path.write_text(json.dumps(manifest))
+>       with pytest.raises(DataContractError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_experiment_comparability.py:33: Failed
+__________ test_changed_comparison_contract_is_rejected[folds_sha256] __________
+
+experiment = PosixPath('/RUN/pytest/pytest-121/test_changed_comparison_contra3/baseline')
+field = 'folds_sha256'
+
+    @pytest.mark.parametrize("field", ["status", "input_data_sha256", "dataset_sha256", "folds_sha256", "label", "feature_version", "experiment_scope", "cost_assumptions"])
+    def test_changed_comparison_contract_is_rejected(experiment, field):
+        manifest_path = experiment / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        if field == "status":
+            manifest[field] = "failed"
+        elif field == "label":
+            manifest[field] = {**manifest[field], "prediction_horizon": 999}
+        elif field == "cost_assumptions":
+            manifest[field] = {"fees": "unverified"}
+        else:
+            manifest[field] = "altered"
+        manifest_path.write_text(json.dumps(manifest))
+>       with pytest.raises(DataContractError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_experiment_comparability.py:33: Failed
+_____________ test_changed_comparison_contract_is_rejected[label] ______________
+
+experiment = PosixPath('/RUN/pytest/pytest-121/test_changed_comparison_contra4/baseline')
+field = 'label'
+
+    @pytest.mark.parametrize("field", ["status", "input_data_sha256", "dataset_sha256", "folds_sha256", "label", "feature_version", "experiment_scope", "cost_assumptions"])
+    def test_changed_comparison_contract_is_rejected(experiment, field):
+        manifest_path = experiment / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        if field == "status":
+            manifest[field] = "failed"
+        elif field == "label":
+            manifest[field] = {**manifest[field], "prediction_horizon": 999}
+        elif field == "cost_assumptions":
+            manifest[field] = {"fees": "unverified"}
+        else:
+            manifest[field] = "altered"
+        manifest_path.write_text(json.dumps(manifest))
+>       with pytest.raises(DataContractError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_experiment_comparability.py:33: Failed
+________ test_changed_comparison_contract_is_rejected[feature_version] _________
+
+experiment = PosixPath('/RUN/pytest/pytest-121/test_changed_comparison_contra5/baseline')
+field = 'feature_version'
+
+    @pytest.mark.parametrize("field", ["status", "input_data_sha256", "dataset_sha256", "folds_sha256", "label", "feature_version", "experiment_scope", "cost_assumptions"])
+    def test_changed_comparison_contract_is_rejected(experiment, field):
+        manifest_path = experiment / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        if field == "status":
+            manifest[field] = "failed"
+        elif field == "label":
+            manifest[field] = {**manifest[field], "prediction_horizon": 999}
+        elif field == "cost_assumptions":
+            manifest[field] = {"fees": "unverified"}
+        else:
+            manifest[field] = "altered"
+        manifest_path.write_text(json.dumps(manifest))
+>       with pytest.raises(DataContractError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_experiment_comparability.py:33: Failed
+________ test_changed_comparison_contract_is_rejected[experiment_scope] ________
+
+experiment = PosixPath('/RUN/pytest/pytest-121/test_changed_comparison_contra6/baseline')
+field = 'experiment_scope'
+
+    @pytest.mark.parametrize("field", ["status", "input_data_sha256", "dataset_sha256", "folds_sha256", "label", "feature_version", "experiment_scope", "cost_assumptions"])
+    def test_changed_comparison_contract_is_rejected(experiment, field):
+        manifest_path = experiment / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        if field == "status":
+            manifest[field] = "failed"
+        elif field == "label":
+            manifest[field] = {**manifest[field], "prediction_horizon": 999}
+        elif field == "cost_assumptions":
+            manifest[field] = {"fees": "unverified"}
+        else:
+            manifest[field] = "altered"
+        manifest_path.write_text(json.dumps(manifest))
+>       with pytest.raises(DataContractError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_experiment_comparability.py:33: Failed
+________ test_changed_comparison_contract_is_rejected[cost_assumptions] ________
+
+experiment = PosixPath('/RUN/pytest/pytest-121/test_changed_comparison_contra7/baseline')
+field = 'cost_assumptions'
+
+    @pytest.mark.parametrize("field", ["status", "input_data_sha256", "dataset_sha256", "folds_sha256", "label", "feature_version", "experiment_scope", "cost_assumptions"])
+    def test_changed_comparison_contract_is_rejected(experiment, field):
+        manifest_path = experiment / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        if field == "status":
+            manifest[field] = "failed"
+        elif field == "label":
+            manifest[field] = {**manifest[field], "prediction_horizon": 999}
+        elif field == "cost_assumptions":
+            manifest[field] = {"fees": "unverified"}
+        else:
+            manifest[field] = "altered"
+        manifest_path.write_text(json.dumps(manifest))
+>       with pytest.raises(DataContractError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_experiment_comparability.py:33: Failed
+_____________ test_changed_prediction_artifact_cannot_be_compared ______________
+
+experiment = PosixPath('/RUN/pytest/pytest-121/test_changed_prediction_artifa0/baseline')
+
+    def test_changed_prediction_artifact_cannot_be_compared(experiment):
+        (experiment / "metrics_prediction.json").write_text("{}")
+>       with pytest.raises(DataContractError, match="checksum|fingerprint"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_experiment_comparability.py:39: Failed
+________________ test_different_labels_refuse_direct_comparison ________________
+
+tmp_path = PosixPath('/RUN/pytest/pytest-121/test_different_labels_refuse_d0')
+candles =                          date        open  ...       close      volume
+0   2024-01-01 00:00:00+00:00  100.100000  ... ...  111.031280  693.560778
+239 2024-02-09 20:00:00+00:00  110.727274  ...  110.616658  699.999364
+
+[240 rows x 6 columns]
+experiment = PosixPath('/RUN/pytest/pytest-121/test_different_labels_refuse_d0/baseline')
+
+    def test_different_labels_refuse_direct_comparison(tmp_path, candles, experiment):
+        alternate = run_experiment(
+            replace(ExperimentConfig(), label=LabelConfig(mode="volnorm")), tmp_path,
+            frames={"BTC": candles}, experiment_id="different-label",
+        )
+>       with pytest.raises(DataContractError, match="comparable|contract"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_experiment_comparability.py:48: Failed
+_____________ test_different_fold_indexes_refuse_direct_comparison _____________
+
+tmp_path = PosixPath('/RUN/pytest/pytest-121/test_different_fold_indexes_re0')
+candles =                          date        open  ...       close      volume
+0   2024-01-01 00:00:00+00:00  100.100000  ... ...  111.031280  693.560778
+239 2024-02-09 20:00:00+00:00  110.727274  ...  110.616658  699.999364
+
+[240 rows x 6 columns]
+experiment = PosixPath('/RUN/pytest/pytest-121/test_different_fold_indexes_re0/baseline')
+
+    def test_different_fold_indexes_refuse_direct_comparison(tmp_path, candles, experiment):
+        config = ExperimentConfig()
+        alternate = run_experiment(
+            replace(config, validation=replace(config.validation, embargo_candles=5)), tmp_path,
+            frames={"BTC": candles}, experiment_id="different-folds",
+        )
+>       with pytest.raises(DataContractError, match="comparable|contract"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_experiment_comparability.py:58: Failed
+_________ test_manifest_cannot_remove_required_artifact_from_inventory _________
+
+experiment = PosixPath('/RUN/pytest/pytest-121/test_manifest_cannot_remove_re0/baseline')
+
+    def test_manifest_cannot_remove_required_artifact_from_inventory(experiment):
+        path = experiment / "manifest.json"
+        manifest = json.loads(path.read_text())
+        manifest["artifact_checksums"].pop("folds.json")
+        path.write_text(json.dumps(manifest))
+>       with pytest.raises(DataContractError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_experiment_comparability.py:75: Failed
+______ test_modified_fold_with_updated_artifact_hash_still_fails_contract ______
+
+experiment = PosixPath('/RUN/pytest/pytest-121/test_modified_fold_with_update0/baseline')
+
+    def test_modified_fold_with_updated_artifact_hash_still_fails_contract(experiment):
+        path = experiment / "folds.json"
+        folds = json.loads(path.read_text())
+        folds[0]["train_indices"] = folds[0]["train_indices"][1:]
+        path.write_text(json.dumps(folds))
+        manifest_path = experiment / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["artifact_checksums"][path.name] = file_hash(path)
+        manifest_path.write_text(json.dumps(manifest))
+>       with pytest.raises(DataContractError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_experiment_comparability.py:88: Failed
+=========================== short test summary info ============================
+FAILED tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[status]
+FAILED tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[input_data_sha256]
+FAILED tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[dataset_sha256]
+FAILED tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[folds_sha256]
+FAILED tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[label]
+FAILED tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[feature_version]
+FAILED tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[experiment_scope]
+FAILED tests/unit/test_experiment_comparability.py::test_changed_comparison_contract_is_rejected[cost_assumptions]
+FAILED tests/unit/test_experiment_comparability.py::test_changed_prediction_artifact_cannot_be_compared
+FAILED tests/unit/test_experiment_comparability.py::test_different_labels_refuse_direct_comparison
+FAILED tests/unit/test_experiment_comparability.py::test_different_fold_indexes_refuse_direct_comparison
+FAILED tests/unit/test_experiment_comparability.py::test_manifest_cannot_remove_required_artifact_from_inventory
+FAILED tests/unit/test_experiment_comparability.py::test_modified_fold_with_updated_artifact_hash_still_fails_contract
+13 failed, 1 passed in 6.35s

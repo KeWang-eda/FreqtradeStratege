@@ -1,0 +1,43 @@
+..................F...                                                   [100%]
+=================================== FAILURES ===================================
+_ test_corrected_native_backtest_is_reproducible_in_fresh_disconnected_userdirs _
+
+tmp_path = PosixPath('/tmp/quant-repair-migration-regression/test_corrected_native_backtest0')
+
+    def test_corrected_native_backtest_is_reproducible_in_fresh_disconnected_userdirs(tmp_path):
+        """New production code must actually retrain and strictly reproduce itself."""
+        outputs = []
+        for attempt in ("first", "second"):
+            command, report, userdir = offline_command(tmp_path / attempt, SNAPSHOT)
+            result = run_audited(["unshare", "--user", "--map-root-user", "--net", *command])
+            assert result.returncode == 0, result.stdout + result.stderr
+            network = json.loads(report.read_text())
+            assert network["http_requests"] == network["socket_events"] == []
+            assert network["denied_operations"] == 0
+            audits = list(userdir.rglob("native_training_audit/*/audit.json"))
+            assert len(audits) == 4  # BTC/ETH, both real weekly training windows.
+            for path in audits:
+                audit = json.loads(path.read_text())
+                assert audit["phase"] == "trained" and audit["status"] == "PASS"
+                assert audit["counts"]["purged"] == 3
+                assert (
+                    audit["preprocessor_fit"]["feature_pipeline"]["sample_ids"]
+                    == audit["label_statistics_fit_sample_ids"]
+                )
+            outputs.append(userdir)
+        compared = compare_runs(*outputs)
+>       assert compared["passed"], compared["differences"]
+E       AssertionError: ['models/mystrategy-4h-regression-72pair-corr-s1-purged-v2/sub-train-BTC_1735689600/cb_btc_1735689600_metadata.json: n...-corr-s1-purged-v2/sub-train-ETH_1736294400/cb_eth_1736294400_metadata.json: native_training_audit differs or missing']
+E       assert False
+
+tests/integration/test_offline_freqtrade.py:293: AssertionError
+=============================== warnings summary ===============================
+tests/integration/test_offline_freqtrade.py: 112 warnings
+  /PYTHON_ENV/.venv/lib/python3.13/site-packages/joblib/numpy_pickle.py:207: DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+  As an alternative, you can create a new view using np.reshape (with copy=False if needed).
+    array.shape = self.shape
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/integration/test_offline_freqtrade.py::test_corrected_native_backtest_is_reproducible_in_fresh_disconnected_userdirs
+1 failed, 21 passed, 112 warnings in 43.37s

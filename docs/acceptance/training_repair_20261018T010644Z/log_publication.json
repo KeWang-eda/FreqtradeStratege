@@ -1,0 +1,410 @@
+[
+  {
+    "path": "quant-repair-baseline.log",
+    "original_sha256": "c6d976e17608d40efd49375c88830e0dc15696acf37b4a5eaa667359c6c985be",
+    "published_sha256": "9ce719093c62460d93b19df7cb3462e3d210c66178583269b95305607a947a53",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-coverage-final.log",
+    "original_sha256": "99b096f4674e93d5a2c0c663da1201376ef7d06fd4e25e3bc0d1f57f8a6485b9",
+    "published_sha256": "99b096f4674e93d5a2c0c663da1201376ef7d06fd4e25e3bc0d1f57f8a6485b9",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-coverage.log",
+    "original_sha256": "99b096f4674e93d5a2c0c663da1201376ef7d06fd4e25e3bc0d1f57f8a6485b9",
+    "published_sha256": "99b096f4674e93d5a2c0c663da1201376ef7d06fd4e25e3bc0d1f57f8a6485b9",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-final-focused.log",
+    "original_sha256": "734e38e4780ee0da9d0dc58bfe1d50a39fd66bdb90a37a16d8b3a3d074a16eb1",
+    "published_sha256": "734e38e4780ee0da9d0dc58bfe1d50a39fd66bdb90a37a16d8b3a3d074a16eb1",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-final-gate.log",
+    "original_sha256": "870f13df07b1de4ac0459cdb0a9b1634b4c14a50ff0c58eac00c21548574a0f2",
+    "published_sha256": "870f13df07b1de4ac0459cdb0a9b1634b4c14a50ff0c58eac00c21548574a0f2",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-final-suite-v2.log",
+    "original_sha256": "0e24ca4370e2967261ca6318cdce987275162755753304d09b76409b9b7cc1e7",
+    "published_sha256": "a4b682de74ef1e3015417e36ab452875485bd08231e32b476030ca70f2c233ef",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-final-suite-v3.log",
+    "original_sha256": "3562076726539a1f5106b95e9b9fa3115479174c0d173784e49fb7401dd5a459",
+    "published_sha256": "584eb747ab6d3eeebea9f5a7176576eb7fdb4273eba261b975712dc3c5e9303c",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-final-suite-v4.log",
+    "original_sha256": "5dc9bdb8111bdbbc6f9e2e40ff46eaa4aefd0852f67572a7ab3c81492f440b28",
+    "published_sha256": "816e4631bc52b382728cc3ee53f7032af450227b0d1e6cdc81a2703f7ad985a2",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-final-suite.log",
+    "original_sha256": "930cc87a0fc2d74af5cf3b9264ea404e89e2e226968530a5b4dab4279b145a82",
+    "published_sha256": "7c9b17e3af65923fc6fa8373953de2a54864dbb6152a841a03a4f7469bcb9c4b",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-formal-denied.log",
+    "original_sha256": "c4302c27297e63e3e907e96b2807c2bbf4fbff8166c08a0e6b17a286615283d1",
+    "published_sha256": "c4302c27297e63e3e907e96b2807c2bbf4fbff8166c08a0e6b17a286615283d1",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-format-all-diagnostic.log",
+    "original_sha256": "51c5ab1313c1e43adf5d2753d31b390ce0e49b8b4f2c33027310c5f92c2caaae",
+    "published_sha256": "51c5ab1313c1e43adf5d2753d31b390ce0e49b8b4f2c33027310c5f92c2caaae",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-format-delivery.log",
+    "original_sha256": "c9572de1182ff9a0c4f57870e5328e649df7ba707cfc802e2cb7ff048643cb93",
+    "published_sha256": "c9572de1182ff9a0c4f57870e5328e649df7ba707cfc802e2cb7ff048643cb93",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-format-final-v4.log",
+    "original_sha256": "f4d501ad7405c927e0a57b16f24ccd530ee06a8c4da5838f861086d20077e073",
+    "published_sha256": "f4d501ad7405c927e0a57b16f24ccd530ee06a8c4da5838f861086d20077e073",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-format-final.log",
+    "original_sha256": "c9572de1182ff9a0c4f57870e5328e649df7ba707cfc802e2cb7ff048643cb93",
+    "published_sha256": "c9572de1182ff9a0c4f57870e5328e649df7ba707cfc802e2cb7ff048643cb93",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-format-v3.log",
+    "original_sha256": "c9abb79099353ccd8f84fa483761f25848e641b3e454a8569e1d3efdc7bde423",
+    "published_sha256": "c9abb79099353ccd8f84fa483761f25848e641b3e454a8569e1d3efdc7bde423",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-attempt3.log",
+    "original_sha256": "4a4355e7146da0456d4b46f021fc7af545adf579a59f26e5bb6cf7cd744164a5",
+    "published_sha256": "4a4355e7146da0456d4b46f021fc7af545adf579a59f26e5bb6cf7cd744164a5",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-binding-final.log",
+    "original_sha256": "3e1153a32bd293e3307abc68db54fe78e94ea0253abd35f75b65a27073b73284",
+    "published_sha256": "3e1153a32bd293e3307abc68db54fe78e94ea0253abd35f75b65a27073b73284",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-binding-green.log",
+    "original_sha256": "2d3b7e655b38b4a37eb870a37f362364d989db1c9cb49727fe6ac59f69f414fe",
+    "published_sha256": "ca05a1e4f97b610c9be3d7705840b9767873caa78aa4398031969315c69fe9cb",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-binding-red.log",
+    "original_sha256": "4ff0fb01f043687d03afad8f30412ea0187ecdb7296be68dec234d5cc074843d",
+    "published_sha256": "dcca553aaebaba866440b401417b422108d8915cb956c8e86aea0c8ac2a2b23a",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-delivery.log",
+    "original_sha256": "6b2afae3c26a29197095041c7730cd0bc29357d494fc8fc7091b9284aea1b489",
+    "published_sha256": "6b2afae3c26a29197095041c7730cd0bc29357d494fc8fc7091b9284aea1b489",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-final.log",
+    "original_sha256": "6b2afae3c26a29197095041c7730cd0bc29357d494fc8fc7091b9284aea1b489",
+    "published_sha256": "6b2afae3c26a29197095041c7730cd0bc29357d494fc8fc7091b9284aea1b489",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-tests-attempt2.log",
+    "original_sha256": "781a6df7107fb8803321e5f6d94dbc21ae4d57902ac03deba11e8f488954081c",
+    "published_sha256": "e380fb69a81b19de42fd56049eb99c9cc326983ae593990eb0375624b5822212",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-tests.log",
+    "original_sha256": "30193b76b9e826435c26a01e75141c212b7038ceba5cf668efb9400e8d78fa7c",
+    "published_sha256": "0125579cdc799f3d5e1035ed87955e27bb49cbd775d42be5d071b25b0f214759",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-v3.log",
+    "original_sha256": "6b2afae3c26a29197095041c7730cd0bc29357d494fc8fc7091b9284aea1b489",
+    "published_sha256": "6b2afae3c26a29197095041c7730cd0bc29357d494fc8fc7091b9284aea1b489",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-v4.log",
+    "original_sha256": "6b2afae3c26a29197095041c7730cd0bc29357d494fc8fc7091b9284aea1b489",
+    "published_sha256": "6b2afae3c26a29197095041c7730cd0bc29357d494fc8fc7091b9284aea1b489",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-infra-green.log",
+    "original_sha256": "6f4debe7c0da3c798730761f276f1e058a4d4c32a66707b74f3b7e80362d8848",
+    "published_sha256": "c220648f0e55a957cd03b4e5a6c16768375bb8d4452efab7b16a85dbc67b8364",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-inventory-green.log",
+    "original_sha256": "945d74f889178198cba36dd969a21dabea4826468412d7c88fed7b967c685880",
+    "published_sha256": "945d74f889178198cba36dd969a21dabea4826468412d7c88fed7b967c685880",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-inventory-red.log",
+    "original_sha256": "495ada3e42cadc1d3be8d8aa19540d2537542371d46570b8a9c618c8c790d3d2",
+    "published_sha256": "9de669b6531dc8fad9d8234450fcf3ac67efce5454003cc418a700df5070545b",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-layer-integration.log",
+    "original_sha256": "58ac8836ced774e46f453fa1bee459b373e392a54bb12cbbd5b6d7fcf843520f",
+    "published_sha256": "58ac8836ced774e46f453fa1bee459b373e392a54bb12cbbd5b6d7fcf843520f",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-layer-unit.log",
+    "original_sha256": "ea19dc38dc0600316256c4838744089d082af51a5656ec48ab7fe1d70be735e3",
+    "published_sha256": "ea19dc38dc0600316256c4838744089d082af51a5656ec48ab7fe1d70be735e3",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-lint-all-diagnostic.log",
+    "original_sha256": "5d1a3cf15ff67064231138b43ed2c8a2c69da3230c05181599c86dd6b5c904cc",
+    "published_sha256": "5d1a3cf15ff67064231138b43ed2c8a2c69da3230c05181599c86dd6b5c904cc",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-lint-delivery.log",
+    "original_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "published_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-lint-final-v4.log",
+    "original_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "published_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-lint-final.log",
+    "original_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "published_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-lint-v3.log",
+    "original_sha256": "b5f53491a613732cb941fe1f7959044ad7ddf8a4fdac070480eb665c4982ff61",
+    "published_sha256": "b5f53491a613732cb941fe1f7959044ad7ddf8a4fdac070480eb665c4982ff61",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-metrics-red.log",
+    "original_sha256": "03c6f79773c8fc1e062fc8719bbaeee767c50b1c202885ab0d6162f136edcde3",
+    "published_sha256": "03c6f79773c8fc1e062fc8719bbaeee767c50b1c202885ab0d6162f136edcde3",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-migration-regression.log",
+    "original_sha256": "09e7cf11350c2c5ab633f4ec92b4911ae2abf525312f73206dbc9d5fd105bde3",
+    "published_sha256": "774171f679fad1eee1920746c586a7ebf25856a363b2d29a24e88e05e844a59e",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-native-attempt1.log",
+    "original_sha256": "f7eeb533d6b4f413da92e089cc2c449596abf407901b966e883d136b2b6f8b73",
+    "published_sha256": "a0d81e70664afff1652b8ff10af7fad642b91d16e147023787061a4ecb84b3b0",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-native-attempt2.log",
+    "original_sha256": "5f096004347e9538f6573ae346445d6f4ec7b619a24f4d75b291393bc6605f2c",
+    "published_sha256": "774a7462ff02109a42b215127150549f56fc1783fdeec48e1dbd317b2c5b4096",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-native-final-v2.log",
+    "original_sha256": "39d73dd0f4363b9959e4e67778b2598e4213ecb4abe7fd6d4ae28ba290799492",
+    "published_sha256": "501b814623fc7cdd7ddb9d4d8fe1a003be475ac53d43b6fbe85aba867696bad1",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-native-final-v3.log",
+    "original_sha256": "210f2c2c1878844c116a16cae35e7a31496d0119fff42a21ad87f7edb9b27175",
+    "published_sha256": "ca5b5541c18c52433770b069553eb5222643d75c264b5ff606ad853f91c86726",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-native-final-v4.log",
+    "original_sha256": "01e81c2210f86db3f92e00b381154ebc2fb7e5e6aa54288079ecca5bf4bed3bc",
+    "published_sha256": "085d785eba3ff754545e9077a5e506f49f69a3f1ff2a330fc36a28fe12be4db1",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-native-final.log",
+    "original_sha256": "c3098a64d60adbc8cee9bcc70cf941b3e04250443e78372f404b9936ba42b1e8",
+    "published_sha256": "6b5edcdf218080f49600283f79041722c837e69a0fd95753dc2a3da921fdaf5b",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-source-audit-final.log",
+    "original_sha256": "ab5804a2087fe3671e0679515bea19828fa89d8cdc916bdd0c2b5c39a2043103",
+    "published_sha256": "ab5804a2087fe3671e0679515bea19828fa89d8cdc916bdd0c2b5c39a2043103",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-source-audit.log",
+    "original_sha256": "ab5804a2087fe3671e0679515bea19828fa89d8cdc916bdd0c2b5c39a2043103",
+    "published_sha256": "ab5804a2087fe3671e0679515bea19828fa89d8cdc916bdd0c2b5c39a2043103",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-split-foundations.log",
+    "original_sha256": "26f965a6801b5c6b5fb835d54e405182f97ca1abdf0285c4d0eed9b43dbfdf2c",
+    "published_sha256": "26f965a6801b5c6b5fb835d54e405182f97ca1abdf0285c4d0eed9b43dbfdf2c",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-splits.log",
+    "original_sha256": "c9104009f8d316fbd88020f3dfb1ea271692c623b1a4c29dd4a2d2c07cbc4862",
+    "published_sha256": "c9104009f8d316fbd88020f3dfb1ea271692c623b1a4c29dd4a2d2c07cbc4862",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-baseline.xml",
+    "original_sha256": "32f306c0f5f6a9a82751cbf262b399dff060be0502f03a871395e5819a750982",
+    "published_sha256": "32f306c0f5f6a9a82751cbf262b399dff060be0502f03a871395e5819a750982",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-final-focused.xml",
+    "original_sha256": "12851d366a4ea054104c715aaf9bfab8e8c789d897242b1bd4b1c34d8f440ce1",
+    "published_sha256": "12851d366a4ea054104c715aaf9bfab8e8c789d897242b1bd4b1c34d8f440ce1",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-final-suite-v2.xml",
+    "original_sha256": "2f007cf6cc56fe6e2f3ebda9000d78f955cef090d207aa1caa61a26198d09876",
+    "published_sha256": "2f007cf6cc56fe6e2f3ebda9000d78f955cef090d207aa1caa61a26198d09876",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-final-suite.xml",
+    "original_sha256": "c76449273ac248977a0883f253733c3d1917bd5c5ef6bb3a55898c2ca91ed707",
+    "published_sha256": "c76449273ac248977a0883f253733c3d1917bd5c5ef6bb3a55898c2ca91ed707",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-attempt3.xml",
+    "original_sha256": "be5d17b8f7b8c1852903b8eaa8dfcd7c935800f786df165d0d348497db2940e1",
+    "published_sha256": "be5d17b8f7b8c1852903b8eaa8dfcd7c935800f786df165d0d348497db2940e1",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-binding-final.xml",
+    "original_sha256": "43cf0b9ffe088b755121b01136ec766e7457e0b7de94c24b4315e2ccc5440e00",
+    "published_sha256": "43cf0b9ffe088b755121b01136ec766e7457e0b7de94c24b4315e2ccc5440e00",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-binding-green.xml",
+    "original_sha256": "648109dc971a317c94a2018782839b63ad64eadb6c00e766a8655c9a784545a1",
+    "published_sha256": "6b9b341f207786b883ccc7f22e1e3ba2048df8436168b9e40949ae8b8a45c50e",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-binding-red.xml",
+    "original_sha256": "8e597a5463ae6999506f020b15570a9d95c4e3603c2861109d9f64e84fe16c68",
+    "published_sha256": "54575bc3fd8df00f714838fce71f69a3035b8dba6d1a39bec74219d6a0518e30",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-tests-attempt2.xml",
+    "original_sha256": "3dcaac000ad4c20fe1e1fc9192105e1f0e1e4893082263a6979fda583a8b307b",
+    "published_sha256": "0a001fa825023be35794362cfc6eb7128953e02316b36bb20edc39718fae6584",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-independent-tests.xml",
+    "original_sha256": "4d958ae00f0a1b19444483811b781c5711c2fc1319117ae6e5875448092c6ba1",
+    "published_sha256": "0e737c83f0859111f9a6f2189c7a358966153fd177b3c010d0584823da8c1be2",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-infra-green.xml",
+    "original_sha256": "6ca84504b7b458bc8b5fb0658aeaa559c98ff0ab57295c261ad125ed9b6b6e9d",
+    "published_sha256": "6ca84504b7b458bc8b5fb0658aeaa559c98ff0ab57295c261ad125ed9b6b6e9d",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-inventory-green.xml",
+    "original_sha256": "85733a0de7298067899ad3f1fff62027deb82334592215e6998f8dd015768683",
+    "published_sha256": "85733a0de7298067899ad3f1fff62027deb82334592215e6998f8dd015768683",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-inventory-red.xml",
+    "original_sha256": "3e4f916a346695360fa9e605e503c89f389eb710eca45aca41682a628be254cc",
+    "published_sha256": "37a386307edb1baa31edc8c90cd82894f484e114cd8d1f953ffd3fcffbc12ae8",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-layer-integration.xml",
+    "original_sha256": "d22a3ec4d68a1f1442f06e129a19855ad03b3a007b195c20c072bd39bdee33c3",
+    "published_sha256": "d22a3ec4d68a1f1442f06e129a19855ad03b3a007b195c20c072bd39bdee33c3",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-layer-unit.xml",
+    "original_sha256": "1a0eda94fcc9dfa4f2cb115d08e98244defd06afc82bd67450a1931434e467b9",
+    "published_sha256": "1a0eda94fcc9dfa4f2cb115d08e98244defd06afc82bd67450a1931434e467b9",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-metrics-red.xml",
+    "original_sha256": "6fe14ee8360d2bdf04006baabf40533499a86cb1cc0a6ecadb01f8510a9011c8",
+    "published_sha256": "6fe14ee8360d2bdf04006baabf40533499a86cb1cc0a6ecadb01f8510a9011c8",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-migration-regression.xml",
+    "original_sha256": "183dcf85e85b0e4b3f5859b8831044b01f269098e91141ed05d0e07b711cb1d9",
+    "published_sha256": "183dcf85e85b0e4b3f5859b8831044b01f269098e91141ed05d0e07b711cb1d9",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "quant-repair-splits.xml",
+    "original_sha256": "a55b7f323f57f8ebe9849bd4ec2a978f80116bbe8e9dbd54223ec954806d5e0f",
+    "published_sha256": "a55b7f323f57f8ebe9849bd4ec2a978f80116bbe8e9dbd54223ec954806d5e0f",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "native-feature-status-green-20261018.log",
+    "original_sha256": "a5fb2e78943c7d5e7bd4ed42832803794b39bd69b087bd917ec0b89ef831c1dc",
+    "published_sha256": "a5fb2e78943c7d5e7bd4ed42832803794b39bd69b087bd917ec0b89ef831c1dc",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "native-feature-status-red-20261018.log",
+    "original_sha256": "f821b90dfb5cdbacee3532b00ebb09369f153b34396858b91334faa85500fec7",
+    "published_sha256": "f821b90dfb5cdbacee3532b00ebb09369f153b34396858b91334faa85500fec7",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  },
+  {
+    "path": "native-feature-status-green-20261018.xml",
+    "original_sha256": "49ab761ae671ddde6f452db80b7610b539815af9af68bc492c0e7eba1d020215",
+    "published_sha256": "49ab761ae671ddde6f452db80b7610b539815af9af68bc492c0e7eba1d020215",
+    "redaction": "only local user/repository/environment paths; numeric results unchanged"
+  }
+]

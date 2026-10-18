@@ -1,0 +1,278 @@
+FFFF.F.FFFF                                                              [100%]
+=================================== FAILURES ===================================
+____ test_six_pass_strings_with_counts_and_one_hash_cannot_grant_admission _____
+
+tmp_path = PosixPath('/RUN/pytest/pytest-115/test_six_pass_strings_with_cou0')
+
+    def test_six_pass_strings_with_counts_and_one_hash_cannot_grant_admission(tmp_path):
+        config = ExperimentConfig()
+        artifact = tmp_path / "artifact.json"
+        artifact.write_text("{}")
+        report = tmp_path / "readiness.json"
+        report.write_text(json.dumps({
+            "schema_version": 1,
+            "status": "PASS",
+            "formal_out_of_sample_research_allowed": True,
+            "phases": {str(i): {"status": "PASS"} for i in range(1, 7)},
+            "tests": {"tests": 1, "failures": 0, "errors": 0, "skipped": 0, "exit_code": 0},
+            "config_sha256": canonical_hash(asdict(config)),
+            "input_files": {},
+            "output_sha256": {artifact.name: file_hash(artifact)},
+        }))
+>       with pytest.raises(DataContractError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DataContractError
+
+tests/unit/test_admission_integrity.py:30: Failed
+________________ test_invalid_admission_is_a_contract_error[{] _________________
+
+tmp_path = PosixPath('/RUN/pytest/pytest-115/test_invalid_admission_is_a_co0')
+content = '{'
+
+    @pytest.mark.parametrize("content", ["{", "[]", "null", '{"status":"FAIL","status":"PASS"}'])
+    def test_invalid_admission_is_a_contract_error(tmp_path, content):
+        report = tmp_path / "readiness.json"
+        report.write_text(content)
+        with pytest.raises(DataContractError):
+>           require_training_admission(report, ExperimentConfig())
+
+tests/unit/test_admission_integrity.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/quant_strategy/validation/admission.py:19: in require_training_admission
+    report = json.loads(path.read_text())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniconda3/lib/python3.13/json/__init__.py:352: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniconda3/lib/python3.13/json/decoder.py:345: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.decoder.JSONDecoder object at 0x7f86a8cbfb60>, s = '{', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+>           obj, end = self.scan_once(s, idx)
+                       ^^^^^^^^^^^^^^^^^^^^^^
+E           json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+
+../../miniconda3/lib/python3.13/json/decoder.py:361: JSONDecodeError
+________________ test_invalid_admission_is_a_contract_error[[]] ________________
+
+tmp_path = PosixPath('/RUN/pytest/pytest-115/test_invalid_admission_is_a_co1')
+content = '[]'
+
+    @pytest.mark.parametrize("content", ["{", "[]", "null", '{"status":"FAIL","status":"PASS"}'])
+    def test_invalid_admission_is_a_contract_error(tmp_path, content):
+        report = tmp_path / "readiness.json"
+        report.write_text(content)
+        with pytest.raises(DataContractError):
+>           require_training_admission(report, ExperimentConfig())
+
+tests/unit/test_admission_integrity.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/RUN/pytest/pytest-115/test_invalid_admission_is_a_co1/readiness.json')
+config = ExperimentConfig(name='baseline_raw', label=LabelConfig(mode='raw', prediction_horizon=3, volatility_period=14), valid...'ridge', params={}), feature_version='baseline-v2', seed=42, features=(), periods=(6, 14, 24), timeframe='4h', data={})
+
+    def require_training_admission(path: str | Path, config: ExperimentConfig) -> None:
+        """Reject failed, partial, stale, unexecuted or wrong-input formal requests."""
+        path = Path(path)
+        report = json.loads(path.read_text())
+>       phases = report.get("phases", {})
+                 ^^^^^^^^^^
+E       AttributeError: 'list' object has no attribute 'get'
+
+src/quant_strategy/validation/admission.py:20: AttributeError
+_______________ test_invalid_admission_is_a_contract_error[null] _______________
+
+tmp_path = PosixPath('/RUN/pytest/pytest-115/test_invalid_admission_is_a_co2')
+content = 'null'
+
+    @pytest.mark.parametrize("content", ["{", "[]", "null", '{"status":"FAIL","status":"PASS"}'])
+    def test_invalid_admission_is_a_contract_error(tmp_path, content):
+        report = tmp_path / "readiness.json"
+        report.write_text(content)
+        with pytest.raises(DataContractError):
+>           require_training_admission(report, ExperimentConfig())
+
+tests/unit/test_admission_integrity.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/RUN/pytest/pytest-115/test_invalid_admission_is_a_co2/readiness.json')
+config = ExperimentConfig(name='baseline_raw', label=LabelConfig(mode='raw', prediction_horizon=3, volatility_period=14), valid...'ridge', params={}), feature_version='baseline-v2', seed=42, features=(), periods=(6, 14, 24), timeframe='4h', data={})
+
+    def require_training_admission(path: str | Path, config: ExperimentConfig) -> None:
+        """Reject failed, partial, stale, unexecuted or wrong-input formal requests."""
+        path = Path(path)
+        report = json.loads(path.read_text())
+>       phases = report.get("phases", {})
+                 ^^^^^^^^^^
+E       AttributeError: 'NoneType' object has no attribute 'get'
+
+src/quant_strategy/validation/admission.py:20: AttributeError
+__________________ test_missing_admission_is_a_contract_error __________________
+
+tmp_path = PosixPath('/RUN/pytest/pytest-115/test_missing_admission_is_a_co0')
+
+    def test_missing_admission_is_a_contract_error(tmp_path):
+        with pytest.raises(DataContractError):
+>           require_training_admission(tmp_path / "missing.json", ExperimentConfig())
+
+tests/unit/test_admission_integrity.py:44: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/quant_strategy/validation/admission.py:19: in require_training_admission
+    report = json.loads(path.read_text())
+                        ^^^^^^^^^^^^^^^^
+../../miniconda3/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../miniconda3/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/RUN/pytest/pytest-115/test_missing_admission_is_a_co0/missing.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/RUN/pytest/pytest-115/test_missing_admission_is_a_co0/missing.json'
+
+../../miniconda3/lib/python3.13/pathlib/_local.py:537: FileNotFoundError
+_________ test_formal_cli_malformed_readiness_has_stable_exit_two[[]] __________
+
+tmp_path = PosixPath('/RUN/pytest/pytest-115/test_formal_cli_malformed_read1')
+content = '[]'
+
+    @pytest.mark.parametrize("content", ["{", "[]", "null"])
+    def test_formal_cli_malformed_readiness_has_stable_exit_two(tmp_path, content):
+        report = tmp_path / "readiness.json"
+        report.write_text(content)
+>       assert main([
+            "formal-run", "-c", "configs/base.yaml", "-c", "configs/environment/local.yaml",
+            "--readiness", str(report), "--output", str(tmp_path / "training"),
+        ]) == 2
+
+tests/unit/test_admission_integrity.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/quant_strategy/cli.py:44: in main
+    return _execute(args)
+           ^^^^^^^^^^^^^^
+src/quant_strategy/cli.py:65: in _execute
+    require_training_admission(args.readiness, config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/RUN/pytest/pytest-115/test_formal_cli_malformed_read1/readiness.json')
+config = ExperimentConfig(name='baseline_raw', label=LabelConfig(mode='raw', prediction_horizon=3, volatility_period=14), valid...T': 'data/futures/BTC_USDT_USDT-4h-futures.feather', 'ETH/USDT:USDT': 'data/futures/ETH_USDT_USDT-4h-futures.feather'})
+
+    def require_training_admission(path: str | Path, config: ExperimentConfig) -> None:
+        """Reject failed, partial, stale, unexecuted or wrong-input formal requests."""
+        path = Path(path)
+        report = json.loads(path.read_text())
+>       phases = report.get("phases", {})
+                 ^^^^^^^^^^
+E       AttributeError: 'list' object has no attribute 'get'
+
+src/quant_strategy/validation/admission.py:20: AttributeError
+________ test_formal_cli_malformed_readiness_has_stable_exit_two[null] _________
+
+tmp_path = PosixPath('/RUN/pytest/pytest-115/test_formal_cli_malformed_read2')
+content = 'null'
+
+    @pytest.mark.parametrize("content", ["{", "[]", "null"])
+    def test_formal_cli_malformed_readiness_has_stable_exit_two(tmp_path, content):
+        report = tmp_path / "readiness.json"
+        report.write_text(content)
+>       assert main([
+            "formal-run", "-c", "configs/base.yaml", "-c", "configs/environment/local.yaml",
+            "--readiness", str(report), "--output", str(tmp_path / "training"),
+        ]) == 2
+
+tests/unit/test_admission_integrity.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/quant_strategy/cli.py:44: in main
+    return _execute(args)
+           ^^^^^^^^^^^^^^
+src/quant_strategy/cli.py:65: in _execute
+    require_training_admission(args.readiness, config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/RUN/pytest/pytest-115/test_formal_cli_malformed_read2/readiness.json')
+config = ExperimentConfig(name='baseline_raw', label=LabelConfig(mode='raw', prediction_horizon=3, volatility_period=14), valid...T': 'data/futures/BTC_USDT_USDT-4h-futures.feather', 'ETH/USDT:USDT': 'data/futures/ETH_USDT_USDT-4h-futures.feather'})
+
+    def require_training_admission(path: str | Path, config: ExperimentConfig) -> None:
+        """Reject failed, partial, stale, unexecuted or wrong-input formal requests."""
+        path = Path(path)
+        report = json.loads(path.read_text())
+>       phases = report.get("phases", {})
+                 ^^^^^^^^^^
+E       AttributeError: 'NoneType' object has no attribute 'get'
+
+src/quant_strategy/validation/admission.py:20: AttributeError
+________________ test_direct_formal_api_cannot_bypass_admission ________________
+
+tmp_path = PosixPath('/RUN/pytest/pytest-115/test_direct_formal_api_cannot_0')
+candles =                          date        open  ...       close      volume
+0   2024-01-01 00:00:00+00:00  100.100000  ... ...  111.031280  693.560778
+239 2024-02-09 20:00:00+00:00  110.727274  ...  110.616658  699.999364
+
+[240 rows x 6 columns]
+
+    def test_direct_formal_api_cannot_bypass_admission(tmp_path, candles):
+        from quant_strategy.experiments.runner import run_experiment
+    
+        with pytest.raises(DataContractError, match="admission"):
+>           run_experiment(ExperimentConfig(), tmp_path, frames={"BTC": candles},
+                           experiment_id="forged", experiment_scope="formal")
+E           TypeError: run_experiment() got an unexpected keyword argument 'experiment_scope'. Did you mean 'experiment_id'?
+
+tests/unit/test_admission_integrity.py:62: TypeError
+__________ test_default_research_artifacts_are_explicitly_development __________
+
+tmp_path = PosixPath('/RUN/pytest/pytest-115/test_default_research_artifact0')
+candles =                          date        open  ...       close      volume
+0   2024-01-01 00:00:00+00:00  100.100000  ... ...  111.031280  693.560778
+239 2024-02-09 20:00:00+00:00  110.727274  ...  110.616658  699.999364
+
+[240 rows x 6 columns]
+
+    def test_default_research_artifacts_are_explicitly_development(tmp_path, candles):
+        from quant_strategy.experiments.runner import run_experiment
+    
+        output = run_experiment(ExperimentConfig(), tmp_path, frames={"BTC": candles},
+                                experiment_id="debug", evaluate_final_holdout=True)
+        manifest = json.loads((output / "manifest.json").read_text())
+>       assert manifest["experiment_scope"] == "development"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'experiment_scope'
+
+tests/unit/test_admission_integrity.py:73: KeyError
+=========================== short test summary info ============================
+FAILED tests/unit/test_admission_integrity.py::test_six_pass_strings_with_counts_and_one_hash_cannot_grant_admission
+FAILED tests/unit/test_admission_integrity.py::test_invalid_admission_is_a_contract_error[{]
+FAILED tests/unit/test_admission_integrity.py::test_invalid_admission_is_a_contract_error[[]]
+FAILED tests/unit/test_admission_integrity.py::test_invalid_admission_is_a_contract_error[null]
+FAILED tests/unit/test_admission_integrity.py::test_missing_admission_is_a_contract_error
+FAILED tests/unit/test_admission_integrity.py::test_formal_cli_malformed_readiness_has_stable_exit_two[[]]
+FAILED tests/unit/test_admission_integrity.py::test_formal_cli_malformed_readiness_has_stable_exit_two[null]
+FAILED tests/unit/test_admission_integrity.py::test_direct_formal_api_cannot_bypass_admission
+FAILED tests/unit/test_admission_integrity.py::test_default_research_artifacts_are_explicitly_development
+9 failed, 2 passed in 2.62s

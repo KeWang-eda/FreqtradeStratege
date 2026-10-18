@@ -1,0 +1,9 @@
+...............                                                          [100%]
+=============================== warnings summary ===============================
+tests/contract/test_backends_and_splits.py::test_model_fit_predict_save_load[ridge]
+  /PYTHON_ENV/.venv/lib/python3.13/site-packages/joblib/numpy_pickle.py:207: DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+  As an alternative, you can create a new view using np.reshape (with copy=False if needed).
+    array.shape = self.shape
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+15 passed, 1 warning in 1.39s

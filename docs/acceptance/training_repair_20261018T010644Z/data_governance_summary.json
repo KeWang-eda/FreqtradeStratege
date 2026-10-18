@@ -1,0 +1,132 @@
+{
+  "status": "PARTIAL",
+  "native_formal_funding_evaluation": "BLOCKED",
+  "total_pairs": 72,
+  "source_files": 216,
+  "historical_timerange": "20250101-20250115",
+  "required_startup_candles": {
+    "4h": 2290
+  },
+  "source_contract_counts": {
+    "PASS": 144,
+    "PARTIAL": 0,
+    "BLOCKED": 72,
+    "FAIL": 0
+  },
+  "futures_window_complete_pairs": 70,
+  "futures_window_gaps": [
+    {
+      "pair": "RENDER/USDT:USDT",
+      "file": "data/futures/RENDER_USDT_USDT-4h-futures.feather",
+      "coverage": {
+        "required_start": "2023-12-16T08:00:00+00:00",
+        "required_stop_exclusive": "2025-01-15T00:00:00+00:00",
+        "expected_rows": 2374,
+        "missing_rows": 1338,
+        "missing_intervals": [
+          {
+            "start": "2023-12-16T08:00:00+00:00",
+            "stop_exclusive": "2024-07-26T08:00:00+00:00",
+            "rows": 1338
+          }
+        ],
+        "complete": false
+      }
+    },
+    {
+      "pair": "SUN/USDT:USDT",
+      "file": "data/futures/SUN_USDT_USDT-4h-futures.feather",
+      "coverage": {
+        "required_start": "2023-12-16T08:00:00+00:00",
+        "required_stop_exclusive": "2025-01-15T00:00:00+00:00",
+        "expected_rows": 2374,
+        "missing_rows": 1501,
+        "missing_intervals": [
+          {
+            "start": "2023-12-16T08:00:00+00:00",
+            "stop_exclusive": "2024-08-22T12:00:00+00:00",
+            "rows": 1501
+          }
+        ],
+        "complete": false
+      }
+    }
+  ],
+  "historical_funding_schedule_unverified": [
+    "1INCH/USDT:USDT",
+    "AAVE/USDT:USDT",
+    "ADA/USDT:USDT",
+    "ALGO/USDT:USDT",
+    "AR/USDT:USDT",
+    "ATOM/USDT:USDT",
+    "AVAX/USDT:USDT",
+    "AXS/USDT:USDT",
+    "BAND/USDT:USDT",
+    "BAT/USDT:USDT",
+    "BCH/USDT:USDT",
+    "BEL/USDT:USDT",
+    "BNB/USDT:USDT",
+    "BSV/USDT:USDT",
+    "BTC/USDT:USDT",
+    "CAKE/USDT:USDT",
+    "CFX/USDT:USDT",
+    "COMP/USDT:USDT",
+    "CRV/USDT:USDT",
+    "DASH/USDT:USDT",
+    "DOGE/USDT:USDT",
+    "DOT/USDT:USDT",
+    "EGLD/USDT:USDT",
+    "ENJ/USDT:USDT",
+    "ENS/USDT:USDT",
+    "ETC/USDT:USDT",
+    "ETH/USDT:USDT",
+    "FET/USDT:USDT",
+    "FIL/USDT:USDT",
+    "GRT/USDT:USDT",
+    "HBAR/USDT:USDT",
+    "ICP/USDT:USDT",
+    "INJ/USDT:USDT",
+    "IOST/USDT:USDT",
+    "IOTA/USDT:USDT",
+    "JASMY/USDT:USDT",
+    "KAVA/USDT:USDT",
+    "KNC/USDT:USDT",
+    "KSM/USDT:USDT",
+    "LDO/USDT:USDT",
+    "LINK/USDT:USDT",
+    "LTC/USDT:USDT",
+    "NEAR/USDT:USDT",
+    "NEO/USDT:USDT",
+    "ONT/USDT:USDT",
+    "PENDLE/USDT:USDT",
+    "QNT/USDT:USDT",
+    "QTUM/USDT:USDT",
+    "RENDER/USDT:USDT",
+    "RLC/USDT:USDT",
+    "RSR/USDT:USDT",
+    "RUNE/USDT:USDT",
+    "SKL/USDT:USDT",
+    "SNX/USDT:USDT",
+    "SOL/USDT:USDT",
+    "STX/USDT:USDT",
+    "SUN/USDT:USDT",
+    "SUSHI/USDT:USDT",
+    "THETA/USDT:USDT",
+    "TRB/USDT:USDT",
+    "TRX/USDT:USDT",
+    "UNI/USDT:USDT",
+    "VET/USDT:USDT",
+    "XLM/USDT:USDT",
+    "XMR/USDT:USDT",
+    "XRP/USDT:USDT",
+    "XTZ/USDT:USDT",
+    "YFI/USDT:USDT",
+    "ZEC/USDT:USDT",
+    "ZEN/USDT:USDT",
+    "ZIL/USDT:USDT",
+    "ZRX/USDT:USDT"
+  ],
+  "legacy_coverage_ready_56_is_not_authoritative_funding_admission": true,
+  "source_mutations": 0,
+  "preserved_policy": "No inference of payment events, no zero fill, no download. A fixed current static whitelist does not prove historical point-in-time availability."
+}

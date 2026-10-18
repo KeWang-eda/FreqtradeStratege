@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="8" time="27.160" timestamp="2026-10-18T09:14:51.888065+08:00" hostname="Laptop"><testcase classname="tests.integration.test_independent_native_acceptance" name="test_real_native_training_has_independently_recomputed_safe_boundaries" time="26.294"><failure message="AssertionError: {'schema_version': 1, 'status': 'FAIL', 'scope': 'development', 'pairs': [], ...}&#10;assert 'FAIL' == 'PASS'&#10;  &#10;  - PASS&#10;  + FAIL">actual_native_run = PosixPath('/RUN/pytest/pytest-128/real-native-probe0/native_training')
+
+    def test_real_native_training_has_independently_recomputed_safe_boundaries(actual_native_run):
+        report = verify_native_training_acceptance(actual_native_run)
+&gt;       assert report["status"] == "PASS", report
+E       AssertionError: {'schema_version': 1, 'status': 'FAIL', 'scope': 'development', 'pairs': [], ...}
+E       assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/integration/test_independent_native_acceptance.py:43: AssertionError</failure></testcase><testcase classname="tests.integration.test_independent_native_acceptance" name="test_independent_verifier_rejects_self_consistently_rehashed_faults[boundary]" time="0.174" /><testcase classname="tests.integration.test_independent_native_acceptance" name="test_independent_verifier_rejects_self_consistently_rehashed_faults[xy]" time="0.139" /><testcase classname="tests.integration.test_independent_native_acceptance" name="test_independent_verifier_rejects_self_consistently_rehashed_faults[weight]" time="0.106" /><testcase classname="tests.integration.test_independent_native_acceptance" name="test_independent_verifier_rejects_self_consistently_rehashed_faults[fit_ids]" time="0.077" /><testcase classname="tests.integration.test_independent_native_acceptance" name="test_independent_verifier_rejects_self_consistently_rehashed_faults[schema]" time="0.072" /><testcase classname="tests.integration.test_independent_native_acceptance" name="test_independent_verifier_rejects_self_consistently_rehashed_faults[prediction]" time="0.076" /><testcase classname="tests.integration.test_independent_native_acceptance" name="test_independent_verifier_rejects_self_consistently_rehashed_faults[timestamp]" time="0.099" /></testsuite></testsuites>

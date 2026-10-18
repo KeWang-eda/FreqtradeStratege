@@ -1,0 +1,139 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_ test_independent_verifier_binds_audit_to_original_split_and_configuration[moved_validation] _
+
+actual_native_run = PosixPath('/RUN/pytest/pytest-138/real-native-probe0/native_training')
+tmp_path = PosixPath('/RUN/pytest/pytest-138/test_independent_verifier_bind0')
+fault = 'moved_validation'
+
+    @pytest.mark.parametrize("fault", ["moved_validation", "audit_timeframe", "incomplete_phase"])
+    def test_independent_verifier_binds_audit_to_original_split_and_configuration(
+        actual_native_run, tmp_path, fault
+    ):
+        root = tmp_path / "damaged"
+        shutil.copytree(actual_native_run, root)
+        run = json.loads((root / "training_run.json").read_text())
+        directory = root / run["pairs"][0]["audit_directory"]
+        audit_path = directory / "audit.json"
+        audit = json.loads(audit_path.read_text())
+        if fault == "moved_validation":
+            path = directory / "samples.parquet"
+            samples = pd.read_parquet(path)
+            first_validation = samples.index[samples.assignment == "validation"][0]
+            first_purged = samples.index[samples.assignment == "purged"][0]
+            samples.loc[[first_validation, first_purged], "assignment"] = "filtered"
+            samples.to_parquet(path)
+            for name in ("test_before_preprocessing.parquet", "test_after_preprocessing.parquet"):
+                path = directory / name
+                frame = pd.read_parquet(path)
+                frame.drop(first_validation, errors="ignore").to_parquet(path)
+        elif fault == "audit_timeframe":
+            audit["timeframe"] = "8h"
+            audit_path.write_text(json.dumps(audit))
+        else:
+            audit["phase"] = "before_preprocessing"
+            audit_path.write_text(json.dumps(audit))
+        _rehash(root)
+        report = verify_native_training_acceptance(root)
+>       assert report["status"] == "FAIL", (fault, report)
+E       AssertionError: ('moved_validation', {'schema_version': 1, 'status': 'PASS', 'scope': 'development', 'pairs': [{'pair': 'BTC/USDT:USDT', 'train_samples': 1746, 'validation_samples': 437, 'purged': 2, ...}], ...})
+E       assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/integration/test_independent_native_acceptance.py:146: AssertionError
+_ test_independent_verifier_binds_audit_to_original_split_and_configuration[audit_timeframe] _
+
+actual_native_run = PosixPath('/RUN/pytest/pytest-138/real-native-probe0/native_training')
+tmp_path = PosixPath('/RUN/pytest/pytest-138/test_independent_verifier_bind1')
+fault = 'audit_timeframe'
+
+    @pytest.mark.parametrize("fault", ["moved_validation", "audit_timeframe", "incomplete_phase"])
+    def test_independent_verifier_binds_audit_to_original_split_and_configuration(
+        actual_native_run, tmp_path, fault
+    ):
+        root = tmp_path / "damaged"
+        shutil.copytree(actual_native_run, root)
+        run = json.loads((root / "training_run.json").read_text())
+        directory = root / run["pairs"][0]["audit_directory"]
+        audit_path = directory / "audit.json"
+        audit = json.loads(audit_path.read_text())
+        if fault == "moved_validation":
+            path = directory / "samples.parquet"
+            samples = pd.read_parquet(path)
+            first_validation = samples.index[samples.assignment == "validation"][0]
+            first_purged = samples.index[samples.assignment == "purged"][0]
+            samples.loc[[first_validation, first_purged], "assignment"] = "filtered"
+            samples.to_parquet(path)
+            for name in ("test_before_preprocessing.parquet", "test_after_preprocessing.parquet"):
+                path = directory / name
+                frame = pd.read_parquet(path)
+                frame.drop(first_validation, errors="ignore").to_parquet(path)
+        elif fault == "audit_timeframe":
+            audit["timeframe"] = "8h"
+            audit_path.write_text(json.dumps(audit))
+        else:
+            audit["phase"] = "before_preprocessing"
+            audit_path.write_text(json.dumps(audit))
+        _rehash(root)
+        report = verify_native_training_acceptance(root)
+        assert report["status"] == "FAIL", (fault, report)
+        expected = {
+            "moved_validation": "Final validation membership differs from original split",
+            "audit_timeframe": "Audit label/timeframe contract differs from production configuration",
+            "incomplete_phase": "Incomplete per-training lifecycle",
+        }
+>       assert expected[fault] in report["error"]["message"], (fault, report)
+E       AssertionError: ('audit_timeframe', {'schema_version': 1, 'status': 'FAIL', 'scope': 'development', 'pairs': [], ...})
+E       assert 'Audit label/timeframe contract differs from production configuration' in 'Source time metadata differs from real candles'
+
+tests/integration/test_independent_native_acceptance.py:152: AssertionError
+_ test_independent_verifier_binds_audit_to_original_split_and_configuration[incomplete_phase] _
+
+actual_native_run = PosixPath('/RUN/pytest/pytest-138/real-native-probe0/native_training')
+tmp_path = PosixPath('/RUN/pytest/pytest-138/test_independent_verifier_bind2')
+fault = 'incomplete_phase'
+
+    @pytest.mark.parametrize("fault", ["moved_validation", "audit_timeframe", "incomplete_phase"])
+    def test_independent_verifier_binds_audit_to_original_split_and_configuration(
+        actual_native_run, tmp_path, fault
+    ):
+        root = tmp_path / "damaged"
+        shutil.copytree(actual_native_run, root)
+        run = json.loads((root / "training_run.json").read_text())
+        directory = root / run["pairs"][0]["audit_directory"]
+        audit_path = directory / "audit.json"
+        audit = json.loads(audit_path.read_text())
+        if fault == "moved_validation":
+            path = directory / "samples.parquet"
+            samples = pd.read_parquet(path)
+            first_validation = samples.index[samples.assignment == "validation"][0]
+            first_purged = samples.index[samples.assignment == "purged"][0]
+            samples.loc[[first_validation, first_purged], "assignment"] = "filtered"
+            samples.to_parquet(path)
+            for name in ("test_before_preprocessing.parquet", "test_after_preprocessing.parquet"):
+                path = directory / name
+                frame = pd.read_parquet(path)
+                frame.drop(first_validation, errors="ignore").to_parquet(path)
+        elif fault == "audit_timeframe":
+            audit["timeframe"] = "8h"
+            audit_path.write_text(json.dumps(audit))
+        else:
+            audit["phase"] = "before_preprocessing"
+            audit_path.write_text(json.dumps(audit))
+        _rehash(root)
+        report = verify_native_training_acceptance(root)
+>       assert report["status"] == "FAIL", (fault, report)
+E       AssertionError: ('incomplete_phase', {'schema_version': 1, 'status': 'PASS', 'scope': 'development', 'pairs': [{'pair': 'BTC/USDT:USDT', 'train_samples': 1746, 'validation_samples': 438, 'purged': 3, ...}], ...})
+E       assert 'PASS' == 'FAIL'
+E         
+E         - FAIL
+E         + PASS
+
+tests/integration/test_independent_native_acceptance.py:146: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_independent_native_acceptance.py::test_independent_verifier_binds_audit_to_original_split_and_configuration[moved_validation]
+FAILED tests/integration/test_independent_native_acceptance.py::test_independent_verifier_binds_audit_to_original_split_and_configuration[audit_timeframe]
+FAILED tests/integration/test_independent_native_acceptance.py::test_independent_verifier_binds_audit_to_original_split_and_configuration[incomplete_phase]
+3 failed, 8 deselected in 11.47s

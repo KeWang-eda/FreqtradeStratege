@@ -1,0 +1,16 @@
+
+==================================== ERRORS ====================================
+______ ERROR collecting tests/unit/test_source_inventory_failure_paths.py ______
+ImportError while importing test module '/REPO/tests/unit/test_source_inventory_failure_paths.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../../miniconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_source_inventory_failure_paths.py:5: in <module>
+    from tools.audit_training_data import inspect_source
+E   ImportError: cannot import name 'inspect_source' from 'tools.audit_training_data' (/REPO/tools/audit_training_data.py)
+=========================== short test summary info ============================
+ERROR tests/unit/test_source_inventory_failure_paths.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 1.17s

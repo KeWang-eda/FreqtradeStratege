@@ -1,0 +1,4 @@
+source_index,row_position,sample_id,pair,candle_timestamp,available_at,label_start_time,label_end_time,original_split,assignment,reason,weight,validation_start
+1846,1746,c133eb15b22fe10f6fea28e9e65f64a874068a6436dcf205b232968c8525a806,ETH/USDT:USDT,2026-07-26 00:00:00+00:00,2026-07-26 04:00:00+00:00,2026-07-26 04:00:00+00:00,2026-07-26 16:00:00+00:00,train,purged,label_end_ge_validation_start,1.0,2026-07-26 16:00:00+00:00
+1847,1747,98d4ac717658f2b9bf821ccef178cdce65a539b1fdabffee2b9e82160df566de,ETH/USDT:USDT,2026-07-26 04:00:00+00:00,2026-07-26 08:00:00+00:00,2026-07-26 08:00:00+00:00,2026-07-26 20:00:00+00:00,train,purged,label_end_ge_validation_start,1.0,2026-07-26 16:00:00+00:00
+1848,1748,c5538332a33ea0e0034bbd824c4b443f123f42f060b3efdff5b5e086690b7b47,ETH/USDT:USDT,2026-07-26 08:00:00+00:00,2026-07-26 12:00:00+00:00,2026-07-26 12:00:00+00:00,2026-07-27 00:00:00+00:00,train,purged,label_end_ge_validation_start,1.0,2026-07-26 16:00:00+00:00

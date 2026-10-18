@@ -1,0 +1,18 @@
+
+==================================== ERRORS ====================================
+___ ERROR collecting tests/integration/test_independent_native_acceptance.py ___
+ImportError while importing test module '/REPO/tests/integration/test_independent_native_acceptance.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../../miniconda3/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/integration/test_independent_native_acceptance.py:14: in <module>
+    from tools.verify_native_training_acceptance import verify_native_training_acceptance
+tools/verify_native_training_acceptance.py:14: in <module>
+    import cloudpickle
+E   ModuleNotFoundError: No module named 'cloudpickle'
+=========================== short test summary info ============================
+ERROR tests/integration/test_independent_native_acceptance.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.14s

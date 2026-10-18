@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="4" time="0.074" timestamp="2026-10-18T09:09:33.474925+08:00" hostname="Laptop"><testcase classname="tests.unit.test_metric_input_integrity" name="test_nonfinite_metric_input_is_an_error_not_a_filtered_success[truth0-predicted0]" time="0.001"><failure message="Failed: DID NOT RAISE ValueError">truth = [1, 2], predicted = [1, nan]
+
+    @pytest.mark.parametrize("truth,predicted", [([1, 2], [1, np.nan]), ([np.inf], [0]), ([0], [-np.inf])])
+    def test_nonfinite_metric_input_is_an_error_not_a_filtered_success(truth, predicted):
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/test_metric_input_integrity.py:11: Failed</failure></testcase><testcase classname="tests.unit.test_metric_input_integrity" name="test_nonfinite_metric_input_is_an_error_not_a_filtered_success[truth1-predicted1]" time="0.001"><failure message="Failed: DID NOT RAISE ValueError">truth = [inf], predicted = [0]
+
+    @pytest.mark.parametrize("truth,predicted", [([1, 2], [1, np.nan]), ([np.inf], [0]), ([0], [-np.inf])])
+    def test_nonfinite_metric_input_is_an_error_not_a_filtered_success(truth, predicted):
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/test_metric_input_integrity.py:11: Failed</failure></testcase><testcase classname="tests.unit.test_metric_input_integrity" name="test_nonfinite_metric_input_is_an_error_not_a_filtered_success[truth2-predicted2]" time="0.001"><failure message="Failed: DID NOT RAISE ValueError">truth = [0], predicted = [-inf]
+
+    @pytest.mark.parametrize("truth,predicted", [([1, 2], [1, np.nan]), ([np.inf], [0]), ([0], [-np.inf])])
+    def test_nonfinite_metric_input_is_an_error_not_a_filtered_success(truth, predicted):
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/test_metric_input_integrity.py:11: Failed</failure></testcase><testcase classname="tests.unit.test_metric_input_integrity" name="test_prediction_metrics_match_hand_calculation_without_sample_filtering" time="0.002" /></testsuite></testsuites>

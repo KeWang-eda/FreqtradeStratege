@@ -1,0 +1,883 @@
+{
+  "schema_version": 1,
+  "run_id": "training_repair_20261018T010644Z",
+  "phase": 1,
+  "status": "PASS",
+  "executed_at": "2026-10-18T01:19:06.624607+00:00",
+  "environment": {
+    "python": "3.13.13",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.0",
+    "xgboost": "3.4.1",
+    "lightgbm": "4.7.0",
+    "TA-Lib": "0.7.1",
+    "technical": "1.7.0",
+    "freqtrade": "2026.7",
+    "pyarrow": "25.0.1",
+    "PyYAML": "6.0.3"
+  },
+  "git": {
+    "commit": "4ba4fe83f46a0bd58b06f9765c3368eccd1b528f",
+    "dirty": true,
+    "diff_sha256": "d64dce7c5f4b381972be36d854c99bc5c34bddc804b3229532724ea6e0794836"
+  },
+  "native_config": {
+    "path": "config.json",
+    "sha256": "8cbcec3fc3129e7c4e9a305492d2ed2fff957a745ecd9fc3b10215dbd7bf97ff"
+  },
+  "research_config": {
+    "name": "baseline_raw",
+    "label": {
+      "mode": "raw",
+      "prediction_horizon": 3,
+      "volatility_period": 14
+    },
+    "validation": {
+      "method": "purged_walk_forward",
+      "n_splits": 3,
+      "test_size": 0.2,
+      "min_train_size": null,
+      "train_window_size": null,
+      "purge_candles": null,
+      "purge_reason": null,
+      "embargo_candles": 3,
+      "final_holdout_fraction": 0.15
+    },
+    "model": {
+      "backend": "standalone",
+      "name": "ridge",
+      "params": {
+        "alpha": 10.0
+      }
+    },
+    "feature_version": "baseline-v2",
+    "seed": 42,
+    "features": [],
+    "periods": [
+      6,
+      14,
+      24
+    ],
+    "timeframe": "4h",
+    "data": {
+      "BTC/USDT:USDT": "data/futures/BTC_USDT_USDT-4h-futures.feather",
+      "ETH/USDT:USDT": "data/futures/ETH_USDT_USDT-4h-futures.feather"
+    }
+  },
+  "config_sha256": "df65c97464aab1f0aed5028347d125207c4743bbee103f7d25057aa3480f9852",
+  "config_inputs": [
+    {
+      "path": "configs/base.yaml",
+      "sha256": "83bcdd032a468c5f580b2743d3633ade32f9c2857f73b1f0256a77fdb9463d98"
+    },
+    {
+      "path": "configs/environment/local.yaml",
+      "sha256": "06ff1ba71ae71e4eb9735dbfe0d6480868599e03cdf1c6f9df3fe96d33f73b67"
+    }
+  ],
+  "input_files": {
+    "BTC/USDT:USDT": {
+      "path": "data/futures/BTC_USDT_USDT-4h-futures.feather",
+      "sha256": "841837255751a6dfe5a4507fdff5b4cace91baef23ba079816ed7ecc165e0121"
+    },
+    "ETH/USDT:USDT": {
+      "path": "data/futures/ETH_USDT_USDT-4h-futures.feather",
+      "sha256": "3593cd46198d451305a280683e128c48a874be895295e5c3665161945767d0bc"
+    }
+  },
+  "dataset_sha256": "cb240c0c6d64ab8b37465a902e02c21c12952a7f371a5c5af4f4fe37ef94dd3d",
+  "samples": 29706,
+  "features": [
+    "%-rsi-period-6",
+    "%-ema-distance-period-6",
+    "%-sma-distance-period-6",
+    "%-atr-ratio-period-6",
+    "%-relative-volume-period-6",
+    "%-momentum-period-6",
+    "%-rsi-period-14",
+    "%-ema-distance-period-14",
+    "%-sma-distance-period-14",
+    "%-atr-ratio-period-14",
+    "%-relative-volume-period-14",
+    "%-momentum-period-14",
+    "%-rsi-period-24",
+    "%-ema-distance-period-24",
+    "%-sma-distance-period-24",
+    "%-atr-ratio-period-24",
+    "%-relative-volume-period-24",
+    "%-momentum-period-24",
+    "%-return",
+    "%-range",
+    "%-body",
+    "%-volume-change",
+    "%-volatility-6",
+    "%-volatility-24",
+    "%-hour",
+    "%-day-of-week"
+  ],
+  "quality": {
+    "BTC/USDT:USDT": {
+      "input": 14880,
+      "feature_unavailable": 24,
+      "label_unavailable": 3,
+      "excluded": 27,
+      "kept": 14853,
+      "time_gaps": 0
+    },
+    "ETH/USDT:USDT": {
+      "input": 14880,
+      "feature_unavailable": 24,
+      "label_unavailable": 3,
+      "excluded": 27,
+      "kept": 14853,
+      "time_gaps": 0
+    }
+  },
+  "sources_by_status": {
+    "PASS": 144,
+    "PARTIAL": 0,
+    "BLOCKED": 72,
+    "FAIL": 0
+  },
+  "source_policy": "Missing/unknown sources quarantined; no global zero-missing-rate rule. Funding schedule unverified sources cannot authorize formal funding evaluation.",
+  "native_data_governance": {
+    "status": "BLOCKED",
+    "blockers": [
+      {
+        "pair": "1INCH/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "AAVE/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "ADA/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "ALGO/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "AR/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "ATOM/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "AVAX/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "AXS/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "BAND/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "BAT/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "BCH/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "BEL/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "BNB/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "BSV/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "BTC/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "CAKE/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "CFX/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "COMP/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "CRV/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "DASH/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "DOGE/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "DOT/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "EGLD/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "ENJ/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "ENS/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "ETC/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "ETH/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "FET/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "FIL/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "GRT/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "HBAR/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "ICP/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "INJ/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "IOST/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "IOTA/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "JASMY/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "KAVA/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "KNC/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "KSM/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "LDO/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "LINK/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "LTC/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "NEAR/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "NEO/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "ONT/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "PENDLE/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "QNT/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "QTUM/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "RENDER/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "RLC/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "RSR/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "RUNE/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "SKL/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "SNX/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "SOL/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "STX/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "SUN/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "SUSHI/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "THETA/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "TRB/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "TRX/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "UNI/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "VET/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "XLM/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "XMR/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "XRP/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "XTZ/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "YFI/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "ZEC/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "ZEN/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "ZIL/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      },
+      {
+        "pair": "ZRX/USDT:USDT",
+        "kind": "funding_rate",
+        "issues": [
+          {
+            "code": "funding_schedule_missing",
+            "message": "Payment schedule not verified; storage timeframe and observed intervals do not establish it"
+          }
+        ]
+      }
+    ],
+    "required_next_check": "Verify native window coverage and authoritative historical funding schedule; observed cadence alone is insufficient"
+  },
+  "thresholds": {
+    "illegal_eligible_samples": 0,
+    "duplicate_sample_ids": 0,
+    "input_mutations": 0,
+    "minimum_samples": "Every requested pair must retain >=1; splitter enforces window-specific minima"
+  },
+  "time_contract": "UTC open t; features observed at t+bar; label end at t+horizon bars+bar; reset recursive features at every gap",
+  "availability_scope": "Research OHLCV samples; native mark/funding inventory is separate and not silently approved",
+  "artifacts": {
+    "sample_exclusions.parquet": "bfb9a7cbe57c01e108a1b59609e0c40858a9d13cdd1d01cb2a96d6b0b4c8f98d",
+    "source_audit.json": "ea56f67eff15863219e3a991e9d21acea055a40bf53af210372f12804dd35cf5",
+    "sample_metadata.parquet": "7bc73ac9be747e4717bc64176e1f1c21daa5dd422b08e0f488bc20ca08947a58"
+  }
+}

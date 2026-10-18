@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="22" time="43.370" timestamp="2026-10-18T09:37:48.537199+08:00" hostname="Laptop"><testcase classname="tests.integration.test_offline_freqtrade" name="test_genuine_snapshot_preserves_raw_rules" time="0.172" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_invalid_snapshots_fail_closed_even_with_updated_envelope[checksum]" time="0.170" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_invalid_snapshots_fail_closed_even_with_updated_envelope[normalized]" time="0.155" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_invalid_snapshots_fail_closed_even_with_updated_envelope[raw]" time="0.103" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_invalid_snapshots_fail_closed_even_with_updated_envelope[version]" time="0.081" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_invalid_snapshots_fail_closed_even_with_updated_envelope[exchange]" time="0.097" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_invalid_snapshots_fail_closed_even_with_updated_envelope[leverage]" time="0.188" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_invalid_snapshots_fail_closed_even_with_updated_envelope[expired]" time="0.082" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_missing_duplicate_json_and_incomplete_pair_scope_fail" time="0.042" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_adapter_rejects_non_backtest_modes_before_exchange_init[live]" time="0.001" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_adapter_rejects_non_backtest_modes_before_exchange_init[dry_run]" time="0.001" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_adapter_rejects_non_backtest_modes_before_exchange_init[hyperopt]" time="0.001" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_native_validation_refresh_and_network_guard" time="0.479" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_native_timeframe_validation_is_not_bypassed" time="0.447" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_regular_exchange_and_ccxt_classes_keep_native_network_methods" time="0.001" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_native_entry_rejects_missing_or_corrupt_snapshot_without_network[missing]" time="2.602" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_native_entry_rejects_missing_or_corrupt_snapshot_without_network[corrupt]" time="2.416" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_native_backtest_in_disconnected_namespace_matches_online_reference" time="9.556" /><testcase classname="tests.integration.test_offline_freqtrade" name="test_corrected_native_backtest_is_reproducible_in_fresh_disconnected_userdirs" time="25.788"><failure message="AssertionError: ['models/mystrategy-4h-regression-72pair-corr-s1-purged-v2/sub-train-BTC_1735689600/cb_btc_1735689600_metadata.json: n...-corr-s1-purged-v2/sub-train-ETH_1736294400/cb_eth_1736294400_metadata.json: native_training_audit differs or missing']&#10;assert False">tmp_path = PosixPath('/tmp/quant-repair-migration-regression/test_corrected_native_backtest0')
+
+    def test_corrected_native_backtest_is_reproducible_in_fresh_disconnected_userdirs(tmp_path):
+        """New production code must actually retrain and strictly reproduce itself."""
+        outputs = []
+        for attempt in ("first", "second"):
+            command, report, userdir = offline_command(tmp_path / attempt, SNAPSHOT)
+            result = run_audited(["unshare", "--user", "--map-root-user", "--net", *command])
+            assert result.returncode == 0, result.stdout + result.stderr
+            network = json.loads(report.read_text())
+            assert network["http_requests"] == network["socket_events"] == []
+            assert network["denied_operations"] == 0
+            audits = list(userdir.rglob("native_training_audit/*/audit.json"))
+            assert len(audits) == 4  # BTC/ETH, both real weekly training windows.
+            for path in audits:
+                audit = json.loads(path.read_text())
+                assert audit["phase"] == "trained" and audit["status"] == "PASS"
+                assert audit["counts"]["purged"] == 3
+                assert (
+                    audit["preprocessor_fit"]["feature_pipeline"]["sample_ids"]
+                    == audit["label_statistics_fit_sample_ids"]
+                )
+            outputs.append(userdir)
+        compared = compare_runs(*outputs)
+&gt;       assert compared["passed"], compared["differences"]
+E       AssertionError: ['models/mystrategy-4h-regression-72pair-corr-s1-purged-v2/sub-train-BTC_1735689600/cb_btc_1735689600_metadata.json: n...-corr-s1-purged-v2/sub-train-ETH_1736294400/cb_eth_1736294400_metadata.json: native_training_audit differs or missing']
+E       assert False
+
+tests/integration/test_offline_freqtrade.py:293: AssertionError</failure></testcase><testcase classname="tests.regression.test_frozen_baseline" name="test_features_and_labels_against_frozen_code" time="0.027" /><testcase classname="tests.regression.test_frozen_baseline" name="test_frozen_tie_and_zero_prediction_rules" time="0.000" /><testcase classname="tests.regression.test_frozen_baseline" name="test_native_configuration_parameters_are_unchanged" time="0.001" /></testsuite></testsuites>

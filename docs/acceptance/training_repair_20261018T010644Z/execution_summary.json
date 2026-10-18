@@ -1,0 +1,64 @@
+{
+  "run_id": "training_repair_20261018T010644Z",
+  "published_at": "2026-10-18T02:00:11.946035+00:00",
+  "tests": {
+    "exit_code": 0,
+    "passed": 534,
+    "tests": 534,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 143.328,
+    "junit_sha256": "ec35cab274a135a1d3d13e6915eb02d97ee920b759071ccf7678dca06a2fa18b",
+    "command": [
+      "../freqtrade/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "--basetemp=/tmp/quant-repair-final-suite-v4",
+      "--junitxml=docs/acceptance/training_repair_20261018T010644Z/final_tests.xml"
+    ]
+  },
+  "native_development_training": {
+    "exit_code": 0,
+    "scope": "development",
+    "started_at": "2026-10-18T01:57:17.314546+00:00",
+    "finished_at": "2026-10-18T01:57:40.448283+00:00",
+    "pair_count": 3,
+    "source_files_unchanged": true,
+    "command": [
+      "unshare",
+      "-Urn",
+      "strace",
+      "-f",
+      "-e",
+      "trace=network",
+      "env",
+      "PYTHONPATH=src:.",
+      "../freqtrade/.venv/bin/python",
+      "tools/run_native_training_probe.py",
+      "--output",
+      "docs/acceptance/training_repair_20261018T010644Z/native_training"
+    ]
+  },
+  "independent_training_acceptance": "PASS",
+  "production_source_hashes_unchanged_since_suite_start": true,
+  "readiness_gate": {
+    "status": "BLOCKED",
+    "exit_code": 2,
+    "phases": {
+      "1": "PASS",
+      "2": "PARTIAL",
+      "3": "BLOCKED",
+      "4": "BLOCKED",
+      "5": "BLOCKED",
+      "6": "BLOCKED"
+    },
+    "formal_out_of_sample_research_allowed": false,
+    "readiness_sha256": "c3052b8fcc695e6fb11cb0997bf50efce4eeeeeb57038f36378a12c79ab60fc6"
+  },
+  "formal_cli": {
+    "exit_code": 2,
+    "formal_output_created": false
+  }
+}

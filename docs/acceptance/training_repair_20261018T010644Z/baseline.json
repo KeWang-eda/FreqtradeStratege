@@ -1,0 +1,60 @@
+{
+  "run_id": "training_repair_20261018T010644Z",
+  "observed_at": "2026-10-18T01:06:44Z",
+  "branch": "main",
+  "head": "4ba4fe83f46a0bd58b06f9765c3368eccd1b528f",
+  "initial_worktree_clean": true,
+  "remote_main_verified": "4ba4fe83f46a0bd58b06f9765c3368eccd1b528f",
+  "python": "../freqtrade/.venv/bin/python",
+  "environment": {
+    "python": "3.13.13",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.0",
+    "xgboost": "3.4.1",
+    "lightgbm": "4.7.0",
+    "TA-Lib": "0.7.1",
+    "technical": "1.7.0",
+    "freqtrade": "2026.7",
+    "pyarrow": "25.0.1",
+    "PyYAML": "6.0.3"
+  },
+  "previous_phases": {
+    "1": "PASS",
+    "2": "FAIL",
+    "3": "BLOCKED",
+    "4": "BLOCKED",
+    "5": "BLOCKED",
+    "6": "FAIL"
+  },
+  "baseline_pytest": {
+    "exit_code": 0,
+    "passed": 398,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 56.75
+  },
+  "reproduced_before_violations": {
+    "BTC/USDT:USDT": 3,
+    "ETH/USDT:USDT": 3
+  },
+  "confirmed_defects": [
+    "Unpurged native inner training labels",
+    "Admission accepted self-reported six PASS fields",
+    "Metrics silently removed nonfinite pairs",
+    "Comparison lacked enforced comparability",
+    "Source inventory failure paths lost kind/timeframe and external datadir identity"
+  ],
+  "missing_external_evidence": [
+    "Authoritative historical funding schedules",
+    "Point-in-time listing/universe history"
+  ],
+  "change_scope": [
+    "XGBoost pre-fit training adapter and cache contract",
+    "Native feature audit and independent training replay",
+    "Read-only data/source audit",
+    "Admission and experiment scope/comparability",
+    "Diagnostic split foundations"
+  ],
+  "not_authorized_outcome": "No formal model selection, final OOS performance or live trading admission"
+}

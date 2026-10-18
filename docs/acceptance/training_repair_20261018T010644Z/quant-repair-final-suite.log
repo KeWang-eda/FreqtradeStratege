@@ -1,0 +1,90 @@
+........................................................................ [ 13%]
+..............................................................F......... [ 27%]
+........................................................................ [ 41%]
+...............F........................................................ [ 55%]
+........................................................................ [ 69%]
+........................................................................ [ 83%]
+........................................................................ [ 97%]
+.............                                                            [100%]
+=================================== FAILURES ===================================
+___ test_native_backtest_in_disconnected_namespace_matches_online_reference ____
+
+tmp_path = PosixPath('/tmp/quant-repair-final-suite/test_native_backtest_in_discon0')
+
+    def test_native_backtest_in_disconnected_namespace_matches_online_reference(tmp_path):
+        required = ROOT / "data/futures/BTC_USDT_USDT-4h-futures.feather"
+        if not required.exists():
+            pytest.skip("Real local historical data is required for native integration")
+        if not shutil.which("unshare") or not shutil.which("strace"):
+            pytest.skip("Kernel network isolation and syscall evidence require unshare/strace")
+        prefix = ["unshare", "--user", "--map-root-user", "--net"]
+        probe = subprocess.run([*prefix, "true"], capture_output=True, text=True)
+        if probe.returncode:
+            pytest.skip(f"Network namespace unavailable: {probe.stderr}")
+        command, report, userdir = offline_command(tmp_path, SNAPSHOT)
+        trace = tmp_path / "network.strace"
+        result = run_audited(
+            [*prefix, "strace", "-f", "-e", "trace=network", "-o", str(trace), *command]
+        )
+        assert result.returncode == 0, result.stdout + result.stderr
+        evidence = json.loads(report.read_text())
+        assert evidence["exit_code"] == evidence["denied_operations"] == 0
+        assert evidence["http_requests"] == evidence["socket_events"] == []
+        # aiohttp's import-time IPv6 loopback bind probe is harmless; no connects or
+        # sends are allowed even when the Python audit layer cannot see a C library.
+        for line in trace.read_text().splitlines():
+            assert not any(
+                operation in line for operation in ("connect(", "sendto(", "sendmsg(", "sendmmsg(")
+            ), line
+        reference = tmp_path / "reference"
+        with tarfile.open(EVIDENCE / "native-online-reference.tar.gz") as archive:
+            archive.extractall(reference, filter="data")
+        regression = compare_runs(reference, userdir)
+>       assert regression["passed"], regression["differences"]
+E       AssertionError: ['trades: DataFrame are different
+E         
+E         DataFrame shape mismatch
+E         [left]:  (13, 29)
+E         [right]: (14, 29)', 'trades/orders: ...: differs or missing', 'metric/max_drawdown_account: differs or missing', 'metric/worst_pair: differs or missing', ...]
+E       assert False
+
+tests/integration/test_offline_freqtrade.py:239: AssertionError
+______________ test_native_configuration_parameters_are_unchanged ______________
+
+    def test_native_configuration_parameters_are_unchanged():
+        def without_comments(value):
+            if isinstance(value, dict):
+                return {
+                    key: without_comments(item)
+                    for key, item in value.items()
+                    if not key.startswith("_comment")
+                }
+            if isinstance(value, list):
+                return [without_comments(item) for item in value]
+            return value
+    
+        before = json.loads(Path("docs/baseline/config.json").read_text())
+        after = json.loads(Path("config.json").read_text())
+>       assert without_comments(before) == without_comments(after)
+E       AssertionError: assert {'$schema': '...ades': 1, ...} == {'$schema': '...ades': 1, ...}
+E         
+E         Omitting 27 identical items, use -vv to show
+E         Differing items:
+E         {'freqai': {'enabled': True, 'purge_old_models': 2, 'train_period_days': 365, 'backtest_period_days': 7, ...}} != {'freqai': {'enabled': True, 'purge_old_models': 2, 'train_period_days': 365, 'backtest_period_days': 7, ...}}
+E         Use -v to get more diff
+
+tests/regression/test_frozen_baseline.py:73: AssertionError
+=============================== warnings summary ===============================
+tests/contract/test_backends_and_splits.py: 1 warning
+tests/e2e/test_research_pipeline.py: 150 warnings
+tests/integration/test_freqtrade_regression_report.py: 660 warnings
+tests/integration/test_offline_freqtrade.py: 56 warnings
+  /PYTHON_ENV/.venv/lib/python3.13/site-packages/joblib/numpy_pickle.py:207: DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+  As an alternative, you can create a new view using np.reshape (with copy=False if needed).
+    array.shape = self.shape
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/integration/test_offline_freqtrade.py::test_native_backtest_in_disconnected_namespace_matches_online_reference
+FAILED tests/regression/test_frozen_baseline.py::test_native_configuration_parameters_are_unchanged
+2 failed, 515 passed, 867 warnings in 194.46s (0:03:14)

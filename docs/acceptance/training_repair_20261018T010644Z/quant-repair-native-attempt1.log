@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/REPO/tools/run_native_training_probe.py", line 177, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "/REPO/tools/run_native_training_probe.py", line 172, in main
+    run_probe(args.config, args.output, args.pairs)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/REPO/tools/run_native_training_probe.py", line 35, in run_probe
+    from freqtrade.resolvers import FreqaiModelResolver
+ImportError: cannot import name 'FreqaiModelResolver' from 'freqtrade.resolvers' (/PYTHON_ENV/freqtrade/resolvers/__init__.py)

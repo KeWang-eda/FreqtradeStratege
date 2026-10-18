@@ -1,0 +1,40 @@
+FFF.                                                                     [100%]
+=================================== FAILURES ===================================
+_ test_nonfinite_metric_input_is_an_error_not_a_filtered_success[truth0-predicted0] _
+
+truth = [1, 2], predicted = [1, nan]
+
+    @pytest.mark.parametrize("truth,predicted", [([1, 2], [1, np.nan]), ([np.inf], [0]), ([0], [-np.inf])])
+    def test_nonfinite_metric_input_is_an_error_not_a_filtered_success(truth, predicted):
+>       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/test_metric_input_integrity.py:11: Failed
+_ test_nonfinite_metric_input_is_an_error_not_a_filtered_success[truth1-predicted1] _
+
+truth = [inf], predicted = [0]
+
+    @pytest.mark.parametrize("truth,predicted", [([1, 2], [1, np.nan]), ([np.inf], [0]), ([0], [-np.inf])])
+    def test_nonfinite_metric_input_is_an_error_not_a_filtered_success(truth, predicted):
+>       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/test_metric_input_integrity.py:11: Failed
+_ test_nonfinite_metric_input_is_an_error_not_a_filtered_success[truth2-predicted2] _
+
+truth = [0], predicted = [-inf]
+
+    @pytest.mark.parametrize("truth,predicted", [([1, 2], [1, np.nan]), ([np.inf], [0]), ([0], [-np.inf])])
+    def test_nonfinite_metric_input_is_an_error_not_a_filtered_success(truth, predicted):
+>       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/test_metric_input_integrity.py:11: Failed
+=========================== short test summary info ============================
+FAILED tests/unit/test_metric_input_integrity.py::test_nonfinite_metric_input_is_an_error_not_a_filtered_success[truth0-predicted0]
+FAILED tests/unit/test_metric_input_integrity.py::test_nonfinite_metric_input_is_an_error_not_a_filtered_success[truth1-predicted1]
+FAILED tests/unit/test_metric_input_integrity.py::test_nonfinite_metric_input_is_an_error_not_a_filtered_success[truth2-predicted2]
+3 failed, 1 passed in 0.07s

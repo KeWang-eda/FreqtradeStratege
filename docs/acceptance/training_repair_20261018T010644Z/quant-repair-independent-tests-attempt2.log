@@ -1,0 +1,19 @@
+F.......                                                                 [100%]
+=================================== FAILURES ===================================
+____ test_real_native_training_has_independently_recomputed_safe_boundaries ____
+
+actual_native_run = PosixPath('/RUN/pytest/pytest-128/real-native-probe0/native_training')
+
+    def test_real_native_training_has_independently_recomputed_safe_boundaries(actual_native_run):
+        report = verify_native_training_acceptance(actual_native_run)
+>       assert report["status"] == "PASS", report
+E       AssertionError: {'schema_version': 1, 'status': 'FAIL', 'scope': 'development', 'pairs': [], ...}
+E       assert 'FAIL' == 'PASS'
+E         
+E         - PASS
+E         + FAIL
+
+tests/integration/test_independent_native_acceptance.py:43: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_independent_native_acceptance.py::test_real_native_training_has_independently_recomputed_safe_boundaries
+1 failed, 7 passed in 27.16s
