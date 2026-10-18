@@ -70,4 +70,8 @@ def test_native_configuration_parameters_are_unchanged():
 
     before = json.loads(Path("docs/baseline/config.json").read_text())
     after = json.loads(Path("config.json").read_text())
+    # The correctness fix changes the training sample set. Explicitly require
+    # its incompatible cache namespace; every actual parameter stays frozen.
+    assert before["freqai"].pop("identifier") == "mystrategy-4h-regression-72pair-corr-s1-v1"
+    assert after["freqai"].pop("identifier") == "mystrategy-4h-regression-72pair-corr-s1-purged-v2"
     assert without_comments(before) == without_comments(after)

@@ -7,6 +7,7 @@ unknown publication/schedule provenance is recorded, never inferred or filled.
 
 import argparse
 import json
+import os
 from dataclasses import asdict
 from datetime import UTC, datetime
 from pathlib import Path
@@ -27,9 +28,39 @@ from quant_strategy.market_data import load_ohlcv
 from quant_strategy.market_data.contracts import audit_source
 
 
+def inspect_source(path: Path, pair: str, kind: str, timeframe: str) -> dict:
+    """Retain a source's actual identity on every read-only failure path."""
+    item = {
+        "pair": pair,
+        "kind": kind,
+        "timeframe": timeframe,
+        "path": Path(os.path.relpath(path.resolve(), Path.cwd())).as_posix(),
+        "captured_at": None,
+        "capture_provenance": "Not recorded by existing files; audit time is not acquisition time",
+    }
+    if not path.is_file():
+        item.update(status="FAIL", issues=[{"code": "missing_file"}])
+    else:
+        before = file_hash(path)
+        try:
+            item.update(audit_source(pd.read_feather(path), kind=kind, timeframe=timeframe))
+        except (OSError, ValueError, TypeError) as error:
+            item.update(status="FAIL", issues=[{"code": type(error).__name__}])
+        item.update(file_sha256=before, unchanged=before == file_hash(path))
+        if not item["unchanged"]:
+            raise RuntimeError("Raw input changed during read-only audit")
+    item["formal_use"] = (
+        "eligible_if_window_verified" if item["status"] == "PASS" else "quarantined"
+    )
+    return item
+
+
 def audit(output: Path, native_config: Path, research_configs: list[str]) -> dict:
     """Inventory every configured source and build only eligible research samples."""
     output.mkdir(parents=True, exist_ok=False)
+    configuration_hashes = {
+        str(path): file_hash(path) for path in [native_config, *research_configs]
+    }
     config = load_config(research_configs)
     native = json.loads(native_config.read_text())
     root = Path(native["datadir"])
@@ -42,39 +73,34 @@ def audit(output: Path, native_config: Path, research_configs: list[str]) -> dic
             ("funding_rate", "1h"),
         ):
             path = root / "futures" / f"{slug}-{timeframe}-{kind}.feather"
-            item = {
-                "pair": pair,
-                "path": f"data/futures/{path.name}",
-                "captured_at": None,
-                "capture_provenance": "Not recorded by existing files; audit time is not acquisition time",
-            }
-            if not path.is_file():
-                item.update(status="FAIL", issues=[{"code": "missing_file"}])
-            else:
-                before = file_hash(path)
-                try:
-                    item.update(audit_source(pd.read_feather(path), kind=kind, timeframe=timeframe))
-                except (OSError, ValueError, TypeError) as error:
-                    item.update(status="FAIL", issues=[{"code": type(error).__name__}])
-                item.update(file_sha256=before, unchanged=before == file_hash(path))
-                if not item["unchanged"]:
-                    raise RuntimeError("Raw input changed during read-only audit")
-            item["formal_use"] = (
-                "eligible_if_window_verified" if item["status"] == "PASS" else "quarantined"
-            )
-            sources.append(item)
+            sources.append(inspect_source(path, pair, kind, timeframe))
     frames = {pair: load_ohlcv(path) for pair, path in config.data.items()}
     dataset = build_dataset(frames, config)
+    if any(
+        configuration_hashes[str(path)] != file_hash(path)
+        for path in [native_config, *research_configs]
+    ):
+        raise RuntimeError("Configuration changed during read-only data audit")
+    if any(
+        frame.attrs.get("source_sha256") != file_hash(config.data[pair])
+        for pair, frame in frames.items()
+    ):
+        raise RuntimeError("Research input changed after loading during data audit")
     dataset.metadata.to_parquet(output / "sample_metadata.parquet", index=False)
     dataset.exclusions.to_parquet(output / "sample_exclusions.parquet", index=False)
     write_json(output / "source_audit.json", sources)
     report = {
         "schema_version": 1,
+        "run_id": output.parent.name,
         "phase": 1,
         "status": "PASS",
         "executed_at": datetime.now(UTC).isoformat(),
         "environment": environment_versions(),
         "git": git_state(),
+        "native_config": {
+            "path": os.path.relpath(native_config.resolve(), Path.cwd()),
+            "sha256": file_hash(native_config),
+        },
         "research_config": asdict(config),
         "config_sha256": canonical_hash(asdict(config)),
         "config_inputs": [{"path": path, "sha256": file_hash(path)} for path in research_configs],
@@ -90,6 +116,15 @@ def audit(output: Path, native_config: Path, research_configs: list[str]) -> dic
             for status in ("PASS", "PARTIAL", "BLOCKED", "FAIL")
         },
         "source_policy": "Missing/unknown sources quarantined; no global zero-missing-rate rule. Funding schedule unverified sources cannot authorize formal funding evaluation.",
+        "native_data_governance": {
+            "status": "BLOCKED" if any(s["status"] != "PASS" for s in sources) else "PARTIAL",
+            "blockers": [
+                {"pair": s["pair"], "kind": s["kind"], "issues": s["issues"]}
+                for s in sources
+                if s["status"] != "PASS"
+            ],
+            "required_next_check": "Verify native window coverage and authoritative historical funding schedule; observed cadence alone is insufficient",
+        },
         "thresholds": {
             "illegal_eligible_samples": 0,
             "duplicate_sample_ids": 0,

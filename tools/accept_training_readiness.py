@@ -6,8 +6,8 @@ source, and the explicit UTC source/sample contracts in this repository.
 """
 
 import argparse
-import importlib.metadata
 import json
+import shutil
 from dataclasses import asdict
 from datetime import UTC, datetime
 from pathlib import Path
@@ -20,43 +20,46 @@ from quant_strategy.dataset import build_dataset
 from quant_strategy.experiments.runner import _dataset_hash
 from quant_strategy.infrastructure.experiment_store import (
     canonical_hash,
-    environment_versions,
     file_hash,
     git_state,
     write_json,
 )
 from quant_strategy.market_data import load_ohlcv
 from quant_strategy.market_data.contracts import audit_source
-from quant_strategy.validation.native_boundaries import audit_native_boundaries
+from quant_strategy.validation.admission import (
+    IMPLEMENTED_FORMAL_GATES,
+    bound_artifact,
+    new_receipt_context,
+    read_evidence_json,
+    verify_test_execution,
+)
 
 PASS, FAIL, BLOCKED = "PASS", "FAIL", "BLOCKED"
+
+REQUIRED_DATA_NODEIDS = {
+    "tests/unit/test_sample_governance.py::test_dataset_rejects_invented_or_duplicated_provenance",
+    "tests/unit/test_sample_governance.py::test_gap_excludes_labels_crossing_missing_bar_and_restarts_warmup",
+    "tests/integration/test_dataset_governance.py::test_file_change_during_read_fails_before_dataset",
+    "tests/integration/test_dataset_governance.py::test_same_real_data_rebuilds_identical_schema_samples_and_exclusions",
+}
+REQUIRED_LEAKAGE_NODEIDS = {
+    "tests/leakage/test_information_boundaries.py::test_test_distribution_cannot_change_fit_parameters",
+    "tests/leakage/test_information_boundaries.py::test_early_stopping_uses_inner_validation_only",
+    "tests/leakage/test_native_feature_causality.py::test_actual_btc_eth_bnb_files_full_native_features_are_causal",
+    "tests/leakage/test_native_feature_causality.py::test_actual_pipeline_known_schema_future_faults_are_detected[future_shift]",
+    "tests/leakage/test_native_feature_causality.py::test_actual_pipeline_known_schema_future_faults_are_detected[correlated_future]",
+    "tests/leakage/test_native_feature_causality.py::test_future_global_dynamic_ranking_is_detected",
+    "tests/unit/test_native_isolation.py::test_equality_greater_and_less_than_boundary",
+    "tests/unit/test_native_isolation.py::test_weight_and_metadata_alignment",
+    "tests/unit/test_native_isolation.py::test_post_purge_faults_are_not_repaired_into_a_pass[boundary]",
+    "tests/unit/test_native_isolation.py::test_post_purge_faults_are_not_repaired_into_a_pass[weights]",
+    "tests/unit/test_native_isolation.py::test_cache_cannot_reuse_predictions_after_source_file_change",
+}
 
 
 def test_evidence(receipt_path: Path) -> dict:
     """Check exit, bound JUnit bytes, actual counts and executed test identities."""
-    receipt = json.loads(receipt_path.read_text())
-    junit = receipt_path.parent / receipt["junit"]
-    if file_hash(junit) != receipt["junit_sha256"]:
-        raise ValueError("Test JUnit fingerprint mismatch")
-    root = ElementTree.parse(junit).getroot()
-    suites = [root] if root.tag == "testsuite" else list(root.iter("testsuite"))
-    counts = {
-        key: sum(int(s.get(key, 0)) for s in suites)
-        for key in ("tests", "failures", "errors", "skipped")
-    }
-    cases = list(root.iter("testcase"))
-    if receipt["exit_code"] != 0 or counts["failures"] or counts["errors"]:
-        raise ValueError("Required automated tests failed")
-    if not counts["tests"] or counts["tests"] != len(cases):
-        raise ValueError("JUnit case count is empty or inconsistent")
-    executed = [c.get("name").split("[", 1)[0] for c in cases if c.find("skipped") is None]
-    return {
-        **counts,
-        "executed_test_names": executed,
-        "command": receipt["command"],
-        "exit_code": receipt["exit_code"],
-        "junit_sha256": receipt["junit_sha256"],
-    }
+    return verify_test_execution(receipt_path)
 
 
 def verify_data_evidence(directory: Path) -> dict:
@@ -129,6 +132,93 @@ def verify_data_evidence(directory: Path) -> dict:
     }
 
 
+def _native_feature_scope_status(status: str, *, source_errors: list, all_pairs: bool) -> str:
+    """Apply source availability and universe scope to recomputed feature status."""
+    if status == FAIL:
+        return FAIL
+    if source_errors:
+        return BLOCKED
+    if status == PASS and not all_pairs:
+        return "PARTIAL"
+    return status
+
+
+def verify_native_feature_evidence(directory: Path) -> dict:
+    """Recompute real expanded schemas and causal tests, not a saved PASS flag."""
+    from freqtrade.configuration.load_config import load_from_files
+
+    from quant_strategy.validation.native_features import audit_native_features
+
+    saved = read_evidence_json(directory / "native_features.json")
+    if saved.get("run_id") != directory.parent.name:
+        raise ValueError("Native feature evidence run_id differs from its execution directory")
+    if saved.get("input_integrity", {}).get("unchanged") is not True:
+        raise ValueError("Native feature audit inputs/code were not unchanged throughout execution")
+    root = Path(__file__).resolve().parents[1]
+    candidates = [root / "config.json", *(root / "configs").rglob("*.json")]
+    configs = []
+    for index, item in enumerate(saved["config_files"]):
+        matches = [
+            path
+            for path in candidates
+            if path.name == item["filename"] and file_hash(path) == item["sha256"]
+        ]
+        if len(matches) != 1:
+            raise ValueError("Native feature configuration cannot be uniquely reproduced")
+        relative = str(matches[0].relative_to(root))
+        if saved.get("config_paths") and saved["config_paths"][index] != relative:
+            raise ValueError("Native feature configuration path/order mismatch")
+        configs.append(relative)
+    if not configs:
+        raise ValueError("Missing native feature configuration fingerprints")
+    config = load_from_files(configs)
+    window = saved["requested_common_window"]
+    frames = {}
+    for item in saved["input_files"]:
+        path = Path(config["datadir"]) / "futures" / item["filename"]
+        if file_hash(path) != item["sha256"]:
+            raise ValueError("Native feature source changed")
+        frame = pd.read_feather(path)
+        if file_hash(path) != item["sha256"]:
+            raise ValueError("Native feature source changed during independent read")
+        frames[item["pair"], item["timeframe"]] = frame.loc[
+            frame.date.between(pd.Timestamp(window["start"]), pd.Timestamp(window["end"]))
+        ].reset_index(drop=True)
+    bars = window["base_bars"]
+    actual = audit_native_features(
+        config,
+        frames,
+        pairs=saved["audited_pairs"],
+        cut_points=saved.get("cut_points", [bars // 2, bars - 20]),
+    )
+    for field in (
+        "pairs",
+        "differences",
+        "configuration_sha256",
+        "audited_pairs",
+        "configured_pair_count",
+        "all_configured_pairs_audited",
+        "versions",
+        "label_contract",
+        "tolerance",
+    ):
+        if actual.get(field) != saved.get(field):
+            raise ValueError(f"Native feature audit cannot reproduce: {field}")
+    for item in saved.get("populated_artifacts", []):
+        bound_artifact(directory, {"path": item["filename"], "sha256": item["sha256"]})
+    actual["status"] = _native_feature_scope_status(
+        actual["status"],
+        source_errors=saved.get("source_errors", []),
+        all_pairs=actual.get("all_configured_pairs_audited", False),
+    )
+    if saved.get("source_errors"):
+        actual["source_errors"] = saved["source_errors"]
+    if actual["status"] == "PARTIAL":
+        actual["reason"] = "Only a subset of the actual production universe was audited"
+    actual["run_id"] = saved["run_id"]
+    return actual
+
+
 def aggregate(phases: dict[str, dict]) -> dict:
     """A P0 failure always dominates missing dependent evidence; never grants admission."""
     states = [value["status"] for value in phases.values()]
@@ -143,10 +233,18 @@ def aggregate(phases: dict[str, dict]) -> dict:
     )
     if not phases:
         status = BLOCKED
+    if (
+        status == PASS
+        and set(phases) == {str(i) for i in range(1, 7)}
+        and set(phases) - IMPLEMENTED_FORMAL_GATES
+    ):
+        status = BLOCKED
     return {
         "status": status,
         "formal_out_of_sample_research_allowed": status == PASS
-        and set(phases) == {str(i) for i in range(1, 7)},
+        and set(phases) == {str(i) for i in range(1, 7)}
+        and set(phases) <= IMPLEMENTED_FORMAL_GATES,
+        "implemented_formal_gate_validators": sorted(IMPLEMENTED_FORMAL_GATES),
         "model_effectiveness": BLOCKED,
         "live_trading_admission": BLOCKED,
         "scope_rule": "Partial engine/pair/window coverage cannot authorize full-project admission",
@@ -189,13 +287,7 @@ def evaluate(evidence: Path, test_run: Path, output: Path, requested: str = "all
                     raise FileNotFoundError(
                         "Suite has skipped tests; complete gate coverage is not established"
                     )
-                required = {
-                    "test_dataset_rejects_invented_or_duplicated_provenance",
-                    "test_gap_excludes_labels_crossing_missing_bar_and_restarts_warmup",
-                    "test_file_change_during_read_fails_before_dataset",
-                    "test_same_real_data_rebuilds_identical_schema_samples_and_exclusions",
-                }
-                if required - set(tests["executed_test_names"]):
+                if REQUIRED_DATA_NODEIDS - set(tests["executed_test_nodeids"]):
                     raise FileNotFoundError(
                         "Required data fault-injection/integration tests were not executed"
                     )
@@ -206,44 +298,62 @@ def evaluate(evidence: Path, test_run: Path, output: Path, requested: str = "all
                     build_feature_contracts,
                 )
 
-                required = {
-                    "test_injected_known_schema_leak_is_detected_by_values_not_registry",
-                    "test_test_distribution_cannot_change_fit_parameters",
-                    "test_early_stopping_uses_inner_validation_only",
-                    "test_actual_native_split_exposes_overlapping_training_labels",
-                }
-                if required - set(tests["executed_test_names"]):
+                if REQUIRED_LEAKAGE_NODEIDS - set(tests["executed_test_nodeids"]):
                     raise FileNotFoundError(
                         "Required leakage injection/preprocessing/native boundary tests were not executed"
                     )
 
                 config = load_config(["configs/base.yaml", "configs/environment/local.yaml"])
-                native_config = json.loads(Path("config.json").read_text())
-                audits, native = {}, {}
+                audits = {}
                 for pair, path in config.data.items():
                     raw = load_ohlcv(path).iloc[-600:].reset_index(drop=True)
                     audits[pair] = audit_causality(raw, config)
-                    native[pair] = audit_native_boundaries(native_config, raw)
                 columns = json.loads(
                     (evidence / "source_sample_audit/phase1_data.json").read_text()
                 )["features"]
                 contracts = build_feature_contracts(config, columns)
                 write_json(output / "feature_contracts.json", contracts)
                 write_json(output / "feature_causality.json", audits)
-                write_json(output / "native_boundaries.json", native)
-                failed = any(
-                    r["status"] == FAIL for r in [*audits.values(), *native.values(), contracts]
+                native_directory = evidence / "native_training"
+                if not (native_directory / "training_run.json").is_file():
+                    raise FileNotFoundError("Real corrected native training evidence is missing")
+                from tools.verify_native_training_acceptance import (
+                    verify_native_training_acceptance,
                 )
-                blocked = any(
-                    r["status"] == BLOCKED for r in [*audits.values(), *native.values(), contracts]
-                )
+
+                native = verify_native_training_acceptance(native_directory)
+                if native.get("run_id") != tests["run_id"]:
+                    raise ValueError("Native training and test evidence belong to different runs")
+                native_features = verify_native_feature_evidence(evidence / "native_features")
+                if native_features["run_id"] != tests["run_id"]:
+                    raise ValueError("Native feature and test evidence belong to different runs")
+                native_config = json.loads(Path("config.json").read_text())
+                trained_pairs = [value["pair"] for value in native.get("pairs", [])]
+                configured_pairs = native_config["exchange"]["pair_whitelist"]
+                write_json(output / "native_training_independent.json", native)
+                write_json(output / "native_features_independent.json", native_features)
+                components = [*audits.values(), contracts, native, native_features]
+                states = [r["status"] for r in components]
+                if trained_pairs != configured_pairs and all(value == PASS for value in states):
+                    states.append("PARTIAL")
                 phases[key] = {
-                    "status": FAIL if failed else BLOCKED if blocked else PASS,
+                    "status": FAIL
+                    if FAIL in states
+                    else BLOCKED
+                    if BLOCKED in states
+                    else "PARTIAL"
+                    if "PARTIAL" in states
+                    else PASS,
                     "research_causality": audits,
-                    "native_boundaries": native,
-                    "reason": "Native training labels overlap early-stopping validation; production trainer preserved by user decision"
-                    if failed
-                    else "No detected violations",
+                    "native_training": native,
+                    "native_training_scope": {
+                        "trained_pairs": trained_pairs,
+                        "configured_pair_count": len(configured_pairs),
+                        "all_configured_pairs_trained": trained_pairs == configured_pairs,
+                    },
+                    "required_data_blockers": native.get("funding", {}),
+                    "native_features": native_features,
+                    "reason": "Corrected production artifacts and causal features are independently recomputed; scope/data blockers remain explicit",
                 }
             else:
                 phases[key] = {
@@ -266,12 +376,11 @@ def evaluate(evidence: Path, test_run: Path, output: Path, requested: str = "all
         }
     report = aggregate(phases)
     report.update(
-        schema_version=1,
+        **new_receipt_context(tests.get("run_id", output.name)),
         executed_at=started,
         git=git_state(),
-        environment=environment_versions(),
-        ccxt_version=importlib.metadata.version("ccxt"),
         tests=tests,
+        required_test_nodeids=sorted(REQUIRED_DATA_NODEIDS | REQUIRED_LEAKAGE_NODEIDS),
         thresholds={
             "invalid_eligible_samples": 0,
             "label_boundary_violations": 0,
@@ -281,6 +390,27 @@ def evaluate(evidence: Path, test_run: Path, output: Path, requested: str = "all
             "profitability": "No business threshold declared; no effectiveness admission",
         },
     )
+    if tests.get("run_id"):
+        receipt = read_evidence_json(test_run)
+        junit = bound_artifact(
+            test_run.parent,
+            {
+                "path": receipt["junit"],
+                "sha256": receipt["junit_sha256"],
+            },
+        )
+        shutil.copyfile(junit, output / "test_results.xml")
+        receipt["junit"] = "test_results.xml"
+        write_json(output / "test_run.json", receipt)
+        report["test_receipt"] = {
+            "path": "test_run.json",
+            "sha256": file_hash(output / "test_run.json"),
+        }
+    data_path = evidence / "source_sample_audit/phase1_data.json"
+    if data_path.is_file():
+        data_report = read_evidence_json(data_path)
+        for field in ("config_sha256", "config_inputs", "input_files", "dataset_sha256"):
+            report[field] = data_report.get(field)
     report["output_sha256"] = {p.name: file_hash(p) for p in output.iterdir() if p.is_file()}
     write_json(output / "readiness.json", report)
     return report
@@ -293,7 +423,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--phase", choices=["all", "1", "2", "3", "4", "5", "6"], default="all")
     args = parser.parse_args(argv)
-    report = evaluate(args.evidence, args.test_run, args.output, args.phase)
+    try:
+        report = evaluate(args.evidence, args.test_run, args.output, args.phase)
+    except (OSError, ValueError, KeyError, TypeError, ElementTree.ParseError) as error:
+        print(json.dumps({"status": FAIL, "error": type(error).__name__, "reason": str(error)}))
+        return 2
     print(
         json.dumps(
             {

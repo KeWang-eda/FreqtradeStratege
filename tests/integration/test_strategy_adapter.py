@@ -128,7 +128,10 @@ def test_installed_freqai_train_predict_lifecycle(tmp_path, candles, model_name)
     features = strategy.set_freqai_targets(features, {})
     kitchen.find_features(features)
     kitchen.find_labels(features)
-    model.model = model.train(features.iloc[:-20].copy(), "BTC/USDT:USDT", kitchen)
+    # Match native FreqAI: cut the training history before generating future labels.
+    # Generating labels first would retain the last three targets from held-out prices.
+    train_features = strategy.set_freqai_targets(features.iloc[:-20].copy(), {})
+    model.model = model.train(train_features, "BTC/USDT:USDT", kitchen)
     output, ready = model.predict(features.iloc[-20:].copy(), kitchen)
     assert len(output) == len(ready) == 20
     assert "&-s_return" in output

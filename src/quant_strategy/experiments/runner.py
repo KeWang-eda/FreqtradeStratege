@@ -11,7 +11,7 @@ from uuid import uuid4
 import pandas as pd
 import yaml
 
-from quant_strategy.config import ExperimentConfig
+from quant_strategy.config import ExperimentConfig, load_config
 from quant_strategy.dataset import Dataset, build_dataset
 from quant_strategy.errors import DataContractError, UnsupportedCapabilityError
 from quant_strategy.infrastructure.experiment_store import (
@@ -44,6 +44,31 @@ def _fold_manifest(fold: object) -> dict:
     return result
 
 
+def _comparison_contract(manifest: dict, config: ExperimentConfig, schema: dict) -> dict:
+    """Compare prediction tasks on identical inputs/folds, without ranking models."""
+    return {
+        "version": 1,
+        "experiment_scope": manifest["experiment_scope"],
+        "backend": config.model.backend,
+        "input_data_sha256": manifest["input_data_sha256"],
+        "dataset_sha256": manifest["dataset_sha256"],
+        "folds_sha256": manifest["folds_sha256"],
+        "timeframe": config.timeframe,
+        "label": asdict(config.label),
+        "features": {
+            "version": config.feature_version,
+            "schema": schema,
+            "periods": config.periods,
+            "enabled": config.features,
+        },
+        "validation": asdict(config.validation),
+        "final_holdout_evaluated": manifest["final_holdout_evaluated"],
+        "cost_assumptions": manifest["cost_assumptions"],
+        "environment": manifest["environment"],
+        "source_files_sha256": manifest["source_files_sha256"],
+    }
+
+
 def run_experiment(
     config: ExperimentConfig,
     output_root: str | Path,
@@ -51,12 +76,30 @@ def run_experiment(
     frames: Mapping[str, pd.DataFrame] | None = None,
     experiment_id: str | None = None,
     evaluate_final_holdout: bool = False,
+    experiment_scope: str = "development",
+    readiness_path: str | Path | None = None,
 ) -> Path:
     """Run per-pair time-series research and save complete auditable artifacts.
 
     The final time block is reserved and unscored unless explicitly requested.
+    Legacy research is development, including any diagnostic holdout access.
+    Formal requests revalidate admission even when called outside the CLI.
     A failed experiment retains a failed manifest and its exception details.
     """
+    if experiment_scope not in {"development", "formal"}:
+        raise DataContractError("Unknown experiment scope; use development or formal")
+    admission = None
+    if experiment_scope == "formal":
+        from quant_strategy.validation.admission import require_training_admission
+
+        if frames is not None or readiness_path is None:
+            raise DataContractError(
+                "Formal admission requires audited files and readiness evidence"
+            )
+        admission = require_training_admission(readiness_path, config)
+        output_root = Path(output_root) / "formal"
+    elif readiness_path is not None:
+        raise DataContractError("Readiness evidence belongs to the explicit formal entry")
     if config.model.backend != "standalone":
         raise UnsupportedCapabilityError(
             "CLI research folds require standalone; run FreqAI via freqtrade backtesting"
@@ -70,6 +113,20 @@ def run_experiment(
         "name": config.name,
         "started_at": datetime.now(timezone.utc).isoformat(),
         "status": "running",
+        "experiment_scope": experiment_scope,
+        "formal_oos_result": experiment_scope == "formal",
+        "admission": admission,
+        "cost_assumptions": {
+            "trading_evaluation": "not_run",
+            "prediction_metrics": "no_costs_applied",
+        },
+        "holdout_access": {
+            "requested": evaluate_final_holdout,
+            "purpose": "formal_evaluation"
+            if experiment_scope == "formal"
+            else "development_diagnostic",
+            "requested_at": datetime.now(timezone.utc).isoformat(),
+        },
         "backend": config.model.backend,
         "model": asdict(config.model),
         "label": asdict(config.label),
@@ -227,6 +284,10 @@ def run_experiment(
             },
         )
         manifest["status"] = "complete"
+        manifest["comparison_contract"] = _comparison_contract(
+            manifest, config, json.loads((output / "feature_schema.json").read_text())
+        )
+        manifest["comparison_contract_sha256"] = canonical_hash(manifest["comparison_contract"])
         manifest["artifact_checksums"] = {
             str(path.relative_to(output)): file_hash(path)
             for path in sorted(output.rglob("*"))
@@ -243,12 +304,92 @@ def run_experiment(
 
 
 def compare_experiments(paths: list[str | Path]) -> list[dict]:
-    """Compare metrics without choosing or deploying a production winner."""
+    """Reject incomplete, corrupt or incomparable tasks before showing metrics.
+
+    Legacy artifacts without a comparison contract must be regenerated, not
+    silently assigned assumptions. This is prediction comparison, never trading
+    performance selection or an authorization to access a final holdout.
+    """
+    from quant_strategy.validation.admission import bound_artifact, read_evidence_json
+
+    if not paths:
+        raise DataContractError("Comparison requires at least one experiment")
     results = []
+    reference = None
     for path in paths:
         path = Path(path)
-        manifest = json.loads((path / "manifest.json").read_text(encoding="utf-8"))
-        metrics = json.loads((path / "metrics_prediction.json").read_text(encoding="utf-8"))
+        try:
+            manifest = read_evidence_json(path / "manifest.json")
+            if manifest.get("status") != "complete":
+                raise DataContractError("Only complete experiments are comparable")
+            required = {
+                "config.resolved.yaml",
+                "feature_schema.json",
+                "folds.json",
+                "predictions.parquet",
+                "dataset_metadata.parquet",
+                "development_metadata.parquet",
+                "sample_exclusions.parquet",
+                "metrics_prediction.json",
+                "metrics_backtest.json",
+                "leakage_report.json",
+                "source.tar.gz",
+            }
+            checksums = manifest.get("artifact_checksums", {})
+            actual_files = {
+                str(p.relative_to(path))
+                for p in path.rglob("*")
+                if p.is_file() and p != path / "manifest.json"
+            }
+            if not required <= set(checksums) or set(checksums) != actual_files:
+                raise DataContractError("Experiment artifact checksum inventory is incomplete")
+            for name, digest in checksums.items():
+                bound_artifact(path, {"path": name, "sha256": digest})
+            resolved = load_config([path / "config.resolved.yaml"])
+            if (
+                canonical_hash(asdict(resolved)) != manifest.get("config_sha256")
+                or asdict(resolved.label) != manifest.get("label")
+                or resolved.feature_version != manifest.get("feature_version")
+                or asdict(resolved.model) != manifest.get("model")
+                or resolved.seed != manifest.get("seed")
+            ):
+                raise DataContractError("Experiment configuration contract is inconsistent")
+            folds = json.loads((path / "folds.json").read_text())
+            if canonical_hash(folds) != manifest.get("folds_sha256"):
+                raise DataContractError("Experiment fold contract is inconsistent")
+            expected_cost = {
+                "trading_evaluation": "not_run",
+                "prediction_metrics": "no_costs_applied",
+            }
+            backtest = read_evidence_json(path / "metrics_backtest.json")
+            if (
+                backtest.get("status") != "not_run"
+                or manifest.get("cost_assumptions") != expected_cost
+            ):
+                raise DataContractError(
+                    "Trading costs need a supported explicit comparison contract"
+                )
+            schema = read_evidence_json(path / "feature_schema.json")
+            contract = _comparison_contract(manifest, resolved, schema)
+            digest = canonical_hash(contract)
+            if (
+                digest != manifest.get("comparison_contract_sha256")
+                or digest != canonical_hash(manifest.get("comparison_contract"))
+                or manifest.get("experiment_scope") not in {"development", "formal"}
+            ):
+                raise DataContractError(
+                    "Experiment comparison contract fingerprint is inconsistent"
+                )
+            if reference is not None and reference != digest:
+                raise DataContractError(
+                    "Experiments are not comparable: input, label, folds or cost contract differs"
+                )
+            reference = digest
+            metrics = read_evidence_json(path / "metrics_prediction.json")
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            if isinstance(error, DataContractError):
+                raise
+            raise DataContractError(f"Experiment comparison contract rejected: {error}") from error
         results.append(
             {
                 "experiment_id": manifest["experiment_id"],

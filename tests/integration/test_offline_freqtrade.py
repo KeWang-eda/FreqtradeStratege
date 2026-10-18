@@ -5,6 +5,7 @@ it is never used as a model or as market metadata by the production adapter.
 """
 
 import asyncio
+import hashlib
 import json
 import os
 import shutil
@@ -182,11 +183,11 @@ def offline_command(tmp_path, snapshot):
     return command, report, userdir
 
 
-def run_audited(command):
+def run_audited(command, *, extra_environment=None):
     return subprocess.run(
         command,
         cwd=ROOT,
-        env={**os.environ, "PYTHONPATH": str(ROOT / "src")},
+        env={**os.environ, "PYTHONPATH": str(ROOT / "src"), **(extra_environment or {})},
         capture_output=True,
         text=True,
         timeout=180,
@@ -208,6 +209,12 @@ def test_native_entry_rejects_missing_or_corrupt_snapshot_without_network(tmp_pa
 
 
 def test_native_backtest_in_disconnected_namespace_matches_online_reference(tmp_path):
+    """Keep the old online/offline adapter baseline on its exact old trainer.
+
+    This fixture is deliberately legacy-only. Corrected production training has
+    a different sample set and must not pretend to reproduce the leaked model.
+    No reference output, comparison tolerance or production class is modified.
+    """
     required = ROOT / "data/futures/BTC_USDT_USDT-4h-futures.feather"
     if not required.exists():
         pytest.skip("Real local historical data is required for native integration")
@@ -218,9 +225,28 @@ def test_native_backtest_in_disconnected_namespace_matches_online_reference(tmp_
     if probe.returncode:
         pytest.skip(f"Network namespace unavailable: {probe.stderr}")
     command, report, userdir = offline_command(tmp_path, SNAPSHOT)
+    legacy = tmp_path / "frozen_legacy_model"
+    legacy.mkdir()
+    source = subprocess.check_output(
+        [
+            "git",
+            "show",
+            "4ba4fe83f46a0bd58b06f9765c3368eccd1b528f:freqaimodels/XGBoostRegressorES.py",
+        ],
+        cwd=ROOT,
+    )
+    assert (
+        hashlib.sha256(source).hexdigest()
+        == "0d32f7ca61cd4e643c530cf658585e53c1ba7d38c3104e2668a5a91aad33d7f2"
+    )
+    (legacy / "XGBoostRegressorES.py").write_bytes(source)
+    command[command.index("--freqaimodel-path") + 1] = str(legacy)
     trace = tmp_path / "network.strace"
     result = run_audited(
-        [*prefix, "strace", "-f", "-e", "trace=network", "-o", str(trace), *command]
+        [*prefix, "strace", "-f", "-e", "trace=network", "-o", str(trace), *command],
+        extra_environment={
+            "FREQTRADE__FREQAI__IDENTIFIER": "mystrategy-4h-regression-72pair-corr-s1-v1"
+        },
     )
     assert result.returncode == 0, result.stdout + result.stderr
     evidence = json.loads(report.read_text())
@@ -240,3 +266,31 @@ def test_native_backtest_in_disconnected_namespace_matches_online_reference(tmp_
     assert regression["trade_count"] == {"old": 13, "new": 13}
     assert len(regression["prediction_files"]) == 4
     assert regression["order_count"] == {"old": 26, "new": 26}
+
+
+def test_corrected_native_backtest_is_reproducible_in_fresh_disconnected_userdirs(tmp_path):
+    """New production code must actually retrain and strictly reproduce itself."""
+    outputs = []
+    for attempt in ("first", "second"):
+        command, report, userdir = offline_command(tmp_path / attempt, SNAPSHOT)
+        result = run_audited(["unshare", "--user", "--map-root-user", "--net", *command])
+        assert result.returncode == 0, result.stdout + result.stderr
+        network = json.loads(report.read_text())
+        assert network["http_requests"] == network["socket_events"] == []
+        assert network["denied_operations"] == 0
+        audits = list(userdir.rglob("native_training_audit/*/audit.json"))
+        assert len(audits) == 4  # BTC/ETH, both real weekly training windows.
+        for path in audits:
+            audit = json.loads(path.read_text())
+            assert audit["phase"] == "trained" and audit["status"] == "PASS"
+            assert audit["counts"]["purged"] == 3
+            assert (
+                audit["preprocessor_fit"]["feature_pipeline"]["sample_ids"]
+                == audit["label_statistics_fit_sample_ids"]
+            )
+        outputs.append(userdir)
+    compared = compare_runs(*outputs)
+    assert compared["passed"], compared["differences"]
+    assert len(compared["prediction_files"]) == 4
+    assert compared["trade_count"]["old"] == compared["trade_count"]["new"] > 0
+    assert compared["order_count"]["old"] == compared["order_count"]["new"] > 0

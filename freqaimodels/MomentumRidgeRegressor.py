@@ -7,11 +7,9 @@ BaseRegressionModel.predict() 可直接调用并正常保存/加载。
 import logging
 from typing import Any
 
-import numpy as np
-from sklearn.linear_model import Ridge
-
 from freqtrade.freqai.base_models.BaseRegressionModel import BaseRegressionModel
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
+from sklearn.linear_model import Ridge
 
 logger = logging.getLogger(__name__)
 
@@ -41,8 +39,7 @@ class MomentumRidgeRegressor(BaseRegressionModel):
         """选择动量/RSI列训练 Ridge；没有匹配列时明确失败。"""
         feature_names = list(dk.training_features_list)
         selected_indices = [
-            index for index, name in enumerate(feature_names)
-            if "momentum" in name or "rsi" in name
+            index for index, name in enumerate(feature_names) if "momentum" in name or "rsi" in name
         ]
         if not selected_indices:
             raise ValueError("training_features_list 中没有 momentum/rsi 特征")
@@ -61,6 +58,9 @@ class MomentumRidgeRegressor(BaseRegressionModel):
         model.fit(selected_X, y, sample_weight=data_dictionary["train_weights"])
         logger.info(
             "%s: Ridge 使用 %d/%d 个 momentum/rsi 特征，alpha=%.4f",
-            dk.pair, len(selected_indices), len(feature_names), alpha,
+            dk.pair,
+            len(selected_indices),
+            len(feature_names),
+            alpha,
         )
         return SelectedFeatureRidge(model, selected_indices)

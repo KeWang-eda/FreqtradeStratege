@@ -7,13 +7,13 @@ import pandas as pd
 def prediction_metrics(
     truth: np.ndarray | pd.Series, prediction: np.ndarray | pd.Series
 ) -> dict[str, float | int | None]:
-    """Evaluate finite pairs; undefined constant/empty correlations become None."""
+    """Reject missing/nonfinite results; constant/empty correlations are undefined."""
     actual = np.asarray(truth, dtype=float).reshape(-1)
     predicted = np.asarray(prediction, dtype=float).reshape(-1)
     if actual.shape != predicted.shape:
         raise ValueError("Truth and prediction lengths disagree")
-    valid = np.isfinite(actual) & np.isfinite(predicted)
-    actual, predicted = actual[valid], predicted[valid]
+    if not np.isfinite(actual).all() or not np.isfinite(predicted).all():
+        raise ValueError("Truth and predictions must be finite; invalid samples cannot be hidden")
     if not len(actual):
         return {
             "n": 0,

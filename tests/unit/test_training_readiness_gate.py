@@ -12,7 +12,13 @@ from quant_strategy.dataset import build_dataset
 from quant_strategy.experiments.runner import _dataset_hash
 from quant_strategy.infrastructure.experiment_store import canonical_hash, file_hash
 from quant_strategy.market_data.contracts import audit_source
-from tools.accept_training_readiness import aggregate, evaluate, verify_data_evidence
+from quant_strategy.validation.admission import new_receipt_context
+from tools.accept_training_readiness import (
+    _native_feature_scope_status,
+    aggregate,
+    evaluate,
+    verify_data_evidence,
+)
 from tools.accept_training_readiness import test_evidence as verify_test_evidence
 
 
@@ -36,7 +42,9 @@ def test_passing_only_one_phase_or_empty_evidence_cannot_authorize_training():
 
 def test_engineering_gate_does_not_grant_profitability_or_live_admission():
     report = aggregate({str(i): {"status": "PASS"} for i in range(1, 7)})
-    assert report["formal_out_of_sample_research_allowed"]
+    assert not report["formal_out_of_sample_research_allowed"]
+    assert report["implemented_formal_gate_validators"] == ["1", "2"]
+    assert report["status"] == "BLOCKED"
     assert report["model_effectiveness"] == report["live_trading_admission"] == "BLOCKED"
 
 
@@ -47,6 +55,7 @@ def test_receipt_requires_actual_nonempty_junit_and_zero_exit(tmp_path):
         '<testsuites><testsuite tests="1" failures="0" errors="0" skipped="0"><testcase name="actual_test"/></testsuite></testsuites>'
     )
     value = {
+        **new_receipt_context("unit-test-receipt"),
         "junit": junit.name,
         "junit_sha256": file_hash(junit),
         "exit_code": 0,
@@ -72,6 +81,7 @@ def test_skipped_case_is_not_executed_gate_evidence(tmp_path):
     receipt.write_text(
         json.dumps(
             {
+                **new_receipt_context("unit-skipped-receipt"),
                 "junit": junit.name,
                 "junit_sha256": file_hash(junit),
                 "exit_code": 0,
@@ -93,6 +103,7 @@ def test_failed_junit_cannot_be_relabelled_by_exit_code(tmp_path):
     receipt.write_text(
         json.dumps(
             {
+                **new_receipt_context("unit-failed-receipt"),
                 "junit": junit.name,
                 "junit_sha256": file_hash(junit),
                 "exit_code": 0,
@@ -168,3 +179,24 @@ def test_missing_real_evidence_is_blocked_not_invented_pass_or_test_failure(tmp_
     assert report["status"] == "BLOCKED"
     assert report["phases"]["6"]["independent_aggregation_executed"]
     assert not report["formal_out_of_sample_research_allowed"]
+
+
+@pytest.mark.parametrize(
+    "recomputed,source_errors,all_pairs,expected",
+    [
+        ("FAIL", [{"reason": "missing_source"}], True, "FAIL"),
+        ("FAIL", [{"reason": "missing_source"}], False, "FAIL"),
+        ("FAIL", [], True, "FAIL"),
+        ("PASS", [{"reason": "missing_source"}], True, "BLOCKED"),
+        ("BLOCKED", [{"reason": "missing_source"}], False, "BLOCKED"),
+        ("PASS", [], False, "PARTIAL"),
+        ("PASS", [], True, "PASS"),
+    ],
+)
+def test_recomputed_feature_failure_dominates_missing_sources_and_partial_scope(
+    recomputed, source_errors, all_pairs, expected
+):
+    assert (
+        _native_feature_scope_status(recomputed, source_errors=source_errors, all_pairs=all_pairs)
+        == expected
+    )

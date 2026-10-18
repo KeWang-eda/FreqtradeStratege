@@ -14,20 +14,171 @@ FreqAI 自带的 XGBoostRegressor 在 xgboost >= 3.0 下早停失效：
 """
 
 import logging
+from pathlib import Path
+from time import time
 from typing import Any
 
 import xgboost as xgb
-from xgboost import XGBRegressor
-
 from freqtrade.freqai.base_models.BaseRegressionModel import BaseRegressionModel
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 from freqtrade.freqai.tensorboard import TBCallback
+from xgboost import XGBRegressor
+
+from quant_strategy.errors import DataContractError
+from quant_strategy.market_data.contracts import frame_fingerprint
+from quant_strategy.training.native_isolation import (
+    IdentityPreservingPipeline,
+    bind_cache_contract,
+    canonical_sha256,
+    purge_native_split,
+    training_contract,
+    validate_native_config,
+    validate_training_alignment,
+    write_audit_artifacts,
+)
 
 logger = logging.getLogger(__name__)
 
 
 class XGBoostRegressorES(BaseRegressionModel):
-    """回归模型；与自带实现的唯一差别是早停真正生效。"""
+    """早停回归模型，在任何拟合前严格隔离未来标签并保护缓存。"""
+
+    def __init__(self, config: dict) -> None:
+        # This must precede super(): DataDrawer loads existing models/predictions there.
+        self.native_cache_contract = bind_cache_contract(config)
+        super().__init__(config)
+
+    def define_data_pipeline(self, threads=-1):
+        pipeline = super().define_data_pipeline(threads=threads)
+        return IdentityPreservingPipeline(pipeline.steps, pipeline.fitparams)
+
+    def define_label_pipeline(self, threads=-1):
+        pipeline = super().define_label_pipeline(threads=threads)
+        return IdentityPreservingPipeline(pipeline.steps, pipeline.fitparams)
+
+    def train(self, unfiltered_df, pair: str, dk: FreqaiDataKitchen, **kwargs) -> Any:
+        """FreqAI 2026.7 train lifecycle with pre-fit purge and indexed audits.
+
+        Upstream BaseRegressionModel.train is a small, fixed-version lifecycle.
+        Its fit() hook runs after fit_labels and both preprocessing fits, so that
+        public hook alone cannot fix this bug. This local override retains the
+        native filtering, split, transforms, model and callback semantics.
+        """
+        validate_native_config(self.config)
+        if training_contract(self.config) != self.native_cache_contract:
+            raise DataContractError(
+                "Training input/cache contract changed since model initialization"
+            )
+        start_time = time()
+        logger.info("-------------------- Starting isolated training %s --------------------", pair)
+        features, labels = dk.filter_features(
+            unfiltered_df, dk.training_features_list, dk.label_list, training_filter=True
+        )
+        dd = dk.make_train_test_datasets(features, labels)
+        samples = purge_native_split(unfiltered_df, pair, dk, dd, self.config)
+        validate_training_alignment(samples, dd)
+        # Keep logical references reproducible across fresh userdirs. The actual
+        # input and training contract determine identity; an existing run is
+        # never overwritten or silently treated as successful cached training.
+        audit_identity = canonical_sha256(
+            {
+                "pair": pair,
+                "input_fingerprint": frame_fingerprint(
+                    unfiltered_df[["date", *dk.training_features_list, *dk.label_list]]
+                ),
+                "training_contract_sha256": canonical_sha256(self.native_cache_contract),
+            }
+        )
+        directory = Path(dk.data_path) / "native_training_audit" / audit_identity
+        try:
+            directory.mkdir(parents=True, exist_ok=False)
+        except FileExistsError as exc:
+            raise DataContractError(
+                "Native training audit already exists for this input and contract; "
+                "use a fresh userdir or identifier instead of overwriting evidence"
+            ) from exc
+        dk.data["native_training_contract"] = self.native_cache_contract["training_contract"]
+        dk.data["native_training_audit"] = directory.relative_to(dk.data_path).as_posix()
+        self.last_native_audit_path = directory
+        write_audit_artifacts(
+            directory,
+            samples,
+            unfiltered_df,
+            dd,
+            dk,
+            self.config,
+            phase="before_preprocessing",
+            contract=self.native_cache_contract,
+        )
+        try:
+            # Purge above must precede *all* learned statistics, including label means.
+            dk.fit_labels()
+            dk.feature_pipeline = self.define_data_pipeline(threads=dk.thread_count)
+            dk.label_pipeline = self.define_label_pipeline(threads=dk.thread_count)
+            dd["train_features"], dd["train_labels"], dd["train_weights"] = (
+                dk.feature_pipeline.fit_transform(
+                    dd["train_features"], dd["train_labels"], dd["train_weights"]
+                )
+            )
+            dd["train_labels"], _, _ = dk.label_pipeline.fit_transform(dd["train_labels"])
+            validation = self.freqai_info["data_split_parameters"].get("test_size", 0.1) != 0
+            if validation:
+                dd["test_features"], dd["test_labels"], dd["test_weights"] = (
+                    dk.feature_pipeline.transform(
+                        dd["test_features"], dd["test_labels"], dd["test_weights"]
+                    )
+                )
+                dd["test_labels"], _, _ = dk.label_pipeline.transform(dd["test_labels"])
+                if dd["test_features"].empty:
+                    raise DataContractError(
+                        "Early-stopping validation is empty after preprocessing"
+                    )
+            validate_training_alignment(samples, dd, fitted=True, dk=dk)
+            write_audit_artifacts(
+                directory,
+                samples,
+                unfiltered_df,
+                dd,
+                dk,
+                self.config,
+                phase="preprocessed",
+                contract=self.native_cache_contract,
+            )
+            logger.info(
+                "Training model on %d features and %d purged-safe data points",
+                len(dd["train_features"].columns),
+                len(dd["train_features"]),
+            )
+            model = self.fit(dd, dk)
+            write_audit_artifacts(
+                directory,
+                samples,
+                unfiltered_df,
+                dd,
+                dk,
+                self.config,
+                phase="trained",
+                contract=self.native_cache_contract,
+            )
+        except Exception as exc:
+            write_audit_artifacts(
+                directory,
+                samples,
+                unfiltered_df,
+                dd,
+                dk,
+                self.config,
+                phase="failed",
+                contract=self.native_cache_contract,
+                error=f"{type(exc).__name__}: {exc}",
+            )
+            raise
+        logger.info(
+            "-------------------- Done isolated training %s (%.2f secs) --------------------",
+            pair,
+            time() - start_time,
+        )
+        return model
 
     def fit(self, data_dictionary: dict, dk: FreqaiDataKitchen, **kwargs) -> Any:
         """训练回归模型，用测试集早停并保留最优轮次的模型。"""
@@ -63,9 +214,7 @@ class XGBoostRegressorES(BaseRegressionModel):
                     data_name="validation_0",
                 )
             )
-            logger.info(
-                "%s: 早停已启用 rounds=%d（监控测试集）", dk.pair, early_stopping_rounds
-            )
+            logger.info("%s: 早停已启用 rounds=%d（监控测试集）", dk.pair, early_stopping_rounds)
 
         model.set_params(callbacks=callbacks)
         model.fit(
@@ -82,8 +231,6 @@ class XGBoostRegressorES(BaseRegressionModel):
         if early_stopping_rounds > 0 and eval_set is not None:
             best = getattr(model, "best_iteration", None)
             rounds = len(model.evals_result().get("validation_0", {}).get("rmse", []))
-            logger.info(
-                "%s: 实际训练轮数=%s best_iteration=%s", dk.pair, rounds, best
-            )
+            logger.info("%s: 实际训练轮数=%s best_iteration=%s", dk.pair, rounds, best)
 
         return model

@@ -19,7 +19,13 @@ def main(argv: list[str] | None = None) -> int:
     subparsers = parser.add_subparsers(dest="command", required=True)
     for command in ("validate", "run", "formal-run", "dataset-build"):
         sub = subparsers.add_parser(
-            command, aliases=["config-check"] if command == "validate" else []
+            command,
+            aliases=["config-check"] if command == "validate" else [],
+            help="Development training; never formal OOS admission"
+            if command == "run"
+            else "Formal research requires current independently verified admission"
+            if command == "formal-run"
+            else None,
         )
         sub.add_argument("-c", "--config", action="append", required=True)
         sub.add_argument("--set", dest="overrides", action="append", default=[])
@@ -90,6 +96,8 @@ def _execute(args: argparse.Namespace) -> int:
             args.output,
             experiment_id=args.experiment_id,
             evaluate_final_holdout=args.evaluate_final_holdout,
+            experiment_scope="formal" if args.command == "formal-run" else "development",
+            readiness_path=args.readiness if args.command == "formal-run" else None,
         )
         print(str(output))
     return 0
