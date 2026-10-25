@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "status": "BLOCKED",
+  "official_sources_checked": [
+    "https://github.com/binance/binance-public-data/blob/master/README.md",
+    "https://fapi.binance.com/fapi/v1/exchangeInfo",
+    "https://www.binance.com/en/support/announcement"
+  ],
+  "contracts": {
+    "BTCUSDT-PERPETUAL": {
+      "pair": "BTC/USDT:USDT",
+      "candle_range": {
+        "start": "2020-01-01T00:00:00Z",
+        "end": "2026-10-15T20:00:00Z",
+        "count": 14880
+      },
+      "historical_materials": [
+        "Current exchangeInfo snapshot only; no dated historical state archive found"
+      ],
+      "proven_status_intervals": [],
+      "unknown_candle_count": 14880,
+      "current_snapshot_as_of": "2026-10-17T12:04:06Z",
+      "status": "BLOCKED",
+      "reason": "Current snapshot cannot be extended backward; no official static listing/delist/suspend/migration state history available under no-API constraint."
+    },
+    "ETHUSDT-PERPETUAL": {
+      "pair": "ETH/USDT:USDT",
+      "candle_range": {
+        "start": "2020-01-01T00:00:00Z",
+        "end": "2026-10-15T20:00:00Z",
+        "count": 14880
+      },
+      "historical_materials": [
+        "Current exchangeInfo snapshot only; no dated historical state archive found"
+      ],
+      "proven_status_intervals": [],
+      "unknown_candle_count": 14880,
+      "current_snapshot_as_of": "2026-10-17T12:04:06Z",
+      "status": "BLOCKED",
+      "reason": "Current snapshot cannot be extended backward; no official static listing/delist/suspend/migration state history available under no-API constraint."
+    },
+    "BNBUSDT-PERPETUAL": {
+      "pair": "BNB/USDT:USDT",
+      "candle_range": {
+        "start": "2020-02-10T08:00:00Z",
+        "end": "2026-10-15T20:00:00Z",
+        "count": 14638
+      },
+      "historical_materials": [
+        "Current exchangeInfo snapshot only; no dated historical state archive found"
+      ],
+      "proven_status_intervals": [],
+      "unknown_candle_count": 14638,
+      "current_snapshot_as_of": "2026-10-17T12:04:06Z",
+      "status": "BLOCKED",
+      "reason": "Current snapshot cannot be extended backward; no official static listing/delist/suspend/migration state history available under no-API constraint."
+    }
+  }
+}

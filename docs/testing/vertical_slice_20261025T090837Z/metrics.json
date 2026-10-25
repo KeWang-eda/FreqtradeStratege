@@ -1,0 +1,56 @@
+{
+  "validation": {
+    "model": {
+      "n": 7614,
+      "mae": 0.01270019108954956,
+      "rmse": 0.01919270078834846,
+      "direction_accuracy": 0.5064355135277121,
+      "pearson_ic": 0.05463112556920335,
+      "spearman_ic": 0.03346567244450295
+    },
+    "zero_baseline": {
+      "n": 7614,
+      "mae": 0.012627756314127235,
+      "rmse": 0.01919249468151172,
+      "direction_accuracy": 0.0007880220646178094,
+      "pearson_ic": null,
+      "spearman_ic": null
+    }
+  },
+  "development_test": {
+    "model": {
+      "n": 7614,
+      "mae": 0.014596592632782079,
+      "rmse": 0.0213585510821527,
+      "direction_accuracy": 0.5011820330969267,
+      "pearson_ic": 0.03347561761891388,
+      "spearman_ic": 0.0025788301108497736
+    },
+    "zero_baseline": {
+      "n": 7614,
+      "mae": 0.014481488257980428,
+      "rmse": 0.021308977918787324,
+      "direction_accuracy": 0.0001313370107696349,
+      "pearson_ic": null,
+      "spearman_ic": null
+    },
+    "rank_ic_mean": -0.02206461780929866,
+    "simulation": {
+      "status": "PASS",
+      "trades": 846,
+      "equity_final": 1.517536287467362,
+      "cumulative_net_simple_sum": 0.6597268845169119,
+      "cumulative_gross_simple_sum": 1.5057268845169127,
+      "max_drawdown": -0.3547389640160593,
+      "pair_counts": {
+        "ETH/USDT:USDT": 399,
+        "BNB/USDT:USDT": 358,
+        "BTC/USDT:USDT": 89
+      },
+      "fee_each_side": 0.0005,
+      "slippage_bps": 0.0,
+      "funding_cost": "NOT_MODELED",
+      "universe": "fixed BTC/ETH/BNB development assumption"
+    }
+  }
+}

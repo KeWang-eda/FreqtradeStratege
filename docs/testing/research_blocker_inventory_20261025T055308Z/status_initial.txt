@@ -1,0 +1,21 @@
+## main...origin/main
+ M pyproject.toml
+ M src/quant_strategy/validation/admission.py
+ M tests/conftest.py
+ M tests/integration/test_controlled_fold_training.py
+ M tests/integration/test_controlled_holdout.py
+ M tests/integration/test_independent_native_acceptance.py
+ M tests/unit/test_training_readiness_gate.py
+ M tools/accept_training_readiness.py
+?? docs/testing/
+?? src/quant_strategy/validation/source_monitor.py
+?? src/quant_strategy/validation/test_receipts.py
+?? tests/support/
+?? tests/unit/test_runner_receipt_cli.py
+?? tests/unit/test_suite_execution.py
+?? tools/collect_test_inventory.py
+?? tools/pytest_receipt.py
+?? tools/run_tests.py
+?? tools/summarize_test_costs.py
+?? tools/test_support/
+?? tools/verify_test_consolidation.py

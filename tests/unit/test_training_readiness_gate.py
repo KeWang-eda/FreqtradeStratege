@@ -1,6 +1,11 @@
 """Admission rejects forged, failed, missing or non-comparable evidence."""
 
 import json
+import os
+import shutil
+import subprocess
+import sys
+from copy import deepcopy
 from dataclasses import asdict
 
 import pandas as pd
@@ -12,7 +17,11 @@ from quant_strategy.dataset import build_dataset
 from quant_strategy.experiments.runner import _dataset_hash
 from quant_strategy.infrastructure.experiment_store import canonical_hash, file_hash
 from quant_strategy.market_data.contracts import audit_source
-from quant_strategy.validation.admission import new_receipt_context
+from quant_strategy.validation.admission import (
+    diagnose_legacy_test_execution,
+    new_receipt_context,
+    verify_test_execution,
+)
 from tools.accept_training_readiness import (
     _native_feature_scope_status,
     aggregate,
@@ -62,7 +71,17 @@ def test_receipt_requires_actual_nonempty_junit_and_zero_exit(tmp_path):
         "command": ["python", "-m", "pytest"],
     }
     receipt.write_text(json.dumps(value))
-    assert verify_test_evidence(receipt)["executed_test_names"] == ["actual_test"]
+    diagnostic = diagnose_legacy_test_execution(receipt)
+    assert diagnostic["executed_test_names"] == ["actual_test"]
+    assert diagnostic["diagnostic_only"] is True
+    assert diagnostic["engineering_status"] == "PARTIAL"
+    assert diagnostic["formal_research_allowed"] is False
+    with pytest.raises(ValueError, match="runner receipt version 3"):
+        verify_test_evidence(receipt)
+    with pytest.raises(ValueError, match="runner receipt version 3"):
+        verify_test_execution(receipt)
+    with pytest.raises(ValueError, match="explicit diagnose_legacy_test_execution"):
+        verify_test_execution(receipt, require_runner_receipt=False)
     receipt.write_text(json.dumps({**value, "exit_code": 1}))
     with pytest.raises(ValueError, match="failed"):
         verify_test_evidence(receipt)
@@ -89,9 +108,12 @@ def test_skipped_case_is_not_executed_gate_evidence(tmp_path):
             }
         )
     )
-    report = verify_test_evidence(receipt)
+    report = diagnose_legacy_test_execution(receipt)
     assert report["skipped"] == 1
     assert "required_test" not in report["executed_test_names"]
+    assert report["diagnostic_only"] and not report["formal_research_allowed"]
+    with pytest.raises(ValueError, match="runner receipt version 3"):
+        verify_test_evidence(receipt)
 
 
 def test_failed_junit_cannot_be_relabelled_by_exit_code(tmp_path):
@@ -113,6 +135,125 @@ def test_failed_junit_cannot_be_relabelled_by_exit_code(tmp_path):
     )
     with pytest.raises(ValueError, match="failed"):
         verify_test_evidence(receipt)
+
+
+@pytest.fixture(scope="module")
+def genuine_readiness_receipt(tmp_path_factory):
+    """Execute one real, model-free pytest node through the unmodified v3 runner."""
+    output = tmp_path_factory.mktemp("readiness-v3") / "run"
+    target = (
+        "tests/unit/test_config_labels_features.py::test_metrics_empty_constant_and_known_values"
+    )
+    command = [
+        sys.executable,
+        "tools/run_tests.py",
+        "ci",
+        "--output",
+        str(output),
+        "--",
+        target,
+    ]
+    result = subprocess.run(command, capture_output=True, text=True, check=False)
+    assert result.returncode == 0, result.stdout + result.stderr
+    receipt = json.loads((output / "test_run.json").read_text())
+    assert receipt["selected_nodeids"] == [target]
+    assert receipt["counts"]["passed"] == 1
+    assert receipt["source_unchanged"] is True
+    return output
+
+
+def test_readiness_entry_accepts_genuine_v3_without_claiming_complete_admission(
+    genuine_readiness_receipt,
+):
+    report = verify_test_evidence(genuine_readiness_receipt / "test_run.json")
+    assert report["tests"] == 1 and report["exit_code"] == 0
+    assert report["executed_test_nodeids"] == [
+        "tests/unit/test_config_labels_features.py::test_metrics_empty_constant_and_known_values"
+    ]
+    # This is execution-integrity acceptance, not a complete phase/six-gate grant.
+    assert not aggregate({})["formal_out_of_sample_research_allowed"]
+
+
+READINESS_FAULTS = {
+    "missing_versions_with_contradictions": "runner receipt version 3",
+    "missing_versions": "runner receipt version 3",
+    "collect_only": "collect_only must be false",
+    "source_changed": "source_unchanged must be true",
+    "command_collection_only": "Actual command differs",
+    "failed_counts": "Receipt counts disagree",
+}
+
+
+def _damaged_readiness_receipt(original, tmp_path, fault):
+    copied = tmp_path / "damaged"
+    shutil.copytree(original, copied)
+    path = copied / "test_run.json"
+    receipt = json.loads(path.read_text())
+    before = deepcopy(receipt)
+    fields = set()
+    if fault.startswith("missing_versions"):
+        assert receipt.pop("mode") == "ci"
+        assert receipt.pop("test_receipt_version") == 3
+        fields.update(("mode", "test_receipt_version"))
+    if fault in {"collect_only", "missing_versions_with_contradictions"}:
+        receipt["collect_only"] = True
+        fields.add("collect_only")
+    if fault in {"source_changed", "missing_versions_with_contradictions"}:
+        receipt["source_unchanged"] = False
+        fields.add("source_unchanged")
+    if fault in {"command_collection_only", "missing_versions_with_contradictions"}:
+        receipt["command"].append("--collect-only")
+        fields.add("command")
+    if fault in {"failed_counts", "missing_versions_with_contradictions"}:
+        receipt["counts"]["failures"] += 1
+        receipt["counts"]["passed"] -= 1
+        fields.add("counts")
+    assert {k for k in set(before) | set(receipt) if before.get(k) != receipt.get(k)} == fields
+    # JUnit stays byte-for-byte genuine: failure must come from the target contract.
+    assert file_hash(copied / receipt["junit"]) == before["junit_sha256"]
+    path.write_text(json.dumps(receipt))
+    return path
+
+
+@pytest.mark.parametrize("fault,reason", READINESS_FAULTS.items())
+def test_actual_readiness_entry_rejects_execution_contract_faults(
+    genuine_readiness_receipt, tmp_path, fault, reason
+):
+    path = _damaged_readiness_receipt(genuine_readiness_receipt, tmp_path, fault)
+    with pytest.raises(ValueError, match=reason):
+        verify_test_evidence(path)
+
+
+@pytest.mark.parametrize("fault,reason", READINESS_FAULTS.items())
+def test_real_readiness_cli_rejects_before_data_checks(
+    genuine_readiness_receipt, tmp_path, fault, reason
+):
+    path = _damaged_readiness_receipt(genuine_readiness_receipt, tmp_path, fault)
+    output = tmp_path / "readiness"
+    command = [
+        sys.executable,
+        "tools/accept_training_readiness.py",
+        "--test-run",
+        str(path),
+        "--evidence",
+        str(tmp_path / "absent-data-evidence"),
+        "--output",
+        str(output),
+    ]
+    result = subprocess.run(
+        command,
+        env={**os.environ, "PYTHONPATH": "src:."},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 1, result.stdout + result.stderr
+    report = json.loads((output / "readiness.json").read_text())
+    assert report["status"] == "FAIL"
+    assert reason in report["phases"]["1"]["tests"]["reason"]
+    assert report["phases"]["1"]["reason"] == "Automated test evidence failed"
+    assert not report["formal_out_of_sample_research_allowed"]
+    assert not (output / "test_run.json").exists()
 
 
 @pytest.fixture

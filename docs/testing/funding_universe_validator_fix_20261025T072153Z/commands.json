@@ -1,0 +1,11 @@
+{
+  "commands": [
+    {"command": "git status --short --branch; git rev-parse HEAD", "exit_code": 0, "side_effect": "read-only"},
+    {"command": "/home/wangke/miniconda3/envs/quant/bin/python -m pytest -q tests/unit/test_evidence_packages.py", "exit_code": 0, "summary": "22 passed", "side_effect": "read-only temporary synthetic fixtures"},
+    {"command": "/home/wangke/miniconda3/envs/quant/bin/python -m pytest -q tests/unit/test_controlled_governance.py", "exit_code": 0, "summary": "21 passed", "side_effect": "read-only"},
+    {"command": "python -m py_compile src/quant_strategy/research/evidence.py tools/validate_evidence.py tests/unit/test_evidence_packages.py", "exit_code": 0, "side_effect": "read-only"},
+    {"command": "git diff --check", "exit_code": 0, "side_effect": "read-only"}
+  ],
+  "ruff": {"status": "UNAVAILABLE", "reason": "No ruff executable in available environments"},
+  "forbidden_operations": ["git add", "git commit", "git push", "download", "exchange API", "training", "formal OOS", "final holdout values"]
+}

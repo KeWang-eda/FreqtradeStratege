@@ -1,0 +1,56 @@
+{
+  "official_static_sources": [
+    "https://github.com/binance/binance-public-data/blob/master/README.md",
+    "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2020-01.zip",
+    "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2020-01.zip",
+    "https://data.binance.vision/data/futures/um/monthly/fundingRate/BNBUSDT/BNBUSDT-fundingRate-2020-02.zip"
+  ],
+  "historical_state_sources_checked": [
+    "https://github.com/binance/binance-public-data/blob/master/README.md",
+    "https://fapi.binance.com/fapi/v1/exchangeInfo",
+    "https://www.binance.com/en/support/announcement"
+  ],
+  "previous_evidence_raw_files": [
+    {
+      "path": "docs/testing/funding_universe_evidence_20261025T075727Z/raw/funding/BNBUSDT-fundingRate-2020-02.csv",
+      "sha256": "1cfc575627b82f904ec10ee184149f2734daea5989834d5bc925d5244b34789a",
+      "bytes": 1536
+    },
+    {
+      "path": "docs/testing/funding_universe_evidence_20261025T075727Z/raw/funding/BNBUSDT-fundingRate-2020-02.zip",
+      "sha256": "98babcb280ea039fa506f7ad791889dfa3d4ca0ec968131e73a321d349370b22",
+      "bytes": 695
+    },
+    {
+      "path": "docs/testing/funding_universe_evidence_20261025T075727Z/raw/funding/BTCUSDT-fundingRate-2020-01.csv",
+      "sha256": "b566eea750ede01486360de242ce63a727ebbbc81fb46fcfdf2fb68188b48835",
+      "bytes": 2563
+    },
+    {
+      "path": "docs/testing/funding_universe_evidence_20261025T075727Z/raw/funding/BTCUSDT-fundingRate-2020-01.zip",
+      "sha256": "7f81b2f3694d13779e7e896b69d60cd61e9444d7b9f9e90df761935e1c1b76e2",
+      "bytes": 825
+    },
+    {
+      "path": "docs/testing/funding_universe_evidence_20261025T075727Z/raw/funding/ETHUSDT-fundingRate-2020-01.csv",
+      "sha256": "3f958973111160bfff2ae5c76e6e0e030dd552d715c3fbf8ae7e6971e09968d7",
+      "bytes": 2563
+    },
+    {
+      "path": "docs/testing/funding_universe_evidence_20261025T075727Z/raw/funding/ETHUSDT-fundingRate-2020-01.zip",
+      "sha256": "0ce8da3b2ee7eceb6616efa215a2a1b1aab7b5b04becebe73634a95ec0abfa90",
+      "bytes": 795
+    },
+    {
+      "path": "docs/testing/funding_universe_evidence_20261025T075727Z/raw/universe/binance-usdt-market-snapshot.json",
+      "sha256": "fe78bb00d2384991cc20e76097dfaf8b0c7df5ae88f0dc21cf80181d717db0ff",
+      "bytes": 2069588
+    }
+  ],
+  "limitations": [
+    "README describes daily/monthly aggregation but not Funding payment semantics",
+    "S3 object listing endpoint timed out",
+    "Binance support pages were unavailable from this environment",
+    "No exchange API was called"
+  ]
+}

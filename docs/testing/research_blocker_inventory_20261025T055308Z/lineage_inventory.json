@@ -1,0 +1,88 @@
+{
+  "generated_at_utc": "2026-10-25T06:01:52Z",
+  "status": "BLOCKED",
+  "scope": "development artifacts only; no formal P3-P6 admission",
+  "graph": [
+    {
+      "edge": "raw market files -> source audit",
+      "evidence": "controlled_p3_20261018T111700Z/execution/source_audit.json; input file hashes in configs/contracts/btc_eth_bnb_v1.json",
+      "status": "PARTIAL",
+      "independent_check": "audit_three_pair_sources and file SHA comparison"
+    },
+    {
+      "edge": "source audit -> semantic contract",
+      "evidence": "execution/semantic_contract.json and contract_sha256",
+      "status": "PASS for development identity",
+      "independent_check": "verify_controlled_research re-resolves contract"
+    },
+    {
+      "edge": "semantic contract -> metadata/dataset",
+      "evidence": "full_identity_metadata.parquet, development_prefix_metadata.parquet, native_prefix_audit.json",
+      "status": "PASS for development prefix",
+      "independent_check": "identity_metadata/materialize_native_prefix recomputation"
+    },
+    {
+      "edge": "metadata -> split plan",
+      "evidence": "full_identity_plan.json.gz, prefix_identity_plan.json.gz, *_split_verification.json",
+      "status": "PASS for development split; final independence BLOCKED",
+      "independent_check": "verify_split_plan"
+    },
+    {
+      "edge": "split plan -> training artifacts",
+      "evidence": "development_training_manifest.json, predictions.parquet, expected_predictions.parquet, data_access.jsonl",
+      "status": "PASS for development folds",
+      "independent_check": "verify_development_folds"
+    },
+    {
+      "edge": "training artifacts -> prediction metrics",
+      "evidence": "prediction_metrics.json and execution_contract.json",
+      "status": "PARTIAL; development metrics only",
+      "independent_check": "manifest/contract/hash checks"
+    },
+    {
+      "edge": "prediction metrics -> trading metrics",
+      "evidence": "metrics_backtest.json status not_run in legacy runner; cost_contract.json trade_evaluation_status BLOCKED",
+      "status": "MISSING",
+      "independent_check": "requires approved cost evidence and native backtest receipt"
+    },
+    {
+      "edge": "artifacts -> formal conclusion/P3-P6 gate",
+      "evidence": "training_readiness_summary.md and admission.py",
+      "status": "MISSING",
+      "independent_check": "formal gate must reject until external evidence and lineage complete"
+    }
+  ],
+  "stage_matrix": {
+    "P3": {
+      "definition": "Walk-forward/purge/embargo/holdout infrastructure",
+      "observed": "development 3-fold native run and independent replay pass",
+      "missing": "formal fold registration, independent final holdout and formal acceptance receipt",
+      "status": "BLOCKED"
+    },
+    "P4": {
+      "definition": "prediction/trading effect evaluation",
+      "observed": "metric definitions and development prediction metrics",
+      "missing": "formal OOS metrics, approved baselines, costs/slippage/funding and uncertainty",
+      "status": "BLOCKED"
+    },
+    "P5": {
+      "definition": "formal experiment governance and lineage",
+      "observed": "development contracts, source/environment/input hashes",
+      "missing": "formal cross-stage lineage, frozen external evidence and release policy",
+      "status": "BLOCKED"
+    },
+    "P6": {
+      "definition": "aggregate final admission",
+      "observed": "fail-closed admission implementation",
+      "missing": "all required P3-P5 evidence and independent aggregation",
+      "status": "BLOCKED"
+    }
+  },
+  "missing_contracts": [
+    "authoritative funding event/rule provenance",
+    "point-in-time universe state history",
+    "new untouched holdout registration/access log",
+    "formal cost evidence",
+    "formal P3-P6 stage receipts"
+  ]
+}

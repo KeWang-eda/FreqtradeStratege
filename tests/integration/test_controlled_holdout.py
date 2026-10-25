@@ -3,7 +3,6 @@
 import hashlib
 import json
 from dataclasses import asdict
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -18,33 +17,29 @@ from quant_strategy.research.splits import (
     build_split_plan,
     verify_split_plan,
 )
-from quant_strategy.validation.native_features import populate_native_features
 
 
-def test_real_three_pair_native_prefix_plan_and_preprocessing_isolation(tmp_path):
+def test_real_three_pair_native_prefix_plan_and_preprocessing_isolation(
+    tmp_path, native_prefix_cache
+):
     """No mock candles, target formula, feature expansion or preprocessing fit."""
-    config = json.loads(Path("config.json").read_text())
-    pairs = ["BTC/USDT:USDT", "ETH/USDT:USDT", "BNB/USDT:USDT"]
-    sources = {
-        pair: Path("data/futures")
-        / f"{pair.replace('/', '_').replace(':', '_')}-4h-futures.feather"
-        for pair in pairs
-    }
-    # Absence is a genuine failed integration prerequisite, never a passing skip.
-    hashes = {pair: file_hash(path) for pair, path in sources.items()}
-    raw = {pair: pd.read_feather(path) for pair, path in sources.items()}
-    start = max(frame.date.min() for frame in raw.values())
-    frames = {pair: frame.loc[frame.date >= start].iloc[:360].copy() for pair, frame in raw.items()}
-    assert all(len(frame) == 360 for frame in frames.values())
+    prepared = native_prefix_cache.snapshot()
+    config, pairs = prepared["config"], prepared["pairs"]
+    sources, hashes = prepared["sources"], prepared["source_sha256"]
+    frames = prepared["frames"]
+    # Sharing the fold test's 600-bar early prefix expands this check from its
+    # old 360 bars.  It remains strictly before the historical diagnostic tail;
+    # no final-holdout value, model or prediction is cached or evaluated.
+    assert all(len(frame) == 600 for frame in frames.values())
     assert max(frame.date.max() for frame in frames.values()) < min(
-        frame.date.iloc[int(len(frame) * 0.85)] for frame in raw.values()
+        prepared["diagnostic_tail_starts"].values()
     )
     panels, feature_tables = [], {}
     step = pd.Timedelta(hours=4)
     horizon = config["freqai"]["feature_parameters"]["label_period_candles"]
     assert horizon == 3 and config["timeframe"] == "4h"
     for pair in pairs:
-        populated = populate_native_features(config, frames, pair)
+        populated = prepared["expanded"][pair]
         features = [column for column in populated if column.startswith("%")]
         keep = np.isfinite(populated[features + ["&-s_return"]].to_numpy()).all(axis=1)
         selected = populated.loc[keep]
@@ -107,4 +102,13 @@ def test_real_three_pair_native_prefix_plan_and_preprocessing_isolation(tmp_path
         access.select(feature_tables[first_pair], attempted, "metrics")
     assert access.events[-1]["status"] == "denied"
     assert {pair: file_hash(path) for pair, path in sources.items()} == hashes
+    # A consumer can mutate its own copy without changing a later consumer's
+    # cached input.  Source and configuration identities are rechecked on reuse.
+    first_close = frames[first_pair].close.iloc[0]
+    frames[first_pair].iloc[0, frames[first_pair].columns.get_loc("close")] *= 2
+    config["timeframe"] = "consumer-only-mutation"
+    another = native_prefix_cache.snapshot()
+    assert another["frames"][first_pair].close.iloc[0] == first_close
+    assert another["config"]["timeframe"] == "4h"
+    assert another["provenance"]["identity_sha256"] == prepared["provenance"]["identity_sha256"]
     (tmp_path / "plan.json").write_text(json.dumps(plan, sort_keys=True))

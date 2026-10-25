@@ -1,0 +1,38 @@
+{
+  "commands": [
+    {
+      "command": "/home/wangke/miniconda3/envs/quant/bin/python docs/testing/vertical_slice_20261025T090837Z/run_vertical_slice.py",
+      "exit_code": 1,
+      "summary": "initial run blocked by missing talib import in existing dataset builder",
+      "network": false,
+      "writes": "none before failure"
+    },
+    {
+      "command": "/home/wangke/miniconda3/envs/quant/bin/python docs/testing/vertical_slice_20261025T090837Z/run_vertical_slice.py",
+      "exit_code": 0,
+      "summary": "dataset 37822 rows; predictions 15228; trades 846; Ridge training and simulation completed",
+      "network": false,
+      "writes": "vertical slice directory only"
+    },
+    {
+      "command": "/home/wangke/miniconda3/envs/quant/bin/python -m pytest -q tests/unit/test_controlled_splits.py tests/unit/test_metric_input_integrity.py",
+      "exit_code": 0,
+      "summary": "65 passed",
+      "network": false,
+      "writes": "temporary pytest fixtures only"
+    },
+    {
+      "command": "python -m py_compile docs/testing/vertical_slice_20261025T090837Z/run_vertical_slice.py",
+      "exit_code": 0,
+      "network": false,
+      "writes": false
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "network": false,
+      "writes": false
+    }
+  ],
+  "network_policy": "No market download/API/WebSocket; only local files and temporary model artifacts."
+}

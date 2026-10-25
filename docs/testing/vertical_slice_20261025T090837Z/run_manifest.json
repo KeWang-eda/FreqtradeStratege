@@ -1,0 +1,43 @@
+{
+  "scope": "NON_FORMAL_DEVELOPMENT",
+  "status": "PASS",
+  "label": "raw return horizon=3 diagnostic baseline; production volnorm not changed",
+  "model": "Ridge alpha=10",
+  "seed": 42,
+  "feature_version": "baseline-v2",
+  "timeframe": "4h",
+  "holdout_start_excluded": "2025-10-17T04:00:00+00:00",
+  "source_files": {
+    "BTC/USDT:USDT": {
+      "path": "data/futures/BTC_USDT_USDT-4h-futures.feather",
+      "sha256": "841837255751a6dfe5a4507fdff5b4cace91baef23ba079816ed7ecc165e0121"
+    },
+    "ETH/USDT:USDT": {
+      "path": "data/futures/ETH_USDT_USDT-4h-futures.feather",
+      "sha256": "3593cd46198d451305a280683e128c48a874be895295e5c3665161945767d0bc"
+    },
+    "BNB/USDT:USDT": {
+      "path": "data/futures/BNB_USDT_USDT-4h-futures.feather",
+      "sha256": "7cfc5f3527b85f625c455b576b3f6ad6f8d71d1301f10e56be1a0b9260b4d98d"
+    }
+  },
+  "python": "3.11.15 (main, Mar 11 2026, 17:20:07) [GCC 14.3.0]",
+  "platform": "Linux-5.15.0-139-generic-x86_64-with-glibc2.31",
+  "outputs": [
+    "predictions.csv",
+    "trades.csv",
+    "metrics.json",
+    "split_manifest.json",
+    "data_quality.json"
+  ],
+  "formal_research_status": "BLOCKED",
+  "funding_status": "BLOCKED",
+  "universe_status": "BLOCKED",
+  "command": "PYTHONPATH=src /home/wangke/miniconda3/envs/quant/bin/python docs/testing/vertical_slice_20261025T090837Z/run_vertical_slice.py",
+  "model_artifacts": [
+    "models/btc.joblib",
+    "models/eth.joblib",
+    "models/bnb.joblib"
+  ],
+  "config_artifact": "model_parameters.json"
+}

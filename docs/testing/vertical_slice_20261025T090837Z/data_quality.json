@@ -1,0 +1,66 @@
+{
+  "scope": "NON_FORMAL_DEVELOPMENT",
+  "holdout_start_excluded": "2025-10-17T04:00:00+00:00",
+  "pairs": {
+    "BTC/USDT:USDT": {
+      "path": "data/futures/BTC_USDT_USDT-4h-futures.feather",
+      "sha256": "841837255751a6dfe5a4507fdff5b4cace91baef23ba079816ed7ecc165e0121",
+      "unchanged": true,
+      "rows": 12697,
+      "first": "2020-01-01T00:00:00+00:00",
+      "last": "2025-10-17T00:00:00+00:00",
+      "duplicate_timestamps": 0,
+      "null_timestamps": 0,
+      "nan_numeric": 0,
+      "nonfinite_numeric": 0,
+      "invalid_ohlc": 0
+    },
+    "ETH/USDT:USDT": {
+      "path": "data/futures/ETH_USDT_USDT-4h-futures.feather",
+      "sha256": "3593cd46198d451305a280683e128c48a874be895295e5c3665161945767d0bc",
+      "unchanged": true,
+      "rows": 12697,
+      "first": "2020-01-01T00:00:00+00:00",
+      "last": "2025-10-17T00:00:00+00:00",
+      "duplicate_timestamps": 0,
+      "null_timestamps": 0,
+      "nan_numeric": 0,
+      "nonfinite_numeric": 0,
+      "invalid_ohlc": 0
+    },
+    "BNB/USDT:USDT": {
+      "path": "data/futures/BNB_USDT_USDT-4h-futures.feather",
+      "sha256": "7cfc5f3527b85f625c455b576b3f6ad6f8d71d1301f10e56be1a0b9260b4d98d",
+      "unchanged": true,
+      "rows": 12455,
+      "first": "2020-02-10T08:00:00+00:00",
+      "last": "2025-10-17T00:00:00+00:00",
+      "duplicate_timestamps": 0,
+      "null_timestamps": 0,
+      "nan_numeric": 0,
+      "nonfinite_numeric": 0,
+      "invalid_ohlc": 0
+    }
+  },
+  "dataset_quality": {
+    "BTC/USDT:USDT": {
+      "input": 12697,
+      "feature_unavailable_or_label_missing": 9,
+      "kept": 12688
+    },
+    "ETH/USDT:USDT": {
+      "input": 12697,
+      "feature_unavailable_or_label_missing": 9,
+      "kept": 12688
+    },
+    "BNB/USDT:USDT": {
+      "input": 12455,
+      "feature_unavailable_or_label_missing": 9,
+      "kept": 12446
+    }
+  },
+  "exclusion_rows": 27,
+  "exclusion_reasons": {
+    "feature_warmup_or_label_tail": 27
+  }
+}

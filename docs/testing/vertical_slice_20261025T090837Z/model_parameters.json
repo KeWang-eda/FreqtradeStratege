@@ -1,0 +1,36 @@
+{
+  "scope": "NON_FORMAL_DEVELOPMENT",
+  "model": "Ridge",
+  "params": {
+    "alpha": 10.0
+  },
+  "seed": 42,
+  "feature_columns": [
+    "%ret_1",
+    "%ret_3",
+    "%ret_6",
+    "%range",
+    "%volume_change",
+    "%close_mean_6"
+  ],
+  "per_pair_artifacts": {
+    "BTC/USDT:USDT": {
+      "path": "docs/testing/vertical_slice_20261025T090837Z/models/btc.joblib",
+      "sha256": "73b05087b7401bba373a4f03ddaa8fcf136d054def9029e59cef93c91f9dea77",
+      "train_rows": 7612,
+      "feature_count": 6
+    },
+    "ETH/USDT:USDT": {
+      "path": "docs/testing/vertical_slice_20261025T090837Z/models/eth.joblib",
+      "sha256": "321d0bb41c4fbf4dabd4c5ac31ebe585a36046fd70894c62c0d393f140a0fd3d",
+      "train_rows": 7612,
+      "feature_count": 6
+    },
+    "BNB/USDT:USDT": {
+      "path": "docs/testing/vertical_slice_20261025T090837Z/models/bnb.joblib",
+      "sha256": "0d4e603d0ada06418460423b77e2bd77abff44213ebd408f38352fcfeb38aa51",
+      "train_rows": 7370,
+      "feature_count": 6
+    }
+  }
+}

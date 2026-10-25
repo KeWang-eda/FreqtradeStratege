@@ -58,8 +58,8 @@ REQUIRED_LEAKAGE_NODEIDS = {
 
 
 def test_evidence(receipt_path: Path) -> dict:
-    """Check exit, bound JUnit bytes, actual counts and executed test identities."""
-    return verify_test_execution(receipt_path)
+    """Require v3 runner evidence, including when all version fields are missing."""
+    return verify_test_execution(receipt_path, require_runner_receipt=True)
 
 
 def verify_data_evidence(directory: Path) -> dict:

@@ -1,0 +1,58 @@
+{
+  "commands": [
+    {
+      "command": "git status --short --branch; git rev-parse HEAD; git rev-parse origin/main",
+      "exit_code": 0,
+      "network": false,
+      "writes": false
+    },
+    {
+      "command": "inspect previous evidence package, raw files, validation JSON",
+      "exit_code": 0,
+      "network": false,
+      "writes": false
+    },
+    {
+      "command": "curl GitHub Binance Public Data README HTML",
+      "exit_code": 0,
+      "network": true,
+      "writes": "/tmp only",
+      "summary": "official README confirms daily/monthly public aggregation; no Funding payment semantics"
+    },
+    {
+      "command": "curl Binance Vision static Funding ZIP HEAD/download for BTC/ETH/BNB",
+      "exit_code": 0,
+      "network": true,
+      "writes": "previous evidence directory only",
+      "summary": "three official monthly archives available and preserved previously"
+    },
+    {
+      "command": "curl Binance Vision static listing page",
+      "exit_code": 0,
+      "network": true,
+      "writes": "/tmp only",
+      "summary": "HTML page available; object listing endpoint not used successfully"
+    },
+    {
+      "command": "curl S3 object listing for fundingRate prefix",
+      "exit_code": 28,
+      "network": true,
+      "writes": false,
+      "summary": "connection timeout; no coverage inventory obtained"
+    },
+    {
+      "command": "curl Binance support FAQ/announcement pages",
+      "exit_code": 35,
+      "network": true,
+      "writes": false,
+      "summary": "TLS connection reset/unavailable"
+    },
+    {
+      "command": "run targeted pytest, py_compile, git diff --check",
+      "exit_code": 0,
+      "network": false,
+      "writes": "temporary pytest fixtures only"
+    }
+  ],
+  "network_policy": "No REST/WebSocket/exchange API call; only official documentation/static archive URLs and one timed-out object-storage listing attempt."
+}

@@ -1,0 +1,8 @@
+{
+  "new_validator_tests": {"passed": 22, "failed": 0, "skipped": 0, "exit_code": 0},
+  "existing_governance_regression": {"passed": 21, "failed": 0, "skipped": 0, "exit_code": 0},
+  "formal_research_status": "BLOCKED",
+  "real_funding_evidence": "BLOCKED",
+  "real_point_in_time_universe": "BLOCKED",
+  "synthetic_fixture_formal_admission": false
+}

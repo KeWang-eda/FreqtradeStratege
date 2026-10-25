@@ -18,31 +18,18 @@ from quant_strategy.infrastructure.experiment_store import (
     environment_versions,
     file_hash,
 )
-from quant_strategy.market_data import load_ohlcv
 from quant_strategy.research.evaluation import METRIC_DEFINITION
 from quant_strategy.research.fold_training import run_development_folds, verify_development_folds
 from quant_strategy.research.splits import build_split_plan
-from quant_strategy.validation.native_features import populate_native_features
 
 
 @pytest.fixture(scope="module")
-def early_native_inputs():
-    config = json.loads(Path("config.json").read_text())
-    pairs = ["BTC/USDT:USDT", "ETH/USDT:USDT", "BNB/USDT:USDT"]
-    frames = {
-        pair: load_ohlcv(
-            Path("data/futures")
-            / (pair.replace("/", "_").replace(":", "_") + "-4h-futures.feather")
-        )
-        for pair in pairs
-    }
-    begin = max(frame.date.iloc[0] for frame in frames.values())
-    frames = {
-        pair: frame.loc[frame.date >= begin].iloc[:600].copy() for pair, frame in frames.items()
-    }
+def early_native_inputs(native_prefix_cache):
+    prepared = native_prefix_cache.snapshot()
+    config, pairs = prepared["config"], prepared["pairs"]
     tables, rows, schemas = {}, [], {}
     for pair in pairs:
-        expanded = populate_native_features(config, frames, pair)
+        expanded = prepared["expanded"][pair]
         features = [column for column in expanded if column.startswith("%")]
         usable = expanded.loc[expanded[[*features, "&-s_return"]].notna().all(axis=1)].copy()
         ids = [canonical_hash({"pair": pair, "date": date.isoformat()}) for date in usable.date]
@@ -79,6 +66,7 @@ def early_native_inputs():
         },
         "feature_schema_by_pair": schemas,
         "development_fixture": "first 600 shared real candles, not a production 365-day window or formal OOS",
+        "prepared_prefix_identity_sha256": prepared["provenance"]["identity_sha256"],
     }
     contract["comparison_contract"] = {
         "data_sha256": canonical_hash(

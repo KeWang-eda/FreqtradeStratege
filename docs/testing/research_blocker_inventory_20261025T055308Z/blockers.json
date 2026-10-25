@@ -1,0 +1,216 @@
+{
+  "generated_at_utc": "2026-10-25T06:01:52Z",
+  "formal_research_status": "BLOCKED",
+  "items": [
+    {
+      "id": "FUNDING-001",
+      "status": "BLOCKED",
+      "label": "OBSERVED",
+      "root_cause_observed": [
+        "data/futures/*-1h-funding_rate.feather contains only date/open/high/low/close/volume",
+        "governance.assess_funding_evidence defaults BLOCKED",
+        "cost_contract requires historical_schedule_verified=false"
+      ],
+      "unproven_assumptions": [
+        "UNKNOWN whether local series came from an exchange endpoint with complete event history"
+      ],
+      "missing_evidence": [
+        "pair-specific payment event timestamp and settlement rule",
+        "historical rule-change records",
+        "acquisition request/response provenance and source hashes",
+        "event-to-mark join coverage"
+      ],
+      "existing_assets": "PARTIAL",
+      "dependencies": [
+        "freeze exchange/contract scope",
+        "point-in-time market status for valid tradability window"
+      ],
+      "minimum_solution": [
+        "add immutable payment_events schema with event_time, rate, settlement rule/version, source provenance",
+        "validate exact event-to-mark and position-time joins",
+        "fail formal admission on missing/ambiguous events"
+      ],
+      "verification_commands": [
+        "python tools/audit_historical_coverage.py --help",
+        "python tools/audit_training_data.py --help",
+        "independent parser over data/futures/*funding_rate.feather"
+      ],
+      "success": [
+        "all required pair/time events have authoritative provenance and rule version; no unexplained gaps; independent recomputation matches"
+      ],
+      "failure": [
+        "any missing rule/provenance/event gap => BLOCKED"
+      ],
+      "risk": "observed rate cadence may be mistaken for settlement schedule",
+      "effort": "LARGE",
+      "recommendation": "FIRST after evidence-source decision"
+    },
+    {
+      "id": "UNIVERSE-001",
+      "status": "BLOCKED",
+      "label": "OBSERVED",
+      "root_cause_observed": [
+        "governance._historical_universe returns BLOCKED",
+        "market snapshots are point-in-time current exchangeInfo responses",
+        "native_features labels StaticPairList as not historical universe"
+      ],
+      "unproven_assumptions": [
+        "UNKNOWN whether an external dated listing/delisting archive exists"
+      ],
+      "missing_evidence": [
+        "dated listing/onboard/delist/suspend/status intervals per pair",
+        "contract changes and trading availability events"
+      ],
+      "existing_assets": "PARTIAL",
+      "dependencies": [
+        "exchange scope decision",
+        "funding and market event source selection"
+      ],
+      "minimum_solution": [
+        "versioned point-in-time universe table with effective_from/effective_to and source hash",
+        "sample builder joins state as-of each candle before selection",
+        "formal gate rejects unknown state"
+      ],
+      "verification_commands": [
+        "python tools/audit_historical_coverage.py --help",
+        "python tools/audit_native_features.py --help",
+        "independent as-of join checker"
+      ],
+      "success": [
+        "each included sample has a verifiable state interval; no survivor-only inference"
+      ],
+      "failure": [
+        "current snapshot or file presence used as historical membership => BLOCKED"
+      ],
+      "risk": "survivorship bias and future universe leakage",
+      "effort": "LARGE",
+      "recommendation": "FIRST in parallel with Funding"
+    },
+    {
+      "id": "COST-001",
+      "status": "BLOCKED",
+      "label": "OBSERVED",
+      "root_cause_observed": [
+        "costs.py marks slippage and funding BLOCKED",
+        "configured fee is explicitly a backtest assumption",
+        "no historical order-book/execution calibration in local data"
+      ],
+      "unproven_assumptions": [
+        "UNKNOWN whether account-specific fee schedule can be obtained"
+      ],
+      "missing_evidence": [
+        "historical fee schedule/account tier",
+        "historical bid-ask/order-book or execution samples",
+        "verified Funding payment events"
+      ],
+      "existing_assets": "PARTIAL",
+      "dependencies": [
+        "FUNDING-001",
+        "execution venue/order-type decision"
+      ],
+      "minimum_solution": [
+        "retain fee as labeled assumption",
+        "obtain external spread/slippage evidence or predeclare sensitivity only",
+        "block net trading claim unless cost evidence grade passes"
+      ],
+      "verification_commands": [
+        "python -c \"from quant_strategy.research.costs import build_cost_contract; ...\"",
+        "native backtest audit only after evidence freeze"
+      ],
+      "success": [
+        "each cost component has source, period, join semantics and uncertainty; formal evaluator rejects missing evidence"
+      ],
+      "failure": [
+        "zero/constant slippage or inferred funding used as historical truth"
+      ],
+      "risk": "net performance can reverse under plausible costs",
+      "effort": "MEDIUM to LARGE",
+      "recommendation": "AFTER funding/universe evidence"
+    },
+    {
+      "id": "HOLDOUT-001",
+      "status": "BLOCKED",
+      "label": "OBSERVED",
+      "root_cause_observed": [
+        "controlled holdout starts 2025-10-17T04:00Z",
+        "holdout_access records historical_independence BLOCKED",
+        "docs state prior terminal diagnostics/model comparisons overlap tail"
+      ],
+      "unproven_assumptions": [
+        "UNKNOWN exact full set of historical readers beyond retained logs"
+      ],
+      "missing_evidence": [
+        "new future interval not previously accessed",
+        "pre-registered contract and access policy",
+        "append-only access log and one-time evaluation receipt"
+      ],
+      "existing_assets": "NO for independence; YES for metadata-only planning",
+      "dependencies": [
+        "freeze research contract/data cutoff",
+        "decision on new future window"
+      ],
+      "minimum_solution": [
+        "register future holdout identity only",
+        "deny values until one approved final evaluation",
+        "bind result to contract/source/data hashes and access log"
+      ],
+      "verification_commands": [
+        "rg -n -i \"holdout|evaluate-final-holdout|diagnostic|tail\" RESEARCH_LOG.md docs",
+        "metadata-only split plan verification"
+      ],
+      "success": [
+        "independent reviewer confirms no prior value access and policy enforcement; one-time evaluation only"
+      ],
+      "failure": [
+        "any prior value exposure or unverifiable access => new window required"
+      ],
+      "risk": "post-hoc window choice and contamination",
+      "effort": "MEDIUM governance plus future data",
+      "recommendation": "AFTER contract/data evidence, BEFORE formal OOS"
+    },
+    {
+      "id": "LINEAGE-001",
+      "status": "BLOCKED",
+      "label": "OBSERVED",
+      "root_cause_observed": [
+        "development controlled artifacts have hashes and independent replay",
+        "training_readiness_summary marks P3-P6 BLOCKED",
+        "no formal cross-stage receipts linking approved cost/universe/funding/holdout evidence to conclusions"
+      ],
+      "unproven_assumptions": [
+        "UNKNOWN whether future formal runner can emit all required stage IDs without extension"
+      ],
+      "missing_evidence": [
+        "stage contracts and immutable IDs",
+        "formal fold/effect/cost/holdout receipts",
+        "cross-stage parent hashes and independent aggregate"
+      ],
+      "existing_assets": "PARTIAL",
+      "dependencies": [
+        "FUNDING-001",
+        "UNIVERSE-001",
+        "COST-001",
+        "HOLDOUT-001"
+      ],
+      "minimum_solution": [
+        "extend existing experiment_store/receipt schema with stage_id, parent_artifact_ids, input/source/config hashes and independent verifier",
+        "emit P3-P6 receipts only from formal runs",
+        "keep development scope distinct"
+      ],
+      "verification_commands": [
+        "python tools/verify_test_consolidation.py --help",
+        "python tools/accept_training_readiness.py --help",
+        "independent artifact graph checker"
+      ],
+      "success": [
+        "every formal conclusion has complete verifiable parent chain; missing parent rejects gate"
+      ],
+      "failure": [
+        "filename/time proximity or self-reported PASS used as lineage"
+      ],
+      "risk": "false reproducibility and untraceable model selection",
+      "effort": "LARGE",
+      "recommendation": "LAST after upstream evidence"
+    }
+  ]
+}

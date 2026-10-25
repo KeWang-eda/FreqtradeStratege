@@ -172,6 +172,36 @@ def verify_test_execution(
     *,
     required_nodeids: set[str] | None = None,
     run_id: str | None = None,
+    require_runner_receipt: bool = True,
+) -> dict:
+    """Verify v3 execution evidence; missing fields never select a legacy contract."""
+    if require_runner_receipt is not True:
+        raise ValueError("Legacy receipts require the explicit diagnose_legacy_test_execution API")
+    return _verify_test_execution(
+        receipt_path,
+        required_nodeids=required_nodeids,
+        run_id=run_id,
+        require_runner_receipt=True,
+    )
+
+
+def diagnose_legacy_test_execution(receipt_path: Path, *, run_id: str | None = None) -> dict:
+    """Inspect old local JUnit evidence without granting engineering or formal admission."""
+    report = _verify_test_execution(receipt_path, run_id=run_id, require_runner_receipt=False)
+    return {
+        **report,
+        "diagnostic_only": True,
+        "engineering_status": "PARTIAL",
+        "formal_research_allowed": False,
+    }
+
+
+def _verify_test_execution(
+    receipt_path: Path,
+    *,
+    required_nodeids: set[str] | None = None,
+    run_id: str | None = None,
+    require_runner_receipt: bool,
 ) -> dict:
     """Check actual JUnit outcomes, identities, exit code and execution context."""
     receipt = read_evidence_json(receipt_path)
@@ -183,6 +213,10 @@ def verify_test_execution(
             "sha256": receipt["junit_sha256"],
         },
     )
+    if require_runner_receipt or "mode" in receipt or "test_receipt_version" in receipt:
+        from quant_strategy.validation.test_receipts import junit_counts
+
+        junit_counts(junit)
     root = ElementTree.parse(junit).getroot()
     suites = [root] if root.tag == "testsuite" else list(root.iter("testsuite"))
     counts = {
@@ -213,7 +247,7 @@ def verify_test_execution(
         or any(command[i : i + 2] == ["-m", "pytest"] for i in range(len(command) - 1))
     ):
         raise ValueError("Test execution receipt does not identify a pytest command")
-    return {
+    report = {
         **counts,
         "executed_test_names": [c.get("name", "").split("[", 1)[0] for c in executed],
         "executed_test_nodeids": nodeids,
@@ -222,11 +256,21 @@ def verify_test_execution(
         "junit_sha256": receipt["junit_sha256"],
         "run_id": receipt["run_id"],
     }
+    # Only diagnose_legacy_test_execution can explicitly select the legacy
+    # branch. Versioned receipts remain strict even in that diagnostic API.
+    if require_runner_receipt or "mode" in receipt or "test_receipt_version" in receipt:
+        from quant_strategy.validation.test_receipts import runner_artifacts
+
+        runner_artifacts(receipt_path, receipt, report)
+    return report
 
 
 def verify_complete_test_execution(receipt_path: Path, *, run_id: str) -> dict:
     """Require every currently collected test, not an arbitrary successful subset."""
-    report = verify_test_execution(receipt_path, run_id=run_id)
+    report = verify_test_execution(receipt_path, run_id=run_id, require_runner_receipt=True)
+    receipt = read_evidence_json(receipt_path)
+    if receipt["mode"] != "ci" or receipt["requested_subset"]:
+        raise ValueError("Complete execution requires CI mode without a requested subset")
     command = [sys.executable, "-m", "pytest", "--collect-only", "-q"]
     # A caller-controlled PYTEST_ADDOPTS can silently narrow collection (for
     # example with ``-k``).  The independent completeness check must describe
@@ -312,7 +356,12 @@ def _require_training_admission(path: Path, config: ExperimentConfig) -> dict:
         raise DataContractError(
             "Formal training denied: required exact test identities are missing"
         )
-    verify_test_execution(tests_path, required_nodeids=set(required), run_id=report["run_id"])
+    verify_test_execution(
+        tests_path,
+        required_nodeids=set(required),
+        run_id=report["run_id"],
+        require_runner_receipt=True,
+    )
     if report.get("config_sha256") != canonical_hash(asdict(config)):
         raise DataContractError("Formal training denied: configuration differs from admission")
     inputs = report.get("input_files", {})

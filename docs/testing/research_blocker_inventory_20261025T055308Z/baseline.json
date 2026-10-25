@@ -1,0 +1,158 @@
+{
+  "cwd": "/home/wangke/project/FreqtradeStratege",
+  "head": "6c3b515876b612e659668b41594e826f348ed74c",
+  "origin_main": "6c3b515876b612e659668b41594e826f348ed74c",
+  "status": "## main...origin/main\n M pyproject.toml\n M src/quant_strategy/validation/admission.py\n M tests/conftest.py\n M tests/integration/test_controlled_fold_training.py\n M tests/integration/test_controlled_holdout.py\n M tests/integration/test_independent_native_acceptance.py\n M tests/unit/test_training_readiness_gate.py\n M tools/accept_training_readiness.py\n?? docs/testing/\n?? src/quant_strategy/validation/source_monitor.py\n?? src/quant_strategy/validation/test_receipts.py\n?? tests/support/\n?? tests/unit/test_runner_receipt_cli.py\n?? tests/unit/test_suite_execution.py\n?? tools/collect_test_inventory.py\n?? tools/pytest_receipt.py\n?? tools/run_tests.py\n?? tools/summarize_test_costs.py\n?? tools/test_support/\n?? tools/verify_test_consolidation.py\n",
+  "source_sha256": "362336d70227df76dfe530033f34e965aaa579df6f55fdb02905191b73090186",
+  "source_files": 146,
+  "acceptance_exists": true,
+  "acceptance": {
+    "run_id": "rr001_20261025T053000Z",
+    "checked_at_utc": "2026-10-25T05:42:00Z",
+    "head": "6c3b515876b612e659668b41594e826f348ed74c",
+    "origin_main": "6c3b515876b612e659668b41594e826f348ed74c",
+    "source_sha256": "362336d70227df76dfe530033f34e965aaa579df6f55fdb02905191b73090186",
+    "source_files": 146,
+    "rr001_fix": "PASS",
+    "engineering_acceptance": "PASS",
+    "formal_research_status": "BLOCKED",
+    "formal_research_allowed": false,
+    "cross_machine_reproduction": "UNVERIFIED",
+    "profiles": {
+      "ci": {
+        "receipt": "docs/testing/rr001_20261025T053000Z_ci/test_run.json",
+        "receipt_sha256": "d4e2880dfbdc5ed4b224b169093b4ecbe6f83f2544ff875fdca414e4a37b51ee",
+        "junit_sha256": "75d4b70d1955f07d92d7590d15d919d52d2b0988788bc0379579932827db10a7",
+        "counts": {
+          "tests": 799,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "passed": 799
+        },
+        "exit_code": 0,
+        "source_unchanged": true,
+        "run_id": "rr001_20261025T053000Z",
+        "mode": "ci",
+        "marker": "ci",
+        "requested_subset": false
+      },
+      "fast": {
+        "receipt": "docs/testing/rr001_20261025T053000Z_fast/test_run.json",
+        "receipt_sha256": "f00687551528ced2ebc9b78e40568e7042ed39214ef62a357c6186019d4dd3f2",
+        "junit_sha256": "8e013a8ff2f8b9c58d211580887361a7517c825d592e81ced4eb652b0f243dfc",
+        "counts": {
+          "tests": 736,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "passed": 736
+        },
+        "exit_code": 0,
+        "source_unchanged": true,
+        "run_id": "rr001_20261025T053000Z",
+        "mode": "fast",
+        "marker": "fast",
+        "requested_subset": false
+      },
+      "real-data": {
+        "receipt": "docs/testing/rr001_20261025T053000Z_real-data/test_run.json",
+        "receipt_sha256": "324598a07b54c6ac018882ec0c01544d9cbd047121ccf91a86a0b83cc248130c",
+        "junit_sha256": "0c8085e9c5d634eec99d6d699541c5550e720e426ad78b8b130337612ec7b4da",
+        "counts": {
+          "tests": 109,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "passed": 109
+        },
+        "exit_code": 0,
+        "source_unchanged": true,
+        "run_id": "rr001_20261025T053000Z",
+        "mode": "real-data",
+        "marker": "real_data",
+        "requested_subset": false
+      },
+      "formal-preflight": {
+        "receipt": "docs/testing/rr001_20261025T053000Z_formal-preflight/test_run.json",
+        "receipt_sha256": "68eebeab9602e8dfa823b59dd9576bab9bf2f24077782490e1d4fc3f462d0dfb",
+        "junit_sha256": "644ee7ce2591154e86fd79df4614380719addc1a5bd5a20379b982a1addced4e",
+        "counts": {
+          "tests": 169,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "passed": 169
+        },
+        "exit_code": 0,
+        "source_unchanged": true,
+        "run_id": "rr001_20261025T053000Z",
+        "mode": "formal-preflight",
+        "marker": "formal_preflight",
+        "requested_subset": false
+      }
+    },
+    "independent_verification": {
+      "path": "docs/testing/rr001_20261025T053000Z_independent/verification.json",
+      "sha256": "5a1972719dc6b54ecfbb70d1cab66a427f530490da522d59cff00b42603cd16e",
+      "exit_code": 0,
+      "engineering_status": "PASS",
+      "original_nodes": 729,
+      "final_nodes": 799,
+      "preserved_nodes": 729,
+      "removed_nodes": []
+    },
+    "specified_git_fixture": {
+      "exit_code": 0,
+      "junit_sha256": "0974c9a05367e7011ab644274d4d47aed168bb5533b33419f266b28b8da00bd6",
+      "run": {
+        "start": "2026-10-25T05:29:55Z",
+        "end": "2026-10-25T05:30:00Z",
+        "exit_code": 0,
+        "temp_root": "/tmp/rr001-git-fixture-BXeyH8",
+        "home": "/tmp/rr001-git-fixture-BXeyH8/home",
+        "git_config_global": "/dev/null",
+        "git_config_nosystem": true
+      },
+      "scope": "temporary pytest Git repository only"
+    },
+    "historical_visible_files_changed": [
+      "tools/pytest_receipt.py",
+      "tools/run_tests.py",
+      "tools/verify_test_consolidation.py"
+    ],
+    "historical_evidence_unchanged": true,
+    "production_diff_exit_code": 0,
+    "production_diff": "",
+    "staged_diff_exit_code": 0,
+    "git_status": "## main...origin/main\n M pyproject.toml\n M src/quant_strategy/validation/admission.py\n M tests/conftest.py\n M tests/integration/test_controlled_fold_training.py\n M tests/integration/test_controlled_holdout.py\n M tests/integration/test_independent_native_acceptance.py\n M tests/unit/test_training_readiness_gate.py\n M tools/accept_training_readiness.py\n?? docs/testing/\n?? src/quant_strategy/validation/source_monitor.py\n?? src/quant_strategy/validation/test_receipts.py\n?? tests/support/\n?? tests/unit/test_runner_receipt_cli.py\n?? tests/unit/test_suite_execution.py\n?? tools/collect_test_inventory.py\n?? tools/pytest_receipt.py\n?? tools/run_tests.py\n?? tools/summarize_test_costs.py\n?? tools/test_support/\n?? tools/verify_test_consolidation.py\n",
+    "no_project_git_write": true,
+    "model_training_or_oos": false
+  },
+  "environment": {
+    "python": "3.13.13",
+    "pandas": "3.0.5",
+    "numpy": "2.5.2",
+    "scikit-learn": "1.9.0",
+    "xgboost": "3.4.1",
+    "freqtrade": "2026.7",
+    "pyarrow": "25.0.1",
+    "ccxt": "4.5.75",
+    "pytest": "9.1.1"
+  },
+  "configs": {
+    "configs/base.yaml": 399,
+    "configs/research.yaml": 147,
+    "configs/backtest-local.json": 459,
+    "configs/environment/local.yaml": 152,
+    "configs/environment/freqtrade-mihomo.json": 221,
+    "configs/environment/server.yaml": 101,
+    "configs/estimators/xgboost.yaml": 266,
+    "configs/estimators/ridge.yaml": 89,
+    "configs/contracts/btc_eth_bnb_v1.json.sha256": 65,
+    "configs/contracts/btc_eth_bnb_v1.json": 23427,
+    "configs/experiments/baseline_volnorm.yaml": 62,
+    "configs/experiments/btc_eth_bnb_controlled_v1.yaml": 950,
+    "configs/experiments/baseline_raw.yaml": 54
+  }
+}

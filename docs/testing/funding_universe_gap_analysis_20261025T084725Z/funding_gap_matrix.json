@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "status": "BLOCKED",
+  "official_sources_checked": [
+    "https://github.com/binance/binance-public-data/blob/master/README.md",
+    "https://data.binance.vision/data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2020-01.zip",
+    "https://data.binance.vision/data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2020-01.zip",
+    "https://data.binance.vision/data/futures/um/monthly/fundingRate/BNBUSDT/BNBUSDT-fundingRate-2020-02.zip"
+  ],
+  "assets": {
+    "BTC/USDT:USDT": {
+      "checked_source_period": "2020-01",
+      "source_file_event_count": 104,
+      "event_time_semantics": "calc_time meaning not independently established as payment completion",
+      "rule_history": "BLOCKED; funding_interval_hours is an observed field, not historical rule proof",
+      "independent_coverage": "BLOCKED; no independent archive inventory/range proof obtained",
+      "unverified_periods": "2020-01-01 to 2026-10-12",
+      "status": "BLOCKED",
+      "reason": "Only one monthly official static archive was preserved; no independent payment semantics, rule history, or full-window coverage evidence."
+    },
+    "ETH/USDT:USDT": {
+      "checked_source_period": "2020-01",
+      "source_file_event_count": 104,
+      "event_time_semantics": "calc_time meaning not independently established as payment completion",
+      "rule_history": "BLOCKED; funding_interval_hours is an observed field, not historical rule proof",
+      "independent_coverage": "BLOCKED; no independent archive inventory/range proof obtained",
+      "unverified_periods": "2020-01-01 to 2026-10-12",
+      "status": "BLOCKED",
+      "reason": "Only one monthly official static archive was preserved; no independent payment semantics, rule history, or full-window coverage evidence."
+    },
+    "BNB/USDT:USDT": {
+      "checked_source_period": "2020-02",
+      "source_file_event_count": 37,
+      "event_time_semantics": "calc_time meaning not independently established as payment completion",
+      "rule_history": "BLOCKED; funding_interval_hours is an observed field, not historical rule proof",
+      "independent_coverage": "BLOCKED; no independent archive inventory/range proof obtained",
+      "unverified_periods": "2020-02-10 to 2026-10-12",
+      "status": "BLOCKED",
+      "reason": "Only one monthly official static archive was preserved; no independent payment semantics, rule history, or full-window coverage evidence."
+    }
+  }
+}

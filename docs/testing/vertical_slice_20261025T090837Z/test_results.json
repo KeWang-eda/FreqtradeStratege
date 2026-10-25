@@ -1,0 +1,17 @@
+{
+  "targeted_tests": {
+    "passed": 65,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "script_compile": {
+    "exit_code": 0
+  },
+  "git_diff_check": {
+    "exit_code": 0
+  },
+  "initial_dependency_failure": "talib unavailable during first attempt; resolved by local development-only pandas feature adapter",
+  "formal_research_status": "BLOCKED",
+  "ruff": "UNAVAILABLE"
+}

@@ -34,7 +34,31 @@ def actual_native_run(tmp_path_factory):
     assert result.returncode == 0, result.stdout + result.stderr
     base = verify_native_training_acceptance(root)
     assert base["status"] == "PASS", json.dumps(base, default=str)
-    return root
+    # Keep the genuine independent verification already performed by setup as
+    # an immutable JSON value.  The positive test need not repeat that full
+    # verification; every mutated-copy test below still reruns the verifier.
+    original_hashes = tuple(
+        sorted(
+            (path.relative_to(root).as_posix(), file_hash(path))
+            for path in root.rglob("*")
+            if path.is_file()
+        )
+    )
+    return root, json.dumps(base, sort_keys=True), original_hashes
+
+
+def _original_native_run(actual_native_run):
+    """Require the complete original tree to stay unchanged before reuse."""
+    root, verified_json, original_hashes = actual_native_run
+    current_hashes = tuple(
+        sorted(
+            (path.relative_to(root).as_posix(), file_hash(path))
+            for path in root.rglob("*")
+            if path.is_file()
+        )
+    )
+    assert current_hashes == original_hashes, "Shared original native artifacts changed"
+    return root, json.loads(verified_json)
 
 
 def _rehash(root):
@@ -51,7 +75,7 @@ def _rehash(root):
 
 
 def test_real_native_training_has_independently_recomputed_safe_boundaries(actual_native_run):
-    report = verify_native_training_acceptance(actual_native_run)
+    _, report = _original_native_run(actual_native_run)
     assert report["status"] == "PASS", json.dumps(report, default=str)
     assert report["pairs"][0]["purged"] == 3
     assert report["pairs"][0]["independent_preprocessing_refit_exact"]
@@ -66,7 +90,8 @@ def test_independent_verifier_rejects_self_consistently_rehashed_faults(
     actual_native_run, tmp_path, fault
 ):
     root = tmp_path / "damaged"
-    shutil.copytree(actual_native_run, root)
+    original, _ = _original_native_run(actual_native_run)
+    shutil.copytree(original, root)
     run = json.loads((root / "training_run.json").read_text())
     directory = root / run["pairs"][0]["audit_directory"]
     if fault in {"boundary", "timestamp"}:
@@ -132,7 +157,8 @@ def test_independent_verifier_binds_audit_to_original_split_and_configuration(
     actual_native_run, tmp_path, fault
 ):
     root = tmp_path / "damaged"
-    shutil.copytree(actual_native_run, root)
+    original, _ = _original_native_run(actual_native_run)
+    shutil.copytree(original, root)
     run = json.loads((root / "training_run.json").read_text())
     directory = root / run["pairs"][0]["audit_directory"]
     audit_path = directory / "audit.json"

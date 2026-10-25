@@ -1,0 +1,230 @@
+{
+  "generated_at_utc": "2026-10-25T06:01:52Z",
+  "status": "OBSERVED",
+  "root": "data/futures",
+  "all_files_count": 216,
+  "all_pairs_count": 72,
+  "all_files_readable": true,
+  "all_timestamps_sorted_unique_utc": true,
+  "observed_scope": "72 pairs x 4h futures/1h mark/1h funding_rate files",
+  "controlled_pairs": [
+    {
+      "pair": "BTC/USDT:USDT",
+      "files": {
+        "futures": {
+          "path": "data/futures/BTC_USDT_USDT-4h-futures.feather",
+          "sha256": "841837255751a6dfe5a4507fdff5b4cace91baef23ba079816ed7ecc165e0121",
+          "rows": 14880,
+          "first": "2020-01-01T00:00:00+00:00",
+          "last": "2026-10-15T20:00:00+00:00",
+          "bytes": 480650,
+          "read_status": "PASS",
+          "duplicate_timestamps": 0,
+          "null_timestamps": 0,
+          "sorted": true,
+          "timezone": "UTC",
+          "columns": [
+            "date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ]
+        },
+        "mark": {
+          "path": "data/futures/BTC_USDT_USDT-1h-mark.feather",
+          "sha256": "81b59942715175a5f389de58599210d5bb940b6936ebbc2aac0ea454e4528cb8",
+          "rows": 59443,
+          "first": "2020-01-01T00:00:00+00:00",
+          "last": "2026-10-12T18:00:00+00:00",
+          "bytes": 1849090,
+          "read_status": "PASS",
+          "duplicate_timestamps": 0,
+          "null_timestamps": 0,
+          "sorted": true,
+          "timezone": "UTC",
+          "columns": [
+            "date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ]
+        },
+        "funding_rate": {
+          "path": "data/futures/BTC_USDT_USDT-1h-funding_rate.feather",
+          "sha256": "b51b18ea9cee16216d8a24aac3a9685f305905e04c99cd9701b9589b692f74c6",
+          "rows": 7429,
+          "first": "2020-01-01T00:00:00+00:00",
+          "last": "2026-10-12T00:00:00+00:00",
+          "bytes": 79306,
+          "read_status": "PASS",
+          "duplicate_timestamps": 0,
+          "null_timestamps": 0,
+          "sorted": true,
+          "timezone": "UTC",
+          "columns": [
+            "date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ]
+        }
+      },
+      "historical_payment_events": "UNKNOWN",
+      "historical_universe": "UNKNOWN",
+      "provenance": "UNKNOWN"
+    },
+    {
+      "pair": "ETH/USDT:USDT",
+      "files": {
+        "futures": {
+          "path": "data/futures/ETH_USDT_USDT-4h-futures.feather",
+          "sha256": "3593cd46198d451305a280683e128c48a874be895295e5c3665161945767d0bc",
+          "rows": 14880,
+          "first": "2020-01-01T00:00:00+00:00",
+          "last": "2026-10-15T20:00:00+00:00",
+          "bytes": 469586,
+          "read_status": "PASS",
+          "duplicate_timestamps": 0,
+          "null_timestamps": 0,
+          "sorted": true,
+          "timezone": "UTC",
+          "columns": [
+            "date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ]
+        },
+        "mark": {
+          "path": "data/futures/ETH_USDT_USDT-1h-mark.feather",
+          "sha256": "bd9ea1c7341b0b25afc578c1a7c323129c826b71cd25685bac0d852b77bbac4a",
+          "rows": 59443,
+          "first": "2020-01-01T00:00:00+00:00",
+          "last": "2026-10-12T18:00:00+00:00",
+          "bytes": 1835842,
+          "read_status": "PASS",
+          "duplicate_timestamps": 0,
+          "null_timestamps": 0,
+          "sorted": true,
+          "timezone": "UTC",
+          "columns": [
+            "date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ]
+        },
+        "funding_rate": {
+          "path": "data/futures/ETH_USDT_USDT-1h-funding_rate.feather",
+          "sha256": "2bcd5dd3d7520d58d6ab156a2aad2035c7382f3b6b9f80a85aac30aad9f9082d",
+          "rows": 7429,
+          "first": "2020-01-01T00:00:00+00:00",
+          "last": "2026-10-12T00:00:00+00:00",
+          "bytes": 79754,
+          "read_status": "PASS",
+          "duplicate_timestamps": 0,
+          "null_timestamps": 0,
+          "sorted": true,
+          "timezone": "UTC",
+          "columns": [
+            "date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ]
+        }
+      },
+      "historical_payment_events": "UNKNOWN",
+      "historical_universe": "UNKNOWN",
+      "provenance": "UNKNOWN"
+    },
+    {
+      "pair": "BNB/USDT:USDT",
+      "files": {
+        "futures": {
+          "path": "data/futures/BNB_USDT_USDT-4h-futures.feather",
+          "sha256": "7cfc5f3527b85f625c455b576b3f6ad6f8d71d1301f10e56be1a0b9260b4d98d",
+          "rows": 14638,
+          "first": "2020-02-10T08:00:00+00:00",
+          "last": "2026-10-15T20:00:00+00:00",
+          "bytes": 445898,
+          "read_status": "PASS",
+          "duplicate_timestamps": 0,
+          "null_timestamps": 0,
+          "sorted": true,
+          "timezone": "UTC",
+          "columns": [
+            "date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ]
+        },
+        "mark": {
+          "path": "data/futures/BNB_USDT_USDT-1h-mark.feather",
+          "sha256": "d31f1874c1202a12c0b9a7ef4ce0e49bf33b66bf24bced06a16128ec14cbb792",
+          "rows": 59443,
+          "first": "2020-01-01T00:00:00+00:00",
+          "last": "2026-10-12T18:00:00+00:00",
+          "bytes": 1798754,
+          "read_status": "PASS",
+          "duplicate_timestamps": 0,
+          "null_timestamps": 0,
+          "sorted": true,
+          "timezone": "UTC",
+          "columns": [
+            "date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ]
+        },
+        "funding_rate": {
+          "path": "data/futures/BNB_USDT_USDT-1h-funding_rate.feather",
+          "sha256": "3a758fcf81ef9801d2d1098dd76b4149fcec655e46f987a05b651820e934b66f",
+          "rows": 7308,
+          "first": "2020-02-10T08:00:00+00:00",
+          "last": "2026-10-12T00:00:00+00:00",
+          "bytes": 74122,
+          "read_status": "PASS",
+          "duplicate_timestamps": 0,
+          "null_timestamps": 0,
+          "sorted": true,
+          "timezone": "UTC",
+          "columns": [
+            "date",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ]
+        }
+      },
+      "historical_payment_events": "UNKNOWN",
+      "historical_universe": "UNKNOWN",
+      "provenance": "UNKNOWN"
+    }
+  ],
+  "limitations": [
+    "Funding files have OHLCV-like columns and do not contain authoritative payment-event or rule-version fields",
+    "File hashes and local structure do not authenticate source acquisition or historical completeness",
+    "Current snapshot cannot establish point-in-time universe"
+  ]
+}
