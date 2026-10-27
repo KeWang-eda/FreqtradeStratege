@@ -9,10 +9,10 @@ import pandas as pd
 import pytest
 from sklearn.preprocessing import StandardScaler
 
-from quant_strategy.config import ValidationConfig
-from quant_strategy.errors import DataContractError
-from quant_strategy.infrastructure.experiment_store import file_hash
-from quant_strategy.research.splits import (
+from quant.config import ValidationConfig
+from quant.errors import DataContractError
+from quant.infrastructure.experiment_store import file_hash
+from quant.research.splits import (
     DevelopmentAccess,
     build_split_plan,
     verify_split_plan,

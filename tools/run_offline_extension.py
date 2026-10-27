@@ -17,7 +17,7 @@ import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 
-from quant_strategy.infrastructure.experiment_store import environment_versions, file_hash
+from quant.infrastructure.experiment_store import environment_versions, file_hash
 from tools.run_offline_acceptance import (
     ROOT,
     audited_run,
@@ -84,7 +84,7 @@ def native_arguments(userdir: Path) -> list[str]:
         "--strategy-path",
         str(ROOT),
         "--freqaimodel-path",
-        str(ROOT / "freqaimodels"),
+        str(ROOT / "quant" / "models" / "freqai"),
         "--strategy",
         "MyStrategy",
         "--timerange",
@@ -198,7 +198,7 @@ def online_run(workspace: Path, userdir: Path) -> dict:
     result = subprocess.run(
         command,
         cwd=ROOT,
-        env={**os.environ, "PYTHONPATH": f"{ROOT / 'src'}:{ROOT}"},
+        env={**os.environ, "PYTHONPATH": str(ROOT)},
         capture_output=True,
         text=True,
         timeout=240,
@@ -220,7 +220,7 @@ def capture(workspace: Path) -> Path:
     command = [
         sys.executable,
         "-m",
-        "quant_strategy.execution.offline_backtest",
+        "quant.execution.offline_backtest",
         "capture",
         "--snapshot",
         str(snapshot),
@@ -232,7 +232,7 @@ def capture(workspace: Path) -> Path:
     result = subprocess.run(
         command,
         cwd=ROOT,
-        env={**os.environ, "PYTHONPATH": f"{ROOT / 'src'}:{ROOT}"},
+        env={**os.environ, "PYTHONPATH": str(ROOT)},
         capture_output=True,
         text=True,
         timeout=60,
@@ -285,8 +285,7 @@ def execute(
     }
     protected = [ROOT / config for config in CONFIGS]
     protected.extend(ROOT.glob("*.py"))
-    protected.extend((ROOT / "src/quant_strategy").rglob("*.py"))
-    protected.extend((ROOT / "freqaimodels").glob("*.py"))
+    protected.extend((ROOT / "quant").rglob("*.py"))
     before = {str(path.relative_to(ROOT)): file_hash(path) for path in protected}
     (workspace / f"{PREFIX}_input_manifest.json").write_text(
         json_text(

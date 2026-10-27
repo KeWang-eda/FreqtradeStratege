@@ -14,18 +14,18 @@ from pathlib import Path
 
 import pandas as pd
 
-from quant_strategy.config import load_config
-from quant_strategy.dataset import build_dataset
-from quant_strategy.experiments.runner import _dataset_hash
-from quant_strategy.infrastructure.experiment_store import (
+from quant.config import load_config
+from quant.dataset import build_dataset
+from quant.experiments.runner import _dataset_hash
+from quant.infrastructure.experiment_store import (
     canonical_hash,
     environment_versions,
     file_hash,
     git_state,
     write_json,
 )
-from quant_strategy.market_data import load_ohlcv
-from quant_strategy.market_data.contracts import audit_source
+from quant.market_data import load_ohlcv
+from quant.market_data.contracts import audit_source
 
 
 def inspect_source(path: Path, pair: str, kind: str, timeframe: str) -> dict:

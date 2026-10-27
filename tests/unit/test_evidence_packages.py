@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 
-from quant_strategy.research.evidence import validate_funding_package, validate_universe_package
+from quant.research.evidence import validate_funding_package, validate_universe_package
 
 
 def _raw(root: Path, name: str, content: str = "authoritative raw response\n") -> tuple[str, str]:
@@ -332,7 +332,7 @@ def test_universe_requested_window_requires_covered_candles(tmp_path):
 
 def test_cli_recomputes_synthetic_package_and_returns_blocked(tmp_path):
     package = _funding(tmp_path)
-    environment = {**os.environ, "PYTHONPATH": "src"}
+    environment = {**os.environ, "PYTHONPATH": "."}
     result = subprocess.run(
         [
             sys.executable,

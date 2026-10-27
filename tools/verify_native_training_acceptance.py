@@ -13,13 +13,16 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from joblib.externals import cloudpickle
+try:
+    import cloudpickle
+except ImportError:  # pragma: no cover - compatibility with older joblib-only environments
+    from joblib.externals import cloudpickle
 
-from quant_strategy.infrastructure.experiment_store import environment_versions, file_hash
-from quant_strategy.market_data.contracts import frame_fingerprint
-from quant_strategy.market_data.time_index import timeframe_delta
-from quant_strategy.validation.admission import current_source_hashes
-from quant_strategy.validation.native_features import populate_native_features
+from quant.infrastructure.experiment_store import environment_versions, file_hash
+from quant.market_data.contracts import frame_fingerprint
+from quant.market_data.time_index import timeframe_delta
+from quant.validation.admission import current_source_hashes
+from quant.validation.native_features import populate_native_features
 
 
 def _table_equal(actual: pd.DataFrame, expected: pd.DataFrame) -> None:

@@ -4,13 +4,13 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from quant_strategy.backends import create_regressor
-from quant_strategy.backends.freqai import FreqAIBackendAdapter
-from quant_strategy.backends.standalone import StandaloneRegressor
-from quant_strategy.config import ModelConfig, StrategyConfig, ValidationConfig
-from quant_strategy.errors import DataContractError, UnsupportedCapabilityError
-from quant_strategy.validation import TimeSeriesSplitter
-from quant_strategy.validation.leakage import audit_fold
+from quant.backends.freqai import FreqAIBackendAdapter
+from quant.config import ModelConfig, StrategyConfig, ValidationConfig
+from quant.errors import DataContractError, UnsupportedCapabilityError
+from quant.models import create_estimator, create_regressor
+from quant.models.standalone import StandaloneRegressor
+from quant.validation import TimeSeriesSplitter
+from quant.validation.leakage import audit_fold
 
 
 @pytest.mark.parametrize("name", ["ridge", "xgboost"])
@@ -26,6 +26,20 @@ def test_model_fit_predict_save_load(tmp_path, name):
     np.testing.assert_allclose(loaded.predict(X.iloc[30:]), expected)
     with pytest.raises(DataContractError):
         loaded.predict(X[["%b", "%a"]])
+
+
+@pytest.mark.parametrize("name", ["ridge", "xgboost"])
+def test_standalone_and_freqai_share_estimator_constructor(name):
+    params = {} if name == "ridge" else {"n_estimators": 5, "max_depth": 2}
+    common = create_estimator(
+        name,
+        params,
+        seed=42,
+        defaults={"n_jobs": 1, "tree_method": "hist"} if name == "xgboost" else None,
+    )
+    standalone = create_regressor(ModelConfig(name=name, params=params), seed=42)
+    assert type(standalone.estimator) is type(common)
+    assert standalone.estimator.get_params() == common.get_params()
 
 
 @pytest.mark.parametrize(

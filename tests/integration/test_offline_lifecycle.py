@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 from freqtrade.enums import RunMode
 
-from quant_strategy.execution.market_snapshot import SnapshotError
-from quant_strategy.execution.offline_backtest import SnapshotBinance
+from quant.execution.market_snapshot import SnapshotError
+from quant.execution.offline_backtest import SnapshotBinance
 
 ROOT = Path(__file__).resolve().parents[2]
 SNAPSHOT = ROOT / "docs/baseline/acceptance/binance-usdt-market-snapshot.json"
@@ -122,7 +122,7 @@ def test_native_engine_failures_release_exchange_and_restore_native_state(
     from freqtrade.commands import optimize_commands
     from freqtrade.optimize.backtesting import Backtesting
 
-    from quant_strategy.execution.offline_backtest import run_backtest
+    from quant.execution.offline_backtest import run_backtest
 
     instances = []
     original = SnapshotBinance.__init__

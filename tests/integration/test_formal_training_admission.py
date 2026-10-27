@@ -4,10 +4,10 @@ import json
 
 import pytest
 
-from quant_strategy.cli import main
-from quant_strategy.config import ExperimentConfig
-from quant_strategy.errors import DataContractError
-from quant_strategy.validation.admission import require_training_admission
+from quant.cli import main
+from quant.config import ExperimentConfig
+from quant.errors import DataContractError
+from quant.validation.admission import require_training_admission
 
 
 @pytest.mark.parametrize("status", ["FAIL", "PARTIAL", "BLOCKED"])
@@ -22,7 +22,7 @@ def test_formal_entry_does_not_train_with_failed_engineering_gate(tmp_path, monk
     def prohibited(*args, **kwargs):
         pytest.fail("Training must not start after denied admission")
 
-    monkeypatch.setattr("quant_strategy.cli.run_experiment", prohibited)
+    monkeypatch.setattr("quant.cli.run_experiment", prohibited)
     assert (
         main(
             [

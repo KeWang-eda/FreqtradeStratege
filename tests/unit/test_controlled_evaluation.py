@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from quant_strategy.errors import DataContractError
-from quant_strategy.research.evaluation import (
+from quant.errors import DataContractError
+from quant.research.evaluation import (
     METRIC_DEFINITION,
     compare_development_predictions,
     evaluate_predictions,
@@ -129,7 +129,7 @@ def test_single_sample_correlation_is_undefined_and_not_reported_as_zero():
     ],
 )
 def test_incomparable_experiments_cannot_be_silently_ranked(field):
-    from quant_strategy.infrastructure.experiment_store import canonical_hash
+    from quant.infrastructure.experiment_store import canonical_hash
 
     prediction, metadata, contract = _fixture()
     left = evaluate_predictions(prediction, metadata, contract)
@@ -145,7 +145,7 @@ def test_incomparable_experiments_cannot_be_silently_ranked(field):
 
 
 def test_raw_and_volnorm_errors_are_not_directly_comparable():
-    from quant_strategy.infrastructure.experiment_store import canonical_hash
+    from quant.infrastructure.experiment_store import canonical_hash
 
     prediction, metadata, contract = _fixture()
     left = evaluate_predictions(prediction, metadata, contract)

@@ -15,18 +15,18 @@ from xml.etree import ElementTree
 
 import pandas as pd
 
-from quant_strategy.config import load_config
-from quant_strategy.dataset import build_dataset
-from quant_strategy.experiments.runner import _dataset_hash
-from quant_strategy.infrastructure.experiment_store import (
+from quant.config import load_config
+from quant.dataset import build_dataset
+from quant.experiments.runner import _dataset_hash
+from quant.infrastructure.experiment_store import (
     canonical_hash,
     file_hash,
     git_state,
     write_json,
 )
-from quant_strategy.market_data import load_ohlcv
-from quant_strategy.market_data.contracts import audit_source
-from quant_strategy.validation.admission import (
+from quant.market_data import load_ohlcv
+from quant.market_data.contracts import audit_source
+from quant.validation.admission import (
     IMPLEMENTED_FORMAL_GATES,
     bound_artifact,
     new_receipt_context,
@@ -147,7 +147,7 @@ def verify_native_feature_evidence(directory: Path) -> dict:
     """Recompute real expanded schemas and causal tests, not a saved PASS flag."""
     from freqtrade.configuration.load_config import load_from_files
 
-    from quant_strategy.validation.native_features import audit_native_features
+    from quant.validation.native_features import audit_native_features
 
     saved = read_evidence_json(directory / "native_features.json")
     if saved.get("run_id") != directory.parent.name:
@@ -293,7 +293,7 @@ def evaluate(evidence: Path, test_run: Path, output: Path, requested: str = "all
                     )
                 phases[key] = verify_data_evidence(evidence / "source_sample_audit")
             elif phase == 2:
-                from quant_strategy.validation.feature_contracts import (
+                from quant.validation.feature_contracts import (
                     audit_causality,
                     build_feature_contracts,
                 )
@@ -429,7 +429,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
     if args.controlled:
-        from quant_strategy.research.controlled import verify_controlled_research
+        from quant.research.controlled import verify_controlled_research
 
         report = verify_controlled_research(args.evidence, args.output, args.test_run)
         print(

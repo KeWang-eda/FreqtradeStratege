@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from quant_strategy.research.controlled import verify_controlled_research
+from quant.research.controlled import verify_controlled_research
 
 
 def main() -> int:

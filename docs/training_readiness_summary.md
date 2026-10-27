@@ -57,7 +57,7 @@ FreqAI 截取外层历史训练区间并生成标签
 
 `native_boundaries.py` 对未经 purge 的上游 splitter 的诊断仍会返回 FAIL，相应旧故障检出测试继续保留。正式就绪检查现在读取并独立重算实际修复训练产生的工件，不把原始 splitter 的已知缺陷改判为 PASS，也不只修改状态字符串来过门禁。
 
-`src/quant_strategy/training/native_isolation.py` 与 `freqaimodels/XGBoostRegressorES.py` 保证：
+`quant/training/native_isolation.py` 与 `quant/models/freqai/XGBoostRegressorES.py` 保证：
 
 - K 线 open 为原始时间，特征可用时间为 close；horizon=3 的标签在未来第 3 根 close 完成。`validation_start` 固定为原始首个验证样本可用时间。
 - **`label_end_time >= validation_start` 一律剔除**；保留行严格满足 `<`。不移动验证起点，不把 `>=` 改为 `>`。
@@ -198,7 +198,7 @@ mystrategy-4h-regression-72pair-corr-s1-v1
 前置条件：相同依赖、真实本地 `data/`、真实元数据快照，以及允许 `unshare -Urn`、可用 `strace`。Git 不包含大体积原始行情/模型；空 clone 没有这些前置资料时必须 BLOCKED，不能把 skip 算通过。`PYTHON` 按实际环境设置，下列为本机实际解释器的相对路径。
 
 ```bash
-export PYTHONPATH=src:.
+export PYTHONPATH=.
 PYTHON=../freqtrade/.venv/bin/python
 RUN=docs/acceptance/training_repair_$(date -u +%Y%m%dT%H%M%SZ)
 mkdir -p "$RUN"
@@ -214,7 +214,7 @@ mkdir -p "$RUN"
 
 # 完整真实开发训练；必须用新目录，不能复用旧缓存。
 unshare -Urn strace -f -e trace=network -o "$RUN/native_training_network.strace" \
-  env PYTHONPATH=src:. "$PYTHON" tools/run_native_training_probe.py \
+  env PYTHONPATH=. "$PYTHON" tools/run_native_training_probe.py \
   --output "$RUN/native_training"
 "$PYTHON" tools/verify_native_training_acceptance.py \
   --run "$RUN/native_training" --output "$RUN/native_training_independent.json"
@@ -227,8 +227,8 @@ unshare -Urn strace -f -e trace=network -o "$RUN/native_training_network.strace"
 "$PYTHON" - "$RUN" <<'PY'
 import json, os, subprocess, sys
 from pathlib import Path
-from quant_strategy.infrastructure.experiment_store import file_hash
-from quant_strategy.validation.admission import new_receipt_context
+from quant.infrastructure.experiment_store import file_hash
+from quant.validation.admission import new_receipt_context
 root = Path(sys.argv[1])
 context = new_receipt_context(root.name)
 command = [sys.executable, "-m", "pytest", "-q",
@@ -246,16 +246,16 @@ PY
   --test-run "$RUN/test_run.json" --output "$RUN/final_gate"
 # 当前预期返回 2 / BLOCKED，不允许把它改写成 PASS。
 
-"$PYTHON" -m quant_strategy.cli formal-run \
+"$PYTHON" -m quant.cli formal-run \
   -c configs/base.yaml -c configs/environment/local.yaml \
   --readiness "$RUN/final_gate/readiness.json" \
   --output "$RUN/formal" --experiment-id denied
 # 当前预期返回 2，正式目录不应创建。
 
-../freqtrade/.venv/bin/ruff check src tests tools freqaimodels \
-  MyStrategy.py _quant_strategy_bootstrap.py feature.py model.py test_my_strategy.py
-../freqtrade/.venv/bin/ruff format --check src tests tools freqaimodels \
-  MyStrategy.py _quant_strategy_bootstrap.py feature.py model.py test_my_strategy.py
+../freqtrade/.venv/bin/ruff check quant tests tools quant/models/freqai \
+  MyStrategy.py verify_no_lookahead.py
+../freqtrade/.venv/bin/ruff format --check quant tests tools quant/models/freqai \
+  MyStrategy.py verify_no_lookahead.py
 ```
 
 `pytest -q tests/integration/test_offline_freqtrade.py` 会执行文中的真实新/新断网回测与旧在线参考重放；新 userdir、原配置合并次序、`--cache none`、导出及 namespace 参数由测试保存。日常开发训练可直接使用上面的 probe；正式研究只能走 `formal-run`，当前拒绝是正确行为。

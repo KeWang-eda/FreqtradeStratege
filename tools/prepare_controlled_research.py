@@ -5,8 +5,8 @@ import json
 import sys
 from pathlib import Path
 
-from quant_strategy.infrastructure.experiment_store import file_hash, write_json
-from quant_strategy.research.controlled import prepare_controlled_research
+from quant.infrastructure.experiment_store import file_hash, write_json
+from quant.research.controlled import prepare_controlled_research
 from tools.audit_local_network import install_policy
 
 

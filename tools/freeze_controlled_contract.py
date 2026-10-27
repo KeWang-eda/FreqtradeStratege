@@ -13,11 +13,11 @@ from pathlib import Path
 
 import pandas as pd
 
-from quant_strategy.config import load_config
-from quant_strategy.infrastructure.experiment_store import file_hash, git_state, write_json
-from quant_strategy.research.contract import PAIRS, ROOT, validate_research_equivalence
-from quant_strategy.validation.admission import admission_environment
-from quant_strategy.validation.native_features import populate_native_features
+from quant.config import load_config
+from quant.infrastructure.experiment_store import file_hash, git_state, write_json
+from quant.research.contract import PAIRS, ROOT, validate_research_equivalence
+from quant.validation.admission import admission_environment
+from quant.validation.native_features import populate_native_features
 
 
 def freeze(path: Path, config_paths: list[str]) -> dict:
@@ -50,10 +50,10 @@ def freeze(path: Path, config_paths: list[str]) -> dict:
     production_paths = [
         "config.json",
         "MyStrategy.py",
-        "freqaimodels/XGBoostRegressorES.py",
-        "src/quant_strategy/execution/freqtrade_strategy.py",
-        *[str(p.relative_to(ROOT)) for p in (ROOT / "src/quant_strategy/features").glob("*.py")],
-        *[str(p.relative_to(ROOT)) for p in (ROOT / "src/quant_strategy/labels").glob("*.py")],
+        "quant/models/freqai/XGBoostRegressorES.py",
+        "quant/execution/freqtrade_strategy.py",
+        *[str(p.relative_to(ROOT)) for p in (ROOT / "quant/features").glob("*.py")],
+        *[str(p.relative_to(ROOT)) for p in (ROOT / "quant/labels").glob("*.py")],
         str(Path(inspect.getsourcefile(populate_native_features)).relative_to(ROOT)),
     ]
     contract = {
@@ -105,7 +105,7 @@ def freeze(path: Path, config_paths: list[str]) -> dict:
             "axis": "global unique eligible sample available_at; floor(N*0.85) boundary",
             "numeric_access_locked": True,
             "historical_independence": "BLOCKED",
-            "exposure": "Previously used in RESEARCH_LOG OOS windows and training_repair_20261018T010644Z development training; renaming cannot restore independence",
+            "exposure": "Previously used in dated OOS windows and training_repair_20261018T010644Z development training; renaming cannot restore independence",
             "metadata_access": "identities/times only, logged; source inventory may read bytes/rows without model fitting or metrics",
         },
         "baselines": ["zero", "mean_inner_train"],

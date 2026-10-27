@@ -7,12 +7,12 @@ import pandas as pd
 import pytest
 import yaml
 
-from quant_strategy.api import build_dataset, load_model, run_experiment
-from quant_strategy.cli import main
-from quant_strategy.config import ExperimentConfig, LabelConfig, ModelConfig
-from quant_strategy.errors import DataContractError
-from quant_strategy.experiments.runner import compare_experiments
-from quant_strategy.infrastructure.artifact_audit import check_artifacts
+from quant.api import build_dataset, load_model, run_experiment
+from quant.cli import main
+from quant.config import ExperimentConfig, LabelConfig, ModelConfig
+from quant.errors import DataContractError
+from quant.experiments.runner import compare_experiments
+from quant.infrastructure.artifact_audit import check_artifacts
 
 
 @pytest.mark.parametrize("mode", ["raw", "volnorm"])

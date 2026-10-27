@@ -18,8 +18,8 @@ from pathlib import Path
 import pytest
 from freqtrade.enums import RunMode
 
-from quant_strategy.execution.market_snapshot import SnapshotError, digest, load_snapshot
-from quant_strategy.execution.offline_backtest import (
+from quant.execution.market_snapshot import SnapshotError, digest, load_snapshot
+from quant.execution.offline_backtest import (
     LocalBinanceAsyncClient,
     LocalBinanceClient,
     OfflineNetworkError,
@@ -166,7 +166,7 @@ def offline_command(tmp_path, snapshot):
         "--strategy-path",
         str(ROOT),
         "--freqaimodel-path",
-        str(ROOT / "freqaimodels"),
+        str(ROOT / "quant" / "models" / "freqai"),
         "--strategy",
         "MyStrategy",
         "--timerange",
@@ -187,7 +187,7 @@ def run_audited(command, *, extra_environment=None):
     return subprocess.run(
         command,
         cwd=ROOT,
-        env={**os.environ, "PYTHONPATH": str(ROOT / "src"), **(extra_environment or {})},
+        env={**os.environ, "PYTHONPATH": str(ROOT), **(extra_environment or {})},
         capture_output=True,
         text=True,
         timeout=180,

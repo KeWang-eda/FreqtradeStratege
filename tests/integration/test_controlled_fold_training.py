@@ -11,16 +11,16 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from quant_strategy.config import ValidationConfig
-from quant_strategy.errors import DataContractError
-from quant_strategy.infrastructure.experiment_store import (
+from quant.config import ValidationConfig
+from quant.errors import DataContractError
+from quant.infrastructure.experiment_store import (
     canonical_hash,
     environment_versions,
     file_hash,
 )
-from quant_strategy.research.evaluation import METRIC_DEFINITION
-from quant_strategy.research.fold_training import run_development_folds, verify_development_folds
-from quant_strategy.research.splits import build_split_plan
+from quant.research.evaluation import METRIC_DEFINITION
+from quant.research.fold_training import run_development_folds, verify_development_folds
+from quant.research.splits import build_split_plan
 
 
 @pytest.fixture(scope="module")

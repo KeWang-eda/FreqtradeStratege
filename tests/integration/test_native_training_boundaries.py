@@ -3,8 +3,8 @@
 import json
 from pathlib import Path
 
-from quant_strategy.market_data import load_ohlcv
-from quant_strategy.validation.native_boundaries import audit_native_boundaries
+from quant.market_data import load_ohlcv
+from quant.validation.native_boundaries import audit_native_boundaries
 
 
 def test_actual_native_split_exposes_overlapping_training_labels(candles):

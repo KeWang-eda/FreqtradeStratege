@@ -80,25 +80,25 @@ if os.environ.get("QUANT_TEST_PROFILE_DIR"):
                 ("pandas", None, "read_parquet", "dataframe_reads"),
                 ("xgboost.sklearn", "XGBRegressor", "fit", "xgboost_fits"),
                 (
-                    "quant_strategy.validation.native_features",
+                    "quant.validation.native_features",
                     None,
                     "populate_native_features",
                     "production_feature_expansions",
                 ),
                 (
-                    "quant_strategy.validation.native_features",
+                    "quant.validation.native_features",
                     None,
                     "audit_native_features",
                     "production_feature_audits",
                 ),
                 (
-                    "quant_strategy.research.fold_training",
+                    "quant.research.fold_training",
                     None,
                     "verify_development_folds",
                     "independent_verifications",
                 ),
                 (
-                    "quant_strategy.research.controlled",
+                    "quant.research.controlled",
                     None,
                     "verify_controlled_research",
                     "independent_verifications",
@@ -117,7 +117,7 @@ if os.environ.get("QUANT_TEST_PROFILE_DIR"):
             ):
                 targets.append(
                     (
-                        "quant_strategy.execution.freqtrade_strategy",
+                        "quant.execution.freqtrade_strategy",
                         "QuantStrategy",
                         hook,
                         "production_feature_hooks",

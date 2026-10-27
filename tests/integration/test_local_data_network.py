@@ -27,7 +27,7 @@ def audit_research(tmp_path, name, arguments):
             *arguments,
         ],
         cwd=ROOT,
-        env={**os.environ, "PYTHONPATH": str(ROOT / "src")},
+        env={**os.environ, "PYTHONPATH": str(ROOT)},
         capture_output=True,
         text=True,
         timeout=120,

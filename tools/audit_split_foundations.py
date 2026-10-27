@@ -11,12 +11,12 @@ from pathlib import Path
 
 import pandas as pd
 
-from quant_strategy.config import load_config
-from quant_strategy.dataset import build_dataset
-from quant_strategy.infrastructure.experiment_store import file_hash, write_json
-from quant_strategy.market_data import load_ohlcv
-from quant_strategy.validation import TimeSeriesSplitter
-from quant_strategy.validation.leakage import audit_fold
+from quant.config import load_config
+from quant.dataset import build_dataset
+from quant.infrastructure.experiment_store import file_hash, write_json
+from quant.market_data import load_ohlcv
+from quant.validation import TimeSeriesSplitter
+from quant.validation.leakage import audit_fold
 
 
 def audit(config_paths: list[str], bars: int = 600) -> dict:

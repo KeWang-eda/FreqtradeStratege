@@ -16,17 +16,17 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from quant_strategy.infrastructure.experiment_store import (
+from quant.infrastructure.experiment_store import (
     canonical_hash,
     environment_versions,
     file_hash,
     git_state,
     write_json,
 )
-from quant_strategy.market_data import load_ohlcv
-from quant_strategy.market_data.time_index import timeframe_delta
-from quant_strategy.validation.admission import current_source_hashes
-from quant_strategy.validation.native_features import populate_native_features
+from quant.market_data import load_ohlcv
+from quant.market_data.time_index import timeframe_delta
+from quant.validation.admission import current_source_hashes
+from quant.validation.native_features import populate_native_features
 
 
 def run_probe(config_path: Path, output: Path, pairs: list[str], end: str | None = None) -> dict:
@@ -47,7 +47,7 @@ def run_probe(config_path: Path, output: Path, pairs: list[str], end: str | None
         raise ValueError("Development pairs must belong to the production whitelist")
     config.update(
         user_data_dir=output / "userdir",
-        freqaimodel_path=str(Path("freqaimodels").resolve()),
+        freqaimodel_path=str(Path("quant/models/freqai").resolve()),
     )
     validate_config_schema(config)
     # Namespace is isolated by userdir, while the actual production identifier and

@@ -8,7 +8,7 @@ from collections import Counter
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-from quant_strategy.infrastructure.experiment_store import file_hash, write_json
+from quant.infrastructure.experiment_store import file_hash, write_json
 
 
 def read_run(path: Path) -> dict:

@@ -6,10 +6,10 @@ from pathlib import Path
 import numpy as np
 from conftest import make_ohlcv
 
-from quant_strategy.backends.freqai import add_freqai_period_features
-from quant_strategy.features import add_baseline_features, add_basic_price_features
-from quant_strategy.labels import set_regression_target
-from quant_strategy.portfolio import (
+from quant.backends.freqai import add_freqai_period_features
+from quant.features import add_baseline_features, add_basic_price_features
+from quant.labels import set_regression_target
+from quant.portfolio import (
     build_candidate,
     decide_position_action,
     resolve_target_position,
@@ -72,6 +72,8 @@ def test_native_configuration_parameters_are_unchanged():
     after = json.loads(Path("config.json").read_text())
     # The correctness fix changes the training sample set. Explicitly require
     # its incompatible cache namespace; every actual parameter stays frozen.
+    # Freqtrade discovery also needs the relocated adapter package path.
     assert before["freqai"].pop("identifier") == "mystrategy-4h-regression-72pair-corr-s1-v1"
     assert after["freqai"].pop("identifier") == "mystrategy-4h-regression-72pair-corr-s1-purged-v2"
+    assert after.pop("freqaimodel_path") == "quant/models/freqai"
     assert without_comments(before) == without_comments(after)

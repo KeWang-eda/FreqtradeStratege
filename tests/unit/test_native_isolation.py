@@ -8,8 +8,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from quant_strategy.errors import DataContractError
-from quant_strategy.training.native_isolation import (
+from quant.errors import DataContractError
+from quant.training.native_isolation import (
     bind_cache_contract,
     purge_native_split,
     validate_native_config,

@@ -1,7 +1,7 @@
 # 公共接口与扩展
 
 ```python
-from quant_strategy.api import load_config, run_experiment, load_model
+from quant.api import load_config, run_experiment, load_model
 
 config = load_config(
     ["configs/base.yaml", "configs/environment/local.yaml",

@@ -48,13 +48,13 @@
 
 | 文件 | 本次修改目的 |
 | --- | --- |
-| `src/quant_strategy/execution/market_snapshot.py` | 真实快照采集、严格验证、完整性校验、原子发布 |
-| `src/quant_strategy/execution/offline_backtest.py` | 专用离线入口、原生引擎注入、模式隔离、传输拒绝、资源清理 |
+| `quant/execution/market_snapshot.py` | 真实快照采集、严格验证、完整性校验、原子发布 |
+| `quant/execution/offline_backtest.py` | 专用离线入口、原生引擎注入、模式隔离、传输拒绝、资源清理 |
 | `tools/audit_local_network.py` | HTTP、DNS、socket、子进程审计，拒绝事件不能被吞掉后算成功 |
 | `tools/verify_freqtrade_regression.py` | 严格比较真实回测工件，并用负向测试证明能发现差异 |
 | `tools/audit_historical_coverage.py` | 只读数据质量与覆盖审计 |
 | `tools/run_offline_acceptance.py`、`tools/run_offline_extension.py` | 编排空缓存、系统隔离、真实回归和证据发布 |
-| `src/quant_strategy/infrastructure/experiment_store.py` | 仅收紧溯源用 Git 子进程，不改研究计算 |
+| `quant/infrastructure/experiment_store.py` | 仅收紧溯源用 Git 子进程，不改研究计算 |
 
 ## 4. 实际测试和回归结果
 
@@ -99,7 +99,7 @@
 
 ```bash
 export FREQTRADE_PYTHON="$PWD/../freqtrade/.venv/bin/python"
-export PYTHONPATH=src:.
+export PYTHONPATH=.
 ```
 
 ### 本地数据集、训练、交叉验证和模型比较
@@ -108,18 +108,18 @@ export PYTHONPATH=src:.
 
 ```bash
 research_run=$(mktemp -d)
-"$FREQTRADE_PYTHON" -m quant_strategy.cli validate \
+"$FREQTRADE_PYTHON" -m quant.cli validate \
   -c configs/base.yaml -c configs/environment/local.yaml
-"$FREQTRADE_PYTHON" -m quant_strategy.cli dataset-build \
+"$FREQTRADE_PYTHON" -m quant.cli dataset-build \
   -c configs/base.yaml -c configs/environment/local.yaml
-"$FREQTRADE_PYTHON" -m quant_strategy.cli run \
+"$FREQTRADE_PYTHON" -m quant.cli run \
   -c configs/base.yaml -c configs/environment/local.yaml \
   --output "$research_run" --experiment-id ridge
-"$FREQTRADE_PYTHON" -m quant_strategy.cli run \
+"$FREQTRADE_PYTHON" -m quant.cli run \
   -c configs/base.yaml -c configs/environment/local.yaml \
   -c configs/estimators/xgboost.yaml \
   --output "$research_run" --experiment-id xgboost
-"$FREQTRADE_PYTHON" -m quant_strategy.cli compare \
+"$FREQTRADE_PYTHON" -m quant.cli compare \
   "$research_run/ridge" "$research_run/xgboost"
 ```
 
@@ -130,11 +130,11 @@ research_run=$(mktemp -d)
 ```bash
 offline_run=$(mktemp -d)
 mkdir "$offline_run/results"
-"$FREQTRADE_PYTHON" -m quant_strategy.execution.offline_backtest backtesting \
+"$FREQTRADE_PYTHON" -m quant.execution.offline_backtest backtesting \
   --snapshot docs/baseline/acceptance/binance-usdt-market-snapshot.json -- \
   -c config.json -c configs/backtest-local.json \
   --userdir "$offline_run" --datadir "$PWD/data" \
-  --strategy-path "$PWD" --freqaimodel-path "$PWD/freqaimodels" \
+  --strategy-path "$PWD" --freqaimodel-path "$PWD/quant/models/freqai" \
   --strategy MyStrategy --timerange 20250101-20250115 \
   --pairs BTC/USDT:USDT ETH/USDT:USDT \
   --cache none --export signals --backtest-directory "$offline_run/results"
@@ -150,7 +150,7 @@ mkdir "$offline_run/results"
 
 ```bash
 snapshot_run=$(mktemp -d)
-"$FREQTRADE_PYTHON" -m quant_strategy.execution.offline_backtest capture \
+"$FREQTRADE_PYTHON" -m quant.execution.offline_backtest capture \
   --snapshot "$snapshot_run/binance-usdt.json" \
   --pairs BTC/USDT:USDT ETH/USDT:USDT \
   --proxy http://127.0.0.1:7890
@@ -172,10 +172,10 @@ acceptance_run=$(mktemp -d)
 "$FREQTRADE_PYTHON" tools/run_offline_acceptance.py phase4 \
   --coverage "$acceptance_run/coverage.json" --output "$acceptance_run"
 "$FREQTRADE_PYTHON" tools/run_offline_acceptance.py phase5 --output "$acceptance_run"
-"$FREQTRADE_PYTHON" -m ruff check src tests tools \
-  MyStrategy.py feature.py model.py util.py verify_no_lookahead.py _quant_strategy_bootstrap.py
-"$FREQTRADE_PYTHON" -m ruff format --check src tests tools \
-  MyStrategy.py feature.py model.py util.py verify_no_lookahead.py _quant_strategy_bootstrap.py
+"$FREQTRADE_PYTHON" -m ruff check quant tests tools \
+  MyStrategy.py  verify_no_lookahead.py
+"$FREQTRADE_PYTHON" -m ruff format --check quant tests tools \
+  MyStrategy.py  verify_no_lookahead.py
 ```
 
 验收 runner 对冻结实验显式放宽快照年龄，仅用于复现既定输入；生产入口默认仍为 30 天。普通 `freqtrade backtesting`、实盘和 dry-run 继续使用原来的入口与配置。

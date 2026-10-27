@@ -10,8 +10,8 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from quant_strategy.errors import DataContractError
-from quant_strategy.validation.native_features import (
+from quant.errors import DataContractError
+from quant.validation.native_features import (
     audit_native_features,
     audit_snapshot_ranking,
     populate_native_features,
@@ -252,7 +252,7 @@ def test_real_native_audit_cli_binds_run_identity_and_immutable_inputs(tmp_path)
             "--output",
             str(output),
         ],
-        env={**os.environ, "PYTHONPATH": str(Path("src").resolve())},
+        env={**os.environ, "PYTHONPATH": str(Path(".").resolve())},
         capture_output=True,
         text=True,
         check=False,

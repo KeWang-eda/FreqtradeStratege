@@ -7,8 +7,8 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from quant_strategy.infrastructure.experiment_store import canonical_hash
-from quant_strategy.research.costs import build_cost_contract, validate_cost_scenario
+from quant.infrastructure.experiment_store import canonical_hash
+from quant.research.costs import build_cost_contract, validate_cost_scenario
 
 
 @pytest.fixture

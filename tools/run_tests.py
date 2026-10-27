@@ -21,14 +21,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parents[1]
-sys.path[:0] = [str(_ROOT / "src"), str(_ROOT)]
-from quant_strategy.infrastructure.experiment_store import canonical_hash, file_hash  # noqa: E402
-from quant_strategy.validation.admission import (  # noqa: E402
+sys.path.insert(0, str(_ROOT))
+from quant.infrastructure.experiment_store import canonical_hash, file_hash  # noqa: E402
+from quant.validation.admission import (  # noqa: E402
     current_source_hashes,
     new_receipt_context,
 )
-from quant_strategy.validation.source_monitor import SourceMonitor  # noqa: E402
-from quant_strategy.validation.test_receipts import MODE_MARKERS, junit_counts  # noqa: E402
+from quant.validation.source_monitor import SourceMonitor  # noqa: E402
+from quant.validation.test_receipts import MODE_MARKERS, junit_counts  # noqa: E402
 
 _MODE_MARKERS = MODE_MARKERS
 
@@ -75,7 +75,10 @@ def main(argv: list[str] | None = None) -> int:
         command.append("--collect-only")
     env = os.environ.copy()
     inherited_addopts = env.pop("PYTEST_ADDOPTS", None)
-    env["PYTHONPATH"] = os.pathsep.join([str(_ROOT / "src"), str(_ROOT)])
+    inherited = env.get("PYTHONPATH")
+    env["PYTHONPATH"] = os.pathsep.join(
+        [str(_ROOT), *([inherited] if inherited else [])]
+    )
     env["QUANT_TEST_EXECUTION_ID"] = execution_id
     # Keep Python cache creation outside the monitored source-change contract.
     # Existing bytecode may be read; tests and their children do not write it.

@@ -6,12 +6,12 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from quant_strategy.errors import DataContractError
+from quant.errors import DataContractError
 
 
 @pytest.fixture
 def contracts():
-    return importlib.import_module("quant_strategy.market_data.contracts")
+    return importlib.import_module("quant.market_data.contracts")
 
 
 @pytest.fixture
@@ -245,10 +245,11 @@ def test_contract_import_does_not_load_freqtrade_or_ccxt():
         [
             sys.executable,
             "-c",
-            "import sys; import quant_strategy.market_data.contracts; assert 'freqtrade' not in sys.modules; assert 'ccxt' not in sys.modules",
+            "import sys; import quant.market_data.contracts; import quant.models; "
+            "assert 'freqtrade' not in sys.modules; assert 'ccxt' not in sys.modules",
         ],
         capture_output=True,
         text=True,
-        env={**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parents[2] / "src")},
+        env={**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parents[2])},
     )
     assert result.returncode == 0, result.stderr

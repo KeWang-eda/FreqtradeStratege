@@ -7,15 +7,15 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from quant_strategy.config import ExperimentConfig, LabelConfig
-from quant_strategy.features import build_features
-from quant_strategy.labels import build_labels
+from quant.config import ExperimentConfig, LabelConfig
+from quant.features import build_features
+from quant.labels import build_labels
 from tests.conftest import make_ohlcv
 
 
 @pytest.fixture
 def contracts():
-    return import_module("quant_strategy.validation.feature_contracts")
+    return import_module("quant.validation.feature_contracts")
 
 
 def test_contracts_match_actual_schema_and_explicit_close_availability(contracts, candles):

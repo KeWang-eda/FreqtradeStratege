@@ -7,22 +7,22 @@ import pandas as pd
 import pytest
 import talib.abstract as ta
 
-from quant_strategy.config import (
+from quant.config import (
     LabelConfig,
     ModelConfig,
     StrategyConfig,
     ValidationConfig,
     load_config,
 )
-from quant_strategy.errors import ConfigurationError, DataContractError
-from quant_strategy.features import (
+from quant.errors import ConfigurationError, DataContractError
+from quant.features import (
     add_baseline_features,
     add_period_expanded_features,
     build_features,
 )
-from quant_strategy.labels import build_labels, set_regression_target
-from quant_strategy.market_data import validate_ohlcv
-from quant_strategy.validation import prediction_metrics
+from quant.labels import build_labels, set_regression_target
+from quant.market_data import validate_ohlcv
+from quant.validation import prediction_metrics
 
 
 @pytest.mark.parametrize(
@@ -158,7 +158,7 @@ def test_metrics_empty_constant_and_known_values():
 
 
 def test_resolved_config_rejects_invalid_periods():
-    from quant_strategy.config import ExperimentConfig
+    from quant.config import ExperimentConfig
 
     with pytest.raises(ConfigurationError):
         replace(ExperimentConfig(), periods=(6, 6))
@@ -172,7 +172,7 @@ def test_switching_estimators_drops_incompatible_parameters():
 
 @pytest.mark.parametrize("model", ["ridge", "xgboost"])
 def test_unknown_model_parameters_fail_before_training(model):
-    from quant_strategy.backends import create_regressor
+    from quant.models import create_regressor
 
     with pytest.raises(ConfigurationError, match="Unknown model parameters"):
         create_regressor(ModelConfig(name=model, params={"param_typo": 1}))

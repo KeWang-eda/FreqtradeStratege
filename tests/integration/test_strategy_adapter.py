@@ -9,8 +9,8 @@ import pandas as pd
 import pytest
 
 from MyStrategy import MyStrategy
-from quant_strategy.backends.freqai import FreqAIBackendAdapter
-from quant_strategy.infrastructure.snapshot_store import PredictionSnapshotStore
+from quant.backends.freqai import FreqAIBackendAdapter
+from quant.infrastructure.snapshot_store import PredictionSnapshotStore
 
 
 def strategy_with_pool(pairs=("BTC", "ETH")):
@@ -89,14 +89,31 @@ def test_live_snapshot_is_bounded_and_exact_time_only():
     assert store.get_row("BTC", frame.date.iloc[-1] + pd.Timedelta(hours=4)) is None
 
 
+def test_freqtrade_resolver_discovers_models_from_quant_package(tmp_path):
+    from freqtrade.resolvers.freqaimodel_resolver import FreqaiModelResolver
+
+    config = json.loads(Path("config.json").read_text())
+    config["user_data_dir"] = tmp_path
+    expected = Path(config["freqaimodel_path"]).resolve()
+    config["freqaimodel_path"] = str(expected)
+    objects = FreqaiModelResolver.search_all_objects(config, enum_failed=True)
+    locations = {
+        item["name"]: Path(item["location"]).resolve()
+        for item in objects
+        if item["name"] in {"XGBoostRegressorES", "MomentumRidgeRegressor"}
+    }
+    assert set(locations) == {"XGBoostRegressorES", "MomentumRidgeRegressor"}
+    assert all(path.parent == expected for path in locations.values())
+
+
 @pytest.mark.parametrize("model_name", ["MomentumRidgeRegressor", "XGBoostRegressorES"])
 def test_installed_freqai_train_predict_lifecycle(tmp_path, candles, model_name):
     # Use actual FreqAI data kitchen, transforms and BaseRegressionModel methods.
     from freqtrade.configuration.config_validation import validate_config_schema
     from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 
-    from freqaimodels.MomentumRidgeRegressor import MomentumRidgeRegressor
-    from freqaimodels.XGBoostRegressorES import XGBoostRegressorES
+    from quant.models.freqai.MomentumRidgeRegressor import MomentumRidgeRegressor
+    from quant.models.freqai.XGBoostRegressorES import XGBoostRegressorES
 
     config = json.loads(Path("config.json").read_text())
     config["user_data_dir"] = tmp_path

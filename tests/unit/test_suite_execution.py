@@ -85,7 +85,7 @@ def test_runner_preserves_nonzero_pytest_exit_and_empty_selection(tmp_path):
 
 @pytest.mark.parametrize("fault", ["empty_rehashed", "duplicate", "missing_phase", "false_success"])
 def test_rehashed_selection_corruption_is_rejected(profiled_execution, tmp_path, fault):
-    from quant_strategy.infrastructure.experiment_store import file_hash
+    from quant.infrastructure.experiment_store import file_hash
     from tools.verify_test_consolidation import validate_selection
 
     output = profiled_execution

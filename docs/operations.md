@@ -1,8 +1,8 @@
 # 使用与验证
 
-沿用当前环境，不升级核心依赖。可使用 `PYTHONPATH=src`；需要安装 CLI 时执行：
+沿用当前环境，不升级核心依赖。可使用 `PYTHONPATH=.`；需要安装 CLI 时执行：
 
-先激活已安装 Freqtrade 2026.7 / CCXT 4.5.75 的环境，再设置 `export FREQTRADE_PYTHON="$(command -v python)"`。本项目未配置 mypy/pyright，不把“未配置类型检查”当作检查通过。以下命令从项目根运行，原配置的数据路径须与当前本地文件一致。
+先激活已安装 Freqtrade 2026.7 / CCXT 4.5.75 的环境，再设置 `export FREQTRADE_PYTHON="$(command -v python)"`。Freqtrade 命令从项目根目录用 `python -m freqtrade` 启动，这样根目录的 `quant` 包可被模型 resolver 导入。本项目未配置 mypy/pyright，不把“未配置类型检查”当作检查通过。以下命令从项目根运行，原配置的数据路径须与当前本地文件一致。
 
 ```bash
 "$FREQTRADE_PYTHON" -m pip install -e . --no-deps --no-build-isolation
@@ -11,10 +11,10 @@
 从仓库根目录运行：
 
 ```bash
-PYTHONPATH=src "$FREQTRADE_PYTHON" -m quant_strategy.cli validate \
+PYTHONPATH=. "$FREQTRADE_PYTHON" -m quant.cli validate \
   -c configs/base.yaml -c configs/environment/local.yaml
 
-PYTHONPATH=src "$FREQTRADE_PYTHON" -m quant_strategy.cli run \
+PYTHONPATH=. "$FREQTRADE_PYTHON" -m quant.cli run \
   -c configs/base.yaml -c configs/environment/local.yaml -c configs/research.yaml \
   -c configs/experiments/baseline_volnorm.yaml \
   --output /tmp/quant-experiments --experiment-id volnorm-ridge
@@ -25,12 +25,12 @@ PYTHONPATH=src "$FREQTRADE_PYTHON" -m quant_strategy.cli run \
 XGBoost 配置层使用 `configs/estimators/xgboost.yaml`；同一模型的 params 按键合并，模型名称切换时清除旧模型参数：
 
 ```bash
-PYTHONPATH=src "$FREQTRADE_PYTHON" -m quant_strategy.cli run \
+PYTHONPATH=. "$FREQTRADE_PYTHON" -m quant.cli run \
   -c configs/base.yaml -c configs/environment/local.yaml \
   -c configs/estimators/xgboost.yaml \
   --output /tmp/quant-experiments --experiment-id raw-xgboost
 
-PYTHONPATH=src "$FREQTRADE_PYTHON" -m quant_strategy.cli compare \
+PYTHONPATH=. "$FREQTRADE_PYTHON" -m quant.cli compare \
   /tmp/quant-experiments/volnorm-ridge /tmp/quant-experiments/raw-xgboost
 ```
 
@@ -45,7 +45,7 @@ mkdir -p /tmp/quant-freqtrade-check /tmp/quant-freqtrade-results
   -c "$PWD/configs/environment/freqtrade-mihomo.json" \
   --userdir /tmp/quant-freqtrade-check \
   --datadir "$PWD/data" --strategy-path "$PWD" \
-  --freqaimodel-path "$PWD/freqaimodels" --strategy MyStrategy \
+  --freqaimodel-path "$PWD/quant/models/freqai" --strategy MyStrategy \
   --timerange 20250101-20250115 --pairs BTC/USDT:USDT ETH/USDT:USDT \
   --cache none --export trades --backtest-directory /tmp/quant-freqtrade-results
 ```
@@ -54,14 +54,14 @@ mkdir -p /tmp/quant-freqtrade-check /tmp/quant-freqtrade-results
 
 `configs/backtest-local.json` 专用于当前 USDT 合约历史回测，将默认的现货/线性/币本位市场查询缩小为线性合约；实测元数据请求从 3 个降为 1 个，行情没有重新下载。代理不需要时，只去掉指向 `freqtrade-mihomo.json` 的 `-c`，保留回测范围覆盖。断网研究、必要元数据限制和完整证据见 [本地数据网络排查报告](local_data_network_audit.md)。
 
-完全断网时，使用 `PYTHONPATH=src python -m quant_strategy.execution.offline_backtest backtesting --snapshot SNAPSHOT.json -- ...原生回测参数...`。该独立入口校验真实市场快照后注入原生引擎，缺失或损坏不会回退联网。仅支持指定版本的 Binance USDT isolated 历史回测，显式采集、完整命令及真实断网证据见[完全离线回测报告](offline_backtest_snapshot.md)。实盘/模拟交易不使用此入口。
+完全断网时，使用 `PYTHONPATH=. python -m quant.execution.offline_backtest backtesting --snapshot SNAPSHOT.json -- ...原生回测参数...`。该独立入口校验真实市场快照后注入原生引擎，缺失或损坏不会回退联网。仅支持指定版本的 Binance USDT isolated 历史回测，显式采集、完整命令及真实断网证据见[完全离线回测报告](offline_backtest_snapshot.md)。实盘/模拟交易不使用此入口。
 
 测试与静态检查：
 
 ```bash
 "$FREQTRADE_PYTHON" -m pytest -q
-"$FREQTRADE_PYTHON" -m ruff check src tests tools MyStrategy.py feature.py model.py util.py verify_no_lookahead.py _quant_strategy_bootstrap.py
-"$FREQTRADE_PYTHON" -m ruff format --check src tests tools MyStrategy.py feature.py model.py util.py verify_no_lookahead.py _quant_strategy_bootstrap.py
+"$FREQTRADE_PYTHON" -m ruff check quant tests tools MyStrategy.py verify_no_lookahead.py
+"$FREQTRADE_PYTHON" -m ruff format --check quant tests tools MyStrategy.py verify_no_lookahead.py
 ```
 
 单元、契约、集成、回归、防泄漏、研究 E2E 分目录运行。FreqAI 集成直接调用当前已安装框架的数据厨房、预处理器、BaseRegressionModel.train/predict 及两个自定义模型，不连接交易所。
@@ -74,7 +74,7 @@ python verify_no_lookahead.py short.zip long.zip --report /tmp/truncation.json
 
 脚本会选择真实结果 JSON，检查双向交易差异，忽略区间末端强平的退出时间。0=一致，1=存在差异，2=无效输入。报告只证明指定重叠窗口的交易回归一致，不能代替其他防泄漏测试。
 
-新旧版本使用独立 userdir 并以 `--export signals` 导出后，可用 `PYTHONPATH=src python tools/verify_freqtrade_regression.py OLD_USERDIR NEW_USERDIR --report /tmp/regression.json` 比较完整交易、三类导出信号、逐窗口预测及训练 schema。工具只读取本地生成且可信的 joblib 归档。已执行的两窗口结果及完整复现命令见 [真实回测验收](baseline/acceptance/README.md)。
+新旧版本使用独立 userdir 并以 `--export signals` 导出后，可用 `PYTHONPATH=. python tools/verify_freqtrade_regression.py OLD_USERDIR NEW_USERDIR --report /tmp/regression.json` 比较完整交易、三类导出信号、逐窗口预测及训练 schema。工具只读取本地生成且可信的 joblib 归档。已执行的两窗口结果及完整复现命令见 [真实回测验收](baseline/acceptance/README.md)。
 
 ## 当前离线流程与分阶段复验
 
@@ -83,7 +83,7 @@ python verify_no_lookahead.py short.zip long.zip --report /tmp/truncation.json
 先做只读覆盖审计，输出到全新目录。全 72 币命令可能返回 1，含义是报告生成成功但存在缺数据或快照范围问题；0 表示请求范围全部具备条件，2 是无法完成审计。不要给返回 1 的全币种报告标“全部可回测”。
 
 ```bash
-export PYTHONPATH=src:.
+export PYTHONPATH=.
 acceptance_run=$(mktemp -d)
 "$FREQTRADE_PYTHON" tools/audit_historical_coverage.py \
   --config config.json --timerange 20250101-20250115 \
@@ -103,11 +103,11 @@ Phase 4 会核对 BTC/ETH 范围、原始文件哈希和准入条件，创建空
 ```bash
 offline_run=$(mktemp -d)
 mkdir -p "$offline_run/results"
-"$FREQTRADE_PYTHON" -m quant_strategy.execution.offline_backtest backtesting \
+"$FREQTRADE_PYTHON" -m quant.execution.offline_backtest backtesting \
   --snapshot docs/baseline/acceptance/binance-usdt-market-snapshot.json -- \
   -c config.json -c configs/backtest-local.json \
   --userdir "$offline_run" --datadir "$PWD/data" \
-  --strategy-path "$PWD" --freqaimodel-path "$PWD/freqaimodels" \
+  --strategy-path "$PWD" --freqaimodel-path "$PWD/quant/models/freqai" \
   --strategy MyStrategy --timerange 20250101-20250115 \
   --pairs BTC/USDT:USDT ETH/USDT:USDT \
   --cache none --export signals --backtest-directory "$offline_run/results"
@@ -119,7 +119,7 @@ mkdir -p "$offline_run/results"
 
 ```bash
 market_snapshot="$acceptance_run/binance-usdt-$(date -u +%Y%m%dT%H%M%SZ).json"
-"$FREQTRADE_PYTHON" -m quant_strategy.execution.offline_backtest capture \
+"$FREQTRADE_PYTHON" -m quant.execution.offline_backtest capture \
   --snapshot "$market_snapshot" --pairs BTC/USDT:USDT ETH/USDT:USDT \
   --proxy http://127.0.0.1:7890
 ```

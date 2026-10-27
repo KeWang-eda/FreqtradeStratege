@@ -5,8 +5,8 @@ import zipfile
 
 import pytest
 
-from quant_strategy.errors import DataContractError
-from quant_strategy.validation.truncation import compare_backtests, load_backtest, main
+from quant.errors import DataContractError
+from quant.validation.truncation import compare_backtests, load_backtest, main
 
 
 def trade(pair="BTC", opened="2024-01-02", closed="2024-01-03", reason="rotate_to_stronger_pair"):

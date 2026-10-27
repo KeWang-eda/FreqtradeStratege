@@ -5,10 +5,10 @@ from dataclasses import replace
 
 import pytest
 
-from quant_strategy.config import ExperimentConfig, LabelConfig, ModelConfig
-from quant_strategy.errors import DataContractError
-from quant_strategy.experiments.runner import compare_experiments, run_experiment
-from quant_strategy.infrastructure.experiment_store import file_hash
+from quant.config import ExperimentConfig, LabelConfig, ModelConfig
+from quant.errors import DataContractError
+from quant.experiments.runner import compare_experiments, run_experiment
+from quant.infrastructure.experiment_store import file_hash
 
 
 @pytest.fixture

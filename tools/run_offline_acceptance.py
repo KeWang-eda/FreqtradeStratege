@@ -21,7 +21,7 @@ import zipfile
 from datetime import UTC, datetime
 from pathlib import Path
 
-from quant_strategy.infrastructure.experiment_store import environment_versions, file_hash
+from quant.infrastructure.experiment_store import environment_versions, file_hash
 from tools.verify_freqtrade_regression import compare_runs
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -95,7 +95,7 @@ def native_options(userdir: Path) -> list[str]:
         "--strategy-path",
         str(ROOT),
         "--freqaimodel-path",
-        str(ROOT / "freqaimodels"),
+        str(ROOT / "quant" / "models" / "freqai"),
         "--strategy",
         "MyStrategy",
         "--timerange",
@@ -135,7 +135,7 @@ def audited_run(workspace: Path, name: str, component: str, arguments: list[str]
     result = subprocess.run(
         command,
         cwd=ROOT,
-        env={**os.environ, "PYTHONPATH": f"{ROOT / 'src'}:{ROOT}"},
+        env={**os.environ, "PYTHONPATH": str(ROOT)},
         capture_output=True,
         text=True,
         timeout=240,

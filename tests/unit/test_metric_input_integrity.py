@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from quant_strategy.validation import prediction_metrics
+from quant.validation import prediction_metrics
 
 
 @pytest.mark.parametrize(

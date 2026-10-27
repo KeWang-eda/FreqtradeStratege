@@ -87,7 +87,7 @@ _FORMAL_PREFLIGHT_FILES = {
 }
 
 _PRODUCTION_REGRESSION_FILES = {
-    "test_my_strategy.py",
+    "tests/regression/test_strategy_contract.py",
     "tests/integration/test_freqtrade_regression_report.py",
     "tests/integration/test_mode_isolation_acceptance.py",
     "tests/integration/test_native_purged_training.py",

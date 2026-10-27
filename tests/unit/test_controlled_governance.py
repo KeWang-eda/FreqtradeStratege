@@ -7,8 +7,8 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from quant_strategy.infrastructure.experiment_store import file_hash
-from quant_strategy.research.governance import (
+from quant.infrastructure.experiment_store import file_hash
+from quant.research.governance import (
     PAIRS,
     assess_funding_evidence,
     audit_three_pair_sources,

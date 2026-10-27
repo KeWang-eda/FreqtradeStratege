@@ -44,15 +44,15 @@ def run(arguments):
     except NetworkDenied:
         pass
     return 0
-module=types.ModuleType("quant_strategy.cli")
+module=types.ModuleType("quant.cli")
 module.main=run
-sys.modules["quant_strategy.cli"]=module
+sys.modules["quant.cli"]=module
 raise SystemExit(main(["--policy","deny-all","--report",sys.argv[1],"research"]))
 """
     result = subprocess.run(
         [sys.executable, "-c", script, str(report), operation],
         cwd=ROOT,
-        env={**os.environ, "PYTHONPATH": str(ROOT / "src")},
+        env={**os.environ, "PYTHONPATH": str(ROOT)},
         capture_output=True,
         text=True,
         timeout=30,

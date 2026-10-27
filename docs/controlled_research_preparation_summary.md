@@ -75,12 +75,12 @@
 最终全量命令：
 
 ```bash
-PYTHONPATH=src:. ../freqtrade/.venv/bin/python -m pytest -q \
+PYTHONPATH=. ../freqtrade/.venv/bin/python -m pytest -q \
   --basetemp=/tmp/quant-p3-final-suite-111700 \
   --junitxml=docs/acceptance/controlled_p3_20261018T111700Z/final_tests.xml
 ```
 
-结果：退出码 0，729 passed、0 failed、0 skipped，耗时 196.09 秒。Ruff 对 `src tools tests` 通过，格式检查显示 125 files already formatted，`git diff --check` 通过。控制性 P3 单元/集成套件为 142 passed；原生边界、数据治理和特征因果性定向套件为 40 passed；三币治理/成本定向套件为 41 passed。测试回执由独立收集器重新计算，收集节点与实际 JUnit 完全一致，且显式清除 `PYTEST_ADDOPTS` 过滤影响。
+结果：退出码 0，729 passed、0 failed、0 skipped，耗时 196.09 秒。Ruff 对 `quant tools tests` 通过，格式检查显示 125 files already formatted，`git diff --check` 通过。控制性 P3 单元/集成套件为 142 passed；原生边界、数据治理和特征因果性定向套件为 40 passed；三币治理/成本定向套件为 41 passed。测试回执由独立收集器重新计算，收集节点与实际 JUnit 完全一致，且显式清除 `PYTEST_ADDOPTS` 过滤影响。
 
 真实开发训练命令使用 `unshare -Urn` 和 `strace -f -e trace=network`，退出码 0。Python 网络审计的 HTTP、socket、DNS 列表均为空，允许的进程事件只有固定的本地 Git provenance 查询，拒绝事件数为 0；系统调用记录保存为 [system_network.strace](acceptance/controlled_p3_20261018T111700Z/system_network.strace)。
 
@@ -102,7 +102,7 @@ PYTHONPATH=src:. ../freqtrade/.venv/bin/python -m pytest -q \
 独立命令：
 
 ```bash
-PYTHONPATH=src:. ../freqtrade/.venv/bin/python tools/accept_training_readiness.py \
+PYTHONPATH=. ../freqtrade/.venv/bin/python tools/accept_training_readiness.py \
   --controlled \
   --evidence docs/acceptance/controlled_p3_20261018T111700Z/execution \
   --test-run docs/acceptance/controlled_p3_20261018T111700Z/test_run.json \
@@ -113,7 +113,7 @@ PYTHONPATH=src:. ../freqtrade/.venv/bin/python tools/accept_training_readiness.p
 
 主要代码与测试变更：
 
-- 新增 `src/quant_strategy/research/` 下合同、数据治理、native panel、split、fold training、evaluation、costs 和 controlled 验收模块。
+- 新增 `quant/research/` 下合同、数据治理、native panel、split、fold training、evaluation、costs 和 controlled 验收模块。
 - 新增三币研究配置、冻结合同和合同生成工具。
 - 新增 `prepare_controlled_research.py`、`accept_controlled_research.py`、`audit_controlled_sources.py`；正式入口对受控合同 fail-closed，普通生产入口未被改成离线模式。
 - 新增合同、切分、holdout、指标、治理、回执和真实折训练测试；迁移旧的真实 fixture 到共同早期窗口，避免把真实历史尾部当作调试数据。

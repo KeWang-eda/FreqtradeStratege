@@ -10,21 +10,21 @@ import pandas as pd
 import pytest
 import talib.abstract as ta
 
-from quant_strategy.config import LabelConfig, load_config
-from quant_strategy.errors import DataContractError
-from quant_strategy.experiments.runner import run_experiment
-from quant_strategy.labels import build_labels
-from quant_strategy.research.contract import (
+from quant.config import LabelConfig, load_config
+from quant.errors import DataContractError
+from quant.experiments.runner import run_experiment
+from quant.labels import build_labels
+from quant.research.contract import (
     load_research_contract,
     resolve_controlled_configuration,
     validate_research_equivalence,
 )
-from quant_strategy.research.native_panel import (
+from quant.research.native_panel import (
     identity_metadata,
     materialize_native_prefix,
     probe_metadata,
 )
-from quant_strategy.validation.admission import require_training_admission
+from quant.validation.admission import require_training_admission
 
 PATHS = [
     "configs/base.yaml",
@@ -71,7 +71,7 @@ def test_task_mismatch_cannot_silently_become_comparable(fault):
 def test_production_volnorm_label_equals_explicit_formula_and_actual_future_close_time():
     import pyarrow.dataset as ds
 
-    from quant_strategy.execution.freqtrade_strategy import QuantStrategy
+    from quant.execution.freqtrade_strategy import QuantStrategy
 
     research, _, native = resolve_controlled_configuration(PATHS)
     raw = (

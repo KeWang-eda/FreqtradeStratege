@@ -12,15 +12,16 @@
 
 ## 目录
 
-- `MyStrategy.py`：原策略名与发现入口；实际回调在 `src/quant_strategy/execution/freqtrade_strategy.py`。
-- `feature.py`、`model.py`、`util.py`：旧调用方的兼容导出。
-- `src/quant_strategy/`：不依赖 Freqtrade 初始化的研究核心、后端适配和工件管理。
-- `freqaimodels/`：保留现有两个 FreqAI 模型及其加载路径。
+- `MyStrategy.py`：原策略名与发现入口；实际回调在 `quant/execution/freqtrade_strategy.py`。
+- `quant/` 是唯一策略与研究实现；旧根目录兼容转发模块已移除。
+- `quant/models/`：统一 Ridge、XGBoost 与 FreqAI 模型实现；Freqtrade 搜索路径指向 `quant/models/freqai/`。
+- `quant/backends/`：standalone 与 FreqAI 训练生命周期适配器。
 - `config.json`：原生交易配置；`configs/`：独立研究的分层 YAML 配置。
 - `tests/`：单元、契约、集成、回归、防泄漏和研究 E2E 测试。
 - `docs/baseline/`：修改前配置、依赖清单和基线状态。
+- 历史模型实验记录在 [`docs/research/RESEARCH_LOG.md`](docs/research/RESEARCH_LOG.md)，根目录不再放置进度副本。
 
-源码目录使用 `market_data/`、`backends/` 和 `configs/estimators/`，避免被原 `.gitignore` 的 `data/`、`models/` 规则忽略。原始行情文件、模型缓存及其他忽略内容未重构。
+原始行情文件和模型缓存仍由 `.gitignore` 忽略；源码模型目录 `quant/models/` 明确加入跟踪例外。
 
 ## 本地运行
 
@@ -31,10 +32,10 @@
 ```bash
 "$FREQTRADE_PYTHON" -m pytest -q
 
-PYTHONPATH=src "$FREQTRADE_PYTHON" -m quant_strategy.cli validate \
+PYTHONPATH=. "$FREQTRADE_PYTHON" -m quant.cli validate \
   -c configs/base.yaml -c configs/environment/local.yaml
 
-PYTHONPATH=src "$FREQTRADE_PYTHON" -m quant_strategy.cli run \
+PYTHONPATH=. "$FREQTRADE_PYTHON" -m quant.cli run \
   -c configs/base.yaml -c configs/environment/local.yaml \
   -c configs/experiments/baseline_volnorm.yaml \
   --output /tmp/quant-experiments --experiment-id volnorm-ridge

@@ -12,12 +12,12 @@ import pandas as pd
 import pytest
 import yaml
 
-from quant_strategy.config import ExperimentConfig
-from quant_strategy.dataset import build_dataset
-from quant_strategy.experiments.runner import _dataset_hash
-from quant_strategy.infrastructure.experiment_store import canonical_hash, file_hash
-from quant_strategy.market_data.contracts import audit_source
-from quant_strategy.validation.admission import (
+from quant.config import ExperimentConfig
+from quant.dataset import build_dataset
+from quant.experiments.runner import _dataset_hash
+from quant.infrastructure.experiment_store import canonical_hash, file_hash
+from quant.market_data.contracts import audit_source
+from quant.validation.admission import (
     diagnose_legacy_test_execution,
     new_receipt_context,
     verify_test_execution,
@@ -242,7 +242,7 @@ def test_real_readiness_cli_rejects_before_data_checks(
     ]
     result = subprocess.run(
         command,
-        env={**os.environ, "PYTHONPATH": "src:."},
+        env={**os.environ, "PYTHONPATH": "."},
         capture_output=True,
         text=True,
         check=False,

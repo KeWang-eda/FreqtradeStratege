@@ -1,6 +1,6 @@
 """Compare trusted local Freqtrade/FreqAI runs, including prediction caches.
 
-Usage: PYTHONPATH=src python tools/verify_freqtrade_regression.py OLD_USERDIR NEW_USERDIR
+Usage: PYTHONPATH=. python tools/verify_freqtrade_regression.py OLD_USERDIR NEW_USERDIR
 Both runs must export signals, use the same config and start with separate caches.
 """
 
@@ -15,8 +15,8 @@ import joblib
 import numpy as np
 import pandas as pd
 
-from quant_strategy.infrastructure.experiment_store import file_hash, write_json
-from quant_strategy.validation.truncation import load_backtest
+from quant.infrastructure.experiment_store import file_hash, write_json
+from quant.validation.truncation import load_backtest
 
 TOLERANCE = {"rtol": 1e-12, "atol": 1e-12}
 METRIC_EXCLUSIONS = {

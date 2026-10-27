@@ -6,15 +6,16 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from quant_strategy.config import ExperimentConfig, ModelConfig, ValidationConfig
-from quant_strategy.dataset import Dataset, build_dataset
-from quant_strategy.errors import DataContractError
-from quant_strategy.execution.coordinator import candidates_from_batch
-from quant_strategy.features import build_features
-from quant_strategy.market_data.time_index import align_closed_candles
-from quant_strategy.prediction import PredictionBatch, PredictionRecord
-from quant_strategy.training import StandaloneBackend, TrainingRequest
-from quant_strategy.validation import TimeSeriesSplitter
+from quant.config import ExperimentConfig, ModelConfig, ValidationConfig
+from quant.dataset import Dataset, build_dataset
+from quant.errors import DataContractError
+from quant.execution.coordinator import candidates_from_batch
+from quant.features import build_features
+from quant.market_data.time_index import align_closed_candles
+from quant.prediction import PredictionBatch, PredictionRecord
+from quant.backends.standalone import StandaloneBackend
+from quant.training.contracts import TrainingRequest
+from quant.validation import TimeSeriesSplitter
 
 
 @pytest.mark.parametrize("optional", [(), ("laguerre",), ("vwmacd",), ("tke",), ("vfi",), ("rmi",)])

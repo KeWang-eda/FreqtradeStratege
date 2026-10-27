@@ -11,16 +11,16 @@ from pathlib import Path
 
 import pytest
 
-from quant_strategy.errors import DataContractError
-from quant_strategy.infrastructure.experiment_store import (
+from quant.errors import DataContractError
+from quant.infrastructure.experiment_store import (
     canonical_hash,
     environment_versions,
     file_hash,
     write_json,
 )
-from quant_strategy.market_data import load_ohlcv
-from quant_strategy.market_data.contracts import frame_fingerprint
-from quant_strategy.validation.native_features import populate_native_features
+from quant.market_data import load_ohlcv
+from quant.market_data.contracts import frame_fingerprint
+from quant.validation.native_features import populate_native_features
 
 _ROOT = Path(__file__).resolve().parents[2]
 _PAIRS = ("BTC/USDT:USDT", "ETH/USDT:USDT", "BNB/USDT:USDT")
@@ -38,9 +38,8 @@ class NativePrefixCache:
             for pair in _PAIRS
         }
         config_path = _ROOT / "config.json"
-        code = sorted((_ROOT / "src").rglob("*.py"))
-        code.extend(sorted((_ROOT / "freqaimodels").glob("*.py")))
-        code.extend(_ROOT / name for name in ("MyStrategy.py", "feature.py", "model.py"))
+        code = sorted((_ROOT / "quant").rglob("*.py"))
+        code.append(_ROOT / "MyStrategy.py")
         code.append(Path(__file__))
         self._bound_inputs = {
             path: file_hash(path) for path in [config_path, *sources.values(), *code]

@@ -8,9 +8,9 @@ from copy import deepcopy
 
 import pytest
 
-from quant_strategy.infrastructure.experiment_store import file_hash, write_json
-from quant_strategy.research import controlled
-from quant_strategy.validation.admission import new_receipt_context
+from quant.infrastructure.experiment_store import file_hash, write_json
+from quant.research import controlled
+from quant.validation.admission import new_receipt_context
 
 
 def valid_network():
@@ -225,7 +225,7 @@ def test_single_real_old_test_receipt_cannot_establish_complete_project_executio
     ]
     context = new_receipt_context(directory.name)
     environment = os.environ.copy()
-    environment["PYTHONPATH"] = "src:."
+    environment["PYTHONPATH"] = "."
     completed = subprocess.run(
         command, env=environment, capture_output=True, text=True, check=False
     )

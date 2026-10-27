@@ -7,11 +7,11 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from quant_strategy.cli import main
-from quant_strategy.config import ExperimentConfig
-from quant_strategy.errors import DataContractError
-from quant_strategy.infrastructure.experiment_store import canonical_hash, file_hash
-from quant_strategy.validation.admission import (
+from quant.cli import main
+from quant.config import ExperimentConfig
+from quant.errors import DataContractError
+from quant.infrastructure.experiment_store import canonical_hash, file_hash
+from quant.validation.admission import (
     bound_artifact,
     current_source_hashes,
     git_revision_is_ancestor,
@@ -82,7 +82,7 @@ def test_formal_cli_malformed_readiness_has_stable_exit_two(tmp_path, content):
 
 
 def test_direct_formal_api_cannot_bypass_admission(tmp_path, candles):
-    from quant_strategy.experiments.runner import run_experiment
+    from quant.experiments.runner import run_experiment
 
     with pytest.raises(DataContractError, match="admission"):
         run_experiment(
@@ -96,7 +96,7 @@ def test_direct_formal_api_cannot_bypass_admission(tmp_path, candles):
 
 
 def test_default_research_artifacts_are_explicitly_development(tmp_path, candles):
-    from quant_strategy.experiments.runner import run_experiment
+    from quant.experiments.runner import run_experiment
 
     output = run_experiment(
         ExperimentConfig(),

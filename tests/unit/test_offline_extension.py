@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from quant_strategy.infrastructure.experiment_store import file_hash
+from quant.infrastructure.experiment_store import file_hash
 from tools import run_offline_extension as module
 
 PROXY = """100 socket(AF_INET, SOCK_STREAM|SOCK_CLOEXEC, IPPROTO_TCP) = 6

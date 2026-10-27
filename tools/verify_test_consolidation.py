@@ -14,8 +14,8 @@ from collections import Counter
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-from quant_strategy.infrastructure.experiment_store import canonical_hash, file_hash, write_json
-from quant_strategy.validation.admission import (
+from quant.infrastructure.experiment_store import canonical_hash, file_hash, write_json
+from quant.validation.admission import (
     bound_artifact,
     read_evidence_json,
     verify_complete_test_execution,

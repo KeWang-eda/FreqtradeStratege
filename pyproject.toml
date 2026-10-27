@@ -15,14 +15,16 @@ xgboost = ["xgboost>=2"]
 test = ["pytest>=8", "ruff"]
 
 [project.scripts]
-quant-strategy = "quant_strategy.cli:main"
+quant-strategy = "quant.cli:main"
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
+include = ["quant*"]
+namespaces = false
 
 [tool.pytest.ini_options]
-pythonpath = ["src", "."]
-testpaths = ["tests", "test_my_strategy.py"]
+pythonpath = ["."]
+testpaths = ["tests"]
 markers = [
     "ci: included in the complete offline CI suite",
     "fast: lightweight developer feedback suite; excludes complete model-training flows",

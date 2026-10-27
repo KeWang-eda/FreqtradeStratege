@@ -8,9 +8,9 @@ from dataclasses import asdict
 import pandas as pd
 import pytest
 
-from quant_strategy.config import ValidationConfig
-from quant_strategy.errors import DataContractError
-from quant_strategy.research.splits import (
+from quant.config import ValidationConfig
+from quant.errors import DataContractError
+from quant.research.splits import (
     DevelopmentAccess,
     build_split_plan,
     verify_split_plan,
@@ -255,7 +255,7 @@ def test_shortened_input_does_not_validate_the_frozen_complete_plan(inputs):
 
 
 def test_independent_verifier_does_not_call_builder_or_native_splitter(inputs, monkeypatch):
-    from quant_strategy.research import splits
+    from quant.research import splits
 
     metadata, validation, plan = inputs
 

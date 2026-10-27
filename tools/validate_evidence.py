@@ -6,7 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from quant_strategy.research.evidence import validate_funding_package, validate_universe_package
+from quant.research.evidence import validate_funding_package, validate_universe_package
 
 
 def main(argv: list[str] | None = None) -> int:

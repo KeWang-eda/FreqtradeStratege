@@ -4,9 +4,9 @@ import argparse
 import json
 from pathlib import Path
 
-from quant_strategy.infrastructure.experiment_store import file_hash, write_json
-from quant_strategy.research.costs import build_cost_contract, validate_cost_scenario
-from quant_strategy.research.governance import PAIRS, audit_three_pair_sources
+from quant.infrastructure.experiment_store import file_hash, write_json
+from quant.research.costs import build_cost_contract, validate_cost_scenario
+from quant.research.governance import PAIRS, audit_three_pair_sources
 
 
 def main(argv: list[str] | None = None) -> int:

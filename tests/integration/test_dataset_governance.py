@@ -5,11 +5,11 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from quant_strategy.config import ExperimentConfig
-from quant_strategy.dataset import build_dataset
-from quant_strategy.errors import DataContractError
-from quant_strategy.market_data import load_ohlcv
-from quant_strategy.market_data.contracts import frame_fingerprint
+from quant.config import ExperimentConfig
+from quant.dataset import build_dataset
+from quant.errors import DataContractError
+from quant.market_data import load_ohlcv
+from quant.market_data.contracts import frame_fingerprint
 
 
 def test_file_change_during_read_fails_before_dataset(monkeypatch, tmp_path, candles):
@@ -47,7 +47,7 @@ def test_same_real_data_rebuilds_identical_schema_samples_and_exclusions():
 
 
 def test_schema_changes_are_part_of_dataset_identity(candles):
-    from quant_strategy.experiments.runner import _dataset_hash
+    from quant.experiments.runner import _dataset_hash
 
     good = build_dataset({"BTC": candles}, ExperimentConfig())
     before = _dataset_hash(good)

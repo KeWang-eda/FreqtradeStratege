@@ -7,18 +7,18 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from quant_strategy.backends.freqai import add_freqai_period_features
-from quant_strategy.errors import DataContractError
-from quant_strategy.labels import set_regression_target
-from quant_strategy.market_data import load_ohlcv
-from quant_strategy.training.native_isolation import file_sha256
+from quant.backends.freqai import add_freqai_period_features
+from quant.errors import DataContractError
+from quant.labels import set_regression_target
+from quant.market_data import load_ohlcv
+from quant.training.native_isolation import file_sha256
 
 
 def _context(tmp_path, raw, *, test_size=0.2, weight_factor=0.5):
     from freqtrade.configuration.config_validation import validate_config_schema
     from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 
-    from freqaimodels.XGBoostRegressorES import XGBoostRegressorES
+    from quant.models.freqai.XGBoostRegressorES import XGBoostRegressorES
 
     config = json.loads(Path("config.json").read_text())
     config["user_data_dir"] = tmp_path

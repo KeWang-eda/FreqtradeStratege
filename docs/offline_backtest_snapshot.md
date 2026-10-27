@@ -87,15 +87,15 @@ freqtrade backtesting
 
 | 文件 | 本次增量 |
 | --- | --- |
-| [market_snapshot.py](../src/quant_strategy/execution/market_snapshot.py) | 显式采集、真实解析、范围/版本/时效/完整性校验，原生杠杆规则指纹 |
-| [offline_backtest.py](../src/quant_strategy/execution/offline_backtest.py) | 历史回测专用 Binance/CCXT 子类和原生引擎注入入口 |
+| [market_snapshot.py](../quant/execution/market_snapshot.py) | 显式采集、真实解析、范围/版本/时效/完整性校验，原生杠杆规则指纹 |
+| [offline_backtest.py](../quant/execution/offline_backtest.py) | 历史回测专用 Binance/CCXT 子类和原生引擎注入入口 |
 | [audit_local_network.py](../tools/audit_local_network.py) | 诊断分发增加 offline-backtest；拒绝用该分支执行 capture |
 | [verify_freqtrade_regression.py](../tools/verify_freqtrade_regression.py) | 在完整交易/订单、信号、预测和 schema 对比之外增加全部结果字段和指标对照 |
 | [test_offline_freqtrade.py](../tests/integration/test_offline_freqtrade.py) | 18 项真实快照、失败条件、模式隔离、原生校验和完全断网集成测试 |
 | [test_freqtrade_regression_report.py](../tests/integration/test_freqtrade_regression_report.py) | 新增指标变化必须导致回归失败的测试 |
 | [证据目录](baseline/acceptance/)及本报告、README、运行/验收文档 | 保存真实快照、网络审计、系统调用、结果和复现工件；旧证据保留 |
 
-`config.json`、`MyStrategy.py`、`freqaimodels/`、原有策略适配器、features、labels 和 portfolio 源码没有修改。4h、startup=100、预测跨度 3、volnorm、92 列原生特征、BTC/ETH 相关特征、交易对排名及稳定同分顺序、单仓、开平仓、min(2,max_leverage)、stoploss=-1、ROI=999 和 trailing 设置保持不变。
+`config.json`、`MyStrategy.py`、`quant/models/freqai/`、原有策略适配器、features、labels 和 portfolio 源码没有修改。4h、startup=100、预测跨度 3、volnorm、92 列原生特征、BTC/ETH 相关特征、交易对排名及稳定同分顺序、单仓、开平仓、min(2,max_leverage)、stoploss=-1、ROI=999 和 trailing 设置保持不变。
 
 ## 5. 真实验证结果与证据
 
@@ -132,11 +132,11 @@ freqtrade backtesting
 /home/wangke/project/freqtrade/.venv/bin/python -m pytest -q \
   --junitxml=docs/baseline/acceptance/offline-pytest.xml
 /home/wangke/project/freqtrade/.venv/bin/ruff check \
-  src tests tools MyStrategy.py feature.py model.py util.py \
-  verify_no_lookahead.py _quant_strategy_bootstrap.py
+  quant tests tools MyStrategy.py  \
+  verify_no_lookahead.py
 /home/wangke/project/freqtrade/.venv/bin/ruff format --check \
-  src tests tools MyStrategy.py feature.py model.py util.py \
-  verify_no_lookahead.py _quant_strategy_bootstrap.py
+  quant tests tools MyStrategy.py  \
+  verify_no_lookahead.py
 git diff --cached --check -- . ':!docs/baseline/acceptance/*.log'
 ```
 
@@ -158,7 +158,7 @@ git diff --cached --check -- . ':!docs/baseline/acceptance/*.log'
 cd /home/wangke/project/FreqtradeStratege
 quant_python=/home/wangke/project/freqtrade/.venv/bin/python
 market_snapshot=/tmp/binance-usdt-markets-$(date -u +%Y%m%dT%H%M%SZ).json
-PYTHONPATH=src "$quant_python" -m quant_strategy.execution.offline_backtest capture \
+PYTHONPATH=. "$quant_python" -m quant.execution.offline_backtest capture \
   --snapshot "$market_snapshot" \
   --pairs BTC/USDT:USDT ETH/USDT:USDT \
   --proxy http://127.0.0.1:7890
@@ -177,11 +177,11 @@ market_snapshot="$PWD/docs/baseline/acceptance/binance-usdt-market-snapshot.json
 offline_run=$(mktemp -d /tmp/quant-offline-run.XXXXXX)
 mkdir -p "$offline_run/results"
 
-PYTHONPATH=src "$quant_python" -m quant_strategy.execution.offline_backtest backtesting \
+PYTHONPATH=. "$quant_python" -m quant.execution.offline_backtest backtesting \
   --snapshot "$market_snapshot" -- \
   -c "$PWD/config.json" -c "$PWD/configs/backtest-local.json" \
   --userdir "$offline_run" --datadir "$PWD/data" \
-  --strategy-path "$PWD" --freqaimodel-path "$PWD/freqaimodels" \
+  --strategy-path "$PWD" --freqaimodel-path "$PWD/quant/models/freqai" \
   --strategy MyStrategy --timerange 20250101-20250115 \
   --pairs BTC/USDT:USDT ETH/USDT:USDT \
   --cache none --export signals --backtest-directory "$offline_run/results"
@@ -194,12 +194,12 @@ PYTHONPATH=src "$quant_python" -m quant_strategy.execution.offline_backtest back
 ```bash
 unshare --user --map-root-user --net \
   strace -f -e trace=network -o "$offline_run/network.strace" \
-  env PYTHONPATH=src "$quant_python" tools/audit_local_network.py \
+  env PYTHONPATH=. "$quant_python" tools/audit_local_network.py \
   --policy deny-all --report "$offline_run/network.json" \
   offline-backtest backtesting --snapshot "$market_snapshot" -- \
   -c "$PWD/config.json" -c "$PWD/configs/backtest-local.json" \
   --userdir "$offline_run" --datadir "$PWD/data" \
-  --strategy-path "$PWD" --freqaimodel-path "$PWD/freqaimodels" \
+  --strategy-path "$PWD" --freqaimodel-path "$PWD/quant/models/freqai" \
   --strategy MyStrategy --timerange 20250101-20250115 \
   --pairs BTC/USDT:USDT ETH/USDT:USDT \
   --cache none --export signals --backtest-directory "$offline_run/results"
@@ -214,7 +214,7 @@ comparison_run=$(mktemp -d /tmp/quant-offline-compare.XXXXXX)
 mkdir -p "$comparison_run/online" "$comparison_run/offline"
 tar -xzf docs/baseline/acceptance/native-online-reference.tar.gz -C "$comparison_run/online"
 tar -xzf docs/baseline/acceptance/native-offline-artifacts.tar.gz -C "$comparison_run/offline"
-PYTHONPATH=src "$quant_python" tools/verify_freqtrade_regression.py \
+PYTHONPATH=. "$quant_python" tools/verify_freqtrade_regression.py \
   "$comparison_run/online" "$comparison_run/offline" --report "$comparison_run/regression.json"
 ```
 
@@ -222,7 +222,7 @@ PYTHONPATH=src "$quant_python" tools/verify_freqtrade_regression.py \
 
 ### 6.3 研究与正常交易
 
-研究继续使用原有 `quant_strategy.cli validate/dataset-build/run/compare`，无需导入离线交易所适配层，命令见[原报告](local_data_network_audit.md#6-运行方式)。实盘和模拟交易继续使用原装 `freqtrade trade`；不配置、不注入本快照类，也不运行网络诊断拦截器。
+研究继续使用原有 `quant.cli validate/dataset-build/run/compare`，无需导入离线交易所适配层，命令见[原报告](local_data_network_audit.md#6-运行方式)。实盘和模拟交易继续使用原装 `freqtrade trade`；不配置、不注入本快照类，也不运行网络诊断拦截器。
 
 ## 7. 剩余风险和适用边界
 

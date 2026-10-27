@@ -9,7 +9,7 @@ import sys
 import pandas as pd
 import pytest
 
-from quant_strategy.infrastructure.experiment_store import file_hash
+from quant.infrastructure.experiment_store import file_hash
 from tools.verify_native_training_acceptance import verify_native_training_acceptance
 
 
@@ -27,7 +27,7 @@ def actual_native_run(tmp_path_factory):
             "--pairs",
             "BTC/USDT:USDT",
         ],
-        env={**os.environ, "PYTHONPATH": "src:."},
+        env={**os.environ, "PYTHONPATH": "."},
         capture_output=True,
         text=True,
     )
@@ -194,7 +194,7 @@ def test_independent_verifier_binds_audit_to_original_split_and_configuration(
         path = directory / "input.parquet"
         raw = pd.read_parquet(path).drop(columns=[removed])
         raw.to_parquet(path)
-        from quant_strategy.market_data.contracts import frame_fingerprint
+        from quant.market_data.contracts import frame_fingerprint
 
         audit["input_fingerprint"] = frame_fingerprint(raw)
         audit_path.write_text(json.dumps(audit))

@@ -171,9 +171,9 @@ def main(argv: list[str] | None = None) -> int:
     try:
         install_policy(args.policy, report)
         if args.component == "research":
-            from quant_strategy.cli import main as run
+            from quant.cli import main as run
         elif args.component == "offline-backtest":
-            from quant_strategy.execution.offline_backtest import main as run
+            from quant.execution.offline_backtest import main as run
         else:
             from freqtrade.main import main as run
         returned = run(arguments)

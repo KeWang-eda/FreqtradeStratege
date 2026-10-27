@@ -3,9 +3,8 @@
 Usage: python verify_no_lookahead.py short.zip long.zip --report /tmp/audit.json
 """
 
-import _quant_strategy_bootstrap  # noqa: F401
-from quant_strategy.validation.truncation import load_backtest, trade_key
-from quant_strategy.validation.truncation import main as _main
+from quant.validation.truncation import load_backtest, trade_key
+from quant.validation.truncation import main as _main
 
 
 def load_trades(zip_path: str) -> list[dict]:

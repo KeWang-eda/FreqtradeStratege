@@ -12,7 +12,7 @@ from pathlib import Path
 import ccxt
 import pytest
 
-from quant_strategy.execution import market_snapshot as module
+from quant.execution import market_snapshot as module
 
 SOURCE = (
     Path(__file__).resolve().parents[2]
@@ -216,7 +216,7 @@ def test_killed_writer_leaves_only_unusable_temp_not_final(tmp_path):
     script = """
 import sys,time
 from pathlib import Path
-from quant_strategy.execution import market_snapshot as module
+from quant.execution import market_snapshot as module
 def interruptible_dump(value, handle, **kwargs):
     handle.write("{"); handle.flush()
     Path(sys.argv[2]).write_text("started")
@@ -226,7 +226,7 @@ module.publish_snapshot(Path(sys.argv[1]), {"value":1})
 """
     process = subprocess.Popen(
         [sys.executable, "-c", script, str(final), str(marker)],
-        env={**os.environ, "PYTHONPATH": str(SOURCE.parents[3] / "src")},
+        env={**os.environ, "PYTHONPATH": str(SOURCE.parents[3])},
     )
     try:
         deadline = time.monotonic() + 10

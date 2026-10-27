@@ -10,10 +10,10 @@ from subprocess import run
 
 import pytest
 
-from quant_strategy.infrastructure.experiment_store import file_hash
-from quant_strategy.validation.admission import current_source_hashes
-from quant_strategy.validation.source_monitor import SourceMonitor
-from quant_strategy.validation.test_receipts import junit_counts
+from quant.infrastructure.experiment_store import file_hash
+from quant.validation.admission import current_source_hashes
+from quant.validation.source_monitor import SourceMonitor
+from quant.validation.test_receipts import junit_counts
 
 pytestmark = [pytest.mark.leakage_security, pytest.mark.formal_preflight]
 MODES = ["ci", "fast", "real-data", "formal-preflight"]
@@ -67,7 +67,7 @@ def invoke(path, mode, output, *, suite=False):
         command += ["--receipt", str(path), "--mode", mode]
     result = run(
         command,
-        env={**os.environ, "PYTHONPATH": "src:."},
+        env={**os.environ, "PYTHONPATH": "."},
         capture_output=True,
         text=True,
         check=False,
@@ -276,20 +276,20 @@ def test_junit_count_mapping_uses_actual_leaf_outcomes(tmp_path, tag, key):
 def test_actual_runner_cannot_erase_source_write_by_restoring_bytes(tmp_path):
     """Run copied real runner/library against an isolated synthetic project."""
     root = Path(__file__).resolve().parents[2]
-    shutil.copytree(root / "src", tmp_path / "src", ignore=shutil.ignore_patterns("__pycache__"))
+    shutil.copytree(root / "quant", tmp_path / "quant", ignore=shutil.ignore_patterns("__pycache__"))
     (tmp_path / "tools").mkdir()
     for name in ("run_tests.py", "pytest_receipt.py"):
         shutil.copyfile(root / "tools" / name, tmp_path / "tools" / name)
     (tmp_path / "pyproject.toml").write_text(
-        '[tool.pytest.ini_options]\npythonpath=["src", "."]\nmarkers=["ci: test"]\n'
+        '[tool.pytest.ini_options]\npythonpath=["."]\nmarkers=["ci: test"]\n'
     )
-    source = tmp_path / "src" / "probe.py"
+    source = tmp_path / "quant" / "probe.py"
     source.write_text("VALUE=1\n")
     (tmp_path / "tests").mkdir()
     (tmp_path / "tests" / "test_restored.py").write_text(
         "from pathlib import Path\nimport pytest\npytestmark=pytest.mark.ci\n"
         "def test_restored():\n"
-        '    p=Path("src/probe.py")\n'
+        '    p=Path("quant/probe.py")\n'
         "    before=p.read_bytes()\n"
         '    p.write_text("VALUE=2\\n")\n'
         "    p.write_bytes(before)\n"
@@ -311,4 +311,4 @@ def test_actual_runner_cannot_erase_source_write_by_restoring_bytes(tmp_path):
     assert receipt["source_unchanged"] is False
     assert execution["pytest_exit_code"] == 0
     assert execution["runner_exit_code"] == 3
-    assert any(event.get("path") == "src/probe.py" for event in monitor["events"])
+    assert any(event.get("path") == "quant/probe.py" for event in monitor["events"])

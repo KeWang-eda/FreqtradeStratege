@@ -77,14 +77,14 @@ objects = lambda: (ccxt.binance, ccxt.binance.fetch, ccxt.pro.binance,
     ccxt.pro.binance.fetch, Binance._init_ccxt, Binance._api_reload_markets,
     ExchangeResolver.load_exchange)
 before = objects()
-import quant_strategy.execution.offline_backtest
+import quant.execution.offline_backtest
 assert all(a is b for a, b in zip(before, objects()))
 print(json.dumps({'unchanged': True, 'native_exchange': Binance.__module__}))
 """
     result = subprocess.run(
         [sys.executable, "-c", program],
         cwd=ROOT,
-        env={**os.environ, "PYTHONPATH": str(ROOT / "src")},
+        env={**os.environ, "PYTHONPATH": str(ROOT)},
         capture_output=True,
         text=True,
         timeout=30,

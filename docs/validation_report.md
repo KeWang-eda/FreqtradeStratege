@@ -15,7 +15,7 @@
 | 原版特征/标签样本 | 80 根固定数据、三个 period、raw/volnorm 回归通过 |
 | Freqtrade 策略发现 | 原生 list-strategies 能发现 MyStrategy |
 | FreqAI 当前版本集成 | 实际数据厨房、BaseRegressionModel.train/predict、两个原模型通过 |
-| 核心依赖隔离 | 导入 quant_strategy.api 后未加载任何 freqtrade 模块 |
+| 核心依赖隔离 | 导入 quant.api 后未加载任何 freqtrade 模块 |
 | 本地行情独立研究 | BTC/ETH 的 Ridge、XGBoost 都成功完成三折训练、预测和审计 |
 | XGBoost 工件重载 | artifact-check 通过，校验 28 个文件、6 个逐币对模型 |
 | 原版/新版真实交易回测 | mihomo 代理 + 本地 BTC/ETH 数据，两周各 13 笔、三周各 25 笔 |

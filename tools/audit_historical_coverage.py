@@ -358,7 +358,7 @@ def audit(
     from freqtrade.exchange import Exchange
     from freqtrade.misc import pair_to_filename
 
-    from quant_strategy.execution.market_snapshot import load_snapshot
+    from quant.execution.market_snapshot import load_snapshot
 
     config, strategy, req = load_requirements(config_paths, timerange, strategy_name)
     whitelist = config["exchange"]["pair_whitelist"]

@@ -9,7 +9,7 @@ the evidence strings so that a reviewer can audit a classification.
 
 Example::
 
-    PYTHONPATH=src:. python tools/collect_test_inventory.py \
+    PYTHONPATH=. python tools/collect_test_inventory.py \
         --output docs/testing/test_inventory.json
 
 Use ``--pytest-executable`` when pytest must run under a project virtualenv.
@@ -81,9 +81,9 @@ def collect_nodes(
     inherited_addopts = env.pop("PYTEST_ADDOPTS", None)
     # Make the inventory independent of a caller's implicit PYTHONPATH while
     # preserving explicitly requested entries.
-    src_entries = [str(root / "src"), str(root)]
+    root_entries = [str(root)]
     existing = env.get("PYTHONPATH")
-    env["PYTHONPATH"] = os.pathsep.join(src_entries + ([existing] if existing else []))
+    env["PYTHONPATH"] = os.pathsep.join(root_entries + ([existing] if existing else []))
     with tempfile.TemporaryDirectory(prefix="quant-test-inventory-") as temp:
         capture = Path(temp) / "collection.json"
         env["_QUANT_TEST_INVENTORY_CAPTURE"] = str(capture)

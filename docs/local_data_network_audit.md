@@ -77,7 +77,7 @@ cli.py / api.py
   → 训练折预处理、Ridge / XGBoost、predict、指标及工件
 ```
 
-[loader.py](../src/quant_strategy/market_data/loader.py) 把路径转换为本地 `Path` 后读取，没有下载或交易所客户端分支。[runner.py](../src/quant_strategy/experiments/runner.py) 只调用这些本地加载器；[trainer.py](../src/quant_strategy/training/trainer.py) 接收已构造的数据集和切分，不访问市场接口。`compare` 读取已保存的 JSON 报告。
+[loader.py](../quant/market_data/loader.py) 把路径转换为本地 `Path` 后读取，没有下载或交易所客户端分支。[runner.py](../quant/experiments/runner.py) 只调用这些本地加载器；[trainer.py](../quant/training/trainer.py) 接收已构造的数据集和切分，不访问市场接口。`compare` 读取已保存的 JSON 报告。
 
 在 HTTP、TCP/UDP 和 DNS 的 Python 进程级拦截下，使用真实本地 BTC/ETH 文件运行 `validate`、`dataset-build`、Ridge 三折训练、XGBoost 三折训练和 `compare` 均成功。各报告的 `http_requests=[]`、`socket_events=[]`，也没有导入 `freqtrade` 或 `ccxt`。数据集共 29,706 条样本、26 个研究特征；XGBoost 使用现有研究配置的 500 轮上限及内部早停设置。
 
@@ -93,9 +93,9 @@ cli.py / api.py
 - `Backtesting.load_bt_data → history.load_data → load_pair_history → IDataHandler.ohlcv_load → FeatherDataHandler._load_dataframe → pandas.read_feather`，读取本地 K 线。
 - `Backtesting._load_bt_data_detail` 同样从本地加载 mark 和 funding_rate。Binance 的模拟/回测杠杆档位由该版本内置 `binance_leverage_tiers.json` 提供。
 
-仓库 [populate_indicators()](../src/quant_strategy/execution/freqtrade_strategy.py) 调用 [FreqAIBackendAdapter.start()](../src/quant_strategy/backends/freqai.py)，后者只转交 `strategy.freqai.start(dataframe, metadata, strategy)`。
+仓库 [populate_indicators()](../quant/execution/freqtrade_strategy.py) 调用 [FreqAIBackendAdapter.start()](../quant/backends/freqai.py)，后者只转交 `strategy.freqai.start(dataframe, metadata, strategy)`。
 
-框架根据 **DataProvider.runmode** 分支：历史回测进入 `IFreqaiModel.start_backtesting`；相关币对和其他周期的特征数据由 `DataProvider.get_pair_dataframe → historic_ohlcv → load_pair_history` 从磁盘读取。两个 [自定义模型](../freqaimodels/) 的 fit/predict 消费已准备好的特征与标签，没有行情下载代码。
+框架根据 **DataProvider.runmode** 分支：历史回测进入 `IFreqaiModel.start_backtesting`；相关币对和其他周期的特征数据由 `DataProvider.get_pair_dataframe → historic_ohlcv → load_pair_history` 从磁盘读取。两个 [自定义模型](../quant/models/freqai/) 的 fit/predict 消费已准备好的特征与标签，没有行情下载代码。
 
 `IStrategy.load_freqAI_model()` 中确实存在 `download_all_data_for_training()`，但仅在 `RunMode.DRY_RUN/LIVE` 下调用；历史回测不调用。`config.json` 中的 `dry_run=true` 不会把 `freqtrade backtesting` 的实际 runmode 变成模拟交易。
 
@@ -164,22 +164,22 @@ cd /home/wangke/project/FreqtradeStratege
 quant_python=/home/wangke/project/freqtrade/.venv/bin/python
 research_output=$(mktemp -d /tmp/quant-local-research.XXXXXX)
 
-PYTHONPATH=src "$quant_python" -m quant_strategy.cli validate \
+PYTHONPATH=. "$quant_python" -m quant.cli validate \
   -c configs/base.yaml -c configs/environment/local.yaml
 
-PYTHONPATH=src "$quant_python" -m quant_strategy.cli dataset-build \
+PYTHONPATH=. "$quant_python" -m quant.cli dataset-build \
   -c configs/base.yaml -c configs/environment/local.yaml
 
-PYTHONPATH=src "$quant_python" -m quant_strategy.cli run \
+PYTHONPATH=. "$quant_python" -m quant.cli run \
   -c configs/base.yaml -c configs/environment/local.yaml \
   --output "$research_output" --experiment-id ridge
 
-PYTHONPATH=src "$quant_python" -m quant_strategy.cli run \
+PYTHONPATH=. "$quant_python" -m quant.cli run \
   -c configs/base.yaml -c configs/environment/local.yaml \
   -c configs/estimators/xgboost.yaml \
   --output "$research_output" --experiment-id xgboost
 
-PYTHONPATH=src "$quant_python" -m quant_strategy.cli compare \
+PYTHONPATH=. "$quant_python" -m quant.cli compare \
   "$research_output/ridge" "$research_output/xgboost"
 ```
 
@@ -188,7 +188,7 @@ PYTHONPATH=src "$quant_python" -m quant_strategy.cli compare \
 需要复核断网训练时，可在同一 shell 执行：
 
 ```bash
-PYTHONPATH=src "$quant_python" tools/audit_local_network.py \
+PYTHONPATH=. "$quant_python" tools/audit_local_network.py \
   --policy deny-all --report "$research_output/offline-audit.json" \
   research run -c configs/base.yaml -c configs/environment/local.yaml \
   --output "$research_output" --experiment-id offline-check
@@ -206,7 +206,7 @@ mkdir -p "$backtest_run/results"
   -c "$PWD/configs/backtest-local.json" \
   -c "$PWD/configs/environment/freqtrade-mihomo.json" \
   --userdir "$backtest_run" --datadir "$PWD/data" \
-  --strategy-path "$PWD" --freqaimodel-path "$PWD/freqaimodels" \
+  --strategy-path "$PWD" --freqaimodel-path "$PWD/quant/models/freqai" \
   --strategy MyStrategy --timerange 20250101-20250115 \
   --pairs BTC/USDT:USDT ETH/USDT:USDT \
   --cache none --export signals --backtest-directory "$backtest_run/results"
@@ -217,13 +217,13 @@ mkdir -p "$backtest_run/results"
 需要复核请求范围时，保留完全相同的 `backtesting` 参数，把启动前缀换为：
 
 ```bash
-PYTHONPATH=src /home/wangke/project/freqtrade/.venv/bin/python \
+PYTHONPATH=. /home/wangke/project/freqtrade/.venv/bin/python \
   tools/audit_local_network.py --policy metadata-only \
   --report /tmp/freqtrade-network-audit.json freqtrade backtesting \
   -c "$PWD/config.json" -c "$PWD/configs/backtest-local.json" \
   -c "$PWD/configs/environment/freqtrade-mihomo.json" \
   --userdir "$backtest_run" --datadir "$PWD/data" \
-  --strategy-path "$PWD" --freqaimodel-path "$PWD/freqaimodels" \
+  --strategy-path "$PWD" --freqaimodel-path "$PWD/quant/models/freqai" \
   --strategy MyStrategy --timerange 20250101-20250115 \
   --pairs BTC/USDT:USDT ETH/USDT:USDT \
   --cache none --export signals --backtest-directory "$backtest_run/results"

@@ -14,8 +14,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from quant_strategy.infrastructure.experiment_store import git_state
-from quant_strategy.validation.native_features import (
+from quant.infrastructure.experiment_store import git_state
+from quant.validation.native_features import (
     audit_native_features,
     populate_native_features,
 )
@@ -51,15 +51,15 @@ def main() -> int:
     from freqtrade.configuration.load_config import load_from_files
     from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 
-    from quant_strategy.backends.freqai import add_freqai_period_features
-    from quant_strategy.execution.freqtrade_strategy import QuantStrategy
-    from quant_strategy.features import (
+    from quant.backends.freqai import add_freqai_period_features
+    from quant.execution.freqtrade_strategy import QuantStrategy
+    from quant.features import (
         add_baseline_features,
         add_basic_price_features,
         add_period_expanded_features,
     )
-    from quant_strategy.labels import set_regression_target
-    from quant_strategy.market_data.time_index import timeframe_delta
+    from quant.labels import set_regression_target
+    from quant.market_data.time_index import timeframe_delta
 
     started_at = datetime.now(UTC).isoformat()
     config_receipts = [(Path(path), _sha(Path(path))) for path in args.config]

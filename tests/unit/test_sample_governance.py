@@ -5,9 +5,9 @@ from dataclasses import replace
 import pandas as pd
 import pytest
 
-from quant_strategy.config import ExperimentConfig
-from quant_strategy.dataset import Dataset, build_dataset
-from quant_strategy.errors import DataContractError
+from quant.config import ExperimentConfig
+from quant.dataset import Dataset, build_dataset
+from quant.errors import DataContractError
 
 
 def test_gap_excludes_labels_crossing_missing_bar_and_restarts_warmup(candles):

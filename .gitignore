@@ -11,6 +11,10 @@ github/
 # FreqAI models + downloaded data: large, regenerable
 models/
 data/
+!quant/models/
+!quant/models/**
+quant/models/**/__pycache__/
+quant/models/**/*.pyc
 
 # local scratch
 *.bak
