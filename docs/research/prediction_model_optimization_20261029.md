@@ -57,6 +57,19 @@ An inner-validation scalar shrinkage experiment was also tested and rejected:
 it did not consistently beat zero on both pairs and could erase the usable
 direction signal. No calibration change remains in the implementation.
 
+## Iteration 2: recent-sample weighting
+
+FreqAI's `FreqaiDataKitchen.set_weights_higher_recent` uses exponential weights
+that increase toward the newest training samples. This is a documented way to
+adapt to regime drift without reading future labels. I reproduced that formula
+in the standalone fold backend and tested factors 0.9 and 0.5. Factor 0.9 was
+selected: mean Pearson IC improved from 0.0396 to 0.0439, MAE improved from
+0.85148 to 0.85129, and RMSE stayed effectively unchanged (1.23851 to
+1.23852); all three fold Pearson IC values were positive. Factor 0.5 was less
+stable. The production configuration now enables `weight_factor: 0.9`, and its
+cache identifier and controlled contract were advanced to the recent-weighted
+namespace.
+
 ## Reproduction
 
 The original regression run was:

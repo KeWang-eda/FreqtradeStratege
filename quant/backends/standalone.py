@@ -55,6 +55,15 @@ class StandaloneBackend:
             preprocessing = fit_preprocessing(dataset.X.iloc[train])
             X_train = preprocessing.transform(dataset.X.iloc[train])
             model = create_regressor(config.model, config.seed)
+            weight_factor = config.model.params.get("weight_factor")
+            sample_weight = None
+            if weight_factor is not None:
+                factor = float(weight_factor)
+                if not 0 < factor <= 1:
+                    raise DataContractError("weight_factor must be in (0, 1]")
+                sample_weight = np.exp(
+                    -np.arange(len(train), dtype=float) / (factor * len(train))
+                )[::-1]
             kwargs = (
                 {}
                 if valid is None
@@ -63,7 +72,12 @@ class StandaloneBackend:
                     "y_valid": dataset.y.iloc[valid],
                 }
             )
-            model.fit(X_train, dataset.y.iloc[train], **kwargs)
+            model.fit(
+                X_train,
+                dataset.y.iloc[train],
+                sample_weight=sample_weight,
+                **kwargs,
+            )
             values = model.predict(preprocessing.transform(dataset.X.iloc[test]))
             information_rows = train if valid is None else np.concatenate([train, valid])
             information_end = metadata.iloc[information_rows]["label_end_time"].max()

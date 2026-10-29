@@ -1,6 +1,6 @@
 research:
   name: btc_eth_bnb_production_task_development_v1
-  research_contract: configs/contracts/btc_eth_bnb_v4.json
+  research_contract: configs/contracts/btc_eth_bnb_v5.json
   feature_version: native-production-per-pair-v1
   timeframe: 4h
   seed: 42

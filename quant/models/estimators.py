@@ -35,6 +35,7 @@ def create_estimator(
         raise ConfigurationError(f"Unregistered estimator: {name}")
 
     supplied = dict(params or {})
+    supplied.pop("weight_factor", None)
     if (
         name == "xgboost_direction"
         and supplied.get("objective", "binary:logistic") != "binary:logistic"

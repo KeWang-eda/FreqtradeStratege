@@ -29,6 +29,7 @@ class StandaloneRegressor:
         *,
         X_valid: pd.DataFrame | None = None,
         y_valid: pd.Series | None = None,
+        sample_weight: np.ndarray | None = None,
     ) -> None:
         """Fit; early stopping consumes only an inner chronological validation."""
         self.columns = tuple(X.columns)
@@ -45,6 +46,8 @@ class StandaloneRegressor:
             eval_target = (np.asarray(y_valid) > 0).astype(int) if directional else y_valid
             kwargs = {"eval_set": [(X_valid, eval_target)], "verbose": False}
         target = (np.asarray(y) > 0).astype(int) if directional else y
+        if sample_weight is not None:
+            kwargs["sample_weight"] = sample_weight
         if directional:
             actual = np.asarray(y, dtype=float)
             positive = actual[actual > 0]
