@@ -13,10 +13,12 @@ from quant.validation import TimeSeriesSplitter
 from quant.validation.leakage import audit_fold
 
 
-@pytest.mark.parametrize("name", ["ridge", "xgboost"])
+@pytest.mark.parametrize("name", ["ridge", "xgboost", "xgboost_direction"])
 def test_model_fit_predict_save_load(tmp_path, name):
     X = pd.DataFrame({"%a": np.arange(40, dtype=float), "%b": np.sin(np.arange(40))})
     y = X["%a"] * 0.03
+    if name == "xgboost_direction":
+        y = y - y.mean()
     params = {} if name == "ridge" else {"n_estimators": 12, "max_depth": 2}
     model = create_regressor(ModelConfig(name=name, params=params))
     model.fit(X.iloc[:30], y.iloc[:30])
@@ -28,14 +30,16 @@ def test_model_fit_predict_save_load(tmp_path, name):
         loaded.predict(X[["%b", "%a"]])
 
 
-@pytest.mark.parametrize("name", ["ridge", "xgboost"])
+@pytest.mark.parametrize("name", ["ridge", "xgboost", "xgboost_direction"])
 def test_standalone_and_freqai_share_estimator_constructor(name):
     params = {} if name == "ridge" else {"n_estimators": 5, "max_depth": 2}
     common = create_estimator(
         name,
         params,
         seed=42,
-        defaults={"n_jobs": 1, "tree_method": "hist"} if name == "xgboost" else None,
+        defaults={"n_jobs": 1, "tree_method": "hist"}
+        if name in {"xgboost", "xgboost_direction"}
+        else None,
     )
     standalone = create_regressor(ModelConfig(name=name, params=params), seed=42)
     assert type(standalone.estimator) is type(common)

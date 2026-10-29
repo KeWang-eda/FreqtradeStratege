@@ -80,6 +80,21 @@ def test_equivalent_native_runs_pass(tmp_path):
     assert report["trade_count"] == {"old": 1, "new": 1}
 
 
+def test_model_search_path_relocation_does_not_change_runtime_configuration(tmp_path):
+    old, new = tmp_path / "old", tmp_path / "new"
+    make_run(old)
+    make_run(new)
+
+    def add_relocated_model_path(contents):
+        value = json.loads(contents["result_config.json"])
+        value["freqaimodel_path"] = "quant/models/freqai"
+        contents["result_config.json"] = json.dumps(value)
+
+    edit_archive(new, add_relocated_model_path)
+    report = compare_runs(old, new)
+    assert report["passed"]
+
+
 def test_prediction_difference_fails_even_when_trades_match(tmp_path):
     old, new = tmp_path / "old", tmp_path / "new"
     make_run(old)

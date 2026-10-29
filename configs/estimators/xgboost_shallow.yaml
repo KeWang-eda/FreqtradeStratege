@@ -1,0 +1,13 @@
+research:
+  model:
+    backend: standalone
+    name: xgboost
+    params:
+      n_estimators: 300
+      max_depth: 2
+      learning_rate: 0.03
+      subsample: 0.8
+      colsample_bytree: 0.8
+      eval_metric: rmse
+      early_stopping_rounds: 30
+      verbosity: 0

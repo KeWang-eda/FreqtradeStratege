@@ -27,10 +27,21 @@ def create_estimator(
         from xgboost import XGBRegressor
 
         constructor = XGBRegressor
+    elif name == "xgboost_direction":
+        from xgboost import XGBClassifier
+
+        constructor = XGBClassifier
     else:
         raise ConfigurationError(f"Unregistered estimator: {name}")
 
     supplied = dict(params or {})
+    if (
+        name == "xgboost_direction"
+        and supplied.get("objective", "binary:logistic") != "binary:logistic"
+    ):
+        raise ConfigurationError(
+            "xgboost_direction requires objective='binary:logistic'"
+        )
     if seed is not None and "random_state" in supplied and supplied["random_state"] != seed:
         raise ConfigurationError("model.params.random_state must equal the experiment seed")
 

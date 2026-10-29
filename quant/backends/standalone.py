@@ -33,7 +33,9 @@ class StandaloneBackend:
             if len(train) < 2:
                 raise DataContractError(f"Insufficient training samples for {pair}")
             valid = None
-            if config.model.name == "xgboost" and config.model.params.get("early_stopping_rounds"):
+            if config.model.name in {"xgboost", "xgboost_direction"} and config.model.params.get(
+                "early_stopping_rounds"
+            ):
                 split = max(1, int(len(train) * 0.8))
                 valid = train[split:]
                 valid_start = metadata.iloc[valid]["available_at"].min()

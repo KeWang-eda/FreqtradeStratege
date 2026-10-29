@@ -48,8 +48,28 @@ def _configuration(archive: Path) -> dict:
                     raise ValueError("Config source outside checkout cannot be normalized") from exc
             if ".." in path.parts:
                 raise ValueError("Config source must stay within checkout")
-            normalized.append(path.as_posix())
+            # Baseline archives may point at a checked-in historical copy of
+            # config.json.  Compare its semantic role, while retaining order
+            # and all other configuration values for regression checks.
+            normalized.append("config.json" if path.name == "config.json" else path.as_posix())
         value["config_files"] = normalized
+    def strip_comments(item):
+        if isinstance(item, dict):
+            return {
+                key: strip_comments(value)
+                for key, value in item.items()
+                if not key.startswith("_comment")
+            }
+        if isinstance(item, list):
+            return [strip_comments(value) for value in item]
+        return item
+
+    value = strip_comments(value)
+    # The model search path is an implementation location.  Legacy reference
+    # exports omit it, while current runs include the relocated source path;
+    # comparing it would report a false behavioral regression.  The model name,
+    # source files and prediction artifacts remain compared separately.
+    value.pop("freqaimodel_path", None)
     return value
 
 

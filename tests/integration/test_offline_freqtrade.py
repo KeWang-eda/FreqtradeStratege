@@ -135,7 +135,7 @@ def test_regular_exchange_and_ccxt_classes_keep_native_network_methods():
     assert asyncio.iscoroutinefunction(LocalBinanceAsyncClient.fetch)
 
 
-def offline_command(tmp_path, snapshot):
+def offline_command(tmp_path, snapshot, *, config_path=None):
     userdir = tmp_path / "run"
     (userdir / "results").mkdir(parents=True)
     report = tmp_path / "audit.json"
@@ -154,7 +154,7 @@ def offline_command(tmp_path, snapshot):
         "36500",
         "--",
         "-c",
-        str(ROOT / "config.json"),
+        str(config_path or ROOT / "config.json"),
         "-c",
         str(ROOT / "configs/backtest-local.json"),
         "-c",
@@ -224,7 +224,9 @@ def test_native_backtest_in_disconnected_namespace_matches_online_reference(tmp_
     probe = subprocess.run([*prefix, "true"], capture_output=True, text=True)
     if probe.returncode:
         pytest.skip(f"Network namespace unavailable: {probe.stderr}")
-    command, report, userdir = offline_command(tmp_path, SNAPSHOT)
+    command, report, userdir = offline_command(
+        tmp_path, SNAPSHOT, config_path=ROOT / "docs/baseline/config.json"
+    )
     legacy = tmp_path / "frozen_legacy_model"
     legacy.mkdir()
     source = subprocess.check_output(

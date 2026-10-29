@@ -142,7 +142,7 @@
     "backtest_period_days": 7,
     "save_backtest_models": false,
     "live_retrain_hours": 24,
-    "identifier": "mystrategy-4h-regression-72pair-corr-s1-purged-v2",
+    "identifier": "mystrategy-4h-regression-72pair-corr-s1-shallow-v3",
     "feature_parameters": {
       "include_timeframes": [
         "4h"
@@ -169,9 +169,9 @@
       "random_state": 42
     },
     "model_training_parameters": {
-      "n_estimators": 500,
-      "max_depth": 5,
-      "learning_rate": 0.05,
+      "n_estimators": 300,
+      "max_depth": 2,
+      "learning_rate": 0.03,
       "subsample": 0.8,
       "colsample_bytree": 0.8,
       "eval_metric": "rmse",
