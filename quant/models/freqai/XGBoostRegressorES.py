@@ -23,6 +23,8 @@ from pathlib import Path
 from time import time
 from typing import TYPE_CHECKING, Any
 
+import numpy as np
+import pandas as pd
 import xgboost as xgb
 from freqtrade.freqai.base_models.BaseRegressionModel import BaseRegressionModel
 from freqtrade.freqai.tensorboard import TBCallback
@@ -62,6 +64,24 @@ class XGBoostRegressorES(BaseRegressionModel):
     def define_label_pipeline(self, threads=-1):
         pipeline = super().define_label_pipeline(threads=threads)
         return IdentityPreservingPipeline(pipeline.steps, pipeline.fitparams)
+
+    def predict(self, unfiltered_df, dk, **kwargs):
+        """Apply validation-fitted magnitude calibration after label inversion."""
+        predictions, do_predict = super().predict(unfiltered_df, dk, **kwargs)
+        # FreqAI serializes the estimator returned by ``fit()``, not this
+        # adapter instance.  Read the calibration exponent from the Booster
+        # attribute as well, otherwise a process restart silently reverts to
+        # the uncalibrated model.
+        power = getattr(self, "selected_prediction_power", None)
+        if power is None:
+            booster = getattr(getattr(self, "model", None), "get_booster", lambda: None)()
+            stored = booster.attr("prediction_power") if booster is not None else None
+            power = float(stored) if stored is not None else 1.0
+        if power != 1.0:
+            for label in dk.label_list:
+                values = predictions[label].to_numpy(dtype=float)
+                predictions[label] = np.sign(values) * np.abs(values) ** power
+        return predictions, do_predict
 
     def train(self, unfiltered_df, pair: str, dk: FreqaiDataKitchen, **kwargs) -> Any:
         """FreqAI 2026.7 train lifecycle with pre-fit purge and indexed audits.
@@ -193,6 +213,7 @@ class XGBoostRegressorES(BaseRegressionModel):
         y = data_dictionary["train_labels"]
 
         training_parameters = dict(self.model_training_parameters)
+        prediction_power = training_parameters.pop("prediction_power", "identity")
         # 该参数在 xgboost >= 3 不再是构造参数，改由 callbacks 表达；
         # 从字典里摘掉，避免透传给底层 XGBModel 时产生歧义。
         early_stopping_rounds = int(training_parameters.pop("early_stopping_rounds", 0))
@@ -232,6 +253,38 @@ class XGBoostRegressorES(BaseRegressionModel):
             sample_weight_eval_set=eval_weights,
             xgb_model=xgb_model,
         )
+        self.selected_prediction_power = 1.0
+        if prediction_power == "validation_grid" and eval_set is not None:
+            predicted = pd.DataFrame(
+                model.predict(data_dictionary["test_features"]),
+                columns=dk.label_list,
+            )
+            actual = pd.DataFrame(data_dictionary["test_labels"], columns=dk.label_list)
+            predicted, _, _ = dk.label_pipeline.inverse_transform(predicted)
+            actual, _, _ = dk.label_pipeline.inverse_transform(actual)
+            candidates = np.arange(0.75, 2.01, 0.05)
+            values = predicted.iloc[:, 0].to_numpy(dtype=float)
+            truth = actual.iloc[:, 0].to_numpy(dtype=float)
+            self.selected_prediction_power = float(
+                min(
+                    candidates,
+                    key=lambda power: np.mean(
+                        (
+                            truth
+                            - np.sign(values) * np.abs(values) ** power
+                        )
+                        ** 2
+                    ),
+                )
+            )
+            logger.info(
+                "%s: validation power calibration selected gamma=%.2f",
+                dk.pair,
+                self.selected_prediction_power,
+            )
+        # Persist the selected calibration with the XGBoost estimator.  The
+        # FreqAI DataDrawer reloads this estimator in a new process.
+        model.get_booster().set_attr(prediction_power=str(self.selected_prediction_power))
         # 序列化前清空 callbacks
         model.set_params(callbacks=[])
 

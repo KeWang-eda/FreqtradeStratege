@@ -14,9 +14,11 @@ from quant.errors import DataContractError
 class StandaloneRegressor:
     """Scikit-learn compatible estimator with optional XGBoost validation."""
 
-    def __init__(self, estimator: Any, name: str):
+    def __init__(self, estimator: Any, name: str, prediction_power: str = "identity"):
         self.estimator = estimator
         self.name = name
+        self.prediction_power = prediction_power
+        self.selected_power = 1.0
         self.columns: tuple[str, ...] = ()
         self.positive_return_mean = 0.0
         self.negative_return_mean = 0.0
@@ -33,6 +35,7 @@ class StandaloneRegressor:
     ) -> None:
         """Fit; early stopping consumes only an inner chronological validation."""
         self.columns = tuple(X.columns)
+        self.selected_power = 1.0
         kwargs = {}
         directional = self.name == "xgboost_direction"
         self.constant_probability = None
@@ -60,6 +63,27 @@ class StandaloneRegressor:
                 self.estimator.fit(X, target, **kwargs)
         else:
             self.estimator.fit(X, target, **kwargs)
+        if (
+            self.name == "xgboost"
+            and self.prediction_power == "validation_grid"
+            and X_valid is not None
+            and y_valid is not None
+        ):
+            raw = np.asarray(self.estimator.predict(X_valid), dtype=float)
+            actual = np.asarray(y_valid, dtype=float)
+            candidates = np.arange(0.75, 2.01, 0.05)
+            self.selected_power = float(
+                min(
+                    candidates,
+                    key=lambda power: np.mean(
+                        (
+                            actual
+                            - np.sign(raw) * np.abs(raw) ** power
+                        )
+                        ** 2
+                    ),
+                )
+            )
 
     def predict(self, X: pd.DataFrame) -> np.ndarray:
         """Reject reordered/missing feature columns before prediction."""
@@ -75,7 +99,10 @@ class StandaloneRegressor:
                 probability * self.positive_return_mean
                 - (1.0 - probability) * self.negative_return_mean
             )
-        return np.asarray(self.estimator.predict(X), dtype=float).reshape(-1)
+        prediction = np.asarray(self.estimator.predict(X), dtype=float).reshape(-1)
+        if self.prediction_power == "validation_grid":
+            prediction = np.sign(prediction) * np.abs(prediction) ** self.selected_power
+        return prediction
 
     def save(self, path: str | Path) -> None:
         """Persist a local trusted estimator with schema and dependency version."""

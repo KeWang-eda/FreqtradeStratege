@@ -18,5 +18,6 @@ def create_regressor(config: ModelConfig, seed: int = 42) -> StandaloneRegressor
         if config.name in {"xgboost", "xgboost_direction"}
         else None
     )
+    prediction_power = config.params.get("prediction_power", "identity")
     estimator = create_estimator(config.name, config.params, seed=seed, defaults=defaults)
-    return StandaloneRegressor(estimator, config.name)
+    return StandaloneRegressor(estimator, config.name, prediction_power)

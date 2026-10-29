@@ -36,6 +36,7 @@ def create_estimator(
 
     supplied = dict(params or {})
     supplied.pop("weight_factor", None)
+    supplied.pop("prediction_power", None)
     if (
         name == "xgboost_direction"
         and supplied.get("objective", "binary:logistic") != "binary:logistic"

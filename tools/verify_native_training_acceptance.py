@@ -13,6 +13,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
 try:
     import cloudpickle
 except ImportError:  # pragma: no cover - compatibility with older joblib-only environments
@@ -219,6 +220,15 @@ def verify_native_training_acceptance(run_directory: Path, output: Path | None =
             replay, _, _ = saved_label_pipeline.inverse_transform(
                 pd.DataFrame(replay_values, columns=labels)
             )
+            power = saved_model.get_booster().attr("prediction_power")
+            if power is not None:
+                exponent = float(power)
+                values = replay.to_numpy(dtype=float)
+                replay = pd.DataFrame(
+                    np.sign(values) * np.abs(values) ** exponent,
+                    index=replay.index,
+                    columns=replay.columns,
+                )
             if not np.array_equal(
                 replay.to_numpy(), predictions[labels].to_numpy()
             ) or not np.array_equal(ready, predictions.do_predict.to_numpy()):

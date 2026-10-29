@@ -4,9 +4,9 @@
 
 This work adds standalone candidates and promotes the shallow XGBoost
 configuration to the FreqAI production model. It does not change the strategy
-signals, label, data split, or trading rules. The production cache identifier
-was changed and a new v4 controlled contract was frozen; the formal research
-gate remains closed.
+signals, label, data split, or trading rules. Production cache identifiers were
+advanced for promoted models and historical contract hashes were preserved; the
+formal research gate remains closed.
 
 The experiments used BTC/USDT:USDT and ETH/USDT:USDT local 4h data, the
 `volnorm` label with a 3-candle horizon, the same baseline features, and three
@@ -55,7 +55,7 @@ profitable or production-ready predictions.
 
 An inner-validation scalar shrinkage experiment was also tested and rejected:
 it did not consistently beat zero on both pairs and could erase the usable
-direction signal. No calibration change remains in the implementation.
+direction signal.
 
 ## Iteration 2: recent-sample weighting
 
@@ -81,6 +81,29 @@ purged folds. `reg_lambda=5` was selected: RMSE improved from 1.23852 to
 higher Pearson IC but worse aggregate error and rank IC; lambda 10 showed
 over-regularization. Production now uses `reg_lambda: 5.0` with a new cache
 identifier and controlled contract.
+
+## Iteration 4: validation-fitted prediction-power calibration
+
+The regressor's sign is useful for direction, while its raw magnitude is
+under-dispersed on the validation windows. Following the standard practice of
+fitting calibration parameters on a validation partition rather than the outer
+test partition, the adapter evaluates
+`sign(prediction) * abs(prediction)^gamma` for `gamma` from 0.75 through 2.00
+in 0.05 increments. The label pipeline is inverted before choosing `gamma`, so
+the objective is measured in the original return units. The outer folds remain
+untouched by this selection.
+
+On the same three purged folds, the selected grid reduced mean RMSE from
+1.23805 to 1.23730, MAE from 0.85044 to 0.84646, and increased mean Pearson IC
+from 0.04338 to 0.04668 and Spearman IC from 0.00306 to 0.01116. Direction
+accuracy was unchanged. This is a small but consistent OOS improvement, so the
+production identifier and controlled contract advance to the `power-v6` /
+`v7` namespace.
+
+The selected exponent is stored as an XGBoost Booster attribute. FreqAI's
+DataDrawer serializes the estimator returned by `fit()` and reloads it in a
+later process; reading only an adapter instance field would silently disable
+calibration after restart.
 
 ## Reproduction
 
@@ -115,6 +138,9 @@ source snapshot, fold predictions, metrics, leakage report, and checksums.
 - FreqAI's installed `FreqaiDataKitchen.set_weights_higher_recent` source
   defines the exponential recent-sample weighting reproduced by the research
   backend.
+- XGBoost's [Booster API](https://xgboost.readthedocs.io/en/stable/python/python_api.html)
+  documents model attributes, which persist the validation-selected calibration
+  exponent with the serialized estimator.
 
 ## Verification
 

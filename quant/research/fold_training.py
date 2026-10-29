@@ -242,12 +242,22 @@ def _train_pair(
     transformed, ready, _ = dk.feature_pipeline.transform(test[features], outlier_check=True)
     if not transformed.index.equals(test.index):
         raise DataContractError("External prediction preprocessing removed or reordered samples")
+    raw_prediction = np.asarray(fitted.predict(transformed)).reshape(-1, 1)
     prediction = pd.DataFrame(
-        np.asarray(fitted.predict(transformed)).reshape(-1, 1),
+        raw_prediction,
         index=test.index,
         columns=dk.label_list,
     )
     prediction, _, _ = dk.label_pipeline.inverse_transform(prediction)
+    power = fitted.get_booster().attr("prediction_power")
+    if power is not None:
+        exponent = float(power)
+        values = prediction.to_numpy(dtype=float)
+        prediction = pd.DataFrame(
+            np.sign(values) * np.abs(values) ** exponent,
+            index=prediction.index,
+            columns=prediction.columns,
+        )
     predictions = pd.DataFrame(
         {
             "sample_id": test.index,
@@ -700,7 +710,7 @@ def verify_development_folds(
                 # estimator configuration instead of misreporting them missing.
                 effective = fitted.get_params(deep=False)
                 for key, value in native_config["freqai"]["model_training_parameters"].items():
-                    if key != "early_stopping_rounds" and effective.get(key) != value:
+                    if key not in {"early_stopping_rounds", "prediction_power"} and effective.get(key) != value:
                         raise DataContractError(
                             "Actual saved model hyperparameters differ from native config"
                         )
@@ -712,10 +722,18 @@ def verify_development_folds(
                     ]
                 ):
                     raise DataContractError("Actual saved model seed differs from recorded seed")
-                prediction = pd.DataFrame(
-                    np.asarray(fitted.predict(transformed)).reshape(-1, 1), columns=["&-s_return"]
-                )
+                raw_prediction = np.asarray(fitted.predict(transformed)).reshape(-1, 1)
+                prediction = pd.DataFrame(raw_prediction, columns=["&-s_return"])
                 prediction, _, _ = label_pipeline.inverse_transform(prediction)
+                power = fitted.get_booster().attr("prediction_power")
+                if power is not None:
+                    exponent = float(power)
+                    values = prediction.to_numpy(dtype=float)
+                    prediction = pd.DataFrame(
+                        np.sign(values) * np.abs(values) ** exponent,
+                        index=prediction.index,
+                        columns=prediction.columns,
+                    )
                 result = pd.DataFrame(
                     {
                         "sample_id": test.index,
