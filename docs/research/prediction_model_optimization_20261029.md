@@ -70,6 +70,18 @@ stable. The production configuration now enables `weight_factor: 0.9`, and its
 cache identifier and controlled contract were advanced to the recent-weighted
 namespace.
 
+## Iteration 3: L2 regularization
+
+XGBoost documents `reg_lambda` as L2 regularization on leaf weights; increasing
+it makes the model more conservative. With the promoted shallow model and
+`weight_factor=0.9` fixed, values 2, 5, and 10 were evaluated on the same three
+purged folds. `reg_lambda=5` was selected: RMSE improved from 1.23852 to
+1.23805, MAE from 0.85129 to 0.85044, direction accuracy from 50.6868% to
+50.7396%, and mean Spearman IC from -0.00294 to 0.00306. Lambda 2 had slightly
+higher Pearson IC but worse aggregate error and rank IC; lambda 10 showed
+over-regularization. Production now uses `reg_lambda: 5.0` with a new cache
+identifier and controlled contract.
+
 ## Reproduction
 
 The original regression run was:
@@ -100,6 +112,9 @@ source snapshot, fold predictions, metrics, leakage report, and checksums.
 - Freqtrade's [FreqAI feature-engineering documentation](https://www.freqtrade.io/en/stable/freqai-feature-engineering/)
   describes the production feature expansion lifecycle. These standalone
   candidates do not alter that schema or production lifecycle.
+- FreqAI's installed `FreqaiDataKitchen.set_weights_higher_recent` source
+  defines the exponential recent-sample weighting reproduced by the research
+  backend.
 
 ## Verification
 
