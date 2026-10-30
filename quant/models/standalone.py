@@ -65,7 +65,8 @@ class StandaloneRegressor:
             self.estimator.fit(X, target, **kwargs)
         if (
             self.name == "xgboost"
-            and self.prediction_power == "validation_grid"
+            and self.prediction_power
+            in {"validation_grid", "validation_mae", "validation_spearman"}
             and X_valid is not None
             and y_valid is not None
         ):
@@ -75,15 +76,17 @@ class StandaloneRegressor:
             self.selected_power = float(
                 min(
                     candidates,
-                    key=lambda power: np.mean(
-                        (
-                            actual
-                            - np.sign(raw) * np.abs(raw) ** power
-                        )
-                        ** 2
-                    ),
+                    key=lambda power: self._calibration_score(actual, raw, power),
                 )
             )
+
+    def _calibration_score(self, actual: np.ndarray, raw: np.ndarray, power: float) -> float:
+        calibrated = np.sign(raw) * np.abs(raw) ** power
+        if self.prediction_power == "validation_mae":
+            return float(np.mean(np.abs(actual - calibrated)))
+        if self.prediction_power == "validation_spearman":
+            return -float(pd.Series(actual).corr(pd.Series(calibrated), method="spearman"))
+        return float(np.mean((actual - calibrated) ** 2))
 
     def predict(self, X: pd.DataFrame) -> np.ndarray:
         """Reject reordered/missing feature columns before prediction."""
@@ -100,7 +103,11 @@ class StandaloneRegressor:
                 - (1.0 - probability) * self.negative_return_mean
             )
         prediction = np.asarray(self.estimator.predict(X), dtype=float).reshape(-1)
-        if self.prediction_power == "validation_grid":
+        if self.prediction_power in {
+            "validation_grid",
+            "validation_mae",
+            "validation_spearman",
+        }:
             prediction = np.sign(prediction) * np.abs(prediction) ** self.selected_power
         return prediction
 

@@ -5,6 +5,273 @@
 每次改动记录：改了什么、依据来源（论文/文档/仓库/博客）、实测数据、结论。
 原则：**先有依据再改，改完必须回测，回测结果必须与同窗口基线对照。**
 
+### 2026-10-30 · XGBoost `min_child_weight` 开发筛选（否决）
+
+依据：XGBoost 官方参数文档将 `min_child_weight` 定义为子节点继续分裂所需的最小二阶梯度和；提高它可以抑制由少量样本支持的分裂，作为与已有 `max_depth=2`、`reg_lambda=5` 不同的正则化候选：
+https://xgboost.readthedocs.io/en/stable/parameter.html
+
+实验固定当前浅层 XGBoost 配置（`n_estimators=300`、`max_depth=2`、`learning_rate=0.03`、`subsample=0.8`、`colsample_bytree=0.8`、`reg_lambda=5`、近期权重 `0.9`、验证集幂校准），使用相同 BTC/USDT:USDT 和 ETH/USDT:USDT 数据、`volnorm` horizon=3 标签和三折 purged walk-forward。候选只改变 `min_child_weight`，比较 18,934 个共同 `(pair, candle_timestamp, fold_id)` 样本。
+
+当前 `quant` conda 环境为 Python 3.11/XGBoost 3.2.0；项目依赖只要求 `xgboost>=2`。研究记录中的 XGBoost 3.4.1 要求 Python 3.12，无法在该环境安装，因此本结果是当前部署环境的开发筛选，不宣称跨版本 OOS 结论。
+
+| 指标 | 基线 | `min_child_weight=5` | `min_child_weight=10` | 零预测 |
+|---|---:|---:|---:|---:|
+| pooled MAE | 0.859824 | 0.858890 | **0.856899** | 0.844448 |
+| pooled RMSE | 1.245023 | 1.244959 | **1.243683** | 1.236627 |
+| 方向准确率 | 50.787% | 50.945% | **50.967%** | — |
+| Pearson IC | **0.019390** | 0.014663 | 0.011258 | — |
+| Spearman IC | -0.009543 | -0.010305 | -0.009064 | — |
+
+`min_child_weight=10` 的 MAE/RMSE 小幅下降，但两项仍劣于零预测，Pearson IC 下降，且逐折误差改善不稳定（fold 0 RMSE `1.203208 -> 1.203480`，fold 1 `1.278802 -> 1.274621`，fold 2 `1.251882 -> 1.251890`）。候选不满足综合提升标准，否决，不修改生产配置、不提交模型缓存。
+
+### 2026-10-30 · XGBoost `grow_policy=lossguide` 开发筛选（否决）
+
+依据：XGBoost 官方参数文档说明 `grow_policy=lossguide` 每次扩展损失下降最大的叶节点，配合 `max_leaves` 控制树的叶节点上限；这是与当前默认 `depthwise` 不同的树结构搜索方式：
+https://xgboost.readthedocs.io/en/stable/parameter.html
+
+固定同一浅层 XGBoost、标签、数据和三折 purged walk-forward，仅测试 `max_leaves=4` 与等理论容量上限的 `max_leaves=7`（`max_depth=0`）。18,934 个共同样本的 pooled 结果如下：
+
+| 指标 | depthwise 基线 | lossguide / 4 叶 | lossguide / 7 叶 | 零预测 |
+|---|---:|---:|---:|---:|
+| MAE | 0.859824 | **0.858836** | 0.861321 | 0.844448 |
+| RMSE | 1.245023 | **1.243939** | 1.247290 | 1.236627 |
+| 方向准确率 | **50.787%** | 50.697% | 50.702% | — |
+| Pearson IC | 0.019390 | **0.031962** | 0.023257 | — |
+| Spearman IC | -0.009543 | -0.009877 | -0.014760 | — |
+
+`lossguide=4` 的误差和 Pearson 有小幅改善，但方向、Spearman 和零预测对照不达标；`lossguide=7` 全面变差。两者均否决，不修改生产配置、不提交模型缓存。
+
+### 2026-10-30 · validation 幂校准网格扩展（否决）
+
+依据：回归后处理校准参数只允许从训练折内的时间顺序验证集拟合，不能根据外层测试折选择；扩大候选范围可以检查当前 `gamma=0.75..2.0` 网格边界是否截断最优值。方法依据为 scikit-learn 关于 calibration 应在未参与拟合的验证数据上估计的说明：
+https://scikit-learn.org/stable/modules/calibration.html
+
+把 standalone 和 FreqAI 两处相同的候选网格临时从 `0.75..2.0` 扩至 `0.25..3.0`，固定当前模型、近期权重、标签和三折 purged walk-forward。Python 3.11/XGBoost 3.2.0 环境的 18,934 个共同外层预测结果：MAE `0.846672 -> 0.846529`，RMSE `1.237897 -> 1.238098`，方向准确率不变（`50.776%`），Pearson IC `0.006203 -> 0.003986`，Spearman IC `0.004732 -> 0.002603`。外层测试结果只作候选评估，参数仍在内层验证选择。
+
+MAE 的极小改善没有伴随 RMSE/相关性改善，故扩展网格否决；两条生产代码路径保持原网格，不提交模型变更。
+
+### 2026-10-30 · 对数收益率特征（否决）
+
+依据：Tsay, *Analysis of Financial Time Series*, 3rd ed., Wiley (2010), Ch. 1；Campbell, Lo & MacKinlay, *The Econometrics of Financial Markets*, Princeton University Press (1997), Ch. 1。两者以对数价格差/对数收益作为金融时间序列的标准表示；对数收益可跨期相加，在大幅涨跌时相较简单收益率更对称。本候选只新增 `log(close_t)-log(close_{t-1})`，不替换其他输入。
+
+将其实现为可选 `log_return` 特征并通过特征合同及因果性审计后，按生产 XGBoost 参数（浅树、`reg_lambda=5`、近期权重 `0.9`、内层验证幂校准）比较三折 purged walk-forward。候选严格与基线对齐于 18,934 个 `(pair, candle_timestamp, fold_id)` 样本；环境 Python 3.11/XGBoost 3.2.0。
+
+| 指标 | 基线 | 加入 log-return | 变化 |
+|---|---:|---:|---:|
+| pooled MAE | **0.846672** | 0.847707 | +0.001035 |
+| pooled RMSE | **1.237897** | 1.238715 | +0.000818 |
+| 方向准确率 | 50.776% | **50.829%** | +0.053 个百分点 |
+| Pearson IC | 0.006203 | 0.006171 | -0.000032 |
+| Spearman IC | 0.004732 | 0.004391 | -0.000341 |
+
+方向准确率只有极小上升，MAE/RMSE 和相关性均未改善，且 pair 间不一致。新增代码已撤回，候选否决，不进入生产配置。
+
+### 2026-10-30 · 回归器与方向分类器线性组合（否决）
+
+依据：Bates & Granger, “The Combination of Forecasts,” *Operational Research Quarterly* 20(4), 1969, pp. 451–468, DOI: `10.1057/jors.1969.103`。线性组合不同预测器可在误差不完全相关时降低预测方差；本轮以预先固定的方向模型权重 `0.1`、`0.2`、`0.3`、`0.5` 做敏感度测试，不以外层结果拟合组合权重。组合输入分别是当前生产 XGBoost 回归器和项目已有 `xgboost_direction`（概率再映射至训练折条件收益均值）。
+
+在当前 Python 3.11/XGBoost 3.2.0 环境重训两模型，采用相同数据、标签、purged folds 和 18,934 个共同 `(pair, candle_timestamp, fold_id)` 样本。基线与代表性混合权重的 pooled 结果：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 回归基线 | **0.846672** | **1.237897** | 50.776% | **0.006203** | 0.004732 |
+| 方向模型 | 0.848677 | 1.241483 | 50.718% | -0.018508 | **0.006263** |
+| 90% 回归 + 10% 方向 | 0.846418 | **1.237876** | 50.766% | 0.003723 | **0.009430** |
+| 80% 回归 + 20% 方向 | 0.846260 | 1.237939 | **50.798%** | 0.000801 | **0.009209** |
+| 70% 回归 + 30% 方向 | 0.846205 | 1.238086 | 50.792% | -0.002473 | **0.009030** |
+
+绝对误差、方向、Pearson 与 Spearman 的最优权重不同；方向模型本身的 Pearson 为负。10% 混合的 RMSE 改善仅 `0.000021`，方向略降；20% 混合的 MAE改善 `0.000412`，但 RMSE、Pearson 变差，方向提升仅 `0.021` 个百分点。逐折收益也不稳定，故不增加生产集成逻辑，不提交。
+
+### 2026-10-30 · 随机种子等权集成（否决）
+
+依据：Breiman, “Bagging Predictors,” *Machine Learning* 24, 1996, pp. 123–140, DOI: `10.1007/BF00058655`。对带随机采样的基学习器进行平均可能降低方差；当前 XGBoost 固定 `subsample=0.8`、`colsample_bytree=0.8`，因此预先选择 seed `7/21/123` 训练三个相同模型，并使用固定等权平均，不从外层标签选择权重。
+
+当前 Python 3.11/XGBoost 3.2.0 环境、相同生产参数和三折 purged walk-forward 下，18,934 个共同样本结果：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| seed 42 基线 | **0.846672** | **1.237897** | **50.776%** | **0.006203** | 0.004732 |
+| seed 7 | 0.847914 | 1.238983 | 50.803% | 0.002770 | 0.001167 |
+| seed 21 | 0.847397 | 1.238664 | 50.745% | 0.001785 | 0.004420 |
+| seed 123 | 0.847516 | 1.238732 | **50.835%** | 0.003804 | **0.006416** |
+| 三模型等权平均 | 0.847520 | 1.238718 | 50.729% | 0.002846 | 0.004077 |
+
+不同种子和等权平均均未同时改善误差、方向与相关性；等权平均反而使 MAE/RMSE 变差。因此不增加集成模型和线上推理开销，不提交。
+
+### 2026-10-30 · 训练标签 5%/95% winsorization（否决）
+
+依据：Cont, “Empirical Properties of Asset Returns: Stylized Facts and Statistical Issues,” *Quantitative Finance* 1(2), 2001, pp. 223–236, DOI: `10.1080/713665670`（金融收益厚尾与极端观测影响的实证背景）；稳健回归实践中常用训练样本分位数裁剪，减少极端标签对平方损失的支配。本实现严格只在每个 outer fold 的 inner-train 标签上估计 `q=0.05` 和 `1-q`，验证/外层测试标签保持原值。
+
+当前 Python 3.11/XGBoost 3.2.0 环境按生产参数重跑，比较 18,934 个共同样本：
+
+| 指标 | 未裁剪基线 | 训练标签 5%/95% 裁剪 |
+|---|---:|---:|
+| pooled MAE | **0.846672** | 0.846977 |
+| pooled RMSE | **1.237897** | 1.239044 |
+| 方向准确率 | 50.776% | **50.898%** |
+| Pearson IC | **0.006203** | -0.001506 |
+| Spearman IC | 0.004732 | 0.002340 |
+
+方向准确率上升 `0.12` 个百分点，但误差和相关性恶化；裁剪支持代码已撤回，候选否决，不进入生产配置。
+
+### 2026-10-30 · rolling training window 120/240 天（均否决）
+
+依据：Freqtrade FreqAI 参数表将 `train_period_days` 定义为每个滚动模型使用的历史窗口；概念漂移研究指出历史相关性随时间变化时，滚动训练窗可能比扩展窗更快适应，但窗口长度需按时间外预测验证。参考 Gama et al., “A Survey on Concept Drift Adaptation,” *ACM Computing Surveys* 46(4), 2014, Article 44, DOI: `10.1145/2523813`；FreqAI 参数文档：https://www.freqtrade.io/en/stable/freqai-parameter-table/ 。
+
+固定当前模型参数（浅层 XGBoost、`reg_lambda=5`、近期权重 `0.9`、内层验证幂校准）、特征、标签和同一三折 purged walk-forward，仅改变每折最大历史窗口。4h 数据下 `720` bars 约 120 天，`1440` bars 约 240 天；按 18,934 个共同样本比较：
+
+| 窗口 | pooled MAE | pooled RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 扩展窗口基线 | **0.846672** | **1.237897** | **50.776%** | **0.006203** | **0.004732** |
+| 720 bars / 约 120 天 | 0.920493 | 1.376795 | 50.301% | 0.003290 | -0.006866 |
+| 1440 bars / 约 240 天 | 0.849991 | 1.242672 | 49.958% | -0.027952 | -0.016458 |
+
+120 天窗口 fold 2 RMSE 恶化至 `1.623149`；240 天窗口 MAE/RMSE、方向和 IC 均未超过扩展窗口。两候选均否决，生产训练窗口和代码不变。
+
+### 2026-10-30 · XGBoost 鲁棒回归目标复核（Pseudo-Huber / absolute-error，均否决）
+
+依据：XGBoost 官方参数文档将 `reg:pseudohubererror` 定义为平滑的 Pseudo-Huber 损失，将 `reg:absoluteerror` 定义为直接优化绝对误差，适用于异常值或重尾标签：
+https://xgboost.readthedocs.io/en/stable/parameter.html
+
+固定浅层 XGBoost、`reg_lambda=5`、近期权重 `0.9`、内层验证幂校准、特征、标签和三折 purged walk-forward，在当前 Python 3.11/XGBoost 3.2.0 环境比较 18,934 个共同样本：
+
+| 指标 | squared-error 基线 | Pseudo-Huber | absolute-error |
+|---|---:|---:|---:|
+| pooled MAE | 0.846672 | 0.845770 | **0.845750** |
+| pooled RMSE | **1.237897** | 1.237941 | 1.238479 |
+| 方向准确率 | 50.776% | 50.824% | **50.887%** |
+| Pearson IC | **0.006203** | -0.001410 | -0.005639 |
+| Spearman IC | 0.004732 | 0.005251 | **0.005765** |
+
+Pseudo-Huber 与 absolute-error 的 MAE/方向/Spearman 有小幅改善，但 RMSE 或 Pearson 下降；absolute-error 的 RMSE 增加 `0.000582`，Pearson 变为负。逐折方向和误差也不一致，不能证明连续幅度预测能力全面提升。两者均否决，不修改生产目标或配置。
+
+### 2026-10-30 · XGBoost `max_bin` 64/512（均否决）
+
+依据：XGBoost 官方参数文档将 `max_bin` 定义为 histogram tree 方法的最大 bin 数；更小的值减少分裂候选、增加正则化，更大的值保留更细的连续特征切分：
+https://xgboost.readthedocs.io/en/stable/parameter.html
+
+固定当前浅层 XGBoost、`reg_lambda=5`、近期权重 `0.9`、验证幂校准、数据标签和三折 purged walk-forward，在当前 Python 3.11/XGBoost 3.2.0 环境比较 18,934 个共同样本。默认实现使用 `tree_method=hist` 的 `max_bin=256`。
+
+| 指标 | 默认 256 | `max_bin=64` | `max_bin=512` |
+|---|---:|---:|---:|
+| pooled MAE | **0.846672** | 0.847352 | 0.847419 |
+| pooled RMSE | **1.237897** | 1.238933 | 1.238511 |
+| 方向准确率 | 50.776% | 50.713% | **50.782%** |
+| Pearson IC | **0.006203** | -0.002907 | 0.000406 |
+| Spearman IC | **0.004732** | 0.002373 | 0.000830 |
+
+两种 bin 数都使误差变差，相关性没有提升；`max_bin=512` 的方向准确率仅上升 `0.006` 个百分点。候选均否决，不修改生产参数。
+
+### 2026-10-30 · XGBoost `max_delta_step` 1/3（均否决）
+
+依据：XGBoost 官方参数文档将 `max_delta_step` 定义为每棵树叶权重更新允许的最大步长；限制更新可在极端梯度下增加训练稳定性：
+https://xgboost.readthedocs.io/en/stable/parameter.html
+
+固定当前生产模型、标签、特征和三折 purged walk-forward，当前环境比较 18,934 个共同样本：
+
+| 指标 | 基线 | `max_delta_step=1` | `max_delta_step=3` |
+|---|---:|---:|---:|
+| MAE | **0.846672** | 0.846540 | 0.846672 |
+| RMSE | **1.237897** | 1.237886 | 1.237897 |
+| 方向准确率 | **50.776%** | 50.745% | 50.776% |
+| Pearson IC | **0.006203** | 0.003741 | 0.006203 |
+| Spearman IC | **0.004732** | 0.002480 | 0.004732 |
+
+`max_delta_step=1` 的误差只改善约 `0.00001`，相关性和方向下降；`3` 与基线逐点相同。均否决。
+
+### 2026-10-30 · raw close-return 标签复核（否决）
+
+依据：金融收益建模通常区分原始 close-to-close return 与波动率标准化收益；历史台账中 raw 标签曾显示更好的幅度相关性，因此在当前 Python 3.11/XGBoost 3.2.0 环境按同一生产参数重新验证。比较各标签自身量纲下的零预测基线，不跨量纲比较 MAE。
+
+raw 标签 18,934 个外层样本：零预测 MAE/RMSE 为 `0.015555/0.023132`，模型为 `0.015634/0.023174`；方向准确率 `50.428%`，Pearson `0.005409`，Spearman `-0.008232`。模型误差高于零预测，且方向/秩相关没有超过当前 volnorm 基线，raw 不进入生产。
+
+### 2026-10-30 · XGBoost `base_score` 0/0.05（均否决）
+
+依据：XGBoost 官方参数文档将 `base_score` 定义为模型初始预测/截距；当前 volnorm 训练标签全样本均值约 `0.0433`，测试显式 0 与均值近似值 0.05 是否能减少前期树的无效修正：
+https://xgboost.readthedocs.io/en/stable/parameter.html
+
+| 指标 | 默认自动截距 | `base_score=0` | `base_score=0.05` |
+|---|---:|---:|---:|
+| MAE | **0.846672** | 0.846833 | 0.846666 |
+| RMSE | **1.237897** | 1.238217 | 1.238134 |
+| 方向准确率 | **50.776%** | 50.137% | 50.702% |
+| Pearson IC | **0.006203** | 0.001136 | 0.004472 |
+| Spearman IC | **0.004732** | -0.014514 | 0.007265 |
+
+`base_score=0.05` 的 MAE 仅少 `0.000006`，但 RMSE、方向和 Pearson 仍变差；两种显式初始化均否决。
+
+### 2026-10-30 · XGBoost DART booster（否决）
+
+依据：XGBoost 官方参数文档将 `booster=dart` 定义为带 dropout 的树集成；训练时随机丢弃已有树，目的是降低树之间的相关性和过拟合：
+https://xgboost.readthedocs.io/en/stable/parameter.html
+
+当前 XGBoost 3.2.0 的 sklearn 构造器不接受 `rate_drop`、`skip_drop`、`one_drop` 这些 DART 专属参数，项目的严格参数校验因此拒绝了带这些参数的命令；随后只测试当前库支持且可复现的 `booster=dart`，固定其他生产参数和 18,934 个共同样本。
+
+| 指标 | gbtree 基线 | DART |
+|---|---:|---:|
+| pooled MAE | **0.846672** | 0.846842 |
+| pooled RMSE | **1.237897** | 1.237926 |
+| 方向准确率 | **50.776%** | 50.671% |
+| Pearson IC | **0.006203** | 0.005545 |
+| Spearman IC | **0.004732** | 0.003834 |
+
+DART 在当前数据和版本下没有改善，候选否决，不修改生产 booster 或参数。
+
+### 2026-10-30 · XGBoost `colsample_bynode` 0.5/0.8（均否决）
+
+依据：XGBoost 官方参数文档说明 `colsample_bynode` 在每个树节点重新采样特征；它与当前 `colsample_bytree=0.8` 的整棵树采样不同，可作为额外的特征共适应正则化：
+https://xgboost.readthedocs.io/en/stable/parameter.html
+
+固定当前模型、标签、近期权重、验证校准和三折 purged walk-forward，比较 18,934 个共同样本：
+
+| 指标 | 基线 | `bynode=0.5` | `bynode=0.8` |
+|---|---:|---:|---:|
+| pooled MAE | **0.846672** | 0.846526 | 0.847060 |
+| pooled RMSE | **1.237897** | 1.238154 | 1.238126 |
+| 方向准确率 | **50.776%** | 50.739% | 50.718% |
+| Pearson IC | 0.006203 | -0.006226 | **0.007308** |
+| Spearman IC | 0.004732 | -0.002476 | **0.005680** |
+
+`bynode=0.5` 仅改善 MAE，误差和 Pearson 恶化；`bynode=0.8` 的相关性略升但误差和方向下降。两者均否决。
+
+### 2026-10-30 · XGBoost `subsample` 0.6/0.9/0.95/1.0（均否决）
+
+依据：XGBoost 官方参数文档将 `subsample` 定义为每棵树使用的训练样本比例；低于 1 的值提供随机正则化，高值保留更多训练样本：
+https://xgboost.readthedocs.io/en/stable/parameter.html
+
+固定当前生产参数、特征、标签、近期权重和三折 purged walk-forward，比较 18,934 个共同样本：
+
+| 指标 | 基线 0.8 | 0.6 | 0.9 | 0.95 | 1.0 |
+|---|---:|---:|---:|---:|---:|
+| pooled MAE | **0.846672** | 0.847544 | 0.846917 | 0.846750 | 0.846723 |
+| pooled RMSE | **1.237897** | 1.238565 | 1.238066 | 1.237521 | **1.237479** |
+| 方向准确率 | **50.776%** | 50.729% | 50.629% | 50.586% | 50.555% |
+| Pearson IC | 0.006203 | 0.004708 | 0.005091 | **0.012330** | 0.011465 |
+| Spearman IC | 0.004732 | 0.005538 | 0.006351 | **0.010876** | 0.005770 |
+
+`0.95/1.0` 的连续误差和相关性改善伴随方向准确率下降（最多 `0.222` 个百分点），`0.6/0.9` 没有改善。由于生产策略使用预测符号决定方向，不能把方向恶化换成 RMSE 小幅改善；所有候选否决。
+
+### 2026-10-30 · 校准指标模式一致性修复与复核
+
+依据：模型选择必须在内层时间验证集上使用声明的目标指标；选出的后处理参数必须在外层预测阶段实际应用。代码审计发现 standalone `validation_mae` 和 `validation_spearman` 分支会选择幂指数，但 `predict()` 只识别 `validation_grid`，导致这两种历史实验的指数被静默忽略。
+
+修复 `StandaloneRegressor.predict()` 使三种校准模式一致，并增加持久化/预测合同测试。修复后重跑当前三折实验（18,934 个共同样本）：
+
+| 校准选择指标 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 生产 MSE `validation_grid` | **0.846672** | **1.237897** | 50.776% | 0.006203 | 0.004732 |
+| 内层 MAE `validation_mae` | 0.846814 | 1.237970 | 50.776% | 0.001842 | -0.008040 |
+| 内层 Spearman `validation_spearman` | 0.859503 | 1.244668 | 50.776% | 0.011327 | -0.011017 |
+
+修复消除了实验路径的逻辑错误，但两种替代验证目标均不提升当前生产预测能力；生产仍使用 MSE 幂校准，不改变 identifier。
+
+### 2026-10-30 · XGBoost split `gamma` 0.05/0.2（无效候选）
+
+依据：XGBoost 官方参数文档定义 `gamma`（`min_split_loss`）为继续分裂所需的最小损失下降；正值可提高树分裂门槛，抑制收益噪声导致的弱分裂：
+https://xgboost.readthedocs.io/en/stable/parameter.html
+
+固定当前 XGBoost 生产参数和相同三折 purged walk-forward，仅将 `gamma` 设为 `0.05`、`0.2`，在当前 Python 3.11/XGBoost 3.2.0 环境评估。两候选的 18,934 个外层预测与默认 `gamma=0` **逐点完全相同**，pooled 指标也完全相同（MAE `0.846672`、RMSE `1.237897`、方向 `50.776%`、Pearson `0.006203`、Spearman `0.004732`）。门槛没有改变当前浅树的已选分裂，因此不产生模型差异；候选不进入配置。
+
 ## 2026-10-16 · OOS model candidates (all rejected)
 
 验证口径：24 个固定 pair；2025-09-10 至 2026-10-01；FreqAI 365 天训练窗、7 天滚动重训；`label=volnorm`、`label_period_candles=3`、手续费 0.05%；只比较共同有效预测和冻结交易逻辑下的回测。生产 `config.json` 未改。

@@ -46,6 +46,31 @@ def test_standalone_and_freqai_share_estimator_constructor(name):
     assert standalone.estimator.get_params() == common.get_params()
 
 
+@pytest.mark.parametrize("mode", ["validation_grid", "validation_mae", "validation_spearman"])
+def test_prediction_power_calibration_is_applied_after_validation_selection(mode):
+    class FixedEstimator:
+        def get_params(self):
+            return {}
+
+        def fit(self, X, y, **kwargs):
+            return self
+
+        def predict(self, X):
+            return np.array([-0.2, -0.05, 0.1, 0.4])[: len(X)]
+
+    from quant.models.standalone import StandaloneRegressor
+
+    X = pd.DataFrame({"%x": range(4)})
+    y = pd.Series([-0.5, -0.1, 0.05, 0.8])
+    model = StandaloneRegressor(FixedEstimator(), "xgboost", mode)
+    model.fit(X.iloc[:2], y.iloc[:2], X_valid=X.iloc[2:], y_valid=y.iloc[2:])
+    raw = np.array([-0.2, -0.05])
+    expected = np.sign(raw) * np.abs(raw) ** model.selected_power
+
+    assert model.selected_power != 1.0
+    np.testing.assert_allclose(model.predict(X.iloc[:2]), expected)
+
+
 @pytest.mark.parametrize(
     "method", ["fixed_holdout", "expanding_window", "rolling_window", "purged_walk_forward"]
 )
