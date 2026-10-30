@@ -170,6 +170,19 @@ def test_switching_estimators_drops_incompatible_parameters():
     assert "alpha" not in config.model.params
 
 
+def test_xgboost_quantile_alpha_is_allowed_only_for_quantile_objective():
+    from quant.models import create_estimator
+
+    model = create_estimator(
+        "xgboost",
+        {"objective": "reg:quantileerror", "quantile_alpha": 0.5},
+        seed=42,
+    )
+    assert model.get_params()["quantile_alpha"] == 0.5
+    with pytest.raises(ConfigurationError, match="quantile_alpha"):
+        create_estimator("xgboost", {"quantile_alpha": 0.5}, seed=42)
+
+
 @pytest.mark.parametrize("model", ["ridge", "xgboost"])
 def test_unknown_model_parameters_fail_before_training(model):
     from quant.models import create_regressor

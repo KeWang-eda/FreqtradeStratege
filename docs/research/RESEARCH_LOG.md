@@ -66,6 +66,42 @@ MAE 的极小改善没有伴随 RMSE/相关性改善，故扩展网格否决；�
 
 方向准确率只有极小上升，MAE/RMSE 和相关性均未改善，且 pair 间不一致。新增代码已撤回，候选否决，不进入生产配置。
 
+### 2026-10-30 · inner-validation 仿射幅度校准（否决）
+
+依据：scikit-learn calibration 的一般原则是校准参数必须仅用未参与拟合的验证集估计；本候选在每个 inner validation 上拟合 `target = intercept + slope * raw_prediction`，外层只应用已冻结的系数：
+https://scikit-learn.org/stable/modules/calibration.html
+
+固定当前 XGBoost、近期权重、幂校准、标签和三折 purged walk-forward，18,934 个共同样本结果：
+
+| 指标 | 生产幂校准 | 仿射校准 |
+|---|---:|---:|
+| MAE | **0.846672** | 0.848649 |
+| RMSE | **1.237897** | 1.240487 |
+| 方向准确率 | **50.776%** | 50.745% |
+| Pearson IC | **0.006203** | 0.002682 |
+| Spearman IC | 0.004732 | **0.011325** |
+
+Spearman 的 pooled 上升没有在逐折误差和方向上保持，仿射校准恶化 MAE/RMSE；候选代码已撤回，不进入生产。
+
+### 2026-10-30 · XGBoost `reg:quantileerror` alpha=0.5（否决；修复参数兼容）
+
+依据：XGBoost 官方参数文档将 `reg:quantileerror` 定义为 pinball/quantile loss，`quantile_alpha` 指定目标分位数；该目标允许有符号标签，适合检验重尾收益对极端值的稳健性：
+https://xgboost.readthedocs.io/en/stable/parameter.html
+
+当前 Python 3.11/XGBoost 3.2.0 先通过小型训练验证目标可运行，再用生产参数和三折 purged walk-forward 比较 18,934 个共同样本：
+
+| 指标 | squared-error 基线 | quantile alpha=0.5 |
+|---|---:|---:|
+| MAE | 0.846672 | **0.845750** |
+| RMSE | **1.237897** | 1.238479 |
+| 方向准确率 | 50.776% | **50.887%** |
+| Pearson IC | **0.006203** | -0.005639 |
+| Spearman IC | 0.004732 | **0.005765** |
+
+quantile 目标的 MAE/方向/Spearman 小幅改善，但 RMSE 和 Pearson 恶化，不能接入生产连续幅度预测。
+
+实验还发现 XGBoost 3.2.0 的 sklearn 构造器虽然支持 `quantile_alpha`，项目 factory 原先因 `get_params()` 未列出该字段而错误拒绝。已增加严格兼容逻辑：只有 `objective=reg:quantileerror` 才允许该参数，并补充配置测试；生产目标和 identifier 不变。
+
 ### 2026-10-30 · 回归器与方向分类器线性组合（否决）
 
 依据：Bates & Granger, “The Combination of Forecasts,” *Operational Research Quarterly* 20(4), 1969, pp. 451–468, DOI: `10.1057/jors.1969.103`。线性组合不同预测器可在误差不完全相关时降低预测方差；本轮以预先固定的方向模型权重 `0.1`、`0.2`、`0.3`、`0.5` 做敏感度测试，不以外层结果拟合组合权重。组合输入分别是当前生产 XGBoost 回归器和项目已有 `xgboost_direction`（概率再映射至训练折条件收益均值）。
@@ -264,6 +300,39 @@ https://xgboost.readthedocs.io/en/stable/parameter.html
 | 内层 Spearman `validation_spearman` | 0.859503 | 1.244668 | 50.776% | 0.011327 | -0.011017 |
 
 修复消除了实验路径的逻辑错误，但两种替代验证目标均不提升当前生产预测能力；生产仍使用 MSE 幂校准，不改变 identifier。
+
+### 2026-10-30 · 三币 pooled panel XGBoost（否决）
+
+依据：Gu, Kelly & Xiu, “Empirical Asset Pricing via Machine Learning,” *Review of Financial Studies* 33(5), 2020, pp. 2223–2273, DOI: `10.1093/rfs/hhy282`。该研究说明在资产定价中可用共享的非线性模型从横截面资产共同学习；本轮将逐币独立 XGBoost 改为 BTC/ETH/BNB 三币共享一个模型，并按全局时间严格切分、内层标签区间 purge。另测试静态 pair one-hot 作为面板固定效应，未使用未来数据。
+
+当前 Python 3.11/XGBoost 3.2.0，固定浅树、`reg_lambda=5`、近期权重 `0.9`、验证幂校准和三折 purged walk-forward。三种模型在相同 31,296 个 `(pair, candle_timestamp, fold_id)` 样本上：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 逐币独立基线 | 0.851229 | 1.229874 | **51.674%** | -0.011160 | **0.004682** |
+| pooled，无 pair ID | **0.848564** | **1.225626** | 50.962% | -0.003137 | 0.003882 |
+| pooled + pair one-hot | 0.848779 | **1.225600** | 50.952% | -0.000987 | 0.004113 |
+| 零预测 | **0.844799** | **1.222929** | — | — | — |
+
+共享模型改善连续误差但牺牲约 `0.71` 个百分点方向准确率，且 RMSE 仍劣于零预测；pair one-hot 没有修复方向损失。由于策略使用符号和横截面选择，pooled panel 候选否决，不修改生产逐币训练逻辑。
+
+为避免三币样本量和资产异质性造成误判，进一步使用生产白名单的全部 72 个 4h 行情文件复核。由于最晚上市的 SUN 从 `2024-08-22` 才开始，预先将共同开发起点设为全局 `min_train_size=10300` 个 4h 时间戳，确保每个 pair 在首次外层测试前都有训练样本；该边界未根据预测结果选择。166,763 个共同样本上的结果：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | 时点横截面 Spearman | Top-1 选择增益 |
+|---|---:|---:|---:|---:|---:|---:|
+| 逐币独立基线 | 0.860064 | 1.208377 | **50.220%** | 0.011722 | **+0.013465** | **+0.041656** |
+| pooled，无 pair ID | 0.859882 | 1.207156 | 50.137% | **0.032339** | -0.027010 | -0.002908 |
+| pooled + pair one-hot | **0.859691** | **1.206975** | 50.144% | **0.033765** | -0.027037 | -0.005973 |
+| 零预测 | 0.858866 | 1.207444 | — | — | — |
+
+共享模型的 RMSE 只改善 `0.00140`，但横截面秩相关从正变负，Top-1 选择增益也从正变负；加入静态 pair ID 无法修复。三币和全 72 币证据一致表明，当前生产目标需要保留逐币训练并单独解决横截面信号。pooled 候选全部否决，不修改生产代码或 identifier。
+
+### 2026-10-30 · standalone RobustScaler（无效候选）
+
+依据：scikit-learn 官方文档将 `RobustScaler` 定义为用训练样本中位数和 IQR 缩放特征，较不受异常值影响：
+https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.RobustScaler.html
+
+临时将 standalone 训练折内的 `StandardScaler` 换为 `RobustScaler`，验证集和外层只使用训练折拟合的变换；固定当前 XGBoost、标签和三折 purged walk-forward。RobustScaler 与 StandardScaler 产生的 18,934 个预测逐点完全相同（MAE `0.846672`、RMSE `1.237897`、方向 `50.776%`、Pearson `0.006203`、Spearman `0.004732`）。树模型的排序分裂对单调缩放不敏感，候选无效，支持代码已撤回。
 
 ### 2026-10-30 · XGBoost split `gamma` 0.05/0.2（无效候选）
 

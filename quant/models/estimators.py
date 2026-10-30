@@ -35,6 +35,7 @@ def create_estimator(
         raise ConfigurationError(f"Unregistered estimator: {name}")
 
     supplied = dict(params or {})
+    quantile_alpha = supplied.pop("quantile_alpha", None)
     supplied.pop("weight_factor", None)
     supplied.pop("prediction_power", None)
     if (
@@ -56,4 +57,11 @@ def create_estimator(
         raise ConfigurationError(
             f"Unknown model parameters for {name}: {sorted(unknown)}"
         )
-    return constructor(**parameters)
+    estimator = constructor(**parameters)
+    if quantile_alpha is not None:
+        if name != "xgboost" or parameters.get("objective") != "reg:quantileerror":
+            raise ConfigurationError(
+                "quantile_alpha requires xgboost objective='reg:quantileerror'"
+            )
+        estimator.set_params(quantile_alpha=float(quantile_alpha))
+    return estimator
