@@ -1,0 +1,11 @@
+research:
+  model:
+    backend: standalone
+    name: extra_trees
+    params:
+      n_estimators: 300
+      max_depth: 4
+      min_samples_leaf: 20
+      max_features: 0.8
+      bootstrap: false
+      n_jobs: 1

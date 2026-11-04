@@ -43,6 +43,10 @@ def create_estimator(
         from sklearn.ensemble import HistGradientBoostingRegressor
 
         constructor = HistGradientBoostingRegressor
+    elif name == "extra_trees":
+        from sklearn.ensemble import ExtraTreesRegressor
+
+        constructor = ExtraTreesRegressor
     else:
         raise ConfigurationError(f"Unregistered estimator: {name}")
 
