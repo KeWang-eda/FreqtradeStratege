@@ -14,6 +14,7 @@ research:
       blend_weight_by_pair:
         BTC/USDT:USDT: 0.1
         ETH/USDT:USDT: 0.3
+        BNB/USDT:USDT: 0.2
       prediction_power: validation_grid
       eval_metric: rmse
       early_stopping_rounds: 30
