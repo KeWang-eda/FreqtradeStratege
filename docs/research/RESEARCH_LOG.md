@@ -2742,3 +2742,11 @@ Q1（2025-01~03）曾显示严格规格劣于保留持仓阈值：`10.48% vs 21.
 - `config.json`：删除 `entry_threshold` / `exit_threshold`。
 - 验证：`11 passed`，`py_compile` 通过，`git diff --check` 通过。
 
+### 2026-11-05 · RandomForest `max_features=1.0` 探索性留出复核（否决）
+
+依据：Breiman, “Random Forests”, Machine Learning 45 (2001)，以及 scikit-learn `RandomForestRegressor` 文档中对 `max_features` 随机特征子集的定义。候选使用与已有 RandomForest 复核相同的标签、特征、时间切分和生产正则化参数，仅将 `max_features` 固定为 `1.0`。
+
+本次工件 `/tmp/model-opt-holdout-rf-full/holdout-rf-full/metrics_prediction.json` 的 `final.overall`（4,456 个样本）为 MAE `0.856944`、RMSE `1.274416`、方向 `48.025%`、Pearson `0.069708`、Spearman `-0.020309`。此前 RandomForest 工件的对应结果为 MAE `0.857010`、RMSE `1.274789`、方向 `48.766%`、Pearson `0.066232`、Spearman `-0.025003`；生产 XGBoost 参考值为 MAE `0.852430`、RMSE `1.276145`、方向 `50.067%`、Pearson `0.035273`、Spearman `-0.012612`。
+
+候选只改善 RandomForest 自身的 RMSE 和 Pearson，仍恶化生产基线的 MAE、方向和 Spearman。该 `final` 区段此前已用于多轮参数探索，属于探索性证据，不能证明时间外泛化；不进入生产配置。
+
