@@ -314,6 +314,19 @@ L1 候选的方向准确率和 Pearson 有局部提升，但 MAE、RMSE 和 Spea
 
 关闭近期权重略微改善方向和 Pearson，但 MAE、RMSE、Spearman 均恶化，不能进入生产。
 
+### 2026-11-04 · Elastic Net 线性回归器（否决）
+
+依据：Zou & Hastie, “Regularization and Variable Selection via the Elastic Net”, *Journal of the Royal Statistical Society B* 67(2), 2005, DOI: 10.1111/j.1467-9868.2005.00503.x。Elastic Net 结合 L1 与 L2 正则化，适用于相关特征组；本轮以 `alpha=0.1`、`l1_ratio=0.1` 作为预先固定研究候选。
+
+固定相同数据、`volnorm` 标签、特征、近期权重、三折 purged walk-forward 和验证幂校准，比较 18,934 个共同样本：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 当前 XGBoost | **0.846672** | **1.237897** | **50.776%** | 0.006203 | **0.004732** |
+| Elastic Net | 0.850954 | 1.237956 | 49.799% | **0.017482** | -0.013741 |
+
+Elastic Net 的方向和排序明显恶化，不能替换生产模型。
+
 ### 2026-10-30 · 回归器与方向分类器线性组合（否决）
 
 依据：Bates & Granger, “The Combination of Forecasts,” *Operational Research Quarterly* 20(4), 1969, pp. 451–468, DOI: `10.1057/jors.1969.103`。线性组合不同预测器可在误差不完全相关时降低预测方差；本轮以预先固定的方向模型权重 `0.1`、`0.2`、`0.3`、`0.5` 做敏感度测试，不以外层结果拟合组合权重。组合输入分别是当前生产 XGBoost 回归器和项目已有 `xgboost_direction`（概率再映射至训练折条件收益均值）。

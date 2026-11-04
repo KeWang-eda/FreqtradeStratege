@@ -1,0 +1,8 @@
+research:
+  model:
+    backend: standalone
+    name: elastic_net
+    params:
+      alpha: 0.1
+      l1_ratio: 0.1
+      max_iter: 5000

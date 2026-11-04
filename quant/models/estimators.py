@@ -23,6 +23,10 @@ def create_estimator(
         from sklearn.linear_model import Ridge
 
         constructor = Ridge
+    elif name == "elastic_net":
+        from sklearn.linear_model import ElasticNet
+
+        constructor = ElasticNet
     elif name == "xgboost":
         from xgboost import XGBRegressor
 
