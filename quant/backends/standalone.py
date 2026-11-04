@@ -36,7 +36,10 @@ class StandaloneBackend:
             if config.model.name in {"xgboost", "xgboost_direction"} and config.model.params.get(
                 "early_stopping_rounds"
             ):
-                split = max(1, int(len(train) * 0.8))
+                validation_fraction = float(config.validation.inner_validation_size)
+                if not 0.0 < validation_fraction < 1.0:
+                    raise DataContractError("validation.test_size must be in (0, 1)")
+                split = max(1, int(len(train) * (1.0 - validation_fraction)))
                 valid = train[split:]
                 valid_start = metadata.iloc[valid]["available_at"].min()
                 inner = train[:split]

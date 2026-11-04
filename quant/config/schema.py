@@ -57,6 +57,7 @@ class ValidationConfig:
     method: str = "purged_walk_forward"
     n_splits: int = 3
     test_size: float = 0.2
+    inner_validation_size: float = 0.2
     min_train_size: int | None = None
     train_window_size: int | None = None
     purge_candles: int | None = None
@@ -73,7 +74,7 @@ class ValidationConfig:
         }:
             raise ConfigurationError(f"Unknown split method: {self.method}")
         positive_int(self.n_splits, "n_splits", 1 if self.method == "fixed_holdout" else 2)
-        for name in ("test_size", "final_holdout_fraction"):
+        for name in ("test_size", "inner_validation_size", "final_holdout_fraction"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not 0 < value < 1:
                 raise ConfigurationError(f"{name} must be in (0, 1)")
