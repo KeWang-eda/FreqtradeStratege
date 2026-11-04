@@ -35,6 +35,10 @@ def create_estimator(
         from lightgbm import LGBMRegressor
 
         constructor = LGBMRegressor
+    elif name == "catboost":
+        from catboost import CatBoostRegressor
+
+        constructor = CatBoostRegressor
     else:
         raise ConfigurationError(f"Unregistered estimator: {name}")
 
@@ -54,9 +58,17 @@ def create_estimator(
 
     parameters = dict(defaults or {})
     if seed is not None:
-        parameters["random_state"] = seed
+        parameters["random_seed" if name == "catboost" else "random_state"] = seed
     parameters.update(supplied)
-    unknown = set(parameters) - set(constructor().get_params())
+    supported = set(constructor().get_params())
+    if name == "catboost":
+        # CatBoost exposes only explicitly set parameters through get_params().
+        supported |= {
+            "iterations", "depth", "learning_rate", "l2_leaf_reg", "random_seed",
+            "verbose", "thread_count", "bootstrap_type", "subsample",
+            "rsm", "random_strength", "loss_function",
+        }
+    unknown = set(parameters) - supported
     if unknown:
         raise ConfigurationError(
             f"Unknown model parameters for {name}: {sorted(unknown)}"

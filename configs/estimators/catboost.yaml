@@ -1,0 +1,11 @@
+research:
+  model:
+    backend: standalone
+    name: catboost
+    params:
+      iterations: 300
+      depth: 4
+      learning_rate: 0.03
+      l2_leaf_reg: 5.0
+      loss_function: RMSE
+      verbose: false
