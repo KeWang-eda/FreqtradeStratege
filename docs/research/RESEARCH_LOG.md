@@ -5,6 +5,17 @@
 每次改动记录：改了什么、依据来源（论文/文档/仓库/博客）、实测数据、结论。
 原则：**先有依据再改，改完必须回测，回测结果必须与同窗口基线对照。**
 
+### 2026-11-05 · RandomForest 最终时间留出复核（否决）
+
+依据：Breiman, “Random Forests”, *Machine Learning* 45, 2001。随机森林通过 Bootstrap 和随机特征子集降低树集成方差；本轮接入研究工厂并使用 300 棵树、`max_depth=6`、`min_samples_leaf=20`、`max_features=0.8`，在最终留出与生产 XGBoost 比较：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 生产 XGBoost | **0.852430** | 1.276145 | **50.067%** | 0.035273 | **-0.012612** |
+| RandomForest | 0.857010 | **1.274789** | 48.766% | **0.066232** | -0.025004 |
+
+RandomForest 仅 RMSE 和 Pearson 改善，MAE、方向及 Spearman 恶化，不进入生产。
+
 ### 2026-11-05 · XGBoost `min_child_weight=2`（否决）
 
 依据：XGBoost 官方参数文档将 `min_child_weight` 定义为子节点继续分裂所需的最小二阶梯度和，可抑制小样本噪声分裂。本轮固定完整生产参数（`reg_lambda=5`、`weight_factor=0.9`、`prediction_power=validation_grid`），使用三折 purged walk-forward 比较 18,934 个共同样本。

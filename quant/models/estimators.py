@@ -51,6 +51,10 @@ def create_estimator(
         from sklearn.ensemble import ExtraTreesRegressor
 
         constructor = ExtraTreesRegressor
+    elif name == "random_forest":
+        from sklearn.ensemble import RandomForestRegressor
+
+        constructor = RandomForestRegressor
     else:
         raise ConfigurationError(f"Unregistered estimator: {name}")
 

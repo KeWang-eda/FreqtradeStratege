@@ -1,0 +1,11 @@
+research:
+  model:
+    backend: standalone
+    name: random_forest
+    params:
+      n_estimators: 300
+      max_depth: 6
+      min_samples_leaf: 20
+      max_features: 0.8
+      bootstrap: true
+      n_jobs: 1

@@ -99,7 +99,7 @@ class ModelConfig:
         if not isinstance(self.backend, str) or self.backend not in {"standalone", "freqai"}:
             raise ConfigurationError(f"Unknown backend: {self.backend}")
         names = (
-            {"ridge", "elastic_net", "xgboost", "xgboost_direction", "lightgbm", "catboost", "hist_gradient_boosting", "extra_trees"}
+            {"ridge", "elastic_net", "xgboost", "xgboost_direction", "lightgbm", "catboost", "hist_gradient_boosting", "extra_trees", "random_forest"}
             if self.backend == "standalone"
             else {"XGBoostRegressorES", "MomentumRidgeRegressor"}
         )
