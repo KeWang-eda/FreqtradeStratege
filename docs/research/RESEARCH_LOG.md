@@ -5,6 +5,17 @@
 每次改动记录：改了什么、依据来源（论文/文档/仓库/博客）、实测数据、结论。
 原则：**先有依据再改，改完必须回测，回测结果必须与同窗口基线对照。**
 
+### 2026-11-05 · XGBoost `min_child_weight=2`（否决）
+
+依据：XGBoost 官方参数文档将 `min_child_weight` 定义为子节点继续分裂所需的最小二阶梯度和，可抑制小样本噪声分裂。本轮固定完整生产参数（`reg_lambda=5`、`weight_factor=0.9`、`prediction_power=validation_grid`），使用三折 purged walk-forward 比较 18,934 个共同样本。
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 当前 `min_child_weight=1` | **0.846672** | **1.237897** | 50.776% | **0.006203** | 0.004732 |
+| `min_child_weight=2` | 0.846690 | 1.237924 | **50.792%** | 0.005738 | **0.004827** |
+
+候选仅有微小浮动，MAE、RMSE、Pearson 没有提升，不进入生产。
+
 ### 2026-10-30 · XGBoost `min_child_weight` 开发筛选（否决）
 
 依据：XGBoost 官方参数文档将 `min_child_weight` 定义为子节点继续分裂所需的最小二阶梯度和；提高它可以抑制由少量样本支持的分裂，作为与已有 `max_depth=2`、`reg_lambda=5` 不同的正则化候选：
