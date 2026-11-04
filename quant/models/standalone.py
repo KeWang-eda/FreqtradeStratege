@@ -26,6 +26,7 @@ class StandaloneRegressor:
         self.constant_probability: float | None = None
         self.blend_estimator = blend_estimator
         self.blend_weight = float(blend_weight)
+        self.blend_selected_power = 1.0
 
     def fit(
         self,
@@ -39,6 +40,7 @@ class StandaloneRegressor:
         """Fit; early stopping consumes only an inner chronological validation."""
         self.columns = tuple(X.columns)
         self.selected_power = 1.0
+        self.blend_selected_power = 1.0
         kwargs = {}
         directional = self.name == "xgboost_direction"
         self.constant_probability = None
@@ -84,6 +86,14 @@ class StandaloneRegressor:
                     key=lambda power: self._calibration_score(actual, raw, power),
                 )
             )
+            if self.blend_estimator is not None:
+                blend_raw = np.asarray(self.blend_estimator.predict(X_valid), dtype=float)
+                self.blend_selected_power = float(
+                    min(
+                        candidates,
+                        key=lambda power: self._calibration_score(actual, blend_raw, power),
+                    )
+                )
 
     def _calibration_score(self, actual: np.ndarray, raw: np.ndarray, power: float) -> float:
         calibrated = np.sign(raw) * np.abs(raw) ** power
@@ -108,15 +118,21 @@ class StandaloneRegressor:
                 - (1.0 - probability) * self.negative_return_mean
             )
         prediction = np.asarray(self.estimator.predict(X), dtype=float).reshape(-1)
-        if self.blend_estimator is not None:
-            secondary = np.asarray(self.blend_estimator.predict(X), dtype=float).reshape(-1)
-            prediction = (1.0 - self.blend_weight) * prediction + self.blend_weight * secondary
         if self.prediction_power in {
             "validation_grid",
             "validation_mae",
             "validation_spearman",
         }:
             prediction = np.sign(prediction) * np.abs(prediction) ** self.selected_power
+        if self.blend_estimator is not None:
+            secondary = np.asarray(self.blend_estimator.predict(X), dtype=float).reshape(-1)
+            if self.prediction_power in {
+                "validation_grid",
+                "validation_mae",
+                "validation_spearman",
+            }:
+                secondary = np.sign(secondary) * np.abs(secondary) ** self.blend_selected_power
+            prediction = (1.0 - self.blend_weight) * prediction + self.blend_weight * secondary
         return prediction
 
     def save(self, path: str | Path) -> None:
