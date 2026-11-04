@@ -331,6 +331,12 @@ L1 候选的方向准确率和 Pearson 有局部提升，但 MAE、RMSE 和 Spea
 
 Elastic Net 的方向和排序明显恶化，不能替换生产模型。
 
+### 2026-11-05 · XGBoost `gamma=0.01`（无效候选）
+
+依据：XGBoost 官方参数文档将 `gamma`/`min_split_loss` 定义为继续分裂所需的最小损失下降，用于抑制噪声分裂：https://xgboost.readthedocs.io/en/stable/parameter.html 。在此前 `gamma=0.05/0.2` 结果基础上，本轮用完整生产参数（`reg_lambda=5`、`weight_factor=0.9`、`prediction_power=validation_grid`）测试更温和的 0.01，三折 purged walk-forward 比较 18,934 个共同样本。
+
+候选与生产基线逐点完全相同：MAE `0.846672`、RMSE `1.237897`、方向 `50.776%`、Pearson `0.006203`、Spearman `0.004732`。该阈值没有改变任何分裂，不进入配置。
+
 ### 2026-10-30 · 回归器与方向分类器线性组合（否决）
 
 依据：Bates & Granger, “The Combination of Forecasts,” *Operational Research Quarterly* 20(4), 1969, pp. 451–468, DOI: `10.1057/jors.1969.103`。线性组合不同预测器可在误差不完全相关时降低预测方差；本轮以预先固定的方向模型权重 `0.1`、`0.2`、`0.3`、`0.5` 做敏感度测试，不以外层结果拟合组合权重。组合输入分别是当前生产 XGBoost 回归器和项目已有 `xgboost_direction`（概率再映射至训练折条件收益均值）。
