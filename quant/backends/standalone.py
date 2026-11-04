@@ -57,7 +57,7 @@ class StandaloneBackend:
                 )
             preprocessing = fit_preprocessing(dataset.X.iloc[train])
             X_train = preprocessing.transform(dataset.X.iloc[train])
-            model = create_regressor(config.model, config.seed)
+            model = create_regressor(config.model, config.seed, pair=pair)
             weight_factor = config.model.params.get("weight_factor")
             sample_weight = None
             if weight_factor is not None:

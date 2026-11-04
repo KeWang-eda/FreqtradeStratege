@@ -11,6 +11,9 @@ research:
       blend_objective: reg:quantileerror
       blend_quantile_alpha: 0.5
       blend_weight: 0.2
+      blend_weight_by_pair:
+        BTC/USDT:USDT: 0.1
+        ETH/USDT:USDT: 0.3
       prediction_power: validation_grid
       eval_metric: rmse
       early_stopping_rounds: 30

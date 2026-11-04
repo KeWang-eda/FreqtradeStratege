@@ -7,7 +7,7 @@ from .estimators import create_estimator
 from .standalone import StandaloneRegressor
 
 
-def create_regressor(config: ModelConfig, seed: int = 42) -> StandaloneRegressor:
+def create_regressor(config: ModelConfig, seed: int = 42, pair: str | None = None) -> StandaloneRegressor:
     """Build a supported standalone estimator; never dynamically import names."""
     if config.backend != "standalone":
         raise UnsupportedCapabilityError("FreqAI estimators must use the FreqAI lifecycle adapter")
@@ -23,11 +23,14 @@ def create_regressor(config: ModelConfig, seed: int = 42) -> StandaloneRegressor
     prediction_power = config.params.get("prediction_power", "identity")
     blend_objective = config.params.get("blend_objective")
     blend_weight = float(config.params.get("blend_weight", 0.0))
+    pair_weights = config.params.get("blend_weight_by_pair", {})
+    if pair is not None and pair in pair_weights:
+        blend_weight = float(pair_weights[pair])
     blend_quantile_alpha = config.params.get("blend_quantile_alpha")
     if blend_objective is not None:
         if config.name != "xgboost" or not 0.0 < blend_weight < 1.0:
             raise ConfigurationError("blend_objective requires xgboost and blend_weight in (0, 1)")
-    parameters = {k: v for k, v in config.params.items() if k not in {"blend_objective", "blend_weight", "blend_quantile_alpha"}}
+    parameters = {k: v for k, v in config.params.items() if k not in {"blend_objective", "blend_weight", "blend_weight_by_pair", "blend_quantile_alpha"}}
     estimator = create_estimator(config.name, parameters, seed=seed, defaults=defaults)
     blend_estimator = None
     if blend_objective is not None:
