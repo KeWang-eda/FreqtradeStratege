@@ -210,6 +210,18 @@ ExtraTrees 仅 RMSE 有极小改善，MAE、方向和 Spearman 明显恶化，�
 
 深度 1 的所有主要预测指标均恶化，不进入生产。
 
+### 2026-11-04 · XGBoost L1 叶权重正则化 `reg_alpha`（否决）
+
+依据：XGBoost 官方参数文档将 `reg_alpha` 定义为叶权重的 L1 正则项，可诱导稀疏解并抑制过拟合：https://xgboost.readthedocs.io/en/stable/parameter.html 。固定生产模型的其余参数，只测试预先设定的 `reg_alpha=0.1` 和 `0.5`，使用相同数据、`volnorm` 标签、近期权重、幂校准和三折 purged walk-forward；每个候选有 18,934 个共同样本。
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 当前 `reg_alpha=0` | **0.846672** | **1.237897** | 50.776% | 0.006203 | **0.004732** |
+| `reg_alpha=0.1` | 0.852099 | 1.240144 | **50.871%** | **0.012172** | -0.008862 |
+| `reg_alpha=0.5` | 0.852116 | 1.240193 | 50.908% | 0.012049 | -0.007673 |
+
+L1 候选的方向准确率和 Pearson 有局部提升，但 MAE、RMSE 和 Spearman 均恶化，不能进入生产。
+
 ### 2026-10-30 · 回归器与方向分类器线性组合（否决）
 
 依据：Bates & Granger, “The Combination of Forecasts,” *Operational Research Quarterly* 20(4), 1969, pp. 451–468, DOI: `10.1057/jors.1969.103`。线性组合不同预测器可在误差不完全相关时降低预测方差；本轮以预先固定的方向模型权重 `0.1`、`0.2`、`0.3`、`0.5` 做敏感度测试，不以外层结果拟合组合权重。组合输入分别是当前生产 XGBoost 回归器和项目已有 `xgboost_direction`（概率再映射至训练折条件收益均值）。
