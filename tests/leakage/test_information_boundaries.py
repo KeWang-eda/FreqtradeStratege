@@ -18,7 +18,7 @@ from quant.training.contracts import TrainingRequest
 from quant.validation import TimeSeriesSplitter
 
 
-@pytest.mark.parametrize("optional", [(), ("laguerre",), ("vwmacd",), ("tke",), ("vfi",), ("rmi",)])
+@pytest.mark.parametrize("optional", [(), ("laguerre",), ("vwmacd",), ("tke",), ("vfi",), ("rmi",), ("cyclical_time",)])
 def test_future_perturbation_does_not_change_historical_features(candles, optional):
     # Prefix equality exercises every enabled optional feature, too.
     complete = build_features(candles, enabled_features=optional)

@@ -171,6 +171,19 @@ CatBoost 的 Pearson IC 提高但 MAE、RMSE、方向和 Spearman 均恶化，�
 
 该候选整体误差、方向和排序均恶化，不能进入生产。
 
+### 2026-11-04 · 周期时间特征正弦/余弦编码（否决）
+
+依据：scikit-learn 官方“Time-related feature engineering”示例说明，小时、星期等周期变量应使用正弦/余弦映射，避免周期边界被错误表示为远距离；文档：https://scikit-learn.org/stable/auto_examples/applications/plot_cyclical_feature_engineering.html 。
+
+代码审查发现默认时间特征只有线性归一化的小时和星期数值。本轮新增可选 `cyclical_time`，仅计算已关闭蜡烛的 hour/day sin-cos，不改变原特征；固定生产 XGBoost、标签、数据和三折 purged walk-forward，比较 18,934 个共同样本：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 当前 XGBoost | **0.846672** | **1.237897** | **50.776%** | 0.006203 | **0.004732** |
+| + cyclical_time | 0.851543 | 1.238738 | 50.518% | **0.024763** | -0.006321 |
+
+周期编码提高 Pearson IC，但整体误差、方向和排序下降，因此不进入生产。
+
 ### 2026-10-30 · 回归器与方向分类器线性组合（否决）
 
 依据：Bates & Granger, “The Combination of Forecasts,” *Operational Research Quarterly* 20(4), 1969, pp. 451–468, DOI: `10.1057/jors.1969.103`。线性组合不同预测器可在误差不完全相关时降低预测方差；本轮以预先固定的方向模型权重 `0.1`、`0.2`、`0.3`、`0.5` 做敏感度测试，不以外层结果拟合组合权重。组合输入分别是当前生产 XGBoost 回归器和项目已有 `xgboost_direction`（概率再映射至训练折条件收益均值）。

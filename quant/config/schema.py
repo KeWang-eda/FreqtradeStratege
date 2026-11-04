@@ -5,7 +5,7 @@ from typing import Any, Mapping
 
 from quant.errors import ConfigurationError
 
-TECHNICAL_FEATURES = frozenset({"laguerre", "vwmacd", "tke", "vfi", "rmi"})
+TECHNICAL_FEATURES = frozenset({"laguerre", "vwmacd", "tke", "vfi", "rmi", "cyclical_time"})
 
 
 def validate_features(features: tuple[str, ...]) -> None:

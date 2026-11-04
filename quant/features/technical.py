@@ -17,6 +17,13 @@ def add_baseline_features(dataframe: pd.DataFrame, enabled_features: Iterable[st
     dataframe["%-volatility-24"] = returns.rolling(24).std()
     dataframe["%-hour"] = dataframe["date"].dt.hour / 23.0
     dataframe["%-day-of-week"] = dataframe["date"].dt.dayofweek / 6.0
+    if "cyclical_time" in names:
+        hour = dataframe["date"].dt.hour + dataframe["date"].dt.minute / 60.0
+        day = dataframe["date"].dt.dayofweek
+        dataframe["%-hour-sin"] = np.sin(2 * np.pi * hour / 24.0)
+        dataframe["%-hour-cos"] = np.cos(2 * np.pi * hour / 24.0)
+        dataframe["%-day-sin"] = np.sin(2 * np.pi * day / 7.0)
+        dataframe["%-day-cos"] = np.cos(2 * np.pi * day / 7.0)
     if names:
         import technical.indicators as indicators
 
