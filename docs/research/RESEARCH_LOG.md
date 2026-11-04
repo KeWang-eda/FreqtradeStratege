@@ -16,6 +16,17 @@
 
 RandomForest 仅 RMSE 和 Pearson 改善，MAE、方向及 Spearman 恶化，不进入生产。
 
+### 2026-11-05 · RandomForest `max_depth=4` 最终时间留出复核（否决）
+
+依据：Breiman 2001 随机森林理论；限制单树深度可降低集成方差。固定 300 棵树、Bootstrap、特征采样和 `min_samples_leaf=20`，将研究深度 6 改为 4，在相同最终留出比较：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| RandomForest 深度 6 | **0.857010** | 1.274789 | **48.766%** | **0.066232** | -0.025004 |
+| RandomForest 深度 4 | 0.855054 | **1.274393** | 48.564% | 0.065229 | -0.031089 |
+
+深度 4 只改善 MAE/RMSE，方向和排序恶化，且仍低于生产 XGBoost，不进入生产。
+
 ### 2026-11-05 · XGBoost `min_child_weight=2`（否决）
 
 依据：XGBoost 官方参数文档将 `min_child_weight` 定义为子节点继续分裂所需的最小二阶梯度和，可抑制小样本噪声分裂。本轮固定完整生产参数（`reg_lambda=5`、`weight_factor=0.9`、`prediction_power=validation_grid`），使用三折 purged walk-forward 比较 18,934 个共同样本。
