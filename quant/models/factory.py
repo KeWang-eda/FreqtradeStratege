@@ -24,6 +24,12 @@ def create_regressor(config: ModelConfig, seed: int = 42, pair: str | None = Non
     blend_objective = config.params.get("blend_objective")
     blend_weight = float(config.params.get("blend_weight", 0.0))
     pair_weights = config.params.get("blend_weight_by_pair", {})
+    if not isinstance(pair_weights, dict):
+        raise ConfigurationError("blend_weight_by_pair must be a mapping")
+    if any(not isinstance(k, str) or not k for k in pair_weights):
+        raise ConfigurationError("blend_weight_by_pair keys must be nonempty pair names")
+    if any(not 0.0 < float(v) < 1.0 for v in pair_weights.values()):
+        raise ConfigurationError("blend_weight_by_pair values must be in (0, 1)")
     if pair is not None and pair in pair_weights:
         blend_weight = float(pair_weights[pair])
     blend_quantile_alpha = config.params.get("blend_quantile_alpha")
