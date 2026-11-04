@@ -60,6 +60,17 @@
 
 ExtraTrees 在最终时间留出上所有主要预测指标均恶化，不进入生产。
 
+### 2026-11-05 · LightGBM 最终时间留出复核（否决）
+
+依据：Ke et al., “LightGBM: A Highly Efficient Gradient Boosting Decision Tree”, NeurIPS 2017，以及 LightGBM 官方文档。开发折已观察到候选落后，本轮在同一最终时间留出复核架构泛化：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 生产 XGBoost | **0.844875** | **1.192932** | 49.113% | **0.026837** | **0.012593** |
+| LightGBM | 0.869410 | 1.215170 | **49.620%** | 0.001551 | -0.011879 |
+
+LightGBM 最终留出误差和相关性明显恶化，不能替换生产 XGBoost。
+
 ### 2026-10-30 · XGBoost `min_child_weight` 开发筛选（否决）
 
 依据：XGBoost 官方参数文档将 `min_child_weight` 定义为子节点继续分裂所需的最小二阶梯度和；提高它可以抑制由少量样本支持的分裂，作为与已有 `max_depth=2`、`reg_lambda=5` 不同的正则化候选：
