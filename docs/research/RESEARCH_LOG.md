@@ -374,6 +374,19 @@ Elastic Net 的方向和排序明显恶化，不能替换生产模型。
 
 候选仅极小改善 RMSE 和相关性，MAE 与方向准确率恶化，未形成一致预测提升，不进入生产。
 
+### 2026-11-05 · 内层验证 MAE 幂校准（复核；否决）
+
+依据：scikit-learn 校准文档要求校准参数只使用未参与模型拟合的验证数据估计：https://scikit-learn.org/stable/modules/calibration.html 。代码已修复 `validation_mae` 的训练后应用路径，本轮用完整生产模型、标签、数据和三折 purged walk-forward 重新验证；每折只在 inner validation 选择 `sign(raw)*abs(raw)^gamma`。
+
+18,934 个共同样本结果：
+
+| 校准模式 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 生产 `validation_grid` | **0.846672** | **1.237897** | 50.776% | **0.006203** | **0.004732** |
+| `validation_mae` | 0.846814 | 1.237970 | 50.776% | 0.001842 | -0.008040 |
+
+MAE 目标的内层选择没有改善外层预测，不进入生产。
+
 ### 2026-10-30 · 回归器与方向分类器线性组合（否决）
 
 依据：Bates & Granger, “The Combination of Forecasts,” *Operational Research Quarterly* 20(4), 1969, pp. 451–468, DOI: `10.1057/jors.1969.103`。线性组合不同预测器可在误差不完全相关时降低预测方差；本轮以预先固定的方向模型权重 `0.1`、`0.2`、`0.3`、`0.5` 做敏感度测试，不以外层结果拟合组合权重。组合输入分别是当前生产 XGBoost 回归器和项目已有 `xgboost_direction`（概率再映射至训练折条件收益均值）。
