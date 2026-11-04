@@ -1,0 +1,11 @@
+research:
+  model:
+    backend: standalone
+    name: hist_gradient_boosting
+    params:
+      max_iter: 300
+      learning_rate: 0.03
+      max_leaf_nodes: 7
+      max_depth: 3
+      min_samples_leaf: 40
+      l2_regularization: 5.0

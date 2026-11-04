@@ -39,6 +39,10 @@ def create_estimator(
         from catboost import CatBoostRegressor
 
         constructor = CatBoostRegressor
+    elif name == "hist_gradient_boosting":
+        from sklearn.ensemble import HistGradientBoostingRegressor
+
+        constructor = HistGradientBoostingRegressor
     else:
         raise ConfigurationError(f"Unregistered estimator: {name}")
 

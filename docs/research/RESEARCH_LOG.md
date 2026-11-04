@@ -158,6 +158,19 @@ LightGBM 虽然 Pearson IC 较高，但误差、方向和排序均恶化，不�
 
 CatBoost 的 Pearson IC 提高但 MAE、RMSE、方向和 Spearman 均恶化，因此不进入生产。
 
+### 2026-11-04 · sklearn HistGradientBoostingRegressor（否决）
+
+依据：Friedman, “Greedy Function Approximation: A Gradient Boosting Machine”, *Annals of Statistics* 2001（DOI: 10.1214/aos/1013203451），以及 scikit-learn 官方 `HistGradientBoostingRegressor` 文档。该实现使用直方图加速的梯度提升，并原生处理缺失值，作为与 XGBoost、LightGBM、CatBoost 不同的实现候选。
+
+固定相同数据、标签、特征、近期权重、幂校准和三折 purged walk-forward；参数为 `max_iter=300`、`learning_rate=0.03`、`max_leaf_nodes=7`、`max_depth=3`、`min_samples_leaf=40`、`l2_regularization=5`。18,934 个共同样本：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 当前 XGBoost | **0.846672** | **1.237897** | **50.776%** | 0.006203 | **0.004732** |
+| HistGradientBoosting | 0.883637 | 1.261343 | 49.620% | **0.028135** | -0.007177 |
+
+该候选整体误差、方向和排序均恶化，不能进入生产。
+
 ### 2026-10-30 · 回归器与方向分类器线性组合（否决）
 
 依据：Bates & Granger, “The Combination of Forecasts,” *Operational Research Quarterly* 20(4), 1969, pp. 451–468, DOI: `10.1057/jors.1969.103`。线性组合不同预测器可在误差不完全相关时降低预测方差；本轮以预先固定的方向模型权重 `0.1`、`0.2`、`0.3`、`0.5` 做敏感度测试，不以外层结果拟合组合权重。组合输入分别是当前生产 XGBoost 回归器和项目已有 `xgboost_direction`（概率再映射至训练折条件收益均值）。
