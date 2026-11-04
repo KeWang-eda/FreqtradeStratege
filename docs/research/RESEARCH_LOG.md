@@ -411,6 +411,17 @@ MAE 目标的内层选择没有改善外层预测，不进入生产。
 
 关闭幂校准后 MAE、RMSE 和 Spearman 恶化，保留生产校准。
 
+### 2026-11-05 · 关闭 XGBoost early stopping（否决）
+
+依据：XGBoost 官方 sklearn 文档建议将 `eval_set` 用于时间顺序验证并通过 `early_stopping_rounds` 选择停止轮数；本轮固定完整生产参数，仅移除 early stopping，使用相同三折 purged walk-forward 比较 18,934 个共同样本。
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 生产 early stopping=30 | **0.846672** | **1.237897** | **50.776%** | 0.006203 | **0.004732** |
+| 关闭 early stopping | 0.877806 | 1.257666 | 50.222% | **0.031011** | 0.002465 |
+
+关闭 early stopping 明显恶化 MAE、RMSE 和方向，保留生产设置。
+
 ### 2026-10-30 · 回归器与方向分类器线性组合（否决）
 
 依据：Bates & Granger, “The Combination of Forecasts,” *Operational Research Quarterly* 20(4), 1969, pp. 451–468, DOI: `10.1057/jors.1969.103`。线性组合不同预测器可在误差不完全相关时降低预测方差；本轮以预先固定的方向模型权重 `0.1`、`0.2`、`0.3`、`0.5` 做敏感度测试，不以外层结果拟合组合权重。组合输入分别是当前生产 XGBoost 回归器和项目已有 `xgboost_direction`（概率再映射至训练折条件收益均值）。
