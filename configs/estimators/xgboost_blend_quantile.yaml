@@ -1,0 +1,17 @@
+research:
+  model:
+    name: xgboost
+    params:
+      n_estimators: 300
+      max_depth: 2
+      learning_rate: 0.03
+      reg_lambda: 5.0
+      subsample: 0.8
+      colsample_bytree: 0.8
+      blend_objective: reg:quantileerror
+      blend_quantile_alpha: 0.5
+      blend_weight: 0.2
+      prediction_power: validation_grid
+      eval_metric: rmse
+      early_stopping_rounds: 30
+      verbosity: 0
