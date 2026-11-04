@@ -45,6 +45,36 @@ from quant.training.native_isolation import (
 
 logger = logging.getLogger(__name__)
 
+
+class BlendedXGBRegressor:
+    """Serializable two-model XGBoost ensemble for the explicit research path."""
+
+    def __init__(self, primary, secondary, weight: float):
+        if not 0.0 < float(weight) < 1.0:
+            raise DataContractError("blend_weight must be in (0, 1)")
+        self.primary = primary
+        self.secondary = secondary
+        self.weight = float(weight)
+
+    def fit(self, *args, **kwargs):
+        self.primary.fit(*args, **kwargs)
+        self.secondary.fit(*args, **kwargs)
+        return self
+
+    def predict(self, X):
+        return (1.0 - self.weight) * self.primary.predict(X) + self.weight * self.secondary.predict(X)
+
+    def get_booster(self):
+        return self.primary.get_booster()
+
+    def evals_result(self):
+        return self.primary.evals_result()
+
+    def set_params(self, **params):
+        self.primary.set_params(**params)
+        self.secondary.set_params(**params)
+        return self
+
 if TYPE_CHECKING:
     from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 
@@ -214,6 +244,10 @@ class XGBoostRegressorES(BaseRegressionModel):
 
         training_parameters = dict(self.model_training_parameters)
         prediction_power = training_parameters.pop("prediction_power", "identity")
+        blend_objective = training_parameters.pop("blend_objective", None)
+        blend_weight = float(training_parameters.pop("blend_weight", 0.0))
+        training_parameters.pop("blend_weight_by_pair", None)
+        blend_quantile_alpha = training_parameters.pop("blend_quantile_alpha", None)
         # 该参数在 xgboost >= 3 不再是构造参数，改由 callbacks 表达；
         # 从字典里摘掉，避免透传给底层 XGBModel 时产生歧义。
         early_stopping_rounds = int(training_parameters.pop("early_stopping_rounds", 0))
@@ -231,6 +265,13 @@ class XGBoostRegressorES(BaseRegressionModel):
         xgb_model = self.get_init_model(dk.pair)
 
         model = create_estimator("xgboost", training_parameters)
+        secondary = None
+        if blend_objective is not None:
+            secondary_parameters = dict(training_parameters)
+            secondary_parameters["objective"] = blend_objective
+            if blend_quantile_alpha is not None:
+                secondary_parameters["quantile_alpha"] = float(blend_quantile_alpha)
+            secondary = create_estimator("xgboost", secondary_parameters)
 
         callbacks: list = [TBCallback(dk.data_path)]
         if early_stopping_rounds > 0 and eval_set is not None:
@@ -245,6 +286,9 @@ class XGBoostRegressorES(BaseRegressionModel):
             logger.info("%s: 早停已启用 rounds=%d（监控测试集）", dk.pair, early_stopping_rounds)
 
         model.set_params(callbacks=callbacks)
+        if secondary is not None:
+            secondary.set_params(callbacks=callbacks)
+            model = BlendedXGBRegressor(model, secondary, blend_weight)
         model.fit(
             X=X,
             y=y,

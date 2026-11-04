@@ -2846,3 +2846,9 @@ Q1（2025-01~03）曾显示严格规格劣于保留持仓阈值：`10.48% vs 21.
 
 固定 30% 的探索性留出为 MAE `0.851565`、RMSE `1.247887`、方向 `50.000%`、Pearson `0.028585`、Spearman `-0.005326`；20% 对应 MAE `0.851574`、RMSE `1.247880`、方向 `50.000%`、Pearson `0.028936`、Spearman `-0.005143`。30% 只带来微小 MAE/Pearson变化，RMSE、方向和 Spearman 更差，不改变正式配置。
 
+### 2026-11-05 · 接入 FreqAI 原生双模型组合生命周期
+
+依据：研究候选必须经过与生产相同的训练、序列化和预测生命周期；standalone wrapper 不能直接证明 FreqAI 泛化。新增可序列化 `BlendedXGBRegressor`，仅在显式 `blend_objective`/`blend_weight` 时训练第二个 XGBoost，并通过主模型 Booster 属性保持现有校准和模型存储兼容；默认配置仍走单模型路径。
+
+本轮仅完成接入与语法验证，没有 FreqAI 原生回测指标，不宣称预测提升；后续必须用 Freqtrade 原生 backtesting 或新的 OOS 数据验证后才能启用。
+
