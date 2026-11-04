@@ -292,6 +292,10 @@ L1 候选的方向准确率和 Pearson 有局部提升，但 MAE、RMSE 和 Spea
 
 中间采样率只改善方向和 Pearson，MAE、RMSE 和 Spearman 恶化，不能进入生产。
 
+#### 比较口径更正（同日复核）
+
+上面的初筛命令未显式加载生产的 `reg_lambda=5`、`weight_factor=0.9` 和 `prediction_power=validation_grid`，因此不能作为生产对照。按完整生产参数重新训练后，18,934 个共同样本结果为：`colsample_bytree=0.8` 基线 MAE/RMSE/方向/Pearson/Spearman = `0.846672/1.237897/50.776%/0.006203/0.004732`；`0.9` 候选 = `0.847273/1.238408/50.829%/0.002809/0.000312`。结论仍为否决，且更强证据显示候选的 MAE、RMSE、Pearson、Spearman 均下降。
+
 ### 2026-11-04 · XGBoost `colsample_bytree=0.7`（否决）
 
 依据：XGBoost 官方文档将 `colsample_bytree` 定义为每棵树使用的特征比例；在 0.8、0.9 和 1.0 结果基础上，测试更强特征随机化的 0.7。固定生产模型其余参数、标签、数据、近期权重、幂校准和三折 purged walk-forward，比较 18,934 个共同样本。
