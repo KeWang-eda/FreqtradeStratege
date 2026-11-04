@@ -14,7 +14,8 @@ from quant.errors import DataContractError
 class StandaloneRegressor:
     """Scikit-learn compatible estimator with optional XGBoost validation."""
 
-    def __init__(self, estimator: Any, name: str, prediction_power: str = "identity"):
+    def __init__(self, estimator: Any, name: str, prediction_power: str = "identity",
+                 blend_estimator: Any | None = None, blend_weight: float = 0.0):
         self.estimator = estimator
         self.name = name
         self.prediction_power = prediction_power
@@ -23,6 +24,8 @@ class StandaloneRegressor:
         self.positive_return_mean = 0.0
         self.negative_return_mean = 0.0
         self.constant_probability: float | None = None
+        self.blend_estimator = blend_estimator
+        self.blend_weight = float(blend_weight)
 
     def fit(
         self,
@@ -63,6 +66,8 @@ class StandaloneRegressor:
                 self.estimator.fit(X, target, **kwargs)
         else:
             self.estimator.fit(X, target, **kwargs)
+        if self.blend_estimator is not None:
+            self.blend_estimator.fit(X, target, **kwargs)
         if (
             self.name == "xgboost"
             and self.prediction_power
@@ -103,6 +108,9 @@ class StandaloneRegressor:
                 - (1.0 - probability) * self.negative_return_mean
             )
         prediction = np.asarray(self.estimator.predict(X), dtype=float).reshape(-1)
+        if self.blend_estimator is not None:
+            secondary = np.asarray(self.blend_estimator.predict(X), dtype=float).reshape(-1)
+            prediction = (1.0 - self.blend_weight) * prediction + self.blend_weight * secondary
         if self.prediction_power in {
             "validation_grid",
             "validation_mae",

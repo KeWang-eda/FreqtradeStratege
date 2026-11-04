@@ -2750,3 +2750,9 @@ Q1（2025-01~03）曾显示严格规格劣于保留持仓阈值：`10.48% vs 21.
 
 候选只改善 RandomForest 自身的 RMSE 和 Pearson，仍恶化生产基线的 MAE、方向和 Spearman。该 `final` 区段此前已用于多轮参数探索，属于探索性证据，不能证明时间外泛化；不进入生产配置。
 
+### 2026-11-05 · XGBoost + pseudo-Huber 固定 30% 组合（开发折通过）
+
+依据：Bates & Granger, “The Combination of Forecasts”, Operations Research 17 (1969)；独立预测误差不完全相关时，固定权重组合可降低方差。pseudo-Huber objective 依据 XGBoost 官方 objective 文档及其对异常值的平滑处理。新增 standalone `StandaloneRegressor` 组合接口和 `xgboost_blend_huber.yaml`，使用生产 XGBoost 与 `reg:pseudohubererror` 第二模型，权重预先固定为 0.3。
+
+完整三折开发集（18,934 个共同样本）相对生产基线：MAE `0.846672 → 0.846190`，RMSE `1.237897 → 1.237686`，方向准确率 `50.776% → 50.819%`，Spearman IC `0.004732 → 0.006290`；Pearson IC `0.006203 → 0.004477` 略降。逐折结果中 Fold 0/2 的 MAE 改善，Fold 0 的 RMSE 改善，Fold 1 误差略升。组合因此作为开发候选保留，但尚未使用被调参污染的最终留出作生产依据，也未替换 FreqAI 原生适配器；需要新的时间外数据确认泛化。
+
