@@ -2852,3 +2852,9 @@ Q1（2025-01~03）曾显示严格规格劣于保留持仓阈值：`10.48% vs 21.
 
 本轮仅完成接入与语法验证，没有 FreqAI 原生回测指标，不宣称预测提升；后续必须用 Freqtrade 原生 backtesting 或新的 OOS 数据验证后才能启用。
 
+### 2026-11-05 · FreqAI 原生组合适配器环境验证完成
+
+依据：生产模型候选必须通过项目的原生训练隔离测试和序列化边界。quant 环境固定 Freqtrade `2026.7`（项目审计版本）、joblib `1.4.2`（兼容 Freqtrade 2026.7 的 cloudpickle 导入），补齐 `datasieve`/`ccxt` 后，`tests/integration/test_native_purged_training.py` 通过 `11 passed`。独立 wrapper 训练后经 joblib 保存/加载，40 个预测逐点最大差异 `0.0`。
+
+这是生命周期兼容性证据，不是时间外预测提升证据；组合参数仍需 FreqAI 原生回测和新的独立 OOS 数据确认后才能启用。
+
