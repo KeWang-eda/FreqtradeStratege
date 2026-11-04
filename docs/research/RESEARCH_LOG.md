@@ -222,6 +222,19 @@ ExtraTrees 仅 RMSE 有极小改善，MAE、方向和 Spearman 明显恶化，�
 
 L1 候选的方向准确率和 Pearson 有局部提升，但 MAE、RMSE 和 Spearman 均恶化，不能进入生产。
 
+### 2026-11-04 · XGBoost shrinkage（`learning_rate=0.015`, `n_estimators=600`，否决）
+
+依据：XGBoost 官方参数文档说明 `learning_rate`（eta）会缩减每棵树的贡献，通常需要更多树来补偿；这是降低单步更新幅度、控制过拟合的标准梯度提升策略：https://xgboost.readthedocs.io/en/stable/parameter.html 。固定树深度、采样率、L2、近期权重、幂校准、标签、数据和三折 purged walk-forward，只把生产的 `0.03/300` 改为 `0.015/600`。
+
+18,934 个共同样本结果：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 当前 `0.03/300` | **0.846672** | **1.237897** | **50.776%** | 0.006203 | **0.004732** |
+| `0.015/600` | 0.855061 | 1.241325 | 50.702% | **0.018562** | -0.010629 |
+
+更小步长并未提升外层预测能力，候选不进入生产。
+
 ### 2026-10-30 · 回归器与方向分类器线性组合（否决）
 
 依据：Bates & Granger, “The Combination of Forecasts,” *Operational Research Quarterly* 20(4), 1969, pp. 451–468, DOI: `10.1057/jors.1969.103`。线性组合不同预测器可在误差不完全相关时降低预测方差；本轮以预先固定的方向模型权重 `0.1`、`0.2`、`0.3`、`0.5` 做敏感度测试，不以外层结果拟合组合权重。组合输入分别是当前生产 XGBoost 回归器和项目已有 `xgboost_direction`（概率再映射至训练折条件收益均值）。
