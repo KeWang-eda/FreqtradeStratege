@@ -2858,3 +2858,9 @@ Q1（2025-01~03）曾显示严格规格劣于保留持仓阈值：`10.48% vs 21.
 
 这是生命周期兼容性证据，不是时间外预测提升证据；组合参数仍需 FreqAI 原生回测和新的独立 OOS 数据确认后才能启用。
 
+### 2026-11-05 · 修复本地 Freqtrade 回测配置契约
+
+依据：Freqtrade 2026.7 配置 schema 与文件注释。`backtest-local.json` 注释声明 Binance USDT 线性合约，但缺少必需的 exchange name、三币对 whitelist、stake/dataformat 字段；补齐 Binance、BTC/ETH/BNB、USDT stake 和 feather 格式后，配置已通过 schema 校验。
+
+回测随后在加载 Binance `fapi/v1/exchangeInfo` 时因网络 RequestTimeout 终止；未产生可用交易指标，因此不宣称模型提升。网络可用或提供本地 exchangeInfo 缓存后才能继续原生基线回测。
+
