@@ -303,6 +303,17 @@ L1 候选的方向准确率和 Pearson 有局部提升，但 MAE、RMSE 和 Spea
 
 更强特征随机化只改善方向和 Pearson，整体误差及排序能力恶化，不能进入生产。
 
+### 2026-11-04 · FreqAI 近期权重关闭 `weight_factor=1.0`（否决）
+
+依据：Freqtrade 官方 `set_weights_higher_recent` 的指数权重机制；`weight_factor=1.0` 是关闭近期衰减的控制组。复用此前相同数据、标签、特征、幂校准和三折 purged walk-forward 工件，比较 18,934 个共同样本：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 当前 `weight_factor=0.9` | **0.846672** | **1.237897** | 50.776% | 0.006203 | **0.004732** |
+| `weight_factor=1.0` | 0.847729 | 1.238321 | **50.782%** | **0.010323** | 0.003251 |
+
+关闭近期权重略微改善方向和 Pearson，但 MAE、RMSE、Spearman 均恶化，不能进入生产。
+
 ### 2026-10-30 · 回归器与方向分类器线性组合（否决）
 
 依据：Bates & Granger, “The Combination of Forecasts,” *Operational Research Quarterly* 20(4), 1969, pp. 451–468, DOI: `10.1057/jors.1969.103`。线性组合不同预测器可在误差不完全相关时降低预测方差；本轮以预先固定的方向模型权重 `0.1`、`0.2`、`0.3`、`0.5` 做敏感度测试，不以外层结果拟合组合权重。组合输入分别是当前生产 XGBoost 回归器和项目已有 `xgboost_direction`（概率再映射至训练折条件收益均值）。
