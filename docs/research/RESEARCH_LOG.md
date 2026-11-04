@@ -93,6 +93,17 @@ CatBoost 最终留出误差和相关性明显恶化，不进入生产。
 
 HistGradientBoosting 最终留出所有主要指标均恶化，不进入生产。
 
+### 2026-11-05 · Elastic Net 最终时间留出复核（否决）
+
+依据：Zou & Hastie, “Regularization and Variable Selection via the Elastic Net”, 2005。对 Elastic Net 研究配置使用最终时间留出，与生产 XGBoost 保持相同标签、数据和时间范围：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 生产 XGBoost | **0.844875** | **1.192932** | 49.113% | **0.026837** | **0.012593** |
+| Elastic Net | 0.850179 | 1.197900 | **49.271%** | 0.003697 | -0.006970 |
+
+Elastic Net 最终留出误差和相关性明显恶化，不进入生产。
+
 ### 2026-10-30 · XGBoost `min_child_weight` 开发筛选（否决）
 
 依据：XGBoost 官方参数文档将 `min_child_weight` 定义为子节点继续分裂所需的最小二阶梯度和；提高它可以抑制由少量样本支持的分裂，作为与已有 `max_depth=2`、`reg_lambda=5` 不同的正则化候选：
