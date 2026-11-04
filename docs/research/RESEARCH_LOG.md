@@ -115,6 +115,17 @@ Elastic Net 最终留出误差和相关性明显恶化，不进入生产。
 
 Ridge 的误差和相关性低于生产 XGBoost，不进入生产。
 
+### 2026-11-05 · XGBoost direction classifier 最终时间留出复核（否决）
+
+依据：Bates & Granger, “The Combination of Forecasts”, 1969；方向分类器将 `P(return>0)` 映射为训练折条件收益均值，作为独立方向信号。使用最终时间留出与生产连续回归器比较：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 生产 XGBoost 回归 | **0.844875** | **1.192932** | 49.113% | 0.026837 | 0.012593 |
+| direction classifier | 0.852731 | 1.203274 | **49.731%** | **0.027971** | **0.037764** |
+
+方向模型改善方向和排序相关性，但 MAE、RMSE 明显恶化；单独替换会降低连续预测质量，暂不进入生产。
+
 ### 2026-10-30 · XGBoost `min_child_weight` 开发筛选（否决）
 
 依据：XGBoost 官方参数文档将 `min_child_weight` 定义为子节点继续分裂所需的最小二阶梯度和；提高它可以抑制由少量样本支持的分裂，作为与已有 `max_depth=2`、`reg_lambda=5` 不同的正则化候选：
