@@ -197,6 +197,19 @@ CatBoost 的 Pearson IC 提高但 MAE、RMSE、方向和 Spearman 均恶化，�
 
 ExtraTrees 仅 RMSE 有极小改善，MAE、方向和 Spearman 明显恶化，不能替换生产模型。
 
+### 2026-11-04 · XGBoost `max_depth=1`（否决）
+
+依据：XGBoost 官方参数文档将 `max_depth` 定义为树深度，并指出更深树会增加复杂度和过拟合风险；因此测试更强正则化的深度 1 作为生产深度 2 的单变量对照：https://xgboost.readthedocs.io/en/stable/parameter.html 。
+
+固定当前生产的学习率、树数、采样率、L2、近期权重、幂校准、标签、数据和三折 purged walk-forward，比较 18,934 个共同样本：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 当前 `max_depth=2` | **0.846672** | **1.237897** | **50.776%** | **0.006203** | **0.004732** |
+| `max_depth=1` | 0.852566 | 1.240068 | 50.644% | 0.001942 | -0.017736 |
+
+深度 1 的所有主要预测指标均恶化，不进入生产。
+
 ### 2026-10-30 · 回归器与方向分类器线性组合（否决）
 
 依据：Bates & Granger, “The Combination of Forecasts,” *Operational Research Quarterly* 20(4), 1969, pp. 451–468, DOI: `10.1057/jors.1969.103`。线性组合不同预测器可在误差不完全相关时降低预测方差；本轮以预先固定的方向模型权重 `0.1`、`0.2`、`0.3`、`0.5` 做敏感度测试，不以外层结果拟合组合权重。组合输入分别是当前生产 XGBoost 回归器和项目已有 `xgboost_direction`（概率再映射至训练折条件收益均值）。
