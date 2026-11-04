@@ -71,6 +71,17 @@ ExtraTrees 在最终时间留出上所有主要预测指标均恶化，不进入
 
 LightGBM 最终留出误差和相关性明显恶化，不能替换生产 XGBoost。
 
+### 2026-11-05 · CatBoost 最终时间留出复核（否决）
+
+依据：Prokhorenkova et al., “CatBoost: unbiased boosting with categorical features”, NeurIPS 2018。对已接入研究工厂的 CatBoost 使用最终时间留出，与生产 XGBoost 保持相同标签、数据和时间范围比较：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 生产 XGBoost | **0.844875** | **1.192932** | **49.113%** | **0.026837** | **0.012593** |
+| CatBoost | 0.857500 | 1.203979 | 49.303% | 0.011722 | -0.002034 |
+
+CatBoost 最终留出误差和相关性明显恶化，不进入生产。
+
 ### 2026-10-30 · XGBoost `min_child_weight` 开发筛选（否决）
 
 依据：XGBoost 官方参数文档将 `min_child_weight` 定义为子节点继续分裂所需的最小二阶梯度和；提高它可以抑制由少量样本支持的分裂，作为与已有 `max_depth=2`、`reg_lambda=5` 不同的正则化候选：
