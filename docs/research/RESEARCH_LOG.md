@@ -132,6 +132,19 @@ https://www.freqtrade.io/en/stable/freqai-feature-engineering/
 
 每个指标都提高了至少一个局部相关指标，但均恶化 MAE/RMSE，且 Spearman 均低于基线；没有一致的预测能力提升，因此不进入生产配置。
 
+### 2026-11-04 · LightGBM leaf-wise 回归器（否决）
+
+依据：Ke et al., “LightGBM: A Highly Efficient Gradient Boosting Decision Tree”, NeurIPS 2017（https://papers.nips.cc/paper/6907-lightgbm）以及 LightGBM 官方参数文档。LightGBM 的 histogram 算法和 leaf-wise tree growth 与当前 XGBoost 的 level-wise/hist 配置形成独立模型候选；新增 standalone 工厂注册和研究配置，但没有改变生产配置。
+
+固定相同 BTC/ETH 数据、`volnorm` horizon=3、相同 26 个基础特征和三折 purged walk-forward，LightGBM 使用 `n_estimators=300`、`learning_rate=0.03`、`num_leaves=7`、`max_depth=3`、`min_child_samples=40`、`subsample=0.8`、`colsample_bytree=0.8`、`reg_lambda=5`。18,934 个共同样本结果：
+
+| 模型 | MAE | RMSE | 方向准确率 | Pearson IC | Spearman IC |
+|---|---:|---:|---:|---:|---:|
+| 当前 XGBoost | **0.846672** | **1.237897** | **50.776%** | 0.006203 | **0.004732** |
+| LightGBM | 0.882592 | 1.260483 | 49.921% | **0.032077** | -0.005319 |
+
+LightGBM 虽然 Pearson IC 较高，但误差、方向和排序均恶化，不能替换生产 XGBoost。
+
 ### 2026-10-30 · 回归器与方向分类器线性组合（否决）
 
 依据：Bates & Granger, “The Combination of Forecasts,” *Operational Research Quarterly* 20(4), 1969, pp. 451–468, DOI: `10.1057/jors.1969.103`。线性组合不同预测器可在误差不完全相关时降低预测方差；本轮以预先固定的方向模型权重 `0.1`、`0.2`、`0.3`、`0.5` 做敏感度测试，不以外层结果拟合组合权重。组合输入分别是当前生产 XGBoost 回归器和项目已有 `xgboost_direction`（概率再映射至训练折条件收益均值）。

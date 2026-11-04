@@ -31,6 +31,10 @@ def create_estimator(
         from xgboost import XGBClassifier
 
         constructor = XGBClassifier
+    elif name == "lightgbm":
+        from lightgbm import LGBMRegressor
+
+        constructor = LGBMRegressor
     else:
         raise ConfigurationError(f"Unregistered estimator: {name}")
 

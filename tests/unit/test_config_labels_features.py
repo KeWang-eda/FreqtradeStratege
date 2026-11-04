@@ -41,7 +41,7 @@ def test_invalid_label_config(kwargs):
 
 
 @pytest.mark.parametrize(
-    "kwargs", [{"backend": "typo"}, {"name": "lightgbm"}, {"backend": "freqai", "name": "ridge"}]
+    "kwargs", [{"backend": "typo"}, {"name": "not-a-model"}, {"backend": "freqai", "name": "ridge"}]
 )
 def test_unknown_models_rejected(kwargs):
     with pytest.raises(ConfigurationError):

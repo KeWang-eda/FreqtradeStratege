@@ -1,0 +1,13 @@
+research:
+  model:
+    backend: standalone
+    name: lightgbm
+    params:
+      n_estimators: 300
+      learning_rate: 0.03
+      num_leaves: 7
+      max_depth: 3
+      min_child_samples: 40
+      subsample: 0.8
+      colsample_bytree: 0.8
+      reg_lambda: 5.0

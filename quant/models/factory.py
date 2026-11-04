@@ -11,11 +11,13 @@ def create_regressor(config: ModelConfig, seed: int = 42) -> StandaloneRegressor
     """Build a supported standalone estimator; never dynamically import names."""
     if config.backend != "standalone":
         raise UnsupportedCapabilityError("FreqAI estimators must use the FreqAI lifecycle adapter")
-    if config.name not in {"ridge", "xgboost", "xgboost_direction"}:
+    if config.name not in {"ridge", "xgboost", "xgboost_direction", "lightgbm"}:
         raise ConfigurationError(f"Unregistered model: {config.name}")
     defaults = (
-        {"n_jobs": 1, "tree_method": "hist"}
-        if config.name in {"xgboost", "xgboost_direction"}
+        ({"n_jobs": 1, "tree_method": "hist"}
+        if config.name in {"xgboost", "xgboost_direction"} else
+        {"n_jobs": 1})
+        if config.name in {"xgboost", "xgboost_direction", "lightgbm"}
         else None
     )
     prediction_power = config.params.get("prediction_power", "identity")
