@@ -12,6 +12,9 @@ from quant.infrastructure.artifact_audit import check_artifacts
 from quant.market_data import load_ohlcv
 from quant.models import create_regressor
 
+DEFAULT_CONFIGS = ["configs/base.yaml", "configs/environment/local.yaml"]
+DEFAULT_OUTPUT = "artifacts/experiments"
+
 
 def main(argv: list[str] | None = None) -> int:
     """Run research tasks; return 0 on success and 2 for invalid requests."""
@@ -27,10 +30,13 @@ def main(argv: list[str] | None = None) -> int:
             if command == "formal-run"
             else None,
         )
-        sub.add_argument("-c", "--config", action="append", required=True)
+        sub.add_argument(
+            "-c", "--config", action="append", default=None,
+            help="Layered YAML config paths (defaults to the repository local configs)",
+        )
         sub.add_argument("--set", dest="overrides", action="append", default=[])
         if command in {"run", "formal-run"}:
-            sub.add_argument("--output", default="/tmp/quant-strategy-artifacts")
+            sub.add_argument("--output", default=DEFAULT_OUTPUT)
             sub.add_argument("--experiment-id")
             sub.add_argument("--evaluate-final-holdout", action="store_true")
         if command == "formal-run":
@@ -79,7 +85,8 @@ def _execute(args: argparse.Namespace) -> int:
             report["passed"] = report["leakage"]["passed"]
         print(json.dumps(report, ensure_ascii=False, indent=2))
         return 0 if report["passed"] else 1
-    config = load_config(args.config, args.overrides)
+    config_paths = args.config or DEFAULT_CONFIGS
+    config = load_config(config_paths, args.overrides)
     if args.command == "formal-run":
         from quant.validation.admission import require_training_admission
 

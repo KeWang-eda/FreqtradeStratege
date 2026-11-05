@@ -36,10 +36,13 @@ PYTHONPATH=. "$FREQTRADE_PYTHON" -m quant.cli validate \
   -c configs/base.yaml -c configs/environment/local.yaml
 
 PYTHONPATH=. "$FREQTRADE_PYTHON" -m quant.cli run \
-  -c configs/base.yaml -c configs/environment/local.yaml \
   -c configs/experiments/baseline_volnorm.yaml \
-  --output /tmp/quant-experiments --experiment-id volnorm-ridge
+  --experiment-id volnorm-ridge
 ```
+
+未指定 `-c/--config` 时默认加载 `configs/base.yaml` 和
+`configs/environment/local.yaml`；实验产物默认写入项目内的
+`artifacts/experiments/`，也可用相对路径覆盖 `--output`。
 
 独立后端支持 Ridge 和 XGBoost，四种按时间切分、真实标签区间 purge、训练折内预处理及独立的早停验证。最终 holdout 默认保留且不评分，需要显式 `--evaluate-final-holdout` 才评估。每次运行保存配置、Git/源码快照、依赖、输入指纹、模型、逐折预测和审计报告。
 
