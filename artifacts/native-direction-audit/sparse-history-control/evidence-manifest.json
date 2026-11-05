@@ -1,0 +1,12 @@
+{
+  "scope": "post-run byte inventory; protocol not retroactively edited; config hash supplements original protocol",
+  "files": {
+    "config.json": "fcf22a0e7711a9898892b2a91ab4e915cc29223e405865c77fa874c08a44e50f",
+    "tools/run_direction_sparse_history_control.py": "8ecba9172240098b7bc9da90832787b8b88c30fd84786744d997334f0bde1ba8",
+    "tools/summarize_direction_control.py": "fa296537b5364658132589444fa79a59021bfbbe6caa7f0c4942b0298c4fe08d",
+    "artifacts/native-direction-audit/sparse-history-control/protocol.json": "32d6da3107f047e6c55bddb18cbe295cf530eb243ab539a267e803d5aaac75f5",
+    "artifacts/native-direction-audit/sparse-history-control/audit.json": "c392533acf1182f6277ab3d28cea86cfc9c1c0ac25c46f7a017baad954d84644",
+    "artifacts/native-direction-audit/sparse-history-control/predictions.parquet": "0b37a27a3a0faa967b815a62cea9e6c663db5de0a295f009c8038242945433b0",
+    "artifacts/native-direction-audit/sparse-history-control/summary.json": "6d2b5c072ea510c37bc41ee9977a9fc71a8ff4c7ec82fb49ba6159ffbb168216"
+  }
+}

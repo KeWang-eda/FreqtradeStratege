@@ -1,0 +1,10 @@
+{
+  "question": "does sparse supervised sampling over same historical span alter fold2 direction performance?",
+  "selection": "344 indices rint(linspace(0,1041,344)); no label-based selection; fold2 only",
+  "fixed": "saved1042-gradient-train pipeline, native DI, original weight subset, seed0, tree count selected by full reference",
+  "tree_count_limit": "candidate does not select own trees; full baseline validation-selected budget held fixed",
+  "scope": "reused single-fold mechanism diagnostic, not three-fold admission or production confirmation",
+  "confounding": "changes label overlap/effective size and total weights relative to regularization; not pure n causal effect",
+  "reference": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.learning_curve.html",
+  "source_sha256": "a55830344b050d767686b5593ebd4893794ee3fd94ea7747df7ab6efe5a2bfa6"
+}

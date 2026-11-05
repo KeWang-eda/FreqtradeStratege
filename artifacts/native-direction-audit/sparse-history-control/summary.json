@@ -1,0 +1,81 @@
+{
+  "baseline": "base",
+  "candidate": "sparse",
+  "all_n": 1308,
+  "ready_n": 1306,
+  "masks": {
+    "all": {
+      "n": 1308,
+      "baseline_correct": 659,
+      "candidate_correct": 697,
+      "delta": 0.0290519877675841,
+      "gained": 183,
+      "lost": 145,
+      "folds": [
+        {
+          "period": "base-20240701-direction-confirm1-fold2",
+          "n": 1308,
+          "baseline_correct": 659,
+          "candidate_correct": 697,
+          "delta": 0.0290519877675841
+        }
+      ],
+      "date_block_ci95": {
+        "6": [
+          0.0007645259938837921,
+          0.0581039755351682
+        ],
+        "12": [
+          0.0022935779816513763,
+          0.05733944954128441
+        ],
+        "24": [
+          0.0015290519877675841,
+          0.0581039755351682
+        ]
+      }
+    },
+    "ready": {
+      "n": 1306,
+      "baseline_correct": 657,
+      "candidate_correct": 696,
+      "delta": 0.02986217457886677,
+      "gained": 183,
+      "lost": 144,
+      "folds": [
+        {
+          "period": "base-20240701-direction-confirm1-fold2",
+          "n": 1306,
+          "baseline_correct": 657,
+          "candidate_correct": 696,
+          "delta": 0.02986217457886677
+        }
+      ],
+      "date_block_ci95": {
+        "6": [
+          0.0015100269169520493,
+          0.058958652373660034
+        ],
+        "12": [
+          0.00382262996941896,
+          0.058195186914570755
+        ],
+        "24": [
+          0.0023005254183147156,
+          0.05905362199150536
+        ]
+      }
+    }
+  },
+  "method": "5000 circular synchronous date-block draws within period/fold; seed42 per block; eligible-count ratio",
+  "scope": "reused development; conditional fitted-model/coverage uncertainty, no cumulative selection correction",
+  "gate_scope": {
+    "expected_periods": 3,
+    "actual_periods": 1,
+    "applicable": false,
+    "purpose": "development admission only"
+  },
+  "production_eligible": false,
+  "external_gate_passed": false,
+  "predictions_sha256": "0b37a27a3a0faa967b815a62cea9e6c663db5de0a295f009c8038242945433b0"
+}
