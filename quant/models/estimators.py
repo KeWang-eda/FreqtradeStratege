@@ -61,6 +61,7 @@ def create_estimator(
     supplied = dict(params or {})
     quantile_alpha = supplied.pop("quantile_alpha", None)
     supplied.pop("weight_factor", None)
+    supplied.pop("normalize_sample_weight", None)
     supplied.pop("prediction_power", None)
     if (
         name == "xgboost_direction"

@@ -67,6 +67,11 @@ class StandaloneBackend:
                 sample_weight = np.exp(
                     -np.arange(len(train), dtype=float) / (factor * len(train))
                 )[::-1]
+                if config.model.params.get("normalize_sample_weight", False):
+                    mean_weight = float(sample_weight.mean())
+                    if not np.isfinite(mean_weight) or mean_weight <= 0:
+                        raise DataContractError("Cannot normalize invalid sample weights")
+                    sample_weight = sample_weight / mean_weight
             kwargs = (
                 {}
                 if valid is None

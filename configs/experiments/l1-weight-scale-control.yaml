@@ -1,0 +1,5 @@
+research:
+  name: l1_weight_scale_control
+  model:
+    params:
+      normalize_sample_weight: true
