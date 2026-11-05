@@ -26,5 +26,8 @@ def build_features(
     for period in periods:
         add_period_expanded_features(frame, period)
     add_basic_price_features(frame)
-    add_baseline_features(frame, enabled_features)
+    add_baseline_features(
+        frame,
+        enabled_features,
+    )
     return frame[[c for c in frame if c.startswith("%")]]
