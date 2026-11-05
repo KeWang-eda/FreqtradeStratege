@@ -1,0 +1,15 @@
+{
+  "hypothesis": "regression-selected tree budget limits the native binary learner",
+  "selection": "all original native features kept; binary label is original y>0",
+  "fixed": "binary objective, original native train/validation rows, weights, features, threshold0.5, other params",
+  "scope": "mechanism test on previously reused historical windows; not fresh confirmation",
+  "effect": "only tree selection differs from fixed_binary; binary loss, labels and direction_margin unchanged",
+  "threshold": "P(y>0)=0.5; score is direction margin 2*p-1, NOT volnorm return",
+  "magnitude_calibration": "omitted from both arms because native positive power preserves sign",
+  "reference": "https://xgboost.readthedocs.io/en/stable/parameter.html#learning-task-parameters",
+  "source": "artifacts/native-direction-audit/l1-extended-prediction/predictions.parquet",
+  "promotion": "requires stable paired direction gain; correlation alone is insufficient",
+  "change": "fixed native binary trees to own weighted validation logloss early stopping",
+  "tree_selection": "max300; weighted validation logloss; patience30; fresh save_best callback",
+  "primary_baseline": "fixed_binary; regression rmse retained only as anchor"
+}

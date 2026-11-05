@@ -1,0 +1,50 @@
+{
+  "baseline_arm": "fixed_binary",
+  "candidate_arm": "binary_logloss",
+  "n": 1917,
+  "coverage": 1.0,
+  "overall": {
+    "baseline": 0.5268648930620762,
+    "candidate": 0.5289514866979655,
+    "delta": 0.0020865936358894104
+  },
+  "periods": {
+    "base-20240101-r2": {
+      "baseline": 0.544973544973545,
+      "candidate": 0.5357142857142857,
+      "delta": -0.009259259259259259
+    },
+    "base-20250101": {
+      "baseline": 0.5066137566137566,
+      "candidate": 0.5277777777777778,
+      "delta": 0.021164021164021163
+    },
+    "base-20261001": {
+      "baseline": 0.5308641975308642,
+      "candidate": 0.5185185185185185,
+      "delta": -0.012345679012345678
+    }
+  },
+  "gained": 190,
+  "lost": 186,
+  "date_block_ci95": {
+    "6": [
+      -0.022952529994783515,
+      0.026604068857589983
+    ],
+    "12": [
+      -0.020865936358894097,
+      0.02451747522170057
+    ],
+    "24": [
+      -0.01669274908711528,
+      0.019822639540949396
+    ]
+  },
+  "dates_per_period": {
+    "base-20240101-r2": 252,
+    "base-20250101": 252,
+    "base-20261001": 135
+  },
+  "limitation": "reused historical development; frozen-model window sensitivity, not untouched confirmation"
+}

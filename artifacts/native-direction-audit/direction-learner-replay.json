@@ -1,0 +1,22 @@
+[
+  {
+    "stage": "control",
+    "models": 9,
+    "samples_per_arm": 1917,
+    "all_arms_predictions_exactly_equal": true,
+    "canonical_tool_default_config_replay_passed": true,
+    "persisted_contract_load_passed": true,
+    "module_save_load_checked_in_runner": true,
+    "max_prediction_difference": 0.0
+  },
+  {
+    "stage": "replication",
+    "models": 6,
+    "samples_per_arm": 1512,
+    "all_arms_predictions_exactly_equal": true,
+    "canonical_tool_default_config_replay_passed": true,
+    "persisted_contract_load_passed": true,
+    "module_save_load_checked_in_runner": true,
+    "max_prediction_difference": 0.0
+  }
+]
