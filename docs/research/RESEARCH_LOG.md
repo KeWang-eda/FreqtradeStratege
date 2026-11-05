@@ -2915,3 +2915,8 @@ Q1（2025-01~03）曾显示严格规格劣于保留持仓阈值：`10.48% vs 21.
 依据：时间序列在线学习中近期样本加权可能适应漂移，但也可能提高方差；当前 L1 使用 `weight_factor=0.9`，因此对照关闭衰减（`weight_factor=1.0`），其余配置完全相同。
 
 结果：MAE `0.846938 → 0.847121`、RMSE `1.231622 → 1.231867`、方向 `50.998% → 50.945%`、Pearson `-0.001299 → -0.002508`、Spearman `0.006897 → 0.007183`。仅 Spearman 微升，其余指标恶化，不改变时间权重配置。
+### 2026-11-05 · 校准目标从 MSE 切换到 MAE 验证
+
+依据：当前 `validation_grid` 以验证 MSE 选择幂指数，但模型同时以 MAE、RMSE、Pearson 和 Spearman 评估；重尾收益下 MAE 校准可能减少异常值影响（Hyndman & Athanasopoulos, forecast accuracy measures）。将 `prediction_power` 改为 `validation_mae`，其余三币对 L1 配置不变。
+
+结果相对 `validation_grid`：MAE `0.846938 → 0.847615`、RMSE `1.231622 → 1.232084`、方向 `50.998% → 51.016%`、Pearson `-0.001299 → -0.005062`、Spearman `0.006897 → 0.006108`。所有主要指标未形成改善，保留 MSE 校准。
