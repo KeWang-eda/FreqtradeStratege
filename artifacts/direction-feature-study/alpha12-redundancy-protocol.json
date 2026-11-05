@@ -1,0 +1,14 @@
+{
+  "scope": "training-only descriptive redundancy audit",
+  "candidate": "-sign(volume.diff(1))*close.diff(1)",
+  "formula": "-sign(volume[t]-volume[t-1])*(close[t]-close[t-1])",
+  "features_compared": [
+    "return",
+    "volume-change",
+    "candidate"
+  ],
+  "periods": 4,
+  "label_purge": "exclude rows whose label_end_time crosses next segment available_at",
+  "outer_labels_read": false,
+  "selection": "none; no production decision"
+}
