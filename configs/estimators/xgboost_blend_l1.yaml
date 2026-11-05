@@ -10,6 +10,8 @@ research:
       colsample_bytree: 0.8
       blend_objective: reg:absoluteerror
       blend_weight: 0.3
+      blend_weight_by_pair:
+        BNB/USDT:USDT: 0.2
       prediction_power: validation_grid
       eval_metric: rmse
       early_stopping_rounds: 30
