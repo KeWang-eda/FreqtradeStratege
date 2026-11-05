@@ -120,3 +120,60 @@ direction = mean(sign(prediction) == sign(volnorm_future_return))
 ## 15. 历史先验proxy跨时期复核
 
 冻结odds修正在2024-01提高0.637pp，在2025-01/2026-10分别下降0.280/0.407pp，合并略降；各时期时间区块区间均跨零。否决该proxy的推广，不证明label shift假设不存在。详见`DIRECTION_PRIOR_CROSS_PERIOD_DIAGNOSTIC.md`。
+
+## 16. 原生方向学习器与跨时期失效（2026-11-05）
+
+以真实原生预处理、原始收益符号和样本权重训练独立分类头，H8仅把固定树数改为自身验证logloss早停。新增两个历史开发复制窗口合计817/1512（54.03%），固定binary为762/1512（50.40%）；这是已复用开发数据的机制证据，尚非生产确认。分类margin不属于收益预测，未接入生产回归输出。详见`NATIVE_DIRECTION_LOGLOSS_LEARNER.md`。
+
+进一步分解：2023复制窗456/756（60.32%），2024复制窗361/756（47.75%）。当前故障树聚焦后者：
+
+```text
+2024方向准确率47.75%
+├─ A 模型、币对、日期、预处理映射错误 → 逐点重放一致，未见支持
+├─ B 训练/验证标签未成熟 → 截止时间审计通过，未见支持
+├─ C 统一阈值偏移
+│  ├─ C1 验证期已偏正 → 有观察证据，尤其BNB
+│  └─ C2 足以解释所有周失败 → 不支持；第2周AUC仅0.282
+├─ D 局部判别关系失效
+│  ├─ D1 第2周方向准确率33.33%、AUC0.282 → 描述证据
+│  └─ D2 第6周AUC0.609但准确率45.24% → 另有边界失配迹象
+└─ E 最新73天仅作验证导致陈旧
+   ├─ E1 协议事实 → 已确认，不等于因果
+   └─ E2 合并重训可改善 → 同机制既往实验50%→47.35%，不重复盲试
+```
+
+下一项只诊断概率边界失配与判别反转的区别；在选择具体调整前，检查独立时间内切分及确认数据使用记录，不能在已观察的forecast上搜索最佳阈值。`python -m tools.diagnose_native_direction`在conda quant中可复现6模型、12周诊断；准确率保留真零收益，AUC仅对非零真值计算。完整证据见`NATIVE_DIRECTION_2024_FAILURE_DIAGNOSTIC.md`和`artifacts/native-direction-audit/h8-failure-diagnostic.json`。
+
+2026-11-06 D4 train/validation 条件漂移诊断已完成：固定重放 H8 learner，训练4块、早停验证6块，逐块 maturity purge，未读 outer forecast truth。两段验证平均逐币 AUC 分别0.5509/0.5940，均高于0.5；验证真实上涨率约48.70%/52.68%，但预测上涨率39.87%/71.10%，表现更接近时期相关的边界偏移，而非普遍排序反转。短块 AUC 波动不足以证实条件反转。D4 当前不支持，不能据此加 regime feature 或修改模型。详见`NATIVE_DIRECTION_CONDITION_DRIFT_DIAGNOSTIC.md`及`artifacts/native-direction-audit/condition-drift-diagnostic.json`。
+
+## 17. H9：独立成熟样本的截距校准被否决
+
+预先固定原valid尾84成熟样本校准，早停部分purge后351点，重新拟合同一binary模型；两臂仅区别为b=0与logit+b单截距MLE。初始1917点1027→1033（+6），复制1512点828→748（-80），复制两个时期均下降。复制6/12/24根同步日期区块区间分别[-9.987,-0.395]、[-10.053,-0.265]、[-10.516,+0.132]个百分点。15组截距均满足校准目标且成熟/映射审计通过，失败不能归为求解错误。
+
+否决此具体概率边界修正，不扫描新校准长度/阈值，不推广或push。此前H5和prior odds失败也保留为相关反证；不能换名重复。下一层回到训练期内部成熟forward的跨期判别稳定性，先定位明确失效关系，再选择训练干预。见`NATIVE_DIRECTION_INTERCEPT_CONTROL.md`及`artifacts/native-direction-audit/intercept-control/summary.json`。
+
+## 18. H10：随机边界敏感性存在，固定种子均值未达门槛
+
+实际H8树种子为默认0，split配置42不是模型种子。只在2024复制窗的原train1746点内部进行三折成熟forward，每折fresh原生pipeline，预先固定seed0..4概率均值对seed0；共9个pipeline/45模型，不读取外部预测标签。ready3919点1949→1961，净+12(+0.3062pp)，三fold+8/-2/+6；6/12/24根日期同步区块区间[-0.3316,+0.9677]/[-0.2811,+0.9441]/[-0.2552,+0.8917]pp均跨零。
+
+14.72%的ready样本在五seed之间方向分歧，支持存在随机敏感性，但不足以支持均值改善。未达到预先固定的全部区间下界>0门槛，停止外部扩展，不挑seed3、不修改集合或权重、不推广或push。34项相关测试通过，两位独立源数据/统计审计通过。详见`NATIVE_DIRECTION_SEED_CONTROL.md`及`artifacts/native-direction-audit/seed-control-inner/summary.json`。
+
+## 19. H11：补充当前收盘区间位置未达门槛
+
+构造两根当前native输入完全相同但CLV不同的合法K线，合同测试证实信息表达缺口；TA-Lib官方AD源码提供CLV公式。按预先冻结协议只追加own current CLV一列，维持H10 seed0、原pipeline/DI/双层purge/权重，baseline逐点复现。ready3919点1949→1960，净+11(+0.2807pp)，三fold+12/+1/-2；6/12/24根同步日期区块区间[-0.4338,+0.9711]/[-0.4085,+1.0201]/[-0.4081,+0.9451]pp均跨零。BNB+15、BTC-1、ETH-3，不能择币推广。
+
+新增列还改变colsample随机路径，不能将点值变化称纯信息因果贡献。未达事先全部下界>0门槛，停止外扩、不调CLV版本、不提交或push模型候选。65项相关测试通过；当前OHLCV与旧snapshot自身return/range/body逐点一致，两位独立审计通过。见`NATIVE_DIRECTION_CLV_CONTROL.md`及`artifacts/native-direction-audit/clv-control-inner/summary.json`。另修主配置datadir为相对data，仅属可移植性，不计入模型提升。
+
+## 20. H13：mark-to-trade close spread未达门槛
+
+严格使用`t..t+3h`已闭合1h mark close与4h trade close比值减一，H10三折fresh native forward中ready3919点1949→1959，净+10(+0.2552pp)，fold+6/-2/+6；6/12/24根同步区块区间[-0.4595,+1.0196]/[-0.4588,+1.0196]/[-0.4851,+1.0201]pp均跨零。所有区间跨零，停止外扩，不修改数据聚合规则，不push。Binance官方字段正文未在本轮稳定取得，报告明确不作外部API语义背书。见`NATIVE_DIRECTION_MARK_SPREAD_CONTROL.md`及`artifacts/native-direction-audit/mark-spread-control-inner-v2/summary.json`。
+
+## 21. 固定344行下的总权重尺度控制
+
+四时期fold2中，将344个稀疏样本的权重乘以`full_weight_sum/sparse_weight_sum`，使总量匹配1042行训练。依据XGBoost梯度/Hessian加权和与正则项的尺度关系；这一单因素机制控制在样本、pipeline、seed、树数、参数不变时运行。full/sparse/sparse_mass正确数2708/2700/2692（5232点）；质量匹配相对原稀疏少8点，区块区间跨零。
+
+没有发现该权重尺度修正能稳定提升方向准确率，不提交此改动，不改变生产训练。它也不能确定样本相关性或抽样组成的因果作用。详见`DIRECTION_SPARSE_WEIGHT_MASS_CONTROL.md`。
+
+## 22. margin边界收缩诊断未支持
+
+对full、sparse、sparse_mass三臂固定margin距离分箱，准确率没有随距离边界单调增加；full最窄桶反而54.92%，非零AUC分别0.5178/0.5243/0.5234。不能据此设计margin收缩、扩张或新阈值，下一层回到跨时期条件判别关系。详见`DIRECTION_MARGIN_BOUNDARY_DIAGNOSTIC.md`。
