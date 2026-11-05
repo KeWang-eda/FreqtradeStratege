@@ -2920,3 +2920,6 @@ Q1（2025-01~03）曾显示严格规格劣于保留持仓阈值：`10.48% vs 21.
 依据：当前 `validation_grid` 以验证 MSE 选择幂指数，但模型同时以 MAE、RMSE、Pearson 和 Spearman 评估；重尾收益下 MAE 校准可能减少异常值影响（Hyndman & Athanasopoulos, forecast accuracy measures）。将 `prediction_power` 改为 `validation_mae`，其余三币对 L1 配置不变。
 
 结果相对 `validation_grid`：MAE `0.846938 → 0.847615`、RMSE `1.231622 → 1.232084`、方向 `50.998% → 51.016%`、Pearson `-0.001299 → -0.005062`、Spearman `0.006897 → 0.006108`。所有主要指标未形成改善，保留 MSE 校准。
+### 2026-11-05 · 校准目标 Spearman 分支验证
+
+依据：金融横截面预测常用 rank IC 衡量排序质量，因此测试 `validation_spearman` 幂指数选择。结果相对当前 L1：MAE `0.846938 → 0.855979`、RMSE `1.231622 → 1.237131`、方向 `50.998% → 51.009%`、Pearson `-0.001299 → 0.002982`、Spearman `0.006897 → -0.003850`。由于独立子模型幂校准后再组合改变了排序，Spearman 反而恶化，误差也恶化；保留 MSE 校准。
