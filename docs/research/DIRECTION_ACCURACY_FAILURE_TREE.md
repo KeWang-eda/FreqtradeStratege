@@ -80,3 +80,7 @@ direction = mean(sign(prediction) == sign(volnorm_future_return))
 ## 5. 阈值诊断结果
 
 参见 `DIRECTION_THRESHOLD_DIAGNOSTIC.md`。同一分类器的两种阈值平均差异区间跨零，近期窗口恶化，不修改生产阈值或模型。
+
+## 6. 冻结候选的连续样本验证
+
+`error`早停在原576点平均+2.604个百分点，但在2529个新增预测中相对`logloss`仅+0.079个百分点，6/12/24根区块区间均跨零。不将该候选接入生产。此证据把下一项收敛到2026-01分类器随预测时间延长失效，先按周分解类别与预测符号分布，不能继续在原窗口挑指标或阈值。详见`DIRECTION_THRESHOLD_DIAGNOSTIC.md`扩窗章节。
