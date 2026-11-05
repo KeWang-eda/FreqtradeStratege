@@ -160,7 +160,7 @@ def run_probe(config_path: Path, output: Path, pairs: list[str], end: str | None
                     "model_directory": str(dk.data_path.relative_to(output)),
                     "audit_directory": str(model.last_native_audit_path.relative_to(output)),
                     "xgboost_rounds": model.model.get_booster().num_boosted_rounds(),
-                    "best_iteration": getattr(model.model, "best_iteration", None),
+                    "best_iteration": _safe_best_iteration(model.model),
                     "status": "PASS",
                 }
             )
@@ -186,6 +186,14 @@ def run_probe(config_path: Path, output: Path, pairs: list[str], end: str | None
         write_json(output / "network.json", network)
         write_json(output / "training_run.json", report)
     return report
+
+
+def _safe_best_iteration(model: object) -> int | None:
+    """Read XGBoost's optional property without failing non-early-stopped models."""
+    try:
+        return model.best_iteration
+    except AttributeError:
+        return None
 
 
 def main(argv: list[str] | None = None) -> int:

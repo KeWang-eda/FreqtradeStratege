@@ -273,21 +273,28 @@ class XGBoostRegressorES(BaseRegressionModel):
                 secondary_parameters["quantile_alpha"] = float(blend_quantile_alpha)
             secondary = create_estimator("xgboost", secondary_parameters)
 
-        callbacks: list = [TBCallback(dk.data_path)]
-        if early_stopping_rounds > 0 and eval_set is not None:
-            callbacks.append(
-                xgb.callback.EarlyStopping(
-                    rounds=early_stopping_rounds,
-                    save_best=True,
-                    metric_name=training_parameters.get("eval_metric", "rmse"),
-                    data_name="validation_0",
+        def make_callbacks() -> list:
+            callbacks = [TBCallback(dk.data_path)]
+            if early_stopping_rounds > 0 and eval_set is not None:
+                callbacks.append(
+                    xgb.callback.EarlyStopping(
+                        rounds=early_stopping_rounds,
+                        save_best=True,
+                        metric_name=training_parameters.get("eval_metric", "rmse"),
+                        data_name="validation_0",
+                    )
                 )
-            )
+            return callbacks
+
+        callbacks = make_callbacks()
+        if early_stopping_rounds > 0 and eval_set is not None:
+            # The callback instance is stateful and must not be shared by the
+            # primary and secondary estimators.
             logger.info("%s: 早停已启用 rounds=%d（监控测试集）", dk.pair, early_stopping_rounds)
 
         model.set_params(callbacks=callbacks)
         if secondary is not None:
-            secondary.set_params(callbacks=callbacks)
+            secondary.set_params(callbacks=make_callbacks())
             model = BlendedXGBRegressor(model, secondary, blend_weight)
         model.fit(
             X=X,
@@ -333,7 +340,13 @@ class XGBoostRegressorES(BaseRegressionModel):
         model.set_params(callbacks=[])
 
         if early_stopping_rounds > 0 and eval_set is not None:
-            best = getattr(model, "best_iteration", None)
+            # XGBoost exposes best_iteration as a property that raises when
+            # early stopping did not finish for a wrapped secondary model;
+            # getattr's default does not protect property access.
+            try:
+                best = model.best_iteration
+            except AttributeError:
+                best = None
             rounds = len(model.evals_result().get("validation_0", {}).get("rmse", []))
             logger.info("%s: 实际训练轮数=%s best_iteration=%s", dk.pair, rounds, best)
 
