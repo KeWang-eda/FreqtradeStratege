@@ -74,7 +74,7 @@ def test_native_configuration_parameters_are_unchanged():
     # its incompatible cache namespace; every actual parameter stays frozen.
     # Freqtrade discovery also needs the relocated adapter package path.
     assert before["freqai"].pop("identifier") == "mystrategy-4h-regression-72pair-corr-s1-v1"
-    assert after["freqai"].pop("identifier") == "mystrategy-4h-regression-72pair-corr-s1-shallow-recent-reg5-power-v6"
+    assert after["freqai"].pop("identifier") == "mystrategy-4h-regression-72pair-corr-s1-shallow-recent-reg5-power-v6-lagret-v1"
     assert after["freqai"].pop("model_training_parameters") == {
         **before["freqai"].pop("model_training_parameters"),
         "n_estimators": 300,
@@ -87,4 +87,7 @@ def test_native_configuration_parameters_are_unchanged():
     assert after["freqai"]["feature_parameters"]["weight_factor"] == 0.9
     assert "weight_factor" not in before["freqai"]["feature_parameters"]
     after["freqai"]["feature_parameters"].pop("weight_factor")
+    # The checked-in config is intentionally portable; the frozen reference
+    # predates that and contains the original machine's absolute data path.
+    before["datadir"] = "data"
     assert without_comments(before) == without_comments(after)

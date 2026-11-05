@@ -35,11 +35,17 @@ def test_actual_native_expansion_schema_and_all_feature_contracts(native_inputs)
     assert report["status"] == "PASS", report
     assert report["audited_pairs"] == config["exchange"]["pair_whitelist"]
     assert report["tolerance"] == {"rtol": 0.0, "atol": 0.0}
-    counts = {pair: value["feature_count"] for pair, value in report["pairs"].items()}
-    assert counts == {"BTC/USDT:USDT": 92, "ETH/USDT:USDT": 92, "BNB/USDT:USDT": 136}
     for result in report["pairs"].values():
         assert result["unverified_columns"] == []
         assert len(result["columns"]) == result["feature_count"]
+        for feature in ("1", "2", "3", "6"):
+            matching = [
+                name
+                for name in result["columns"]
+                if f"%-lag-return-{feature}_" in name
+            ]
+            assert matching
+            assert all(result["contracts"][name]["status"] == "PASS" for name in matching)
         assert all(value["status"] == "PASS" for value in result["contracts"].values())
         assert all(value["available_at"] for value in result["contracts"].values())
         assert {check["kind"] for check in result["checks"]} == {

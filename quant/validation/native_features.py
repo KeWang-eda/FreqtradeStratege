@@ -36,6 +36,7 @@ _PERIOD_FEATURES = (
     "momentum",
 )
 _BASIC_FEATURES = ("return", "range", "body", "volume-change")
+_LAG_RETURN_FEATURES = ("lag-return-1", "lag-return-2", "lag-return-3", "lag-return-6")
 _STANDARD_FEATURES = ("volatility-6", "volatility-24", "hour", "day-of-week")
 
 
@@ -111,7 +112,10 @@ def _feature_contracts(
                     (f"%-{name}-period_{period}", name, period)
                     for period in params["indicator_periods_candles"]
                     for name in _PERIOD_FEATURES
-                ] + [(f"%-{name}_gen", name, None) for name in _BASIC_FEATURES]
+                ] + [(f"%-{name}_gen", name, None) for name in _BASIC_FEATURES] + [
+                    (f"%-{name}_gen", name, int(name.rsplit("-", 1)[-1]))
+                    for name in _LAG_RETURN_FEATURES
+                ]
                 for prefix, name, period in specs:
                     column = (
                         prefix + (f"_shift-{shift}" if shift else "") + f"_{source}_{tf}"
@@ -125,6 +129,8 @@ def _feature_contracts(
                             if name == "momentum"
                             else period - 1
                             if period is not None
+                            else period
+                            if name in _LAG_RETURN_FEATURES
                             else 1
                             if name in {"return", "volume-change"}
                             else 0
