@@ -10,7 +10,7 @@ direction = mean(sign(prediction) == sign(volnorm_future_return))
 
 零值视作第三种状态，必须单独报告；`prediction_ready=0`、NaN 和缺失样本不能默认为方向错误。MAE、RMSE、Pearson、Spearman 只作为护栏和诊断，不作为本轮候选选择标准。
 
-方向预测的基准不能只写 50%。每个窗口同时报告多数类基准 `max(P(y>0), P(y<0))`、混淆矩阵、预测正负比例、`zero_pred_rate` 和按 `|prediction|` 分箱的 coverage-accuracy。依据：Pesaran & Timmermann (1994), *A Simple Nonparametric Test of Predictive Performance*, DOI `10.1080/07350015.1994.10524503`；scikit-learn classification metrics 文档（https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics）。
+方向预测的基准不能只写 50%。每个窗口同时报告测试窗口事后最佳常量方向参照 `max(P(y>0), P(y<0))`（不能部署）；可部署基准的方向必须仅由训练标签多数类选定、混淆矩阵、预测正负比例、`zero_pred_rate` 和按 `|prediction|` 分箱的 coverage-accuracy。依据：Pesaran & Timmermann (1992), *A Simple Nonparametric Test of Predictive Performance*, DOI `10.1080/07350015.1992.10509922`；scikit-learn classification metrics 文档（https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics）。
 
 ## 2. 故障树
 
@@ -27,7 +27,7 @@ direction = mean(sign(prediction) == sign(volnorm_future_return))
 │  ├─ B3 训练 sample_weight 改变正负类比例
 │  └─ B4 horizon=3 重叠造成有效样本数被高估
 ├─ C 回归输出到符号
-│  ├─ C1 MAE/MSE 学条件幅度，不等价于 P(y>0)
+│  ├─ C1 MSE学条件均值，其符号不一定等价于 P(y>0)>.5；MAE学条件中位数
 │  ├─ C2 预测接近 0 时符号容易随机
 │  ├─ C3 blend/校准造成符号翻转或单边输出
 │  └─ C4 训练输出恒定（early stopping 第 0 棵树）
@@ -49,7 +49,7 @@ direction = mean(sign(prediction) == sign(volnorm_future_return))
 
 四个原生基线窗口、每币对 48 个预测的方向诊断如下：
 
-| 窗口 | 币对 | 准确率 | 多数类基准 | 真实正类比例 | 预测正类比例 | `|y|<0.1` | 零预测 |
+| 窗口 | 币对 | 准确率 | 事后常量参照 | 真实正类比例 | 预测正类比例 | `|y|<0.1` | 零预测 |
 |---|---|---:|---:|---:|---:|---:|---:|
 | 2024-01 | BTC | 60.4% | 58.3% | 41.7% | 60.4% | 2.1% | 0 |
 | 2024-01 | ETH | 45.8% | 64.6% | 35.4% | 60.4% | 6.2% | 0 |
@@ -64,7 +64,7 @@ direction = mean(sign(prediction) == sign(volnorm_future_return))
 | 2026-10 | ETH | 52.1% | 52.1% | 52.1% | 8.3% | 10.4% | 0 |
 | 2026-10 | BNB | 43.8% | 52.1% | 47.9% | 62.5% | 12.5% | 0 |
 
-最直接的已证实问题是 **C1/C3：回归器的符号输出存在明显单边偏置**。例如 2025-01 BTC/BNB 的预测全为正，2024-01 BNB 全为负；这些不是零预测问题，而是模型学到的条件幅度均值在符号上偏向一侧。多个币对的准确率低于多数类基准，说明“回归幅度再取符号”没有稳定解决方向任务。
+已观察到的问题是**部分窗口符号输出单边化**，C1/C3仅是待验证解释，不能从该现象直接推断损失函数或组合造成错误。例如 2025-01 BTC/BNB 的预测全为正，2024-01 BNB 全为负；这些不是零预测问题，而是模型学到的条件幅度均值在符号上偏向一侧。多个币对的准确率低于测试窗口事后最佳常量方向参照，说明“回归幅度再取符号”没有稳定解决方向任务。
 
 **C4/D3 也有证据：** BNB 2025-01 基线输出恒定，根因为早停第 0 棵树；关闭早停能恢复变化，但跨窗口和币对不稳定，不能直接接入生产。
 
@@ -76,3 +76,7 @@ direction = mean(sign(prediction) == sign(volnorm_future_return))
 
 分类器的概率阈值先固定为 `0.5`；项目当前把概率映射为正负条件收益均值，实际符号阈值不一定是 `0.5`，这必须作为单独的阈值诊断，不能和模型训练混在一起。只有分类器在预先固定的独立窗口中超过回归器和多数类基准，才继续考虑接入；否则回到 C2/C4 的输出符号与早停分析。
 
+
+## 5. 阈值诊断结果
+
+参见 `DIRECTION_THRESHOLD_DIAGNOSTIC.md`。同一分类器的两种阈值平均差异区间跨零，近期窗口恶化，不修改生产阈值或模型。
