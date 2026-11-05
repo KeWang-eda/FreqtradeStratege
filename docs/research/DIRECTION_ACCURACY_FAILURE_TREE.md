@@ -84,3 +84,39 @@ direction = mean(sign(prediction) == sign(volnorm_future_return))
 ## 6. 冻结候选的连续样本验证
 
 `error`早停在原576点平均+2.604个百分点，但在2529个新增预测中相对`logloss`仅+0.079个百分点，6/12/24根区块区间均跨零。不将该候选接入生产。此证据把下一项收敛到2026-01分类器随预测时间延长失效，先按周分解类别与预测符号分布，不能继续在原窗口挑指标或阈值。详见`DIRECTION_THRESHOLD_DIAGNOSTIC.md`扩窗章节。
+
+## 7. 模型陈旧分支复验
+
+2026-01六周预测的单边输出通过周更仅部分缓解；相同1月1日初始化下，周更50.000%对冻结48.016%，配对6/12/24/42根区块区间均跨零。不能把模型陈旧确定为唯一根因。参见`DIRECTION_ROLLING_DIAGNOSTIC.md`，后续从每周验证期到预测期的判别能力变化继续定位，不在同一756点评估段选参。
+
+## 8. 验证判别落差与refit分支
+
+18模型train/validation/development平均方向准确率64.46%/55.77%/50.00%，验证集用于早停不算独立证据。第3/4周开发AUC低于0.5，第5周AUC尚可但方向准确率低，不能用同一个先验修正解释。固定原best_iteration+1后合并成熟train/validation重拟合，方向降至47.35%，五周下降，拒绝该候选。18组标签成熟性审计通过；详见`DIRECTION_VALIDATION_REFIT_DIAGNOSTIC.md`。下一叶节点为长期验证汇总是否掩盖近期失效，先描述统计后实验。
+
+## 9. 近期验证范围分支
+
+固定最后42成熟验证行，观察到第3–5周局部失效被完整验证汇总掩盖，但第6周不一致。只缩短early-stop eval_set，训练和其它设置不变，方向50.000%降至48.148%（1周升、1周平、4周降），否决。详见`DIRECTION_RECENT_VALIDATION_DIAGNOSTIC.md`。不继续扫描该窗口长度或在同一756点挑方案。
+
+## 10. 两个预声明特征的训练期稳定性
+
+只检验自身单根收益、momentum14在四个训练子期的单调方向关联；未用开发标签选择。单根收益方向变号，BTC/BNB momentum14均反向，ETH末段接近无关联；尚无正式显著性或增量预测验证，不据此删除特征或新增规则。详见`DIRECTION_FEATURE_STABILITY_DIAGNOSTIC.md`。
+
+## 11. momentum14增量信息消融
+
+训练内部3折forward、双层label maturity purge，完整特征51.5915%对移除自身未shift momentum14的51.7189%，3927点净增5正确；6/12/24根区块区间均跨零。无可信改善，不删列。单seed且列抽样变化、已有AUC观察构成探索限制，详见`DIRECTION_MOMENTUM_ABLATION.md`。
+
+## 12. 分类标签契约分支
+
+发现并局部修复非有限标签静默编码、class0均值遗漏零收益两个问题，26个相关测试通过。四窗576点映射前后方向正确数321→321，未证明方向收益；修复留本地、不push。详见`DIRECTION_LABEL_CONTRACT_AUDIT.md`。不能把这两个低层问题归因为当前预测能力差的主因。
+
+## 13. 固定低容量分类对照
+
+保持相同训练内forward样本与purge，Logistic(C1)51.6679%对XGB51.5915%，3927点净增3正确、6/12/24根区块区间均跨零。不切换此模型，也不据此否定所有容量解释。详见`DIRECTION_LINEAR_CONTROL_DIAGNOSTIC.md`。下一项先明确相对可部署训练多数类参照的增益，不扫描C。
+
+## 14. 可部署基线与历史先验proxy
+
+相同训练内3927点主基线(inner-train多数类)47.263%，成熟past多数类50.700%，XGB51.592%。主基线差支持该研究时期存在相对常量参照的增益，不证明独立泛化。只用预测前成熟历史的prior odds修正，XGB升至52.916%，净增52正确，但6/12/24根区块区间均跨零。保持候选定义，不push或扫先验窗口；详见`DIRECTION_MAJORITY_PRIOR_DIAGNOSTIC.md`。
+
+## 15. 历史先验proxy跨时期复核
+
+冻结odds修正在2024-01提高0.637pp，在2025-01/2026-10分别下降0.280/0.407pp，合并略降；各时期时间区块区间均跨零。否决该proxy的推广，不证明label shift假设不存在。详见`DIRECTION_PRIOR_CROSS_PERIOD_DIAGNOSTIC.md`。
