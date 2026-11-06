@@ -34,30 +34,29 @@ def mature_rows(rows, samples, available):
     return rows.loc[times < available]
 
 
-def run(output, config_path):
+def run(output, config_path, source_period='base-20240701-direction-confirm1'):
     output.mkdir(parents=True, exist_ok=False)
-    source_period = 'base-20240701-direction-confirm1'
     root = Path('artifacts/native-prediction-study/runs') / source_period
     source_head = Path('artifacts/native-direction-audit/binary-logloss-learner-replication')
     report = json.loads((root/'training_run.json').read_text())
     config = json.loads(config_path.read_text())
     validate_native_config(config)
     protocol = {
-        'hypothesis': 'randomized row/column sampling creates unstable direction boundaries; fixed probability averaging may help',
+        'hypothesis': 'hard hinge classification may align the training objective with the direction-accuracy decision',
         'source_period': source_period, 'source': 'retained train_before_preprocessing ONLY; no external forecast/validation labels',
-        'seeds': list(SEEDS), 'baseline': 'seed_0', 'candidate': 'binary_hinge',
+        'seeds': list(SEEDS), 'baseline': 'seed_0 logistic control', 'candidate': 'binary_hinge',
         'seed_identity': 'saved H8 random_state=None resolves to Booster seed0; data_split seed42 is not tree seed',
         'folds': 'four consecutive training quarters; first1/2/3 predict next; chronological inner20% early stopping',
         'purge': 'outer past and inner train require label_end strictly before next available_at',
         'pipeline': 'fresh official native factory per fold, fit only inner gradient training; no full-window variance filtering',
         'weights': 'official FreqAI formula rebuilt per available mature history before inner split/purge',
-        'early_stopping': 'each member own weighted logloss patience30 cap300; differing selected tree counts included in intervention',
+        'early_stopping': 'hinge member uses weighted error patience30 cap300; tree selection is part of the objective intervention',
         'decision': 'arithmetic mean probabilities; margin2p-1; threshold0.5; sign0 retained; no voting or seed selection',
         'primary_mask': 'common native DI ready==1; also report all rows and coverage; never count not-ready as errors',
         'gate': 'positive pooled primary delta, >=2 of3 fold deltas positive, all6/12/24 date-block95 lower bounds>0 before external runs',
         'scope': 'training-internal exploratory evidence on previously studied historical window; not independent confirmation',
         'prior_negative': '2026-10-30 standalone regression seed ensemble failed; this is binary probability with native fold preprocessing',
-        'reference': 'Breiman1996 Bagging Predictors DOI10.1007/BF00058655; seed ensemble is not independent bootstrap bagging',
+        'reference': 'XGBoost objective documentation binary:hinge; Bartlett, Jordan & McAuliffe (2006), DOI:10.1214/009053606000000795',
         'config':str(config_path), 'config_sha256':file_hash(config_path),
         'report_sha256':file_hash(root/'training_run.json'),
     }
@@ -151,5 +150,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',type=Path,default=Path('artifacts/native-direction-audit/seed-control-inner'))
     parser.add_argument('--config',type=Path,default=Path('config.json'))
+    parser.add_argument('--source-period',default='base-20240701-direction-confirm1')
     args=parser.parse_args()
-    run(args.output,args.config)
+    run(args.output,args.config,args.source_period)
