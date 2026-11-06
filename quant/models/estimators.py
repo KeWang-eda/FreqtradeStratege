@@ -63,10 +63,9 @@ def create_estimator(
     supplied.pop("weight_factor", None)
     supplied.pop("normalize_sample_weight", None)
     supplied.pop("prediction_power", None)
-    if (
-        name == "xgboost_direction"
-        and supplied.get("objective", "binary:logistic") != "binary:logistic"
-    ):
+    if name == "xgboost_direction" and supplied.get("objective", "binary:logistic") not in {
+        "binary:logistic", "binary:hinge"
+    }:
         raise ConfigurationError(
             "xgboost_direction requires objective='binary:logistic'"
         )

@@ -53,10 +53,13 @@ class NativeDirectionLearner:
             "eval_metric": "logloss",
             **dict(params or {}),
         }
-        if self.params.get("objective") != "binary:logistic" or self.params.get(
-            "eval_metric"
-        ) != "logloss":
-            raise DataContractError("Direction learner requires binary:logistic and logloss")
+        objective = self.params.get("objective")
+        metric = self.params.get("eval_metric")
+        if (objective, metric) not in {
+            ("binary:logistic", "logloss"),
+            ("binary:hinge", "error"),
+        }:
+            raise DataContractError("Direction learner requires logistic/logloss or hinge/error")
         if self.params.get("callbacks") is not None or self.params.get(
             "early_stopping_rounds"
         ) is not None:
@@ -140,7 +143,7 @@ class NativeDirectionLearner:
             raise DataContractError("Direction training requires positive weight in both classes")
         callback = xgb.callback.EarlyStopping(
             rounds=self.early_stopping_rounds,
-            metric_name="logloss",
+            metric_name=self.params["eval_metric"],
             data_name="validation_0",
             maximize=False,
             save_best=True,
@@ -218,7 +221,9 @@ class NativeDirectionLearner:
         if (
             tuple(estimator.get_booster().feature_names) != columns
             or params.get("objective") != "binary:logistic"
-            or params.get("eval_metric") != "logloss"
+            or (params.get("objective"), params.get("eval_metric")) not in {
+                ("binary:logistic", "logloss"), ("binary:hinge", "error")
+            }
             or not np.array_equal(estimator.classes_, [0, 1])
         ):
             raise DataContractError("Direction artifact model contract mismatch")
