@@ -21,12 +21,17 @@ removing the two columns. All 756 paired predictions were ready.
 | lag-return baseline | 406 / 756 | 53.704% |
 | lag-return + volatility ablation | 418 / 756 | **55.291%** |
 
-The first pilot produced 418/756 correct candidate predictions, but its output
-did not include a paired baseline prediction and its runner changed the
-feature set by adding lag returns while removing volatility. Therefore the
-418/756 figure is **not a valid ablation delta** and must not be interpreted as
-a measured uplift. A corrected paired run is required before any production
-decision. The six-week window is already exposed development data in any case.
+The corrected paired run trains both arms in the same script. Both arms retain
+the lag-return features; the candidate alone removes the two volatility
+columns. It writes both predictions and scores the common ready mask:
+
+- baseline: `406/756 = 53.704%`
+- candidate: `418/756 = 55.291%`
+- paired change: **+12 correct predictions (+1.587 pp)**
+
+The six-week window is already exposed development data, so this is a positive
+development result rather than independent confirmation. Production must wait
+for the registered confirmation windows.
 
 Reference for the design: XGBoost parameter documentation (feature inputs and
 validation lifecycle), and Gama et al. (2014), *A Survey on Concept Drift

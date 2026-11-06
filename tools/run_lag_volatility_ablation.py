@@ -47,64 +47,68 @@ def run(output: Path) -> None:
             lagged = pd.DataFrame({f"%-lag-return-{n}": source["close"].pct_change(n)
                                    for n in LAGS})
 
-            def augmented(frame: pd.DataFrame, dates) -> pd.DataFrame:
+            kept = [c for c in features if c not in ("%-volatility-6", "%-volatility-24")]
+
+            def augmented(frame: pd.DataFrame, dates, columns) -> pd.DataFrame:
                 index = pd.DatetimeIndex(pd.to_datetime(dates, utc=True))
-                result = frame[kept].copy()
+                result = frame[columns].copy()
                 result.index = index
                 result[lagged.columns] = lagged.reindex(index).to_numpy()
                 return result.reset_index(drop=True)
 
-            kept = [c for c in features if c not in ("%-volatility-6", "%-volatility-24")]
             train_dates = samples.loc[train.index, "candle_timestamp"]
             valid_dates = samples.loc[valid.index, "candle_timestamp"]
-            tr = augmented(train, train_dates)
-            va = augmented(valid, valid_dates)
             label_pipeline = joblib.load(next(model_dir.glob("*_label_pipeline.pkl")))
             ytr = label_pipeline.inverse_transform(train[[label]])[0].iloc[:, 0].to_numpy(float)
             yv = label_pipeline.inverse_transform(valid[[label]])[0].iloc[:, 0].to_numpy(float)
             factory = IFreqaiModel.define_data_pipeline(
                 SimpleNamespace(freqai_info=cfg["freqai"]), threads=1)
-            pipeline = IdentityPreservingPipeline(factory.steps, factory.fitparams)
-            X, y, weights = pipeline.fit_transform(
-                tr, pd.DataFrame({label: ytr}), train.sample_weight.to_numpy())
-            V, vy, vw = pipeline.transform(
-                va, pd.DataFrame({label: yv}), valid.sample_weight.to_numpy())
             saved = joblib.load(next(model_dir.glob("*_model.joblib")))
             params = saved.get_params()
             params.update(n_estimators=300, early_stopping_rounds=30)
             params.pop("eval_metric", None)
-            candidate = XGBRegressor(**params, eval_metric="rmse")
-            candidate.fit(X, y[label], sample_weight=weights,
-                          eval_set=[(V, vy[label])],
-                          sample_weight_eval_set=[vw], verbose=False)
             prediction = pd.read_parquet(model_dir / "populated_prediction.parquet").iloc[:42].copy()
             dates = pd.to_datetime(prediction.date, utc=True)
-            P, ready, _ = pipeline.transform(augmented(prediction, dates), outlier_check=True)
-            score = candidate.predict(P)
             baseline = pd.read_parquet(EXTENDED / f"20260101-{pair_symbol}.parquet")
             baseline = baseline[baseline.new].copy()
             baseline["date"] = pd.to_datetime(baseline.date, utc=True)
             baseline = baseline.set_index("date")
             assert dates.is_unique and dates.isin(baseline.index).all()
             truth = baseline.loc[dates, "truth"].to_numpy(float)
-            assert len(ready) == len(dates)
-            rows.extend({"week": week, "pair": pair_symbol, "date": str(date),
-                         "truth": float(t), "prediction": float(p),
-                         "ready": int(r), "correct": bool(np.sign(p) == np.sign(t))}
-                        for date, t, p, r in zip(dates, truth, score, ready))
+            arm_scores = {}
+            arm_ready = {}
+            for arm, columns in (("lag_baseline", features), ("lag_no_vol", kept)):
+                pipeline = IdentityPreservingPipeline(factory.steps, factory.fitparams)
+                X, y, weights = pipeline.fit_transform(
+                    augmented(train, train_dates, columns), pd.DataFrame({label: ytr}),
+                    train.sample_weight.to_numpy())
+                V, vy, vw = pipeline.transform(
+                    augmented(valid, valid_dates, columns), pd.DataFrame({label: yv}),
+                    valid.sample_weight.to_numpy())
+                learner = XGBRegressor(**params, eval_metric="rmse")
+                learner.fit(X, y[label], sample_weight=weights,
+                            eval_set=[(V, vy[label])], sample_weight_eval_set=[vw], verbose=False)
+                P, ready, _ = pipeline.transform(augmented(prediction, dates, columns), outlier_check=True)
+                arm_scores[arm] = learner.predict(P)
+                arm_ready[arm] = np.asarray(ready, dtype=bool)
+                assert len(ready) == len(dates)
+            common = arm_ready["lag_baseline"] & arm_ready["lag_no_vol"]
+            for date, t, bp, cp, ready in zip(dates, truth, arm_scores["lag_baseline"], arm_scores["lag_no_vol"], common):
+                rows.append({"week": week, "pair": pair_symbol, "date": str(date), "truth": float(t),
+                             "baseline_prediction": float(bp), "candidate_prediction": float(cp),
+                             "ready": int(ready), "baseline_correct": bool(np.sign(bp) == np.sign(t)),
+                             "candidate_correct": bool(np.sign(cp) == np.sign(t))})
             audits.append({"week": week, "pair": pair_symbol,
-                           "train_n": len(X), "valid_n": len(V), "prediction_n": len(score),
-                           "feature_n": len(X.columns), "removed": ["%-volatility-6", "%-volatility-24"],
-                           "baseline": "lag_return_1/2/3/6",
-                           "ready_n": int(np.asarray(ready).sum()),
-                           "best_iteration": int(candidate.best_iteration)})
+                           "train_n": len(train), "valid_n": len(valid), "prediction_n": len(dates),
+                           "baseline_features": len(features) + len(LAGS), "candidate_features": len(kept) + len(LAGS),
+                           "removed": ["%-volatility-6", "%-volatility-24"], "ready_n": int(common.sum())})
     result = pd.DataFrame(rows)
     result.to_parquet(output / "predictions.parquet", index=False)
     (output / "audit.json").write_text(json.dumps(audits, indent=2))
     selected = result[result.ready == 1]
-    print("lag-volatility-ablation", int(selected.correct.sum()), len(selected),
-          float(selected.correct.mean()), "coverage", len(selected) / len(result))
-    print(selected.groupby(["week", "pair"]).correct.mean().to_string())
+    print("paired", int(selected.baseline_correct.sum()), int(selected.candidate_correct.sum()), len(selected),
+          float(selected.baseline_correct.mean()), float(selected.candidate_correct.mean()))
+    print(selected.groupby(["week", "pair"])[["baseline_correct", "candidate_correct"]].mean().to_string())
 
 
 if __name__ == "__main__":
