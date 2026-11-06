@@ -16,3 +16,9 @@ The point result is promising, but the interval crosses zero and this is an
 exposed development window. The artifact is therefore a pre-registered
 candidate for independent confirmation only; it does not change production.
 
+As a chronological confirmation check, weeks 1--3 were treated as discovery
+and weeks 4--6 as the subsequent confirmation segment. The candidate gain was
+positive in the discovery segment (`+3.175 pp`) but **0 pp** in weeks 4--6.
+The improvement therefore does not persist through the available later
+segment and is rejected for production.
+
