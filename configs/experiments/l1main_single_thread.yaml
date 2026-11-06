@@ -1,0 +1,4 @@
+research:
+  model:
+    params:
+      n_jobs: 1
