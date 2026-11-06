@@ -29,6 +29,11 @@ columns. It writes both predictions and scores the common ready mask:
 - candidate: `418/756 = 55.291%`
 - paired change: **+12 correct predictions (+1.587 pp)**
 
+Using a fixed seed (`42`) and six-candle moving-block bootstrap over the
+paired correctness difference, the 95% interval is `[-0.926 pp, +4.233 pp]`.
+It crosses zero, so the point estimate is promising but not yet a confirmed
+production improvement.
+
 The six-week window is already exposed development data, so this is a positive
 development result rather than independent confirmation. Production must wait
 for the registered confirmation windows.
