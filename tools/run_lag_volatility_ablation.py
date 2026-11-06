@@ -21,7 +21,7 @@ EXTENDED = Path("artifacts/direction-threshold-study/extended")
 LAGS = (1, 2, 3, 6)
 
 
-def run(output: Path, remove: tuple[str, ...], add_bollinger: bool = False, add_clv: bool = False) -> None:
+def run(output: Path, remove: tuple[str, ...], add_bollinger: bool = False, add_clv: bool = False, add_stoch: bool = False) -> None:
     output.mkdir(parents=True, exist_ok=False)
     cfg = json.loads(Path("config.json").read_text())
     rows = []
@@ -51,15 +51,17 @@ def run(output: Path, remove: tuple[str, ...], add_bollinger: bool = False, add_
             bollinger = ((source["close"] - bb_mean) / (2.0 * bb_std)).rename("%-bollinger-position-20")
             clv = ((2.0 * source["close"] - source["high"] - source["low"]) /
                    (source["high"] - source["low"]).replace(0.0, np.nan)).rename("%-clv")
+            stoch_low = source["low"].rolling(14).min(); stoch_high = source["high"].rolling(14).max()
+            stoch = ((source["close"] - stoch_low) / (stoch_high - stoch_low).replace(0.0, np.nan)).rename("%-stoch-position-14")
 
             # `remove` entries are stable substrings so generated native
             # families (e.g. range_gen and range_gen_shift-1) are removed
             # together while exact calendar/volatility names still work.
             kept = [c for c in features if not any(token in c for token in remove)]
 
-            def augmented(frame: pd.DataFrame, dates, columns, include_bollinger: bool = False, include_clv: bool = False) -> pd.DataFrame:
+            def augmented(frame: pd.DataFrame, dates, columns, include_bollinger: bool = False, include_clv: bool = False, include_stoch: bool = False) -> pd.DataFrame:
                 index = pd.DatetimeIndex(pd.to_datetime(dates, utc=True))
-                base_columns = [c for c in columns if c not in {"%-bollinger-position-20", "%-clv"}]
+                base_columns = [c for c in columns if c not in {"%-bollinger-position-20", "%-clv", "%-stoch-position-14"}]
                 result = frame[base_columns].copy()
                 result.index = index
                 result[lagged.columns] = lagged.reindex(index).to_numpy()
@@ -67,6 +69,8 @@ def run(output: Path, remove: tuple[str, ...], add_bollinger: bool = False, add_
                     result["%-bollinger-position-20"] = bollinger.reindex(index).to_numpy()
                 if include_clv:
                     result["%-clv"] = clv.reindex(index).to_numpy()
+                if include_stoch:
+                    result["%-stoch-position-14"] = stoch.reindex(index).to_numpy()
                 return result.reset_index(drop=True)
 
             train_dates = samples.loc[train.index, "candle_timestamp"]
@@ -90,19 +94,19 @@ def run(output: Path, remove: tuple[str, ...], add_bollinger: bool = False, add_
             truth = baseline.loc[dates, "truth"].to_numpy(float)
             arm_scores = {}
             arm_ready = {}
-            candidate_columns = kept + (["%-bollinger-position-20"] if add_bollinger else []) + (["%-clv"] if add_clv else [])
+            candidate_columns = kept + (["%-bollinger-position-20"] if add_bollinger else []) + (["%-clv"] if add_clv else []) + (["%-stoch-position-14"] if add_stoch else [])
             for arm, columns in (("lag_baseline", features), ("lag_candidate", candidate_columns)):
                 pipeline = IdentityPreservingPipeline(factory.steps, factory.fitparams)
                 X, y, weights = pipeline.fit_transform(
-                    augmented(train, train_dates, columns, add_bollinger and arm == "lag_candidate", add_clv and arm == "lag_candidate"), pd.DataFrame({label: ytr}),
+                    augmented(train, train_dates, columns, add_bollinger and arm == "lag_candidate", add_clv and arm == "lag_candidate", add_stoch and arm == "lag_candidate"), pd.DataFrame({label: ytr}),
                     train.sample_weight.to_numpy())
                 V, vy, vw = pipeline.transform(
-                    augmented(valid, valid_dates, columns, add_bollinger and arm == "lag_candidate", add_clv and arm == "lag_candidate"), pd.DataFrame({label: yv}),
+                    augmented(valid, valid_dates, columns, add_bollinger and arm == "lag_candidate", add_clv and arm == "lag_candidate", add_stoch and arm == "lag_candidate"), pd.DataFrame({label: yv}),
                     valid.sample_weight.to_numpy())
                 learner = XGBRegressor(**params, eval_metric="rmse")
                 learner.fit(X, y[label], sample_weight=weights,
                             eval_set=[(V, vy[label])], sample_weight_eval_set=[vw], verbose=False)
-                P, ready, _ = pipeline.transform(augmented(prediction, dates, columns, add_bollinger and arm == "lag_candidate", add_clv and arm == "lag_candidate"), outlier_check=True)
+                P, ready, _ = pipeline.transform(augmented(prediction, dates, columns, add_bollinger and arm == "lag_candidate", add_clv and arm == "lag_candidate", add_stoch and arm == "lag_candidate"), outlier_check=True)
                 arm_scores[arm] = learner.predict(P)
                 arm_ready[arm] = np.asarray(ready, dtype=bool)
                 assert len(ready) == len(dates)
@@ -148,5 +152,6 @@ if __name__ == "__main__":
                         help="Comma-separated feature columns to remove")
     parser.add_argument("--add-bollinger", action="store_true")
     parser.add_argument("--add-clv", action="store_true")
+    parser.add_argument("--add-stoch", action="store_true")
     args = parser.parse_args()
-    run(args.output, tuple(x for x in args.remove.split(",") if x), args.add_bollinger, args.add_clv)
+    run(args.output, tuple(x for x in args.remove.split(",") if x), args.add_bollinger, args.add_clv, args.add_stoch)
