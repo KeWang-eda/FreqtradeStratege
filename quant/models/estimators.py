@@ -67,7 +67,7 @@ def create_estimator(
         "binary:logistic", "binary:hinge"
     }:
         raise ConfigurationError(
-            "xgboost_direction requires objective='binary:logistic'"
+            "xgboost_direction requires objective='binary:logistic' or 'binary:hinge'"
         )
     if seed is not None and "random_state" in supplied and supplied["random_state"] != seed:
         raise ConfigurationError("model.params.random_state must equal the experiment seed")
