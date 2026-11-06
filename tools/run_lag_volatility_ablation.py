@@ -21,7 +21,7 @@ EXTENDED = Path("artifacts/direction-threshold-study/extended")
 LAGS = (1, 2, 3, 6)
 
 
-def run(output: Path) -> None:
+def run(output: Path, remove: tuple[str, ...]) -> None:
     output.mkdir(parents=True, exist_ok=False)
     cfg = json.loads(Path("config.json").read_text())
     rows = []
@@ -47,7 +47,7 @@ def run(output: Path) -> None:
             lagged = pd.DataFrame({f"%-lag-return-{n}": source["close"].pct_change(n)
                                    for n in LAGS})
 
-            kept = [c for c in features if c not in ("%-volatility-6", "%-volatility-24")]
+            kept = [c for c in features if c not in remove]
 
             def augmented(frame: pd.DataFrame, dates, columns) -> pd.DataFrame:
                 index = pd.DatetimeIndex(pd.to_datetime(dates, utc=True))
@@ -101,7 +101,7 @@ def run(output: Path) -> None:
             audits.append({"week": week, "pair": pair_symbol,
                            "train_n": len(train), "valid_n": len(valid), "prediction_n": len(dates),
                            "baseline_features": len(features) + len(LAGS), "candidate_features": len(kept) + len(LAGS),
-                           "removed": ["%-volatility-6", "%-volatility-24"], "ready_n": int(common.sum())})
+                           "removed": list(remove), "ready_n": int(common.sum())})
     result = pd.DataFrame(rows)
     result.to_parquet(output / "predictions.parquet", index=False)
     (output / "audit.json").write_text(json.dumps(audits, indent=2))
@@ -109,6 +109,20 @@ def run(output: Path) -> None:
     print("paired", int(selected.baseline_correct.sum()), int(selected.candidate_correct.sum()), len(selected),
           float(selected.baseline_correct.mean()), float(selected.candidate_correct.mean()))
     print(selected.groupby(["week", "pair"])[["baseline_correct", "candidate_correct"]].mean().to_string())
+    # Synchronized circular block bootstrap on date-level paired deltas.
+    # A date block is one 4h candle; all pairs at that date stay together.
+    dates = sorted(selected.date.unique())
+    delta = selected.assign(delta=selected.candidate_correct.astype(int) - selected.baseline_correct.astype(int))
+    by_date = delta.groupby("date").delta.sum().reindex(dates).to_numpy(float) / 3.0
+    rng = np.random.default_rng(42)
+    reps = []
+    block = 12
+    for _ in range(5000):
+        starts = rng.integers(0, len(by_date), size=int(np.ceil(len(by_date) / block)))
+        sample = np.concatenate([by_date[np.arange(s, s + block) % len(by_date)] for s in starts])[:len(by_date)]
+        reps.append(float(sample.mean()))
+    lo, hi = np.quantile(reps, [0.025, 0.975])
+    print("bootstrap_block12_delta_pp", float(delta.delta.mean() * 100), float(lo * 100), float(hi * 100))
 
 
 if __name__ == "__main__":
@@ -116,5 +130,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path,
                         default=Path("artifacts/direction-threshold-study/lag-volatility-ablation-v1"))
+    parser.add_argument("--remove", default="%-volatility-6,%-volatility-24",
+                        help="Comma-separated feature columns to remove")
     args = parser.parse_args()
-    run(args.output)
+    run(args.output, tuple(x for x in args.remove.split(",") if x))
