@@ -21,7 +21,7 @@ EXTENDED = Path("artifacts/direction-threshold-study/extended")
 LAGS = (1, 2, 3, 6)
 
 
-def run(output: Path, remove: tuple[str, ...]) -> None:
+def run(output: Path, remove: tuple[str, ...], add_bollinger: bool = False) -> None:
     output.mkdir(parents=True, exist_ok=False)
     cfg = json.loads(Path("config.json").read_text())
     rows = []
@@ -46,17 +46,23 @@ def run(output: Path, remove: tuple[str, ...]) -> None:
             source = source.set_index("date")
             lagged = pd.DataFrame({f"%-lag-return-{n}": source["close"].pct_change(n)
                                    for n in LAGS})
+            bb_mean = source["close"].rolling(20).mean()
+            bb_std = source["close"].rolling(20).std().replace(0.0, np.nan)
+            bollinger = ((source["close"] - bb_mean) / (2.0 * bb_std)).rename("%-bollinger-position-20")
 
             # `remove` entries are stable substrings so generated native
             # families (e.g. range_gen and range_gen_shift-1) are removed
             # together while exact calendar/volatility names still work.
             kept = [c for c in features if not any(token in c for token in remove)]
 
-            def augmented(frame: pd.DataFrame, dates, columns) -> pd.DataFrame:
+            def augmented(frame: pd.DataFrame, dates, columns, include_bollinger: bool = False) -> pd.DataFrame:
                 index = pd.DatetimeIndex(pd.to_datetime(dates, utc=True))
-                result = frame[columns].copy()
+                base_columns = [c for c in columns if c != "%-bollinger-position-20"]
+                result = frame[base_columns].copy()
                 result.index = index
                 result[lagged.columns] = lagged.reindex(index).to_numpy()
+                if include_bollinger:
+                    result["%-bollinger-position-20"] = bollinger.reindex(index).to_numpy()
                 return result.reset_index(drop=True)
 
             train_dates = samples.loc[train.index, "candle_timestamp"]
@@ -80,23 +86,24 @@ def run(output: Path, remove: tuple[str, ...]) -> None:
             truth = baseline.loc[dates, "truth"].to_numpy(float)
             arm_scores = {}
             arm_ready = {}
-            for arm, columns in (("lag_baseline", features), ("lag_no_vol", kept)):
+            candidate_columns = kept + (["%-bollinger-position-20"] if add_bollinger else [])
+            for arm, columns in (("lag_baseline", features), ("lag_candidate", candidate_columns)):
                 pipeline = IdentityPreservingPipeline(factory.steps, factory.fitparams)
                 X, y, weights = pipeline.fit_transform(
-                    augmented(train, train_dates, columns), pd.DataFrame({label: ytr}),
+                    augmented(train, train_dates, columns, add_bollinger and arm == "lag_candidate"), pd.DataFrame({label: ytr}),
                     train.sample_weight.to_numpy())
                 V, vy, vw = pipeline.transform(
-                    augmented(valid, valid_dates, columns), pd.DataFrame({label: yv}),
+                    augmented(valid, valid_dates, columns, add_bollinger and arm == "lag_candidate"), pd.DataFrame({label: yv}),
                     valid.sample_weight.to_numpy())
                 learner = XGBRegressor(**params, eval_metric="rmse")
                 learner.fit(X, y[label], sample_weight=weights,
                             eval_set=[(V, vy[label])], sample_weight_eval_set=[vw], verbose=False)
-                P, ready, _ = pipeline.transform(augmented(prediction, dates, columns), outlier_check=True)
+                P, ready, _ = pipeline.transform(augmented(prediction, dates, columns, add_bollinger and arm == "lag_candidate"), outlier_check=True)
                 arm_scores[arm] = learner.predict(P)
                 arm_ready[arm] = np.asarray(ready, dtype=bool)
                 assert len(ready) == len(dates)
-            common = arm_ready["lag_baseline"] & arm_ready["lag_no_vol"]
-            for date, t, bp, cp, ready in zip(dates, truth, arm_scores["lag_baseline"], arm_scores["lag_no_vol"], common):
+            common = arm_ready["lag_baseline"] & arm_ready["lag_candidate"]
+            for date, t, bp, cp, ready in zip(dates, truth, arm_scores["lag_baseline"], arm_scores["lag_candidate"], common):
                 rows.append({"week": week, "pair": pair_symbol, "date": str(date), "truth": float(t),
                              "baseline_prediction": float(bp), "candidate_prediction": float(cp),
                              "ready": int(ready), "baseline_correct": bool(np.sign(bp) == np.sign(t)),
@@ -135,5 +142,6 @@ if __name__ == "__main__":
                         default=Path("artifacts/direction-threshold-study/lag-volatility-ablation-v1"))
     parser.add_argument("--remove", default="%-volatility-6,%-volatility-24",
                         help="Comma-separated feature columns to remove")
+    parser.add_argument("--add-bollinger", action="store_true")
     args = parser.parse_args()
-    run(args.output, tuple(x for x in args.remove.split(",") if x))
+    run(args.output, tuple(x for x in args.remove.split(",") if x), args.add_bollinger)
