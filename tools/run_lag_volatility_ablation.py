@@ -47,7 +47,10 @@ def run(output: Path, remove: tuple[str, ...]) -> None:
             lagged = pd.DataFrame({f"%-lag-return-{n}": source["close"].pct_change(n)
                                    for n in LAGS})
 
-            kept = [c for c in features if c not in remove]
+            # `remove` entries are stable substrings so generated native
+            # families (e.g. range_gen and range_gen_shift-1) are removed
+            # together while exact calendar/volatility names still work.
+            kept = [c for c in features if not any(token in c for token in remove)]
 
             def augmented(frame: pd.DataFrame, dates, columns) -> pd.DataFrame:
                 index = pd.DatetimeIndex(pd.to_datetime(dates, utc=True))
