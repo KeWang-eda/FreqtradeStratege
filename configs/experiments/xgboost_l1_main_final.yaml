@@ -1,0 +1,21 @@
+research:
+  name: xgboost_l1_main_final
+  model:
+    name: xgboost
+    params:
+      n_estimators: 300
+      max_depth: 2
+      learning_rate: 0.03
+      reg_lambda: 5.0
+      subsample: 0.8
+      colsample_bytree: 0.8
+      objective: reg:absoluteerror
+      blend_objective: reg:absoluteerror
+      blend_weight: 0.35
+      blend_weight_by_pair:
+        BNB/USDT:USDT: 0.35
+      weight_factor: 0.9
+      prediction_power: validation_grid
+      eval_metric: rmse
+      early_stopping_rounds: 30
+      verbosity: 0
