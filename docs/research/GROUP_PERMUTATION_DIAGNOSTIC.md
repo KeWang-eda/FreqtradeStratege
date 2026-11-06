@@ -16,3 +16,9 @@ forward evidence.
 The diagnostic is used only to prioritize a pre-registered family experiment;
 paired chronological direction accuracy and block bootstrap remain the gate.
 
+The runner now also uses contiguous 12-candle block permutations. The block
+diagnostic gives mean direction deltas of momentum `-0.111 pp`, volatility
+`-0.075 pp`, ATR `-0.055 pp`, RSI `+0.158 pp`, EMA `+0.032 pp`, and
+relative-volume `+0.071 pp`. The RSI signal remains a hypothesis only because
+the calculation is on validation rows from already exposed development models.
+

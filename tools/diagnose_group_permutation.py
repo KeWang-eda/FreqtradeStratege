@@ -23,7 +23,11 @@ def run(root, output, repeats=20):
         for name,idx in groups.items():
             scores=[]
             for _ in range(repeats):
-                xp=X.copy(); order=rng.permutation(len(X)); xp.iloc[:,idx]=X.iloc[order,idx].to_numpy(); scores.append(float((np.sign(model.predict(xp))==np.sign(y)).mean()))
+                # Permute contiguous 12-row blocks, preserving local temporal
+                # structure while breaking the family's alignment with labels.
+                block=12; chunks=[np.arange(i, min(i+block, len(X))) for i in range(0, len(X), block)]
+                order=np.concatenate([chunks[j] for j in rng.permutation(len(chunks))])
+                xp=X.copy(); xp.iloc[:,idx]=X.iloc[order,idx].to_numpy(); scores.append(float((np.sign(model.predict(xp))==np.sign(y)).mean()))
             rows.append({'week':md_dir.parts[-4],'pair':meta.get('pair',md_dir.name),'family':name,'n_features':len(idx),'baseline_accuracy':float(base.mean()),'permuted_accuracy_mean':float(np.mean(scores)),'delta_mean':float(np.mean(scores)-base.mean()),'delta_q025':float(np.quantile(np.array(scores)-base.mean(),.025)),'delta_q975':float(np.quantile(np.array(scores)-base.mean(),.975))})
     pd.DataFrame(rows).to_csv(output/'group_permutation.csv',index=False); print(pd.DataFrame(rows).groupby('family').delta_mean.mean().sort_values())
 if __name__=='__main__':
