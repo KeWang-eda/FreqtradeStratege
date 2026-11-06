@@ -146,6 +146,8 @@ direction = mean(sign(prediction) == sign(volnorm_future_return))
 
 2026-11-06 D4 train/validation 条件漂移诊断已完成：固定重放 H8 learner，训练4块、早停验证6块，逐块 maturity purge，未读 outer forecast truth。两段验证平均逐币 AUC 分别0.5509/0.5940，均高于0.5；验证真实上涨率约48.70%/52.68%，但预测上涨率39.87%/71.10%，表现更接近时期相关的边界偏移，而非普遍排序反转。短块 AUC 波动不足以证实条件反转。D4 当前不支持，不能据此加 regime feature 或修改模型。详见`NATIVE_DIRECTION_CONDITION_DRIFT_DIAGNOSTIC.md`及`artifacts/native-direction-audit/condition-drift-diagnostic.json`。
 
+Hinge objective replication completed on the separate 2023 historical source: 2024 inner folds had point gain +1.732pp, but 2023 fell 1.101pp (1946/3908 vs logistic 1989/3908); only one of three folds improved and the two-day paired block interval was [-3.288,+1.221]pp. The objective-only candidate is rejected; no production objective change. See `NATIVE_DIRECTION_HINGE_REPLICATION.md`.
+
 ## 17. H9：独立成熟样本的截距校准被否决
 
 预先固定原valid尾84成熟样本校准，早停部分purge后351点，重新拟合同一binary模型；两臂仅区别为b=0与logit+b单截距MLE。初始1917点1027→1033（+6），复制1512点828→748（-80），复制两个时期均下降。复制6/12/24根同步日期区块区间分别[-9.987,-0.395]、[-10.053,-0.265]、[-10.516,+0.132]个百分点。15组截距均满足校准目标且成熟/映射审计通过，失败不能归为求解错误。
