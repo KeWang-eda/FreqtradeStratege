@@ -21,7 +21,7 @@ EXTENDED = Path("artifacts/direction-threshold-study/extended")
 LAGS = (1, 2, 3, 6)
 
 
-def run(output: Path, remove: tuple[str, ...], add_bollinger: bool = False, add_clv: bool = False, add_stoch: bool = False, add_obv: bool = False, add_cmf: bool = False) -> None:
+def run(output: Path, remove: tuple[str, ...], add_bollinger: bool = False, add_clv: bool = False, add_stoch: bool = False, add_obv: bool = False, add_cmf: bool = False, add_vfi: bool = False) -> None:
     output.mkdir(parents=True, exist_ok=False)
     cfg = json.loads(Path("config.json").read_text())
     rows = []
@@ -58,6 +58,11 @@ def run(output: Path, remove: tuple[str, ...], add_bollinger: bool = False, add_
             cmf = (((2.0 * source["close"] - source["high"] - source["low"]) /
                     (source["high"] - source["low"]).replace(0.0, np.nan)) * source["volume"]).rolling(14).sum() / source["volume"].rolling(14).sum().replace(0.0, np.nan)
             cmf = cmf.rename("%-cmf-14")
+            # VFI-hist follows technical 1.7.0's causal VFI implementation.
+            # Keep this research arm isolated: only the histogram is added.
+            import technical.indicators as indicators
+            _, _, vfi_hist = indicators.vfi(source.reset_index()[["date", "open", "high", "low", "close", "volume"]])
+            vfi_hist = pd.Series(np.asarray(vfi_hist), index=source.index, name="%-vfi-hist")
 
             # `remove` entries are stable substrings so generated native
             # families (e.g. range_gen and range_gen_shift-1) are removed
@@ -66,7 +71,7 @@ def run(output: Path, remove: tuple[str, ...], add_bollinger: bool = False, add_
 
             def augmented(frame: pd.DataFrame, dates, columns, include_bollinger: bool = False, include_clv: bool = False, include_stoch: bool = False, include_obv: bool = False, include_cmf: bool = False) -> pd.DataFrame:
                 index = pd.DatetimeIndex(pd.to_datetime(dates, utc=True))
-                base_columns = [c for c in columns if c not in {"%-bollinger-position-20", "%-clv", "%-stoch-position-14", "%-obv-pressure-14", "%-cmf-14"}]
+                base_columns = [c for c in columns if c not in {"%-bollinger-position-20", "%-clv", "%-stoch-position-14", "%-obv-pressure-14", "%-cmf-14", "%-vfi-hist"}]
                 result = frame[base_columns].copy()
                 result.index = index
                 result[lagged.columns] = lagged.reindex(index).to_numpy()
@@ -80,6 +85,8 @@ def run(output: Path, remove: tuple[str, ...], add_bollinger: bool = False, add_
                     result["%-obv-pressure-14"] = obv.reindex(index).to_numpy()
                 if include_cmf:
                     result["%-cmf-14"] = cmf.reindex(index).to_numpy()
+                if add_vfi and columns is candidate_columns:
+                    result["%-vfi-hist"] = vfi_hist.reindex(index).to_numpy()
                 return result.reset_index(drop=True)
 
             train_dates = samples.loc[train.index, "candle_timestamp"]
@@ -103,7 +110,7 @@ def run(output: Path, remove: tuple[str, ...], add_bollinger: bool = False, add_
             truth = baseline.loc[dates, "truth"].to_numpy(float)
             arm_scores = {}
             arm_ready = {}
-            candidate_columns = kept + (["%-bollinger-position-20"] if add_bollinger else []) + (["%-clv"] if add_clv else []) + (["%-stoch-position-14"] if add_stoch else []) + (["%-obv-pressure-14"] if add_obv else []) + (["%-cmf-14"] if add_cmf else [])
+            candidate_columns = kept + (["%-bollinger-position-20"] if add_bollinger else []) + (["%-clv"] if add_clv else []) + (["%-stoch-position-14"] if add_stoch else []) + (["%-obv-pressure-14"] if add_obv else []) + (["%-cmf-14"] if add_cmf else []) + (["%-vfi-hist"] if add_vfi else [])
             for arm, columns in (("lag_baseline", features), ("lag_candidate", candidate_columns)):
                 pipeline = IdentityPreservingPipeline(factory.steps, factory.fitparams)
                 X, y, weights = pipeline.fit_transform(
@@ -164,5 +171,6 @@ if __name__ == "__main__":
     parser.add_argument("--add-stoch", action="store_true")
     parser.add_argument("--add-obv", action="store_true")
     parser.add_argument("--add-cmf", action="store_true")
+    parser.add_argument("--add-vfi", action="store_true")
     args = parser.parse_args()
-    run(args.output, tuple(x for x in args.remove.split(",") if x), args.add_bollinger, args.add_clv, args.add_stoch, args.add_obv, args.add_cmf)
+    run(args.output, tuple(x for x in args.remove.split(",") if x), args.add_bollinger, args.add_clv, args.add_stoch, args.add_obv, args.add_cmf, args.add_vfi)
